@@ -1,0 +1,137 @@
+<!DOCTYPE >
+<html>
+  <head>
+    <title>The Impossible Game 2+ | Free ONLINE mod of "The Impossible Game 2"</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A free, online mod of &QUOT;The Impossible Game 2&QUOT; with more features">
+    <meta name="keywords" content="TIG2, The Impossible Game, The Impossible Game 2, Geometry Dash, Online game, free online game">
+    <style href="fonts/font-face.css"></style>
+    <style>
+      :root {
+        --spine-width: 600px;
+        --green: #06f195;
+        --cyan: #06fffe;
+        --purple: #550190;
+        --darkpurple: #2f0245;
+        --white: #fff;
+        --yellow: #fddf40;
+        color: white;
+      }
+      * {
+        font-family: "Montserrat", sans-serif;
+      }
+      body {
+        background: var(--darkpurple);
+        margin: 0px;
+        text-align: center;
+        overflow-x: clip;
+      }
+      h1 img {
+        animation-direction: alternate;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-name: grow;
+        animation-timing-function: ease;
+        max-width: 500px;
+        width: 90vw;
+      }
+      @keyframes grow {
+        0% {
+          transform: scale(1);
+        }
+
+        to {
+          transform: scale(1.03);
+        }
+      }
+      @keyframes grow-twisted {
+        0% {
+          transform: scale(1, rotate(-5deg));
+        }
+
+        to {
+          transform: scale(1.03, rotate(-5deg));
+        }
+      }
+      a {
+        position: relative;
+        margin: 0px;
+      }
+      /* PLAY NOW button */
+      button {
+        background: var(--green);
+        padding: 9px;
+        padding-block: 0px;
+        height: 50px;
+        font-weight: 600;
+        font-size: 24px;
+        border: unset;
+        user-select: none;
+        corner-shape: bevel;
+        border-radius: 7px;
+        outline: 4px solid var(--purple);
+        width: 200px;
+        position: absolute;
+        bottom: 0px;
+        left: 50%;
+        margin: 0px;
+      }
+      button:active {
+        background: var(--cyan);
+        height: 40px;
+      }
+      main {
+        margin-block: 50px;
+      }
+
+      main p {
+        font-size: 60px;
+        font-weight: 800;
+        font-style: italic;
+        letter-spacing: 1px;
+        text-shadow: rgb(85, 1, 144) 3px 3px 0px;
+        text-transform: uppercase;
+        animation-direction: alternate;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-name: grow-twisted;
+        animation-timing-function: ease;
+        transform: rotate(-5deg);
+      }
+
+      footer {
+        background: white;
+      }
+      ul {
+        text-align: left;
+          margin: auto;
+          width: 70%;
+      }
+    </style>
+  </head>
+  <body>
+    <br />
+    <header >
+      <h1><img src="logo.png" /></h1>
+      
+      <a href="./game" style="display: block; height: 68px !important; width: 200px; position: relative; left: 30%;"><button>PLAY NOW!</button></a>
+    </header>
+    <main>
+      <div><p>NEW FEATURES!</p></div>
+      <div>
+      <ul>
+        <li>Static and Falling Saws</li>
+        <li>Move-On-Switch</li>
+        <li>Bulk Edit</li>
+        <li>More Songs (you can even put YOUR OWN ONES!!)</li>
+        <li>Right-Facing Enemies</li>
+        <li>Speed-retaining Flags</li>
+        <li>"Classic" theme, for those who liked the original <i>The Impossible Game</i></li>
+        <li>Size Button</li>
+      </ul>
+      <b style="font-size: 120%"><b>And much more!</b></b>
+      </div>
+    </main>
+    <footer></footer>
+  </body>
+</html>

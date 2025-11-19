@@ -1,0 +1,16 @@
+minion.png
+size:128,256
+filter:Linear,Linear
+pma:true
+scale:0.6
+Layer 1
+bounds:4,119,66,41
+Layer 12
+bounds:4,4,69,25
+Layer 14
+bounds:4,82,67,29
+Layer 3 copy
+bounds:4,37,37,49
+rotate:90
+Layer 6
+bounds:4,168,65,42

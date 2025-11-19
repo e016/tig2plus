@@ -1,0 +1,14 @@
+spaceship_2.png
+size:188,98
+filter:Linear,Linear
+pma:true
+Layer 6
+bounds:2,6,103,90
+offsets:1,1,105,92
+Layer 7
+bounds:107,2,94,39
+offsets:1,1,96,41
+rotate:90
+Layer 8
+bounds:148,58,38,38
+offsets:1,1,40,40

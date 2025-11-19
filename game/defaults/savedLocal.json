@@ -1,0 +1,1119 @@
+[
+    7,
+    2378436,
+    {
+        "auth": {
+            "type": "anon"
+        },
+        "offlineCache": {
+            "achievements": [
+                {
+                    "id": "coincidence_nocheckpoints",
+                    "name": "Beat Coincidence without checkpoints",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Burger Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_burger"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "critical_hit_checkpoints",
+                    "name": "Beat Critical Hit",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "World 2 Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_world2"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "virtual_nocheckpoints",
+                    "name": "Beat Virtual without checkpoints",
+                    "unlocked": false,
+                    "category": "levelPack",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 0,
+                        "items": [
+                            {
+                                "name": "Astronaut Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_space"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "cloud_9_nocheckpoints",
+                    "name": "Beat Cloud 9 without checkpoints",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Skater Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_skater"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "breathe_checkpoints",
+                    "name": "Beat Breathe",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Jetpack in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_jetpack"
+                            },
+                            {
+                                "name": "1 Missile Booster",
+                                "blocksPrice": 0,
+                                "defId": "missiles1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "dragonfly_nocheckpoints",
+                    "name": "Beat Dragonfly without checkpoints",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Cloud 9 Bonus Level",
+                                "blocksPrice": 0,
+                                "defId": "bonus_level_cloud9"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "mutant_nocheckpoints",
+                    "name": "Beat Mutant without checkpoints",
+                    "unlocked": false,
+                    "category": "gold",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 60,
+                        "items": [
+                            {
+                                "name": "Knight Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_knight"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "overdrive_checkpoints",
+                    "name": "Beat Overdrive",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "World 4 Boss Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_world4Boss"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "all_bronze_achievements",
+                    "name": "Unlocked All Bronze Achievements",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Parrot Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_parrot"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "solace_nocheckpoints",
+                    "name": "Beat Solace without checkpoints",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Dino Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_dino"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "octane_nocheckpoints",
+                    "name": "Beat Octane without checkpoints",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Pixel Skull Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_pixelskull"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "stardust_checkpoints",
+                    "name": "Beat Stardust",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "World 1 Red Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_red"
+                            },
+                            {
+                                "name": "1 Autopilot Booster",
+                                "blocksPrice": 0,
+                                "defId": "autopilot1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "accelerated_checkpoints",
+                    "name": "Beat Accelerated",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Synthwave Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_synthwave"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "cool_friends_nocheckpoints",
+                    "name": "Beat Cool Friends without checkpoints",
+                    "unlocked": true,
+                    "category": "levelPack",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 0,
+                        "items": [
+                            {
+                                "name": "Fighter Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_fighter"
+                            },
+                            {
+                                "name": "Fighter Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_fighter"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sky_fracture_nocheckpoints",
+                    "name": "Beat Sky Fracture without checkpoints",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Boss 3 Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_boss3"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "cool_friends_checkpoints",
+                    "name": "Beat Cool Friends",
+                    "unlocked": true,
+                    "category": "levelPack",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 0,
+                        "items": [
+                            {
+                                "name": "Punch in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_punch"
+                            },
+                            {
+                                "name": "Giant Enemy in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_giant_enemy"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "nacreous_snowmelt_high_score",
+                    "name": "Score 600,000 beating Nacreous Snowmelt",
+                    "unlocked": true,
+                    "category": "levelPack",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 0,
+                        "items": [
+                            {
+                                "name": "Outline Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_arrows"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "stardust_nocheckpoints",
+                    "name": "Beat Stardust without checkpoints",
+                    "unlocked": false,
+                    "category": "gold",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 60,
+                        "items": [
+                            {
+                                "name": "Samurai Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_samurai"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "accelerated_avoid_collectibles",
+                    "name": "Avoid all Collectibles in Accelerated",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Green Bot Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_greenbot"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "accelerated_nocheckpoints",
+                    "name": "Beat Accelerated without checkpoints",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Glow Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_glow"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "all_silver_achievements",
+                    "name": "Unlocked All Silver Achievements",
+                    "unlocked": false,
+                    "category": "gold",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 60,
+                        "items": [
+                            {
+                                "name": "Superhero Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_superhero"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "blythe_checkpoints",
+                    "name": "Beat Blythe",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Springs in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_spring"
+                            },
+                            {
+                                "name": "Falling Platforms in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_falling_platform"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "nacreous_snowmelt_checkpoints",
+                    "name": "Beat Nacreous Snowmelt",
+                    "unlocked": true,
+                    "category": "levelPack",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 0,
+                        "items": [
+                            {
+                                "name": "Arrows in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_arrows"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "breathe_nocheckpoints",
+                    "name": "Beat Breathe without checkpoints",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Pixel Robot Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_pixelrobot"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "xp_rank10",
+                    "name": "Reach Level 10 online",
+                    "unlocked": false,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Chicken Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_chicken"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "overdrive_nocheckpoints",
+                    "name": "Beat Overdrive without checkpoints",
+                    "unlocked": false,
+                    "category": "gold",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 60,
+                        "items": [
+                            {
+                                "name": "Boss 4 Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_boss4"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "indestructable_checkpoints",
+                    "name": "Beat Indestructable",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "World 1 Boss Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_world1Boss"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "think_different_checkpoints",
+                    "name": "Beat Think Different",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Move on Jump in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_move_on_jump"
+                            },
+                            {
+                                "name": "1 Missile Booster",
+                                "blocksPrice": 0,
+                                "defId": "missiles1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "cloud_9_checkpoints",
+                    "name": "Beat Cloud 9",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Skateboard and Rails in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_skateboard"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "polymorph_checkpoints",
+                    "name": "Beat Polymorph",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Yak Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_yak"
+                            },
+                            {
+                                "name": "World 3 Red Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_world3Red"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sky_fracture_checkpoints",
+                    "name": "Beat Sky Fracture",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Spaceship Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_spaceship"
+                            },
+                            {
+                                "name": "World 3 Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_world3"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "awake_checkpoints",
+                    "name": "Beat Awake",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Portals in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_portals"
+                            },
+                            {
+                                "name": "World 4 Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_world4"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "blythe_nocheckpoints",
+                    "name": "Beat Blythe without checkpoints",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Worm Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_worm"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "lighthouse_checkpoints",
+                    "name": "Beat Lighthouse",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Player Stacks in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_player_stacks"
+                            },
+                            {
+                                "name": "1 Missile Booster",
+                                "blocksPrice": 0,
+                                "defId": "missiles1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "nacreous_snowmelt_nocheckpoints",
+                    "name": "Beat Nacreous Snowmelt without checkpoints",
+                    "unlocked": false,
+                    "category": "levelPack",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 0,
+                        "items": [
+                            {
+                                "name": "Arrows Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_arrows"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "indestructable_nocheckpoints",
+                    "name": "Beat Indestructable without checkpoints",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Boss 1 Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_boss1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "accelerated_collectibles",
+                    "name": "Picked up all 75 Collectibles beating Accelerated",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Collectibles in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_collectibles"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "frontier_nocheckpoints",
+                    "name": "Beat Frontier without checkpoints",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Machine Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_machine"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "think_different_nocheckpoints",
+                    "name": "Beat Think Different without checkpoints",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Monkey Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_monkey"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "dark_sheep_nocheckpoints",
+                    "name": "Beat Dark Sheep without checkpoints",
+                    "unlocked": false,
+                    "category": "gold",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 60,
+                        "items": [
+                            {
+                                "name": "Pixel Crown Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_pixelcrown"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "cloud_9_high_score",
+                    "name": "Score 200,000 beating Cloud 9",
+                    "unlocked": false,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Skater Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_skater"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "awake_nocheckpoints",
+                    "name": "Beat Awake without checkpoints",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Mushroom Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_mushroom"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "coincidence_checkpoints",
+                    "name": "Beat Coincidence",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "World 4 Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_world4"
+                            },
+                            {
+                                "name": "1 Slow Motion Booster",
+                                "blocksPrice": 0,
+                                "defId": "slowmo1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "frontier_checkpoints",
+                    "name": "Beat Frontier",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Switch Button and Platform in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_switch_button"
+                            },
+                            {
+                                "name": "1 Slow Motion Booster",
+                                "blocksPrice": 0,
+                                "defId": "slowmo1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "xp_rank100",
+                    "name": "Reach Level 100 online",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Dog Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_dog"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "lighthouse_nocheckpoints",
+                    "name": "Beat Lighthouse without checkpoints",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Alien Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_alien"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "8_bit_adventure_nocheckpoints",
+                    "name": "Beat 8 Bit Adventure without checkpoints",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Pixel Cheese Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_pixelcheese"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "cloud_9_very_high_score",
+                    "name": "Score 1,000,000 beating Cloud 9",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Mr Cool Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_mrcool"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "for_you_checkpoints",
+                    "name": "Beat For You",
+                    "unlocked": true,
+                    "category": "levelPack",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 0,
+                        "items": [
+                            {
+                                "name": "Switch Block Spikes in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_switch_block_spike"
+                            },
+                            {
+                                "name": "Dreamy Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_dreamy"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "mutant_checkpoints",
+                    "name": "Beat Mutant",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Bull Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_bull"
+                            },
+                            {
+                                "name": "World 4 Red Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_world4Red"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "critical_hit_nocheckpoints",
+                    "name": "Beat Critical Hit without checkpoints",
+                    "unlocked": false,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Boss 2 Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_boss2"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "solace_checkpoints",
+                    "name": "Beat Solace",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Double Jump in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_double_jump"
+                            },
+                            {
+                                "name": "1 Missile Booster",
+                                "blocksPrice": 0,
+                                "defId": "missiles1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "for_you_nocheckpoints",
+                    "name": "Beat For You without checkpoints",
+                    "unlocked": false,
+                    "category": "levelPack",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 0,
+                        "items": [
+                            {
+                                "name": "Dreamy Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_dreamy"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "8_bit_adventure_checkpoints",
+                    "name": "Beat 8 Bit Adventure",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Walking Enemies in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_walking_enemy"
+                            },
+                            {
+                                "name": "Pixel Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_pixel"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "virtual_checkpoints",
+                    "name": "Beat Virtual",
+                    "unlocked": true,
+                    "category": "levelPack",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 0,
+                        "items": [
+                            {
+                                "name": "Speed Change in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_speed_change"
+                            },
+                            {
+                                "name": "Moon Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_speed"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "dragonfly_checkpoints",
+                    "name": "Beat Dragonfly",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Saws in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_saws"
+                            },
+                            {
+                                "name": "1 Slow Motion Booster",
+                                "blocksPrice": 0,
+                                "defId": "slowmo1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "polymorph_nocheckpoints",
+                    "name": "Beat Polymorph without checkpoints",
+                    "unlocked": false,
+                    "category": "gold",
+                    "rewards": {
+                        "collected": false,
+                        "blocks": 60,
+                        "items": [
+                            {
+                                "name": "Mummy Skin",
+                                "blocksPrice": 0,
+                                "defId": "skin_mummy"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "octane_checkpoints",
+                    "name": "Beat Octane",
+                    "unlocked": true,
+                    "category": "bronze",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 10,
+                        "items": [
+                            {
+                                "name": "Gun in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_gun"
+                            },
+                            {
+                                "name": "1 Missile Booster",
+                                "blocksPrice": 0,
+                                "defId": "missiles1"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "dark_sheep_checkpoints",
+                    "name": "Beat Dark Sheep",
+                    "unlocked": true,
+                    "category": "silver",
+                    "rewards": {
+                        "collected": true,
+                        "blocks": 20,
+                        "items": [
+                            {
+                                "name": "Flying Enemies in Level Editor",
+                                "blocksPrice": 0,
+                                "defId": "editor_flying_enemy"
+                            },
+                            {
+                                "name": "World 2 Red Theme",
+                                "blocksPrice": 0,
+                                "defId": "theme_world2Red"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "hasRegisteredNotifications": false,
+        "hasAskedForReview": true,
+        "hasVisitedSuperLevelPack": true
+    }
+]

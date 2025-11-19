@@ -1,0 +1,12 @@
+Switch_button.png
+size:256,256
+filter:Linear,Linear
+pma:true
+Rectangle copy
+bounds:2,146,61,61
+Rectangle copy 2
+bounds:2,83,61,61
+sqare_green_2
+bounds:2,2,37,37
+triangle_2
+bounds:2,41,46,40

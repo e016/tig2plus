@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+</head>
+
+<body>
+    <p id="k"></p>
+    <script>
+        var txt = ""
+        var arrows = JSON.parse(prompt("Arrows"))
+        arrows.sort((a,b)=>{return a[0]-b[0]}).forEach((arrow)=>{
+            console.log(((-(arrow[1]/30)) + 2))
+            txt = txt += `${((((-(arrow[1]/30)) + 2) - 1) % 4) + 1}:${(((arrow[0] - 15)/(135)+1) - 1)}\n`
+        })
+        document.getElementById('k').innerText = txt
+    </script>
+</body>
+
+</html>

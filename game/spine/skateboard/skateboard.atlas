@@ -1,0 +1,11 @@
+skateboard.png
+size:128,64
+filter:Linear,Linear
+pma:true
+board
+bounds:4,4,88,18
+board22
+bounds:4,30,88,25
+offsets:0,1,88,29
+wheel1
+bounds:100,38,17,17

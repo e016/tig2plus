@@ -1,0 +1,83 @@
+{
+  "skeleton": {
+    "hash": "5COFd66TmCM",
+    "spine": "4.0-from-4.1.08",
+    "x": -45,
+    "y": -45,
+    "width": 90,
+    "height": 90,
+    "images": "./images/",
+    "audio": "/Users/yehorverediuk/Desktop/Room8_Studio/Flucke_games/Arrrow_animation"
+  },
+  "bones": [{ "name": "root" }, { "name": "Arrow", "parent": "root" }],
+  "slots": [
+    {
+      "name": "outside_square",
+      "bone": "Arrow",
+      "attachment": "outside_square"
+    },
+    {
+      "name": "outside_square copy",
+      "bone": "Arrow",
+      "attachment": "outside_square copy",
+      "blend": "additive"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "outside_square": { "outside_square": { "width": 90, "height": 90 } },
+        "outside_square copy": {
+          "outside_square copy": {
+            "scaleX": 0.7583,
+            "scaleY": 0.7583,
+            "width": 115,
+            "height": 111
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "animation": {
+      "slots": {
+        "outside_square": {
+          "rgba": [
+            {
+              "time": 0.2,
+              "color": "ffffffff",
+              "curve": [
+                0.247, 1, 0.287, 1, 0.247, 1, 0.287, 1, 0.247, 1, 0.287, 1,
+                0.247, 1, 0.287, 0
+              ]
+            },
+            { "time": 0.3333, "color": "ffffff00" }
+          ]
+        },
+        "outside_square copy": {
+          "rgba": [
+            { "color": "ffffffff" },
+            { "time": 0.1333, "color": "ffffff00" }
+          ]
+        }
+      },
+      "bones": {
+        "Arrow": {
+          "scale": [
+            {
+              "curve": [0.022, 0.978, 0.045, 1.091, 0.022, 0.978, 0.045, 1.091]
+            },
+            {
+              "time": 0.0667,
+              "x": 1.1,
+              "y": 1.1,
+              "curve": [0.156, 1.138, 0.275, 1.397, 0.156, 1.138, 0.275, 1.397]
+            },
+            { "time": 0.3333, "x": 1.397, "y": 1.397 }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+SendRequest: {"service":"authenticationV2","operation":"AUTHENTICATE","data":{"gameId":"13731","externalId":"549dfca6-c05e-4577-98ba-12c89ea5caa7","releasePlatform":"WEB","gameVersion":"1.2.6","clientLibVersion":"4.10.0","authenticationToken":"","authenticationType":"Anonymous","forceCreate":true,"anonymousId":"549dfca6-c05e-4577-98ba-12c89ea5caa7","profileId":"2d462852-d977-4d23-be8f-4cfc66ce968a","timeZoneOffset":-6,"languageCode":"en","countryCode":"US","clientLib":"js"}}
+game.js:188 response status : 200
+response : {"packetId":-1,"responses":[
+    {"data":
+    {"abTestingId":54,
+    "lastLogin":1757170414804,
+    "server_time":1757170414847,
+    "refundCount":0,"logouts":0,
+    "timeZoneOffset":-6.0,
+    "experiencePoints":0,
+    "maxBundleMsgs":10,
+    "createdAt":1756997335037,
+    "parentProfileId":null,
+    "emailAddress":null,
+    "experienceLevel":1,
+    "countryCode":"US",
+    "vcClaimed":0,
+    "currency":
+    {"blocks":{"consumed":0,"balance":0,"purchased":0,"awarded":0,"revoked":0}},
+    "id":"2d462852-d977-4d23-be8f-4cfc66ce968a",
+    "compressIfLarger":51200,
+    "amountSpent":0,
+    "retention":{"d00":true,"d01":true,"d02":true},
+    "previousLogin":1757083113796,
+    "playerName":"Player",
+    "pictureUrl":null,
+    "incoming_events":[],
+    "failedRedemptionsTotal":0,
+    "sessionId":"7jqctna7hqj0q32jgjsa9simu7",
+    "languageCode":"en",
+    "vcPurchased":0,
+    "isTester":false,
+    "summaryFriendData":null,
+    "loginCount":14,
+    "emailVerified":true,
+    "xpCapped":false,"
+    profileId":"2d462852-d977-4d23-be8f-4cfc66ce968a",
+    "newUser":"false",
+    "allTimeSecs":0,
+    "playerSessionExpiry":1200,
+    "sent_events":[],
+    "maxKillCount":11,
+    "rewards":{"rewardDetails":{},"currency":{},"rewards":{}},
+    "statistics":{"dragonfly_checkpoints":0,"gold_stars":0}},
+    "status":200}]}
+Response(200): {"data":{"abTestingId":54,"lastLogin":1757170414804,"server_time":1757170414847,"refundCount":0,"logouts":0,"timeZoneOffset":-6,"experiencePoints":0,"maxBundleMsgs":10,"createdAt":1756997335037,"parentProfileId":null,"emailAddress":null,"experienceLevel":1,"countryCode":"US","vcClaimed":0,"currency":{"blocks":{"consumed":0,"balance":0,"purchased":0,"awarded":0,"revoked":0}},"id":"2d462852-d977-4d23-be8f-4cfc66ce968a","compressIfLarger":51200,"amountSpent":0,"retention":{"d00":true,"d01":true,"d02":true},"previousLogin":1757083113796,"playerName":"Player","pictureUrl":null,"incoming_events":[],"failedRedemptionsTotal":0,"sessionId":"7jqctna7hqj0q32jgjsa9simu7","languageCode":"en","vcPurchased":0,"isTester":false,"summaryFriendData":null,"loginCount":14,"emailVerified":true,"xpCapped":false,"profileId":"2d462852-d977-4d23-be8f-4cfc66ce968a","newUser":"false","allTimeSecs":0,"playerSessionExpiry":1200,"sent_events":[],"maxKillCount":11,"rewards":{"rewardDetails":{},"currency":{},"rewards":{}},"statistics":{"dragonfly_checkpoints":0,"gold_stars":0}},"status":200}
+Updated saved profileId to 2d462852-d977-4d23-be8f-4cfc66ce968a
+SendRequest: {"service":"script","operation":"RUN","data":{"scriptName":"client/SyncProfile","scriptData":{"entities":"account,levels"}}}
+response status : 200
+response : {"packetId":0,"responses":[{"data":{"response":{"allUserItems":[{"itemId":"2623d4f1-30ae-4a5d-9b18-038b67a1d1b9","defId":"autopilot1","quantity":2,"usesLeft":1,"coolDownStart":-1,"recoveryStart":-1,"itemData":{},"giftedTo":null,"giftedFrom":null,"createdAt":1756997335104,"updatedAt":1756997335104,"version":1,"maxUses":1,"coolDownUntil":-1,"recoveryUntil":-1,"itemDef":{}},{"itemId":"81cfa6b7-6d1c-4fd0-98e7-6180e12469dc","defId":"missiles1","quantity":2,"usesLeft":1,"coolDownStart":-1,"recoveryStart":-1,"itemData":{},"giftedTo":null,"giftedFrom":null,"createdAt":1756997335112,"updatedAt":1756997335112,"version":1,"maxUses":1,"coolDownUntil":-1,"recoveryUntil":-1,"itemDef":{}},{"itemId":"e9618296-31f6-4423-8722-e2d82c49d42a","defId":"slowmo1","quantity":2,"usesLeft":1,"coolDownStart":-1,"recoveryStart":-1,"itemData":{},"giftedTo":null,"giftedFrom":null,"createdAt":1756997335123,"updatedAt":1756997335123,"version":1,"maxUses":1,"coolDownUntil":-1,"recoveryUntil":-1,"itemDef":{}}],"entities":{"account":{"createdAt":1756998280106,"data":{"data":[8,2458985,[[],1,[false,true,false,false,false,false,0,null],[]]]},"entityType":"account","_serverTime":1757170414946,"entityId":"bb43835d-c5f8-46be-99b3-cd2546da1ecc","acl":{"other":0},"version":1,"updatedAt":1756998280106},"levels":null},"attributes":{}},"success":true,"reasonCode":null},"status":200}]}
+Response(200): {"data":{"response":{"allUserItems":[{"itemId":"2623d4f1-30ae-4a5d-9b18-038b67a1d1b9","defId":"autopilot1","quantity":2,"usesLeft":1,"coolDownStart":-1,"recoveryStart":-1,"itemData":{},"giftedTo":null,"giftedFrom":null,"createdAt":1756997335104,"updatedAt":1756997335104,"version":1,"maxUses":1,"coolDownUntil":-1,"recoveryUntil":-1,"itemDef":{}},{"itemId":"81cfa6b7-6d1c-4fd0-98e7-6180e12469dc","defId":"missiles1","quantity":2,"usesLeft":1,"coolDownStart":-1,"recoveryStart":-1,"itemData":{},"giftedTo":null,"giftedFrom":null,"createdAt":1756997335112,"updatedAt":1756997335112,"version":1,"maxUses":1,"coolDownUntil":-1,"recoveryUntil":-1,"itemDef":{}},{"itemId":"e9618296-31f6-4423-8722-e2d82c49d42a","defId":"slowmo1","quantity":2,"usesLeft":1,"coolDownStart":-1,"recoveryStart":-1,"itemData":{},"giftedTo":null,"giftedFrom":null,"createdAt":1756997335123,"updatedAt":1756997335123,"version":1,"maxUses":1,"coolDownUntil":-1,"recoveryUntil":-1,"itemDef":{}}],"entities":{"account":{"createdAt":1756998280106,"data":{"data":[8,2458985,[[],1,[false,true,false,false,false,false,0,null],[]]]},"entityType":"account","_serverTime":1757170414946,"entityId":"bb43835d-c5f8-46be-99b3-cd2546da1ecc","acl":{"other":0},"version":1,"updatedAt":1756998280106},"levels":null},"attributes":{}},"success":true,"reasonCode":null},"status":200}

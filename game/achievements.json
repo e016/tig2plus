@@ -1,0 +1,139 @@
+[
+    {
+        "type": "boosterItem",
+        "itemId": "3e1fa881-5e2a-4184-a24d-ab1a36ffed3d",
+        "itemVersion": 4,
+        "defId": "slowmo1",
+        "booster": {
+            "type": "slowmo"
+        },
+        "usesLeft": 1
+    },
+    {
+        "type": "skinItem",
+        "itemId": "3fd7f87f-689c-461c-89a1-7295a4109d78",
+        "itemVersion": 1,
+        "defId": "skin_spaceship",
+        "skinName": "spaceship"
+    },
+    {
+        "type": "themeItem",
+        "itemId": "4ae53e88-25e2-4cef-a6c9-14821b40777d",
+        "itemVersion": 1,
+        "defId": "theme_world3",
+        "theme": {
+            "id": "world3",
+            "name": "World 3",
+            "colour": "#210086",
+            "background": "world3",
+            "player": {
+                "name": "Glow",
+                "fileName": "glow",
+                "size": 41,
+                "trail": {
+                    "form": "default",
+                    "bottomColour": "#FFBD00",
+                    "topColour": "#FFD604"
+                }
+            },
+            "objects": {
+                "block": "world3",
+                "spike": "world3",
+                "platform": "world1",
+                "dirChange": "world1",
+                "flag": "world1",
+                "saw": "world1",
+                "bottom": "world3"
+            },
+            "isBonusTheme": false
+        }
+    },
+    {
+        "type": "skinItem",
+        "itemId": "61209ff3-4ca6-4123-a679-6694d5337bd9",
+        "itemVersion": 1,
+        "defId": "skin_pixel",
+        "skinName": "pixel"
+    },
+    {
+        "type": "editorItem",
+        "itemId": "6b325c5d-b05f-46ac-8df3-58e84f14c5cd",
+        "itemVersion": 1,
+        "defId": "editor_walking_enemy",
+        "feature": "walkingEnemy"
+    },
+    {
+        "type": "editorItem",
+        "itemId": "81e98680-bf1d-4be2-8117-0b1c170b3c13",
+        "itemVersion": 1,
+        "defId": "editor_move_on_jump",
+        "feature": "moveOnJump"
+    },
+    {
+        "type": "themeItem",
+        "itemId": "8b2a36d9-79cf-44bc-809c-155d22f666a6",
+        "itemVersion": 1,
+        "defId": "theme_synthwave",
+        "theme": {
+            "id": "synthwave",
+            "name": "Synthwave",
+            "colour": "#721A59",
+            "background": "synthwave",
+            "player": {
+                "name": "Glow",
+                "fileName": "glow",
+                "size": 41,
+                "trail": {
+                    "form": "default",
+                    "bottomColour": "#FFBD00",
+                    "topColour": "#FFD604"
+                }
+            },
+            "objects": {
+                "block": "world3",
+                "spike": "world3",
+                "platform": "world1",
+                "dirChange": "world1",
+                "flag": "world1",
+                "saw": "world1",
+                "bottom": "world3"
+            },
+            "isBonusTheme": false
+        }
+    },
+    {
+        "type": "boosterItem",
+        "itemId": "b64b0152-01d1-4fc8-adc2-910b05dba36a",
+        "itemVersion": 1,
+        "defId": "autopilot1",
+        "booster": {
+            "type": "autopilot",
+            "playerInput": "up"
+        },
+        "usesLeft": 2
+    },
+    {
+        "type": "boosterItem",
+        "itemId": "dc0dd622-5e9e-45b6-83df-453b4fad00df",
+        "itemVersion": 3,
+        "defId": "missiles1",
+        "booster": {
+            "type": "missiles"
+        },
+        "usesLeft": 4
+    },
+    {
+        "type": "editorItem",
+        "itemId": "e1466316-f872-4121-b6d1-bed541622967",
+        "itemVersion": 1,
+        "defId": "editor_double_jump",
+        "feature": "doubleJump"
+    },
+    {
+        "type": "editorItem",
+        "itemId": "f80df4d8-fc9e-4118-81f4-7b5fe31a9a8d",
+        "itemVersion": 1,
+        "defId": "editor_saws",
+        "feature": "saws"
+    }
+]

@@ -1,0 +1,61 @@
+Portal2.png
+size:1010,355
+filter:Linear,Linear
+Ellipse 1
+bounds:580,259,94,267
+rotate:90
+Ellipse 1_B
+bounds:849,86,94,267
+Ellipse 1_G
+bounds:580,163,94,267
+rotate:90
+Ellipse 1_R
+bounds:2,88,94,267
+rotate:90
+Ellipse 2_1
+bounds:2,184,169,287
+rotate:90
+Ellipse 2_2
+bounds:291,184,169,287
+rotate:90
+Layer 3
+bounds:271,99,83,244
+rotate:90
+Layer 3_B
+bounds:271,14,83,244
+rotate:90
+Layer 3_G
+bounds:2,3,83,244
+rotate:90
+Layer 3_R
+bounds:579,78,83,244
+rotate:90
+line11
+bounds:543,28,175,20
+line12
+bounds:945,217,136,49
+rotate:90
+line13
+bounds:517,7,175,24
+rotate:90
+line14
+bounds:862,3,119,23
+line15
+bounds:543,2,164,24
+line16
+bounds:945,47,168,39
+rotate:90
+line17
+bounds:728,28,147,25
+line18
+bounds:579,50,147,26
+line19
+bounds:543,64,118,34
+rotate:90
+line20
+bounds:709,2,151,24
+line21
+bounds:986,105,110,22
+rotate:90
+line22
+bounds:825,55,96,29
