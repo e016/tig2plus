@@ -61951,7 +61951,7 @@ var bgOnly = false;
                           font: { size: 18 },
                           color: Ae,
                           gradient: S,
-                          x: 3 - e / 2 + 305,//-e / 2 + 305,
+                          x: -e / 2 + 305,
                           y: t / 2 - 20,
                         }),
                       ]
@@ -64301,10 +64301,10 @@ var bgOnly = false;
                     onPress: () => {
                       r({ type: "more" });
                     },
-                    x: 100,
+                    x: 0,//100,
                     y: h,
                   }),
-                  Fo({
+                  /*Fo({
                     id: "AchievementsButton",
                     text: localize("ACHIEVEMENTS"),
                     width: 170,
@@ -64315,7 +64315,7 @@ var bgOnly = false;
                     },
                     x: -100,
                     y: h,
-                  }),
+                  }),*/
                   n({
                     text: localize(currentJoke),
                     font: { align: "center", size: 13 },
