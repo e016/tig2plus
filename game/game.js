@@ -32413,7 +32413,7 @@ var bgOnly = false;
                     sprites: (t) => [
                       n({
                         font: { size: r },
-                        text: e,
+                        text: (localize(e)), // screw it
                         color: o ? ze : c ? Ae : h || (i ? Ue : Be),
                         strokeColor: p,
                         strokeThickness: g,
@@ -35530,7 +35530,7 @@ var bgOnly = false;
                       }),
                     [
                       { name: "Item", options: n },
-                      { name: "Direction", options: l },
+                      //{ name: "Direction", options: l },
                     ]
                   );
                 })(e, t, a, i);
@@ -37005,7 +37005,7 @@ var bgOnly = false;
                 return [
                   Xr.Single({ id: "GridLines", parentOffset: o }),
                   n({
-                    text: "LOADING...",
+                    text: `LOADING...`,
                     font: { size: 15 },
                     color: ve,
                     scaleX: 1 / o.scale,
@@ -41018,7 +41018,7 @@ var bgOnly = false;
             return [
               ...Object.values(hl.songs),
               {
-                name: "Custom song...",
+                name: `${("Custom song")}...`,
                 author: "",
                 fileName: "",
                 bpm: "120",
@@ -44229,7 +44229,7 @@ var bgOnly = false;
           clearSecureStorage: () =>
             Yu(void 0, void 0, void 0, function* () {
               Object.keys(localStorage).forEach((k) => {
-                if (String(k).contains("SecureStorage-")) {
+                if (String(k).includes("SecureStorage-")) {
                   localStorage.removeItem(k);
                 }
               });
@@ -44372,7 +44372,7 @@ var bgOnly = false;
           clearSecureStorage: () =>
             Vu(void 0, void 0, void 0, function* () {
               Object.keys(localStorage).forEach((k) => {
-                if (String(k).contains("SecureStorage-")) {
+                if (String(k).includes("SecureStorage-")) {
                   localStorage.removeItem(k);
                 }
               });
@@ -53342,7 +53342,7 @@ var bgOnly = false;
                 ...("loading" === e.purchases
                   ? [
                       n({
-                        text: "LOADING...",
+                        text: `${localize("LOADING")}...`,
                         color: ve,
                         strokeColor: Ye,
                         strokeThickness: 3,
@@ -53351,7 +53351,7 @@ var bgOnly = false;
                   : e.isPurchasing
                   ? [
                       n({
-                        text: "PROCESSING...",
+                        text: `${localize("PROCESSING")}...`,
                         color: ve,
                         strokeColor: Ye,
                         strokeThickness: 3,
@@ -53472,7 +53472,7 @@ var bgOnly = false;
                 () => "loading" === e.purchases,
                 () => [
                   c({
-                    text: "LOADING...",
+                    text: `${localize("LOADING")}...`,
                     color: ve,
                     strokeColor: Ye,
                     strokeThickness: 3,
@@ -53483,7 +53483,7 @@ var bgOnly = false;
                     () => e.isPurchasing,
                     () => [
                       c({
-                        text: "PROCESSING...",
+                        text: `${localize("PROCESSING")}...`,
                         color: ve,
                         strokeColor: Ye,
                         strokeThickness: 3,
@@ -54580,7 +54580,7 @@ var bgOnly = false;
                 () => "loading" === t.view.type,
                 () => [
                   c({
-                    text: "LOADING...",
+                    text: `${localize("LOADING")}...`,
                     color: ve,
                     strokeColor: Ye,
                     strokeThickness: 3,
@@ -54979,7 +54979,7 @@ var bgOnly = false;
                       () => "loading" === t.items,
                       () => [
                         c({
-                          text: "LOADING...",
+                          text: `${localize("LOADING")}...`,
                           font: { size: 20 },
                           color: Ye,
                         }),
@@ -54989,7 +54989,7 @@ var bgOnly = false;
                           () => t.isPurchasing,
                           () => [
                             c({
-                              text: "PURCHASING...",
+                              text: `${localize("PURCHASING")}...`,
                               font: { size: 20 },
                               color: Ye,
                             }),
@@ -57126,7 +57126,7 @@ var bgOnly = false;
                     y: -50,
                   }),
                   ...("loading" === t.unlockedFeatures.type
-                    ? [n({ text: "LOADING...", color: ve, font: { size: 15 } })]
+                    ? [n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } })]
                     : [
                         n({
                           text: `ERROR LOADING EDITOR: ${t.unlockedFeatures.message}`,
@@ -57661,7 +57661,7 @@ var bgOnly = false;
             }),
             render: ({ props: e, state: t }) =>
               !t.level || "then" in t.animationAssets
-                ? [n({ text: "LOADING...", font: { size: 15 }, color: ve })]
+                ? [n({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve })]
                 : [
                     Se.Sprite({
                       context: e.globalContext,
@@ -58484,7 +58484,7 @@ var bgOnly = false;
                 ...("loading" === s
                   ? [
                       n({
-                        text: "LOADING...",
+                        text: `${localize("LOADING")}...`,
                         font: { size: 20 },
                         color: Ye,
                         x: -50,
@@ -58494,7 +58494,7 @@ var bgOnly = false;
                   : i
                   ? [
                       n({
-                        text: "PURCHASING...",
+                        text: `${localize("PURCHASING")}...`,
                         font: { size: 20 },
                         color: Ye,
                         x: -50,
@@ -58607,7 +58607,7 @@ var bgOnly = false;
               if ("loading" === s)
                 return [
                   ...r,
-                  n({ text: "LOADING...", color: ve, font: { size: 15 } }),
+                  n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } }),
                 ];
               const l = null === i ? null : Hl.bonusLevels[i],
                 c = null !== l && ty(l, s),
@@ -58961,7 +58961,7 @@ var bgOnly = false;
                 l = a.size.height + 2 * a.size.heightMargin;
               if (t.isLoading)
                 return [
-                  n({ text: "LOADING...", color: ve, font: { size: 15 } }),
+                  n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } }),
                 ];
               const c = e.view;
               if ("inWorld" === c.type) {
@@ -59355,7 +59355,7 @@ var bgOnly = false;
             }) {
               if (!t || !r.songLoaded)
                 return [
-                  n({ text: "LOADING...", font: { size: 15 }, color: ve }),
+                  n({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve }),
                 ];
               const c = a / r.songDuration;
               const d = 700 * c - 350,
@@ -59485,7 +59485,7 @@ var bgOnly = false;
             const o = a.size.height + 2 * a.size.heightMargin,
               r = a.size.width + 2 * a.size.widthMargin;
             if ("loading" === t.data)
-              return [n({ text: "LOADING...", color: ve, font: { size: 15 } })];
+              return [n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } })];
             const {
               levels: l,
               availableSongs: c,
@@ -59861,7 +59861,7 @@ var bgOnly = false;
                         height: 30,
                         text:
                           "custom" in a
-                            ? localize(`Custom song...`)
+                            ? `${localize(`Custom song`)}...`
                             : `${a.name} ${localize("by")} ${a.author} - ${
                                 a.bpm
                               } BPM`,
@@ -60179,7 +60179,7 @@ var bgOnly = false;
                 }),
                 t.loading
                   ? n({
-                      text: "LOADING...",
+                      text: `${localize("LOADING")}...`,
                       color: ve,
                       font: { size: 13 },
                       y: -o / 2 + 40,
@@ -60210,7 +60210,7 @@ var bgOnly = false;
                     : n.song.author;
               const l = () =>
                 `${s.split("?l=")[0]} - ${o} ${localize("by")} ${r} - ${
-                  String(s).contains("?l=")
+                  String(s).includes("?l=")
                     ? JSON.parse(s.split("?l=")[1])[1]
                     : n.song.bpm
                 } BPM`;
@@ -60551,7 +60551,7 @@ var bgOnly = false;
                   y: t / 2 - 20,
                 }),
                 n({
-                  text: "PROFILE",
+                  text: localize("PROFILE"),
                   font: { size: 15 },
                   color: ve,
                   x: -e / 2 + 55,
@@ -60674,7 +60674,7 @@ var bgOnly = false;
                 y: t / 2 - 20,
               }),
               n({
-                text: "PROFILE",
+                text: localize("PROFILE"),
                 font: { size: 15 },
                 color: ve,
                 x: -e / 2 + 55,
@@ -60824,7 +60824,7 @@ var bgOnly = false;
                       ]
                     : []),
                   "loading" === o
-                    ? n({ text: "LOADING...", color: Be })
+                    ? n({ text: `${localize("LOADING")}...`, color: Be })
                     : Do({
                         id: "ScrollContainer",
                         containerWidth: l,
@@ -61342,7 +61342,7 @@ var bgOnly = false;
                   },
                 }),
                 "loading" === u
-                  ? n({ color: Be, text: "LOADING..." })
+                  ? n({ color: Be, text: `${localize("LOADING")}...` })
                   : null === u
                   ? null
                   : u instanceof Error
@@ -61640,7 +61640,7 @@ var bgOnly = false;
               getContext: d,
             }) {
               if ("loading" === s)
-                return [n({ text: "LOADING...", color: Be })];
+                return [n({ text: `${localize("LOADING")}...`, color: Be })];
               const u = 0.6 * e,
                 h = 0.2 * -e;
               return [
@@ -61947,7 +61947,7 @@ var bgOnly = false;
                           y: t / 2 - 20,
                         }),
                         n({
-                          text: "SKINS",
+                          text: localize("SKINS"),
                           font: { size: 18 },
                           color: Ae,
                           gradient: S,
@@ -61958,7 +61958,7 @@ var bgOnly = false;
                     : [
                         Fo({
                           id: "SkinsTabButton",
-                          text: "SKINS",
+                          text: localize("SKINS"),
                           width: 110,
                           height: 35,
                           fontSize: 15,
@@ -61988,7 +61988,7 @@ var bgOnly = false;
                   We({ color: ve, width: e, height: I, y: _ }),
                 ];
               return "loading" === l.type
-                ? [...v, n({ text: "LOADING...", color: Be })]
+                ? [...v, n({ text: `${localize("LOADING")}...`, color: Be })]
                 : "play" === E
                 ? [
                     ...v,
@@ -63017,7 +63017,7 @@ var bgOnly = false;
                 ...("loading" === s
                   ? [
                       n({
-                        text: "LOADING...",
+                        text: `${localize("LOADING")}...`,
                         font: { size: 20 },
                         color: Ye,
                         x: -50,
@@ -63027,7 +63027,7 @@ var bgOnly = false;
                   : i
                   ? [
                       n({
-                        text: "PURCHASING...",
+                        text: `${localize("PURCHASING")}...`,
                         font: { size: 20 },
                         color: Ye,
                         x: -50,
@@ -63037,7 +63037,7 @@ var bgOnly = false;
                   : [
                       Fo({
                         id: "BuyPass",
-                        text: `BUY - ${s.blocksPrice} BLOCKS`,
+                        text: `${localize("BUY")} - ${s.blocksPrice} ${localize("BLOCKS")}`,
                         width: 250,
                         height: 60,
                         onPress: () => {
@@ -63213,7 +63213,7 @@ var bgOnly = false;
               return "loading" === c
                 ? [
                     ...g,
-                    n({ text: "LOADING...", color: ve, font: { size: 15 } }),
+                    n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } }),
                   ]
                 : [
                     ...g,
@@ -63431,7 +63431,7 @@ var bgOnly = false;
                 e.unlocked
                   ? i
                     ? n({
-                        text: "loading" === i ? "LOADING..." : "COLLECTED!",
+                        text: "loading" === i ? `${localize("LOADING")}...` : "COLLECTED!",
                         color: Ye,
                         font: { size: 16 },
                         x: t / 2 - 90,
@@ -63792,17 +63792,18 @@ var bgOnly = false;
                   height: 40,
                   y: s - 100,
                 }),
-                Fo({
-                  id: "Discord",
+                 Fo({
+                  id: "repo",
                   width: 200,
                   height: 40,
-                  text: "DISCORD",
+                  text: localize("GITHUB REPO"),
                   onPress: () => {
-                    zu.openLink("https://discord.com/invite/k9vG3J53A5");
+                    zu.openLink("https://github.com/e016/tig2plus");
                   },
                   y: s - 150,
                 }),
-                Fo({
+                
+                /*Fo({
                   id: "TC",
                   width: 200,
                   height: 40,
@@ -63821,12 +63822,12 @@ var bgOnly = false;
                     zu.openLink("./privacy-policy.html");
                   },
                   y: s - 250,
-                }),
+                }),*/
                 Fo({
-                  id: "songs",
+                  id: "lang",
                   width: 200,
                   height: 40,
-                  text: "CHANGE LANGUAGE",
+                  text: localize("CHANGE LANGUAGE"),
                   onPress: () => {
                     if(LANG == "") {
                       LANG = 'es'
@@ -63835,7 +63836,7 @@ var bgOnly = false;
                     }
                     localStorage.setItem('lang', LANG)
                   },
-                  y: s - 300,
+                  y: s - 200,
                 }),
                 Fo({
                   id: "BackButton",
@@ -64017,7 +64018,7 @@ var bgOnly = false;
               if ("loading" === c)
                 return [
                   ...u,
-                  n({ text: "LOADING...", color: ve, font: { size: 15 } }),
+                  n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } }),
                 ];
               const m = (e) => {
                 i((e) => Object.assign(Object.assign({}, e), { isBuying: !0 })),
@@ -64235,7 +64236,7 @@ var bgOnly = false;
                 y = a.size.width + 2 * a.size.widthMargin;
               if (t.loading)
                 return [
-                  n({ text: localize("LOADING..."), font: { size: 15 }, color: ve }),
+                  n({ text: localize(`${localize("LOADING")}...`), font: { size: 15 }, color: ve }),
                 ];
               const E = t.frame / eE,
                 b = E > 0.9 ? 10 * (E - 0.9) : E < 0.2 ? 5 * (0.2 - E) : 0;
@@ -64442,7 +64443,7 @@ var bgOnly = false;
                   hy({
                     id: "LevelEditorMenu",
                     editLevel: (t) => {
-                      if (String(t.level.name).contains("?l=")) {
+                      if (t.level.name.includes("?l=")) {
                         var songData = JSON.parse(t.level.name.split("?l=")[1]);
                         t.level.song = { ...t.level.song };
                         t.level.song.fileName = songData[0];
@@ -64453,7 +64454,7 @@ var bgOnly = false;
                       p(), e.editLevel(t);
                     },
                     playLevel: (t) => {
-                      if (String(t.name).contains("?l=")) {
+                      if (t.name.includes("?l=")) {
                         var songData = JSON.parse(t.name.split("?l=")[1]);
                         t.song = { ...t.song };
                         t.song.fileName = songData[0];
@@ -66436,7 +66437,7 @@ var bgOnly = false;
                         e.text =
                           "connecting" === t.connection
                             ? "CONNECTING TO GAME..."
-                            : "LOADING...";
+                            : `${localize("LOADING")}...`;
                       }),
                     ],
                     () => {
@@ -67108,7 +67109,7 @@ var bgOnly = false;
                                   case "connecting":
                                     return [
                                       c({
-                                        text: "CONNECTING...",
+                                        text: `${localize("CONNECTING")}...`,
                                         color: ve,
                                         strokeColor: Ye,
                                         strokeThickness: 6,
@@ -68092,7 +68093,7 @@ var bgOnly = false;
               R(
                 () => !t.level || "then" in t.spineContext,
                 () => [
-                  c({ text: "LOADING...", font: { size: 15 }, color: ve }),
+                  c({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve }),
                 ],
                 () => [
                   Se.Single({
@@ -68166,7 +68167,7 @@ var bgOnly = false;
               R(
                 () => "then" in t.spineContext,
                 () => [
-                  c({ text: "LOADING...", font: { size: 15 }, color: ve }),
+                  c({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve }),
                 ],
                 () => [
                   Se.Single({
@@ -68584,7 +68585,7 @@ var bgOnly = false;
                       context: e.globalContextVal,
                       sprites: [
                         n({
-                          text: "CONNECTING ONLINE...",
+                          text: `${localize("CONNECTING ONLINE")}...`,
                           font: { size: 15 },
                           color: ve,
                         }),
@@ -68622,8 +68623,9 @@ var bgOnly = false;
                                     },
                                   })
                                 )
-                  : n({ text: "LOADING...", font: { size: 15 }, color: ve }),
-              ];
+                  : n({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve }),
+             
+                ];
             if ("termsConditions" === e.view.type)
               return [
                 Se.Sprite({
@@ -69038,7 +69040,7 @@ var bgOnly = false;
               ];
             }
             const r = [
-              n({ text: "LOADING...", font: { size: 15 }, color: ve }),
+              n({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve }),
             ];
             return [
               Gf({

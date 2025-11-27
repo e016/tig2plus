@@ -182,4 +182,5 @@ Translator["es"] = {
 "Player Stack": "Pilas",
 "Skateboard": "monopatín",
 "Punch": "Golpear",
+"Custom song": "Canción propia",
 }
