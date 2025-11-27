@@ -183,4 +183,6 @@ Translator["es"] = {
 "Skateboard": "monopatín",
 "Punch": "Golpear",
 "Custom song": "Canción propia",
+"EXPORT": "EXPORTAR",
+"PLAY SOUND": "TOCA SONIDO",
 }

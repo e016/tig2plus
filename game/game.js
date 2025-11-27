@@ -16102,7 +16102,7 @@ var bgOnly = false;
                   null !== (s = null == e ? void 0 : e.skipMissiles) &&
                   void 0 !== s &&
                   s,
-                enemyDir: (console.warn(e == undefined ? -1 : e?.enemyDir), e == undefined ? -1 : e?.enemyDir),
+                enemyDir: (e == undefined ? -1 : e?.enemyDir),
                 snapSize:
                   "walkerHelmet" === (null == e ? void 0 : e.kind)
                     ? { offsetY: 7.5 }
@@ -51457,7 +51457,6 @@ var bgOnly = false;
                         },
                         (t) => {
                           t.color = e?.bgColor || a;
-                          console.warn(t.color, e?.bgColor)
                         }
                       ),
                         m({
