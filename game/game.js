@@ -19413,7 +19413,7 @@ var bgOnly = false;
               O(
                 () => e.theme,
                 () => {
-                  const t = "world3" === e.theme ? 41 / 30 : 1;
+                  const t = 1;
                   return [
                     E({
                       fileName: `images/themes/${e.theme}/steel.png`,
@@ -30847,7 +30847,7 @@ var bgOnly = false;
                                 (t.x = e.enemy.x),
                                   (t.y = e.enemy.y),
                                   (t.frame = e.frame || 7),
-                                  (t.scaleX = e.enemyDir || -1);
+                                  (t.scaleX = e.enemy.enemyDir || -1);
                               }
                             ),
                           ];

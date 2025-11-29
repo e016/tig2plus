@@ -25,5 +25,10 @@ var JOKES = [
 "Always Free!",
 "Always Free!",
 "Fluked Gamers",
+"Puedes cambiar el idioma en el boton abajo.",
+"Puedes cambiar el idioma en el boton abajo.",
+"Puedes cambiar el idioma en el boton abajo.",
+"Puedes cambiar el idioma en el boton abajo.",
+"Puedes cambiar el idioma en el boton abajo.",
 ],
 currentJoke = JOKES[Math.floor(Math.random() * (JOKES.length))]
