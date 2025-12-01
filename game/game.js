@@ -16730,23 +16730,23 @@ var bgOnly = false;
           },
           fe = [],
           ye = [];
-        function Ee(e, t, a) {
-          if ("switchPlatform" === e.type && 0 !== e.rotation) {
-            const i = e.height / 2;
-            if (-90 === e.rotation) return e.y + e.width - i;
-            if (180 === e.rotation) return e.y + 7.5;
-            if (90 === e.rotation) return e.y - i + 15;
-            const n = -B.toRad(e.rotation),
-              s = e.x - e.width / 2 + i;
-            const o = B.clamp2(0, e.width - i, Math.hypot(t - s, a - e.y));
+        function Ee(obj, t, a) {
+          if ("switchPlatform" === obj.type && 0 !== obj.rotation) {
+            const i = obj.height / 2;
+            if (-90 === obj.rotation) return obj.y + obj.width - i;
+            if (180 === obj.rotation) return obj.y + 7.5;
+            if (90 === obj.rotation) return obj.y - i + 15;
+            const n = -B.toRad(obj.rotation),
+              s = obj.x - obj.width / 2 + i;
+            const o = B.clamp2(0, obj.width - i, Math.hypot(t - s, a - obj.y));
             return (
-              e.y +
+              obj.y +
               o * Math.sin(n) +
-              (e.height / (e.rotation < -90 || e.rotation > 0 ? -2 : 2)) *
+              (obj.height / (obj.rotation < -90 || obj.rotation > 0 ? -2 : 2)) *
                 Math.cos(n)
             );
           }
-          return e.y + e.height / 2;
+          return obj.y + obj.height / 2;
         }
         const be = {
             pointInBox: he,
@@ -16781,7 +16781,8 @@ var bgOnly = false;
             },
             hitLandableObject: (...params) => {
               var [e, t, a, i, n, s, o, r, l, c] = params;
-              if (r.x > e + r.width + ue || r.x < e - r.width - ue) return null;
+              const checkDist = "switchPlatform" === r.type ? 120 : 30
+              if (r.x > e + r.width + checkDist || r.x < e - r.width - checkDist) return null;
               const d =
                   "switchPlatform" === r.type
                     ? (
@@ -17219,23 +17220,23 @@ var bgOnly = false;
           initialPosition: Qe,
           setScaleInc: (e, t, a) => {
             var {
-              playerRot: i,
-              playerGradY: n,
-              playerScaleX: s,
-              playerScaleY: o,
-              playerScale: pS,
+              playerRot: rot,
+              playerGradY: gy,
+              playerScaleX: sx,
+              playerScaleY: sy,
+              playerScale: ps,
             } = e;
-            globalPlayerScale = pS;
-            s = s / pS;
-            o = o / pS;
-            const r = (i > 45 && i < 135) || (i > 225 && i < 315),
-              l = n < 0,
+            globalPlayerScale = ps;
+            sx = sx / ps;
+            sy = sy / ps;
+            const r = (rot > 45 && rot < 135) || (rot > 225 && rot < 315),
+              l = gy < 0,
               c = (!r && l) || (r && !l),
               d = !c,
-              u = B.numberMap2(a, 0, 0.7, 1, Math.abs(n)),
+              u = B.numberMap2(a, 0, 0.7, 1, Math.abs(gy)),
               h = Ze(u),
-              p = ((c ? h : 1) - s) / 6,
-              g = ((d ? h : 1) - o) / 6;
+              p = ((c ? h : 1) - sx) / 6,
+              g = ((d ? h : 1) - sy) / 6;
             (e.playerScaleX += p * t), (e.playerScaleY += g * t);
           },
           landTimerLimit: 20,
@@ -17781,12 +17782,12 @@ var bgOnly = false;
           }*/
           };
         const da = 660;
-        function ua(e, t, a, i) {
+        function ua(x, y, a, i) {
           return (
-            e < a + da &&
-            e > a - da &&
-            t < i + 450 + $.platformMove &&
-            t > i - 450 - $.platformMove
+            x < a + da &&
+            x > a - da &&
+            y < i + 450 + $.platformMove &&
+            y > i - 450 - $.platformMove
           );
         }
         function ha(e, t) {
@@ -64247,7 +64248,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "β v1.0.0",
+                    text: "v1.0.1",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
