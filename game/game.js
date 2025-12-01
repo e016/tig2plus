@@ -16102,7 +16102,7 @@ var bgOnly = false;
                   null !== (s = null == e ? void 0 : e.skipMissiles) &&
                   void 0 !== s &&
                   s,
-                enemyDir: (e == undefined ? -1 : e?.enemyDir),
+                enemyDir: e == undefined ? -1 : e?.enemyDir,
                 snapSize:
                   "walkerHelmet" === (null == e ? void 0 : e.kind)
                     ? { offsetY: 7.5 }
@@ -16781,8 +16781,12 @@ var bgOnly = false;
             },
             hitLandableObject: (...params) => {
               var [e, t, a, i, n, s, o, r, l, c] = params;
-              const checkDist = "switchPlatform" === r.type ? 120 : 30
-              if (r.x > e + r.width + checkDist || r.x < e - r.width - checkDist) return null;
+              const checkDist = "switchPlatform" === r.type ? 120 : 30;
+              if (
+                r.x > e + r.width + checkDist ||
+                r.x < e - r.width - checkDist
+              )
+                return null;
               const d =
                   "switchPlatform" === r.type
                     ? (
@@ -16791,13 +16795,7 @@ var bgOnly = false;
                       )(de.getObjectPolygon(r, c, 0))
                     : he(r),
                 u = Ee(r, e, t);
-              if (
-                a <= 0 &&
-                t - a >=
-                  u +
-                    (7.5) *
-                      globalPlayerScale
-              ) {
+              if (a <= 0 && t - a >= u + 7.5 * globalPlayerScale) {
                 const k = pe(e, t, i, n, s),
                   l = k[Math.floor(k.length / 2)],
                   c = (function (e, t, a) {
@@ -17140,7 +17138,7 @@ var bgOnly = false;
                       font: { size: 20 * l, style: "italic" },
                       text: e,
                       rotation: -8,
-                      color: (i ? Ae : Be),
+                      color: i ? Ae : Be,
                       y: d - (i ? 3 : 0),
                       strokeColor: Te,
                       strokeThickness: 2,
@@ -17464,7 +17462,12 @@ var bgOnly = false;
           },
           zt = {
             default: dt,
-            world1: { name: "First World", fileName: "world1", size: 31, trail: ct() },
+            world1: {
+              name: "First World",
+              fileName: "world1",
+              size: 31,
+              trail: ct(),
+            },
             pixel: ut,
             glow: ht,
             world4: pt,
@@ -17763,23 +17766,6 @@ var bgOnly = false;
             world4Boss: ia,
             world4Red: na,
 
-            /*virtual : {
-            id: "virtual",
-            name: "Virtual",
-            colour: "#810086",
-            background: "virtual",
-            player: Wt.skins.layla,
-            objects: {
-              block: "world3",
-              spike: "world3",
-              platform: "world1",
-              dirChange: "world1",
-              flag: "world1",
-              saw: "world1",
-              bottom: "world3",
-            },
-            isBonusTheme: !1,
-          }*/
           };
         const da = 660;
         function ua(x, y, a, i) {
@@ -32414,7 +32400,7 @@ var bgOnly = false;
                     sprites: (t) => [
                       n({
                         font: { size: r },
-                        text: (localize(e)), // screw it
+                        text: localize(e), // screw it
                         color: o ? ze : c ? Ae : h || (i ? Ue : Be),
                         strokeColor: p,
                         strokeThickness: g,
@@ -33182,7 +33168,7 @@ var bgOnly = false;
                 s = $.newSpike(),
                 o = $.newMiniSpike(),
                 r = $.newPlatform(),
-                l = $.newDirectionChange({fixSync: true}),
+                l = $.newDirectionChange({ fixSync: true }),
                 c = $.newSpeedChange(),
                 d = $.newFlag(),
                 u = $.newPowerup({
@@ -35586,64 +35572,68 @@ var bgOnly = false;
                           name: "Up",
                           selected: 0 === t.direction,
                           onPress: () => {
-                            i.map((j)=>{e({
-                              type: "setProperty",
-                              array: "switchPlatforms",
-                              index: j,
-                              set: (e) =>
-                                Object.assign(Object.assign({}, e), {
-                                  direction: 0,
-                                }),
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "switchPlatforms",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    direction: 0,
+                                  }),
+                              });
                             });
-                          })
                           },
                         },
                         {
                           name: "Left",
                           selected: 270 === t.direction,
                           onPress: () => {
-                            i.map((j)=>{e({
-                              type: "setProperty",
-                              array: "switchPlatforms",
-                              index: j,
-                              set: (e) =>
-                                Object.assign(Object.assign({}, e), {
-                                  direction: 270,
-                                }),
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "switchPlatforms",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    direction: 270,
+                                  }),
+                              });
                             });
-                          })
                           },
                         },
                         {
                           name: "Down",
                           selected: 180 === t.direction,
                           onPress: () => {
-                            i.map((j)=>{e({
-                              type: "setProperty",
-                              array: "switchPlatforms",
-                              index: j,
-                              set: (e) =>
-                                Object.assign(Object.assign({}, e), {
-                                  direction: 180,
-                                }),
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "switchPlatforms",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    direction: 180,
+                                  }),
+                              });
                             });
-                          })
                           },
                         },
                         {
                           name: "Right",
                           selected: 90 === t.direction,
                           onPress: () => {
-                            i.map((j)=>{e({
-                              type: "setProperty",
-                              array: "switchPlatforms",
-                              index: j,
-                              set: (e) =>
-                                Object.assign(Object.assign({}, e), {
-                                  direction: 90,
-                                }),
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "switchPlatforms",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    direction: 90,
+                                  }),
+                              });
                             });
-                          })
                           },
                         },
                       ],
@@ -36327,7 +36317,10 @@ var bgOnly = false;
                 toolsMenuView: R,
               } = t;
               const O = a.size.width + 2 * a.size.widthMargin,
-                C = { x: (pointer.x - d.x) / d.scale, y: (pointer.y - d.y) / d.scale };
+                C = {
+                  x: (pointer.x - d.x) / d.scale,
+                  y: (pointer.y - d.y) / d.scale,
+                };
               r.keysJustPressed["="] &&
                 (r.keysDown.Control || r.keysDown.Meta) &&
                 u({ viewOffset: zoomIn(d) }),
@@ -36455,7 +36448,7 @@ var bgOnly = false;
                             }));
                         else {
                           var prevObjs = slctedObjs;
-                          (slctedObjs = []);
+                          slctedObjs = [];
                           for (const e in p) {
                             if ("properties" === e) continue;
                             const t = e,
@@ -36467,18 +36460,28 @@ var bgOnly = false;
                             if (-1 !== a) {
                               const e = p[t][a];
                               var want = {
-                                  array: t,
-                                  index: a,
-                                  draggingX: e.x,
-                                  draggingY: e.y,
-                                  startDraggingX: e.x,
-                                  startDraggingY: e.y,
-                                };
-                              (r.keysDown.Shift ? (
-                                (slctedObjs = prevObjs), 
-                                (!(slctedObjs.some((obj)=>(JSON.stringify(obj) === JSON.stringify(want)))) 
-                                ? slctedObjs.push(want) : slctedObjs.splice(slctedObjs.map(x=>JSON.stringify(x)).indexOf(JSON.stringify(want)), 1))) : 
-                                (slctedObjs = [want])),
+                                array: t,
+                                index: a,
+                                draggingX: e.x,
+                                draggingY: e.y,
+                                startDraggingX: e.x,
+                                startDraggingY: e.y,
+                              };
+                              r.keysDown.Shift
+                                ? ((slctedObjs = prevObjs),
+                                  !slctedObjs.some(
+                                    (obj) =>
+                                      JSON.stringify(obj) ===
+                                      JSON.stringify(want)
+                                  )
+                                    ? slctedObjs.push(want)
+                                    : slctedObjs.splice(
+                                        slctedObjs
+                                          .map((x) => JSON.stringify(x))
+                                          .indexOf(JSON.stringify(want)),
+                                        1
+                                      ))
+                                : (slctedObjs = [want]),
                                 (m = !1);
                             }
                           }
@@ -36487,7 +36490,11 @@ var bgOnly = false;
                               ? "pointer" !== t.selectedTool.type ||
                                 r.keysDown.Shift
                                 ? { type: "dragSelect", x: C.x, y: C.y }
-                                : { type: "view", x: pointer.x - d.x, y: pointer.y - d.y }
+                                : {
+                                    type: "view",
+                                    x: pointer.x - d.x,
+                                    y: pointer.y - d.y,
+                                  }
                               : { type: "dragObject", x: C.x, y: C.y };
                         }
                         n((e) =>
@@ -36582,7 +36589,10 @@ var bgOnly = false;
                     const e = slctedObjs.map((e) =>
                       $.updateXY(p[e.array][e.index], e.draggingX, e.draggingY)
                     );
-                    v = Da.canPlaceLevelObjects(Ca.removeObjects(p, slctedObjs), e);
+                    v = Da.canPlaceLevelObjects(
+                      Ca.removeObjects(p, slctedObjs),
+                      e
+                    );
                   }
                 } else if (
                   (a.timer.start(() => {
@@ -36687,17 +36697,29 @@ var bgOnly = false;
                   setSettings: u,
                   send: h,
                 } = e,
-                { selectedObjects: selectedObjects, canMoveSelectedObjects: g } = t;
+                {
+                  selectedObjects: selectedObjects,
+                  canMoveSelectedObjects: g,
+                } = t;
               let m = e.level.layout,
                 { inViewLayout: f, inViewLayoutAtTime: y } = e;
               const E = m.properties.theme,
-                b = selectedObjects.length > 0 ? m[selectedObjects[0].array][selectedObjects[0].index] : null; //1 === p.length ? m[p[0].array][p[0].index] : null;
+                b =
+                  selectedObjects.length > 0
+                    ? m[selectedObjects[0].array][selectedObjects[0].index]
+                    : null; //1 === p.length ? m[p[0].array][p[0].index] : null;
               var sameType = true;
               if (selectedObjects.length > 1) {
                 for (var $o in selectedObjects) {
-                  if (selectedObjects[$o].array == selectedObjects[0].array && selectedObjects[0].array == "blocks") {
+                  if (
+                    selectedObjects[$o].array == selectedObjects[0].array &&
+                    selectedObjects[0].array == "blocks"
+                  ) {
                     if (
-                      "init" in m[selectedObjects[$o].array][selectedObjects[$o].index] &&
+                      "init" in
+                        m[selectedObjects[$o].array][
+                          selectedObjects[$o].index
+                        ] &&
                       !("init" in b)
                     ) {
                       sameType = false;
@@ -37491,7 +37513,7 @@ var bgOnly = false;
               layoutState: xa.clone(e.layoutState),
               playerScale: e.playerScale,
               bgColor: e.bgColor,
-              flash: e.flash
+              flash: e.flash,
             };
           },
           al = v({
@@ -38136,8 +38158,7 @@ var bgOnly = false;
                 (W.directionChanges[e].wasHit
                   ? (U.crashed = !0)
                   : ((U.playerDir = "left" === t.direction ? -1 : 1),
-                  
-                    (t.fixSync ? (U.playerX += a) : void 0),
+                    t.fixSync ? (U.playerX += a) : void 0,
                     (U.playerX += a),
                     (ttt = t),
                     (ee = e),
@@ -38278,7 +38299,7 @@ var bgOnly = false;
                   pink: "#ff00ff",
                   black: "#000000",
                   white: "#ffFFff",
-                  flash: "flash"
+                  flash: "flash",
                 };
               xa.updateLayoutStateField(
                 "switchButtons",
@@ -38290,7 +38311,9 @@ var bgOnly = false;
                 K
               ),
                 "color" === e.affects
-                  ? (e.color == "flash" ? (U.flash = 0.3) : (U.bgColor = colors[e.color]))
+                  ? e.color == "flash"
+                    ? (U.flash = 0.3)
+                    : (U.bgColor = colors[e.color])
                   : "movement" === e.affects
                   ? (U.switchButtons.on = !U.switchButtons.on)
                   : "size" === e.affects
@@ -38301,7 +38324,7 @@ var bgOnly = false;
                 null == v || v.hitSwitch(),
                 (U.justHitObject = { array: "switchButtons", index: ie });
             }
-                    (U.flash > 0 ? (U.flash -= 0.01) : (U.flash = 0));
+            U.flash > 0 ? (U.flash -= 0.01) : (U.flash = 0);
             for (let e = 0; e < W.switchButtons.length; e++) {
               const t = W.switchButtons[e];
               t.isPressedCounter > 0 &&
@@ -38374,18 +38397,18 @@ var bgOnly = false;
             }
             const oe = nl(
               z.portals, //e
-              _.layout.portals,//t
-              U.playerX,//a
-              U.playerY,//i
-              U.playerDir,//n
-              U.playerGradY,//s
-              j,//o
-              V,//r
+              _.layout.portals, //t
+              U.playerX, //a
+              U.playerY, //i
+              U.playerDir, //n
+              U.playerGradY, //s
+              j, //o
+              V, //r
               (null === (h = U.touchingPortals) || void 0 === h
                 ? void 0
                 : h[0]) || null, //l
-              Z,//c
-              k//d
+              Z, //c
+              k //d
             );
             (U.touchingPortals = oe.touchingPortals || null),
               (U.crashed = oe.crashed || U.crashed),
@@ -39041,7 +39064,7 @@ var bgOnly = false;
                 bpm: 110,
                 isBonusSong: !1,
               },
-              
+
               blythe: {
                 name: "Blythe",
                 author: "Aika (feat. TOFIE)",
@@ -39070,7 +39093,7 @@ var bgOnly = false;
                 bpm: 130,
                 isBonusSong: !1,
               },
-              
+
               polymorph: {
                 name: "Polymorph",
                 author: "The Brig",
@@ -39092,7 +39115,7 @@ var bgOnly = false;
                 bpm: 153,
                 isBonusSong: !1,
               },
-              
+
               skyFracture: {
                 name: "Sky Fracture",
                 author: "Getsix",
@@ -40521,7 +40544,7 @@ var bgOnly = false;
               levelName: "Solar Abyss",
               levelFileName: "solar-abyss",
               song: hl.songs.solarAbyss,
-              
+
               unlockedByIndex: 2,
               x: 150,
               y: 120,
@@ -40536,7 +40559,7 @@ var bgOnly = false;
               levelName: "Indestructable",
               levelFileName: "indestructable",
               song: hl.songs.indestructable,
-              unlockedByIndex: null,//2,
+              unlockedByIndex: null, //2,
               x: 250,
               y: 20,
               pathToLevel: [
@@ -40616,7 +40639,7 @@ var bgOnly = false;
               maxFrames: 7477,
               difficulty: 5,
             },
-            
+
             {
               levelName: "Critical Hit",
               levelFileName: "critical-hit",
@@ -41019,7 +41042,7 @@ var bgOnly = false;
             return [
               ...Object.values(hl.songs),
               {
-                name: `${("Custom song")}...`,
+                name: `${"Custom song"}...`,
                 author: "",
                 fileName: "",
                 bpm: "120",
@@ -42307,7 +42330,9 @@ var bgOnly = false;
                     .map((e) => e.context.map((e) => e.key).join(","))
                     .join(" --- ")
                 ),
-                console.error(e) /*,
+                console.error(`Couldn't decode JSON ${
+                    void 0 === e ? String(e) : JSON.stringify(e).slice(0, 10)
+                  }`) /*,
                 new Error(
                   `Couldn't decode JSON ${
                     void 0 === e ? String(e) : JSON.stringify(e).slice(0, 10)
@@ -42522,7 +42547,6 @@ var bgOnly = false;
             e[(e.PirateManners = 35)] = "PirateManners";
             e[(e.EightBitShuffle = 36)] = "EightBitShuffle";
             e[(e.FinalTheory = 37)] = "FinalTheory";
-
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -42699,29 +42723,22 @@ var bgOnly = false;
                     Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum2, nd.enum2]),
                   ])
-                  /*Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2])*/
                 ),
                 Oc(
                   Bc([Gc([fc, fc, nd.enum6, nd.enum2]), Gc([fc, fc, nd.enum6])])
                 ),
                 Oc(
                   Bc([
-                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2]),
                     Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum3, nd.enum2]),
                     Gc([fc, fc, nd.enum3, nd.enum2]),
                   ])
                 ),
                 Oc(
                   Bc([Gc([fc, fc, nd.enum4, nd.enum9]), Gc([fc, fc, nd.enum4])])
                 ),
-                /*Oc(
-                Bc([
-                  Gc([fc, fc, nd.enum4]),
-                  Gc([fc, fc, nd.enum4, nd.enum7])
-                ])
-              ),*/
                 Oc(
                   Bc([
                     Gc([fc, fc, nd.enum2, nd.enum2, nd.enum4]),
@@ -42789,13 +42806,12 @@ var bgOnly = false;
                 ),
                 Oc(
                   Bc([
-                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2]),
                     Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum3, nd.enum2]),
                     Gc([fc, fc, nd.enum3, nd.enum2]),
                   ])
-                  /*Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2])*/
                 ),
                 Oc(
                   Bc([Gc([fc, fc, nd.enum6, nd.enum2]), Gc([fc, fc, nd.enum6])])
@@ -42871,7 +42887,7 @@ var bgOnly = false;
                   ];
                 }),
               (e) => e,
-              (e) => e
+              (e) => e,
             ],
             finalSchema: Oc(Bd),
             uncompress: (e) =>
@@ -42993,24 +43009,24 @@ var bgOnly = false;
                       })
                     ),
                     //******
-                    enemies: g.map(([e, t, 
-                      a, // kind
-                      i, // giant
-                      o, // skipMissiles
-                      n  // enemyDir
-                      ]) =>
-                      {
-                      console.log(n);
-                      
-                      return $.newEnemy({
-                        x: e,
-                        y: t,
-                        kind: Zd[a],
-                        giant: ou[i],
-                        enemyDir: n || -1,
-                        skipMissiles: 1 === o,
-                      })
-                    }
+                    enemies: g.map(
+                      ([
+                        e,
+                        t,
+                        a, // kind
+                        i, // giant
+                        o, // skipMissiles
+                        n, // enemyDir
+                      ]) => {
+                        return $.newEnemy({
+                          x: e,
+                          y: t,
+                          kind: Zd[a],
+                          giant: ou[i],
+                          skipMissiles: 1 === o,
+                          enemyDir: n || -1,
+                        });
+                      }
                     ),
                     switchButtons: m.map(
                       (j) => {
@@ -43136,9 +43152,19 @@ var bgOnly = false;
                     ]),
                     i.directionChanges.map((e) => {
                       var j = e.multiUse
-                        ? e.fixSync ? [e.x, e.y, ru(e.direction, Wd), ru(!e.multiUse, ou), 1] : [e.x, e.y, ru(e.direction, Wd), ru(!e.multiUse, ou)]
-                        : e.fixSync ? [e.x, e.y, ru(e.direction, Wd), 0, 1] : [e.x, e.y, ru(e.direction, Wd)];
-                      
+                        ? e.fixSync
+                          ? [
+                              e.x,
+                              e.y,
+                              ru(e.direction, Wd),
+                              ru(!e.multiUse, ou),
+                              1,
+                            ]
+                          : [e.x, e.y, ru(e.direction, Wd), ru(!e.multiUse, ou)]
+                        : e.fixSync
+                        ? [e.x, e.y, ru(e.direction, Wd), 0, 1]
+                        : [e.x, e.y, ru(e.direction, Wd)];
+
                       return j;
                     }),
                     i.saws.map((e) => [
@@ -43163,16 +43189,17 @@ var bgOnly = false;
                     i.powerups.map((e) => [e.x, e.y, ru(e.item, Qd)]),
                     i.enemies.map((e) =>
                       e.enemyDir > 0
-                        ? ([
-                              e.x,
-                              e.y,
-                              ru(e.kind, Zd),
-                              ru(e.giant, ou),
-                              e.skipMissiles ? 1 : 0,
-                              e.enemyDir > 0 ? 1 : 0,])
-                        : (e.skipMissiles
+                        ? [
+                            e.x,
+                            e.y,
+                            ru(e.kind, Zd),
+                            ru(e.giant, ou),
+                            e.skipMissiles ? 1 : 0,
+                            e.enemyDir > 0 ? 1 : 0,
+                          ]
+                        : e.skipMissiles
                         ? [e.x, e.y, ru(e.kind, Zd), ru(e.giant, ou), 1]
-                        : [e.x, e.y, ru(e.kind, Zd), ru(e.giant, ou)])
+                        : [e.x, e.y, ru(e.kind, Zd), ru(e.giant, ou)]
                     ),
                     i.switchButtons.map((e) =>
                       //console.log(clrs, e.color),
@@ -43294,7 +43321,7 @@ var bgOnly = false;
             [Nd.Soulless2]: hl.songs.soulless2,
             [Nd.PirateManners]: hl.songs.piratemanners,
             [Nd.EightBitShuffle]: hl.songs.eightBitShuffle,
-            [Nd.FinalTheory]: hl.songs.finalTheory
+            [Nd.FinalTheory]: hl.songs.finalTheory,
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -43676,7 +43703,7 @@ var bgOnly = false;
               layoutState: pu,
               playerScale: fc,
               bgColor: mc,
-              flash: fc
+              flash: fc,
             }),
             uncompress: (e) => e,
             compress: (e) =>
@@ -44676,11 +44703,11 @@ var bgOnly = false;
             }),
           });
         function wh(
-        e, // itemId
-        t, // itemVersion
-        a, // name
-        i, // defId
-        n = 1 //usesLeft
+          e, // itemId
+          t, // itemVersion
+          a, // name
+          i, // defId
+          n = 1 //usesLeft
         ) {
           console.info("name:", a);
           if (a.startsWith("editor_")) {
@@ -49436,7 +49463,7 @@ var bgOnly = false;
               }),
             ],
           }),
-          arrowsBGTable = function() {
+          arrowsBGTable = function () {
             return {
               "#FF0000": "#ff1212",
               "#ffea00": "#ffeb12",
@@ -49480,7 +49507,12 @@ var bgOnly = false;
                           null
                         );
                       }
-                      return { x: o, y: r, colour: n > 6 ? Rg[12 - n] : Rg[n], fade: 0.6 };
+                      return {
+                        x: o,
+                        y: r,
+                        colour: n > 6 ? Rg[12 - n] : Rg[n],
+                        fade: 0.6,
+                      };
                     })
                     .filter(nt)
                 ),
@@ -49513,7 +49545,9 @@ var bgOnly = false;
                   height: d.size.fullHeight,
                 },
                 (j) => {
-                  (j.width = d.size.fullWidth), (j.height = d.size.fullHeight), (j.color = arrowsBGTable()[a.bgColor] || "#1254FF");
+                  (j.width = d.size.fullWidth),
+                    (j.height = d.size.fullHeight),
+                    (j.color = arrowsBGTable()[a.bgColor] || "#1254FF");
                 }
               ),
               g({
@@ -49558,13 +49592,13 @@ var bgOnly = false;
           ],
           Rg = [
             //rgba(18, 84, 255, 1)
-            "rgba(0, 0, 0, 0.1)",//"rgba(11, 45, 165, 1)",
-            "rgba(0, 0, 0, 0.09)",//"rgba(11, 45, 165, 1)"
-            "rgba(0, 0, 0, 0.08)",//"rgba(11, 46, 166, 1)"
-            "rgba(0, 0, 0, 0.07)",//"rgba(12, 48, 172, 1)",
-            "rgba(0, 0, 0, 0.06)",//"rgba(14, 50, 184, 1)"
-            "rgba(0, 0, 0, 0.05)",//"rgba(16, 54, 197, 1)"
-            "rgba(0, 0, 0, 0.04)",//"rgba(18, 57, 207, 1)",
+            "rgba(0, 0, 0, 0.1)", //"rgba(11, 45, 165, 1)",
+            "rgba(0, 0, 0, 0.09)", //"rgba(11, 45, 165, 1)"
+            "rgba(0, 0, 0, 0.08)", //"rgba(11, 46, 166, 1)"
+            "rgba(0, 0, 0, 0.07)", //"rgba(12, 48, 172, 1)",
+            "rgba(0, 0, 0, 0.06)", //"rgba(14, 50, 184, 1)"
+            "rgba(0, 0, 0, 0.05)", //"rgba(16, 54, 197, 1)"
+            "rgba(0, 0, 0, 0.04)", //"rgba(18, 57, 207, 1)",
           ];
         function Og(e, t, a) {
           const i = e.createShader(t);
@@ -49732,1139 +49766,1137 @@ var bgOnly = false;
                       }
                     ),
                   ],
-                  ()=>{
+                  () => {
                     //*()
                     var b = (() => {
-                    switch (e.theme.id) {
-                      case "world1":
-                      case "world1Boss":
-                        var bgTable = {
-                          "#FF0000": "#290202",
-                          "#ffea00": "#292802",
-                          "#00FF00": "#01170B",
-                          "#0000ff": "#022829",
-                          "#8000ff": "#190229",
-                          "#ff00ff": "#290224",
-                          "#ffFFff": "#FFFFFF",
-                          "#000000": "#000000",
-                        };
-                        return [
-                          p(
-                            {
-                              color: bgTable[e?.bgColor] || "#050229",
-                              width: t.size.fullWidth,
-                              height: t.size.fullHeight,
-                            },
-                            (j) => {
-                              (j.width = t.size.fullWidth),
-                                (j.height = t.size.fullHeight);
-                              j.color = bgTable[e?.bgColor] || "#050229";
-                            }
-                          ),
-                          rg.Array({
-                            props: (e) => ({
-                              moveX: 0,
-                              moveY: 0,
-                              element: e,
-                              halfDeviceHeight: t.size.fullHeight / 2,
-                              halfDeviceWidth: t.size.fullWidth / 2,
-                            }),
-                            update: (a, i) => {
-                              (a.moveX = e.cameraX * i.speed),
-                                (a.moveY = e.cameraY * i.speed),
-                                (a.halfDeviceHeight = t.size.fullHeight / 2),
-                                (a.halfDeviceWidth = t.size.fullWidth / 2);
-                            },
-                            array: () => a,
-                            key: (e, t) => t,
-                          }),
-                          "world1Boss" === e.theme.id
-                            ? p(
-                                {
-                                  color: "",
-                                  gradient: {
-                                    type: "linearVert",
-                                    colors: ["#810202", "#01170B"],
-                                    height: t.size.fullHeight,
-                                  },
-                                  width: t.size.fullWidth,
-                                  height: t.size.fullHeight,
-                                  opacity: 0.6,
-                                },
-                                (e) => {
-                                  (e.width = t.size.fullWidth),
-                                    (e.height = t.size.fullHeight),
-                                    (e.gradient.height = t.size.fullHeight);
-                                }
-                              )
-                            : p(
-                                {
-                                  color: bgTable[e?.bgColor] || "#050229",
-                                  width: t.size.fullWidth,
-                                  height: t.size.fullHeight,
-                                  opacity:
-                                    bgTable[e?.bgColor] == undefined ? 0 : 0.6,
-                                },
-                                (j) => {
-                                  (j.width = t.size.fullWidth),
-                                    (j.height = t.size.fullHeight),
-                                    (j.color =
-                                      bgTable[e?.bgColor] || "#050229");
-                                  j.opacity =
-                                    bgTable[e?.bgColor] == undefined ? 0 : 0.6;
-                                }
-                              ),
-                        ];
-                      case "red": {
-                        const i = 1920 / 1080,
-                          { bgWidth: n, bgHeight: s } = Mg(
-                            i,
-                            t.size.fullWidth,
-                            t.size.fullHeight
-                          );
-                        return [
-                          y(
-                            {
-                              fileName:
-                                "images/themes/red/background/background.png",
-                              width: n,
-                              height: s,
-                            },
-                            (e) => {
-                              const { bgWidth: a, bgHeight: n } = Mg(
-                                i,
-                                t.size.fullWidth,
-                                t.size.fullHeight
-                              );
-                              (e.width = a), (e.height = n);
-                            }
-                          ),
-                          rg.Array({
-                            props: (e) => ({
-                              moveX: 0,
-                              moveY: 0,
-                              element: e,
-                              halfDeviceHeight: t.size.fullHeight / 2,
-                              halfDeviceWidth: t.size.fullWidth / 2,
-                            }),
-                            update: (a, i) => {
-                              (a.moveX = e.cameraX * i.speed),
-                                (a.moveY = e.cameraY * i.speed),
-                                (a.halfDeviceHeight = t.size.fullHeight / 2),
-                                (a.halfDeviceWidth = t.size.fullWidth / 2);
-                            },
-                            array: () => a,
-                            key: (e, t) => t,
-                          }),
-                        ];
-                      }
-                      case "world2":
-                        return [
-                          p(
-                            {
-                              color: "#5A20BE",
-                              width: t.size.fullWidth,
-                              height: t.size.fullHeight,
-                            },
-                            (e) => {
-                              (e.width = t.size.fullWidth),
-                                (e.height = t.size.fullHeight);
-                            }
-                          ),
-                          p(
-                            {
-                              color: "#7E38B5",
-                              width: t.size.fullWidth,
-                              height: 402,
-                              anchorY: -201,
-                              y: -337.5,
-                            },
-                            (e) => {
-                              e.width = t.size.fullWidth;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/world2/background/BG_01.png",
-                              playerX: 0.15 * e.cameraX,
-                              playerY: 0.15 * e.cameraY,
-                              height: 140,
-                              y: 132.5,
-                            },
-                            (t) => {
-                              (t.playerX = 0.15 * e.cameraX),
-                                (t.playerY = 0.15 * e.cameraY);
-                            }
-                          ),
-                          p(
-                            {
-                              color: "#C05082",
-                              width: t.size.fullWidth,
-                              height: 324,
-                              anchorY: -162,
-                              y: -337.5,
-                            },
-                            (e) => {
-                              e.width = t.size.fullWidth;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/world2/background/BG_02.png",
-                              playerX: 0.2 * e.cameraX,
-                              playerY: 0.2 * e.cameraY,
-                              height: 153,
-                              y: 60,
-                            },
-                            (t) => {
-                              (t.playerX = 0.2 * e.cameraX),
-                                (t.playerY = 0.2 * e.cameraY);
-                            }
-                          ),
-                          p(
-                            {
-                              color: "#7E38B5",
-                              width: t.size.fullWidth,
-                              height: 298,
-                              anchorY: -149,
-                              y: -337.5,
-                            },
-                            (e) => {
-                              e.width = t.size.fullWidth;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/world2/background/BG_03.png",
-                              playerX: 0.25 * e.cameraX,
-                              playerY: 0.25 * e.cameraY,
-                              height: 159,
-                              y: 36,
-                            },
-                            (t) => {
-                              (t.playerX = 0.25 * e.cameraX),
-                                (t.playerY = 0.25 * e.cameraY);
-                            }
-                          ),
-                          p(
-                            {
-                              color: "#5A20BE",
-                              width: t.size.fullWidth,
-                              height: 238,
-                              anchorY: -119,
-                              y: -337.5,
-                            },
-                            (e) => {
-                              e.width = t.size.fullWidth;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/world2/background/BG_04.png",
-                              playerX: 0.3 * e.cameraX,
-                              playerY: 0.3 * e.cameraY,
-                              height: 168,
-                              y: -19,
-                            },
-                            (t) => {
-                              (t.playerX = 0.3 * e.cameraX),
-                                (t.playerY = 0.3 * e.cameraY);
-                            }
-                          ),
-                          p(
-                            {
-                              color: "#3B178A",
-                              width: t.size.fullWidth,
-                              height: 126,
-                              anchorY: -63,
-                              y: -337.5,
-                            },
-                            (e) => {
-                              e.width = t.size.fullWidth;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/world2/background/BG_05.png",
-                              playerX: 0.35 * e.cameraX,
-                              playerY: 0.35 * e.cameraY,
-                              height: 253,
-                              y: -88,
-                            },
-                            (t) => {
-                              (t.playerX = 0.35 * e.cameraX),
-                                (t.playerY = 0.35 * e.cameraY);
-                            }
-                          ),
-                        ];
-                      case "world2Red":
-                        return [
-                          p(
-                            {
-                              color: "#722431",
-                              width: t.size.fullWidth,
-                              height: t.size.fullHeight,
-                            },
-                            (e) => {
-                              (e.width = t.size.fullWidth),
-                                (e.height = t.size.fullHeight);
-                            }
-                          ),
-                          p(
-                            {
-                              color: "#C42B33",
-                              width: t.size.fullWidth,
-                              height: 402,
-                              anchorY: -201,
-                              y: -337.5,
-                            },
-                            (e) => {
-                              e.width = t.size.fullWidth;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName: "images/themes/world2Red/BG_01.png",
-                              playerX: 0.15 * e.cameraX,
-                              playerY: 0.15 * e.cameraY,
-                              height: 140,
-                              y: 132.5,
-                            },
-                            (t) => {
-                              (t.playerX = 0.15 * e.cameraX),
-                                (t.playerY = 0.15 * e.cameraY);
-                            }
-                          ),
-                          p(
-                            {
-                              color: "#F45921",
-                              width: t.size.fullWidth,
-                              height: 324,
-                              anchorY: -162,
-                              y: -337.5,
-                            },
-                            (e) => {
-                              e.width = t.size.fullWidth;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName: "images/themes/world2Red/BG_02.png",
-                              playerX: 0.2 * e.cameraX,
-                              playerY: 0.2 * e.cameraY,
-                              height: 153,
-                              y: 60,
-                            },
-                            (t) => {
-                              (t.playerX = 0.2 * e.cameraX),
-                                (t.playerY = 0.2 * e.cameraY);
-                            }
-                          ),
-                          p(
-                            {
-                              color: "#C42B33",
-                              width: t.size.fullWidth,
-                              height: 298,
-                              anchorY: -149,
-                              y: -337.5,
-                            },
-                            (e) => {
-                              e.width = t.size.fullWidth;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName: "images/themes/world2Red/BG_03.png",
-                              playerX: 0.25 * e.cameraX,
-                              playerY: 0.25 * e.cameraY,
-                              height: 159,
-                              y: 36,
-                            },
-                            (t) => {
-                              (t.playerX = 0.25 * e.cameraX),
-                                (t.playerY = 0.25 * e.cameraY);
-                            }
-                          ),
-                          p(
-                            {
-                              color: "#722431",
-                              width: t.size.fullWidth,
-                              height: 238,
-                              anchorY: -119,
-                              y: -337.5,
-                            },
-                            (e) => {
-                              e.width = t.size.fullWidth;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName: "images/themes/world2Red/BG_04.png",
-                              playerX: 0.3 * e.cameraX,
-                              playerY: 0.3 * e.cameraY,
-                              height: 168,
-                              y: -19,
-                            },
-                            (t) => {
-                              (t.playerX = 0.3 * e.cameraX),
-                                (t.playerY = 0.3 * e.cameraY);
-                            }
-                          ),
-                          p(
-                            {
-                              color: "#3D1D2E",
-                              width: t.size.fullWidth,
-                              height: 126,
-                              anchorY: -63,
-                              y: -337.5,
-                            },
-                            (e) => {
-                              e.width = t.size.fullWidth;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName: "images/themes/world2Red/BG_05.png",
-                              playerX: 0.35 * e.cameraX,
-                              playerY: 0.35 * e.cameraY,
-                              height: 253,
-                              y: -88,
-                            },
-                            (t) => {
-                              (t.playerX = 0.35 * e.cameraX),
-                                (t.playerY = 0.35 * e.cameraY);
-                            }
-                          ),
-                        ];
-                      case "world3":
-                      case "virtual":
-                      case "world3Red":
-                        var bgTable = world3BgTable();
-                        const i = "world3Red" === e.theme.id,
-                          v = false; //"virtual" === e.theme.id,
-                        var n = bgTable[e?.bgColor] || (i ? "#a20e05" : "#40a5de");
-                        return [
-                          Hg.Single({ isRed: i, isVirtual: v, bgColor: n }, (x) => {
-                            x.bgColor = bgTable[e?.bgColor] || (i ? "#a20e05" : "#40a5de");
-                          }),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/world3/background/cloud.png",
-                              playerX: 0.01 * e.cameraX,
-                              playerY: 0.01 * e.cameraY,
-                              height: 356,
-                            },
-                            (t) => {
-                              (t.playerX = 0.01 * e.cameraX),
-                                (t.playerY = 0.01 * e.cameraY);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/world3/background/stars-moving.png",
-                              playerX: 0.02 * e.cameraX,
-                              playerY: 0.02 * e.cameraY,
-                              height: 240,
-                            },
-                            (t) => {
-                              (t.playerX = 0.02 * e.cameraX),
-                                (t.playerY = 0.02 * e.cameraY);
-                            }
-                          ),
-                          qg.Single({ paused: e.paused }, (x) => {
-                            x.paused = e.paused;
-                          }),
-                          Xg.Single({ isRed: i, isVirtual: v, bgColor: n }, (x) => {
-                            x.bgColor = bgTable[e?.bgColor] || (n);
-                            
-                          }),
-                          Ig.Single(
-                            {
-                              color: n,
-                              narrowLines: !0,
-                              opacity: 0.5,
-                              thickness: 4,
-                              playerX: 0.04 * e.cameraX,
-                              offsetY: -100,
-                            },
-                            (t) => {
-                              t.playerX = 0.04 * e.cameraX;
-                              t.color =
-                               bgTable[e?.bgColor] || (n);
-                            }
-                          ),
-                          Ig.Single(
-                            {
-                              color: n,
-                              narrowLines: !0,
-                              opacity: 0.5,
-                              thickness: 4,
-                              playerX: 0.04 * e.cameraX,
-                              offsetY: -100,
-                              scaleY: -1,
-                            },
-                            (t) => {
-                              t.playerX = 0.04 * e.cameraX;
-                              t.color =
-                               bgTable[e?.bgColor] || (n);
-                            }
-                          ),
-                          /*
-                            rg.Array({
-                            props: (e) => ({
-                              moveX: 0,
-                              moveY: 0,
-                              element: e,
-                              halfDeviceHeight: t.size.fullHeight / 2,
-                              halfDeviceWidth: t.size.fullWidth / 2,
-                            }),
-                            update: (a, i) => {
-                              (a.moveX = e.cameraX * i.speed),
-                                (a.moveY = e.cameraY * i.speed),
-                                (a.halfDeviceHeight = t.size.fullHeight / 2),
-                                (a.halfDeviceWidth = t.size.fullWidth / 2);
-                            },
-                            array: () => a,
-                            key: (e, t) => t,
-                          }),
-                          */
-                          rg.Array({
-                            props: (j) => ({
-                              moveX: e.cameraX * Dg,
-                              moveY: e.cameraY * Dg,
-                              element: {
-                                fileName: `images/themes/world3/background/${
-                                  i ? "red" : "pink"
-                                }-triangle.png`,
-                                speed: Dg,
-                                width: 252,
-                                height: 279,
-                                xRangeMin: 300,
-                                xRangeMax: 600,
-                                yMin: t.size.fullHeight / 4 + 170,
-                                yMax: t.size.fullHeight / 2 + 80,
-                                dontMoveY: true,
-                                spinning: true,
-                              },
-                              halfDeviceHeight: t.size.fullHeight / 2,
-                              halfDeviceWidth: t.size.fullWidth / 2,
-                            }),
-                            update: (a) => {
-                              (a.moveX = e.cameraX * Dg),
-                                (a.moveY = e.cameraY * Dg),
-                                (a.halfDeviceHeight = t.size.fullHeight / 2),
-                                (a.halfDeviceWidth = t.size.fullWidth / 2),
-                                (a.element.yMin = t.size.fullHeight / 4 + 170),
-                                (a.element.yMax = t.size.fullHeight / 2 + 80);
-                            },
-                            array: () => a,
-                            key: (e, t) => t,
-                          }),
-                        ];
-                      case "synthwave":
-                        return [
-                          y({
-                            fileName: "images/themes/synthwave/background.png",
-                            width: 950,
-                            height: 383,
-                            anchorY: 191,
-                            y: 337,
-                          }),
-                          dg.Single(
-                            {
-                              fileName: "images/themes/synthwave/mountains.png",
-                              playerX: 0.04 * e.cameraX,
-                              playerY: 0.04 * e.cameraY,
-                              height: 259,
-                              y: 56,
-                            },
-                            (t) => {
-                              (t.playerX = 0.04 * e.cameraX),
-                                (t.playerY = 0.04 * e.cameraY);
-                            }
-                          ),
-                          zg.Single({}),
-                          Ig.Single(
-                            {
-                              color: "#181d4c",
-                              narrowLines: !1,
-                              playerX: 0.04 * e.cameraX,
-                              thickness: 2,
-                              offsetY: -65,
-                            },
-                            (t) => {
-                              t.playerX = 0.04 * e.cameraX;
-                            }
-                          ),
-                        ];
-                      case "world4":
-                        return [
-                          y({
-                            fileName:
-                              "images/themes/world4/background/background.png",
-                            width: 950,
-                            height: 514,
-                            y: 81,
-                          }),
-                          rg.Array({
-                            props: (e) => ({
-                              moveX: 0,
-                              moveY: 0,
-                              element: e,
-                              halfDeviceHeight: t.size.fullHeight / 2,
-                              halfDeviceWidth: t.size.fullWidth / 2,
-                            }),
-                            update: (a, i) => {
-                              (a.moveX = e.cameraX * i.speed),
-                                (a.moveY = e.cameraY * i.speed),
-                                (a.halfDeviceHeight = t.size.fullHeight / 2),
-                                (a.halfDeviceWidth = t.size.fullWidth / 2);
-                            },
-                            array: () => a,
-                            key: (e, t) => t,
-                          }),
-                          y({
-                            fileName:
-                              "images/themes/world4/background/castle.png",
-                            width: 950,
-                            height: 274,
-                            y: -40,
-                          }),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/world4/background/front-mountain2.png",
-                              playerX: 0.04 * e.cameraX,
-                              playerY: 0.04 * e.cameraY,
-                              height: 233,
-                              y: -180,
-                            },
-                            (t) => {
-                              (t.playerX = 0.04 * e.cameraX),
-                                (t.playerY = 0.04 * e.cameraY);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/world4/background/front-mountain1.png",
-                              playerX: 0.1 * e.cameraX,
-                              playerY: 0.1 * e.cameraY,
-                              height: 602,
-                              y: -36,
-                            },
-                            (t) => {
-                              (t.playerX = 0.1 * e.cameraX),
-                                (t.playerY = 0.1 * e.cameraY);
-                            }
-                          ),
-                        ];
-                      case "world4Boss":
-                      case "world4Red": {
-                        const i = "world4Boss" === e.theme.id ? "boss" : "red";
-                        return [
-                          y({
-                            fileName: `images/themes/world4/${i}/background.png`,
-                            width: 950,
-                            height: 541,
-                            y: 67,
-                          }),
-                          rg.Array({
-                            props: (e) => ({
-                              moveX: 0,
-                              moveY: 0,
-                              element: e,
-                              halfDeviceHeight: t.size.fullHeight / 2,
-                              halfDeviceWidth: t.size.fullWidth / 2,
-                            }),
-                            update: (a, i) => {
-                              (a.moveX = e.cameraX * i.speed),
-                                (a.moveY = e.cameraY * i.speed),
-                                (a.halfDeviceHeight = t.size.fullHeight / 2),
-                                (a.halfDeviceWidth = t.size.fullWidth / 2);
-                            },
-                            array: () => a,
-                            key: (e, t) => t,
-                          }),
-                          y({
-                            fileName: `images/themes/world4/${i}/castle.png`,
-                            width: 855,
-                            height: 345,
-                            y: -50,
-                          }),
-                          dg.Single(
-                            {
-                              fileName: `images/themes/world4/${i}/front-mountain2.png`,
-                              playerX: 0.04 * e.cameraX,
-                              playerY: 0.04 * e.cameraY,
-                              height: 206,
-                              y: -190,
-                            },
-                            (t) => {
-                              (t.playerX = 0.04 * e.cameraX),
-                                (t.playerY = 0.04 * e.cameraY);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName: `images/themes/world4/${i}/front-mountain1.png`,
-                              playerX: 0.1 * e.cameraX,
-                              playerY: 0.1 * e.cameraY,
-                              height: 565,
-                              y: -55,
-                            },
-                            (t) => {
-                              (t.playerX = 0.1 * e.cameraX),
-                                (t.playerY = 0.1 * e.cameraY);
-                            }
-                          ),
-                        ];
-                      }
-                      case "skater":
-                        return [
-                          y({
-                            fileName: "images/themes/skater/background/sky.png",
-                            width: 950,
-                            height: 205,
-                            y: 235,
-                          }),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/skater/background/distant-buildings2.png",
-                              playerX: 0.005 * e.cameraX,
-                              playerY: 0.005 * e.cameraY,
-                              height: 111,
-                              y: 169,
-                            },
-                            (t) => {
-                              (t.playerX = 0.005 * e.cameraX),
-                                (t.playerY = 0.005 * e.cameraY);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/skater/background/distant-buildings.png",
-                              playerX: 0.01 * e.cameraX,
-                              playerY: 0.01 * e.cameraY,
-                              height: 138,
-                              y: 144,
-                            },
-                            (t) => {
-                              (t.playerX = 0.01 * e.cameraX),
-                                (t.playerY = 0.01 * e.cameraY);
-                            }
-                          ),
-                          rg.Array({
-                            props: (e) => ({
-                              moveX: 0,
-                              moveY: 0,
-                              element: e,
-                              halfDeviceHeight: t.size.fullHeight / 2,
-                              halfDeviceWidth: t.size.fullWidth / 2,
-                            }),
-                            update: (a, i) => {
-                              (a.moveX = e.cameraX * i.speed),
-                                (a.moveY = e.cameraY * i.speed),
-                                (a.halfDeviceHeight = t.size.fullHeight / 2),
-                                (a.halfDeviceWidth = t.size.fullWidth / 2);
-                            },
-                            array: () => a,
-                            key: (e, t) => t,
-                          }),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/skater/background/hedges.png",
-                              playerX: 0.02 * e.cameraX,
-                              playerY: 0.02 * e.cameraY,
-                              height: 74,
-                              y: 100,
-                            },
-                            (t) => {
-                              (t.playerX = 0.02 * e.cameraX),
-                                (t.playerY = 0.02 * e.cameraY);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/skater/background/sky-buildings.png",
-                              playerX: 0.05 * e.cameraX,
-                              playerY: 0.05 * e.cameraY,
-                              height: 300,
-                              y: 183,
-                            },
-                            (t) => {
-                              (t.playerX = 0.05 * e.cameraX),
-                                (t.playerY = 0.05 * e.cameraY);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/skater/background/ground-buildings.png",
-                              playerX: 0.1 * e.cameraX,
-                              playerY: 0.1 * e.cameraY,
-                              height: 515,
-                              y: -80,
-                            },
-                            (t) => {
-                              (t.playerX = 0.1 * e.cameraX),
-                                (t.playerY = 0.1 * e.cameraY);
-                            }
-                          ),
-                        ];
-                      case "arrows":
-                        return [
-                          vg.Single({ paused: !1, bgColor: e.bgColor }, (t) => {
-                            t.paused = e.paused;
-                            t.bgColor = e.bgColor
-                          }),
-                        ];
-                      case "dreamy":
-                        return [
-                          Cg(
-                            {
-                              id: "ShaderBg",
-                              frame: e.frame,
-                              bgSwitch:
-                                e.switchBlockSpikes == (globalPlayerScale == 1),
-                            },
-                            (t) => {
-                              (t.frame = e.frame),
-                                (t.bgSwitch =
-                                  e.switchBlockSpikes ==
-                                  (globalPlayerScale == 1));
-                            }
-                          ),
-                        ];
-                      case "classic":
-                        return [
-                          p(
-                            {
-                              color: e?.bgColor || "#3a3535",
-                              width: t.size.fullWidth,
-                              height: t.size.fullHeight,
-                            },
-                            (a) => {
-                              var parseHex = (hex) => {
-                                  return [
-                                    parseInt(`${hex[1]}${hex[2]}`, 16),
-                                    parseInt(`${hex[3]}${hex[4]}`, 16),
-                                    parseInt(`${hex[5]}${hex[6]}`, 16),
-                                  ];
-                                },
-                                parseRGB = (r, g, b) => {
-                                  return `#${r.toString(16)}${g.toString(
-                                    16
-                                  )}${b.toString(16)}`;
-                                },
-                                transition = (x, y, proportion) => {
-                                  var fract = proportion / 100,
-                                    idx = -1;
-
-                                  return parseRGB(
-                                    ...parseHex(x).map((a) => {
-                                      idx++;
-                                      return (
-                                        a * fract +
-                                        parseHex(y)[idx] * (fract - 1)
-                                      );
-                                    })
-                                  );
-                                };
-
-                              a.color != e?.bgColor
-                                ? (a.color = e?.bgColor || "#3a3535")
-                                : void 0,
-                                (a.width = t.size.fullWidth),
-                                (a.height = t.size.fullHeight);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/classic/background/fade.png",
-                              playerX: 0,
-                              playerY: 0,
-                              height: t.size.fullHeight,
-                              y: 50,
-                            },
-                            (t) => {
-                              (t.playerX = 0), (t.playerY = 0);
-                            }
-                          ),
-                        ];
-                      case "fighter":
-                        return [
-                          p(
-                            {
-                              color: "#0a0353",
-                              width: t.size.fullWidth,
-                              height: t.size.fullHeight,
-                            },
-                            (e) => {
-                              (e.width = t.size.fullWidth),
-                                (e.height = t.size.fullHeight);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/punch/background/BG_05.png",
-                              playerX: 0.03 * e.cameraX,
-                              playerY: 0.03 * e.cameraY,
-                              height: 140,
-                              y: 158,
-                            },
-                            (t) => {
-                              (t.playerX = 0.03 * e.cameraX),
-                                (t.playerY = 0.03 * e.cameraY);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/punch/background/BG_04.png",
-                              playerX: 0.05 * e.cameraX,
-                              playerY: 0.05 * e.cameraY,
-                              height: 132,
-                              y: 85,
-                            },
-                            (t) => {
-                              (t.playerX = 0.05 * e.cameraX),
-                                (t.playerY = 0.05 * e.cameraY);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/punch/background/BG_03.png",
-                              playerX: 0.06 * e.cameraX,
-                              playerY: 0.06 * e.cameraY,
-                              height: 212,
-                              y: 71,
-                            },
-                            (t) => {
-                              (t.playerX = 0.06 * e.cameraX),
-                                (t.playerY = 0.06 * e.cameraY);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/punch/background/BG_02.png",
-                              playerX: 0.07 * e.cameraX,
-                              playerY: 0.07 * e.cameraY,
-                              height: 167,
-                              y: 26,
-                            },
-                            (t) => {
-                              (t.playerX = 0.07 * e.cameraX),
-                                (t.playerY = 0.07 * e.cameraY);
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName:
-                                "images/themes/punch/background/BG_01.png",
-                              playerX: 0.08 * e.cameraX,
-                              playerY: 0.08 * e.cameraY,
-                              height: 138,
-                              y: -23,
-                            },
-                            (t) => {
-                              (t.playerX = 0.08 * e.cameraX),
-                                (t.playerY = 0.08 * e.cameraY);
-                            }
-                          ),
-                          y({
-                            fileName: "images/themes/punch/background/moon.png",
-                            width: 77,
-                            height: 77,
-                            x: 200,
-                            y: 120,
-                          }),
-                          rg.Array({
-                            props: (e) => (
+                      switch (e.theme.id) {
+                        case "world1":
+                        case "world1Boss":
+                          var bgTable = {
+                            "#FF0000": "#290202",
+                            "#ffea00": "#292802",
+                            "#00FF00": "#01170B",
+                            "#0000ff": "#022829",
+                            "#8000ff": "#190229",
+                            "#ff00ff": "#290224",
+                            "#ffFFff": "#FFFFFF",
+                            "#000000": "#000000",
+                          };
+                          return [
+                            p(
                               {
+                                color: bgTable[e?.bgColor] || "#050229",
+                                width: t.size.fullWidth,
+                                height: t.size.fullHeight,
+                              },
+                              (j) => {
+                                (j.width = t.size.fullWidth),
+                                  (j.height = t.size.fullHeight);
+                                j.color = bgTable[e?.bgColor] || "#050229";
+                              }
+                            ),
+                            rg.Array({
+                              props: (e) => ({
                                 moveX: 0,
                                 moveY: 0,
                                 element: e,
                                 halfDeviceHeight: t.size.fullHeight / 2,
                                 halfDeviceWidth: t.size.fullWidth / 2,
+                              }),
+                              update: (a, i) => {
+                                (a.moveX = e.cameraX * i.speed),
+                                  (a.moveY = e.cameraY * i.speed),
+                                  (a.halfDeviceHeight = t.size.fullHeight / 2),
+                                  (a.halfDeviceWidth = t.size.fullWidth / 2);
+                              },
+                              array: () => a,
+                              key: (e, t) => t,
+                            }),
+                            "world1Boss" === e.theme.id
+                              ? p(
+                                  {
+                                    color: "",
+                                    gradient: {
+                                      type: "linearVert",
+                                      colors: ["#810202", "#01170B"],
+                                      height: t.size.fullHeight,
+                                    },
+                                    width: t.size.fullWidth,
+                                    height: t.size.fullHeight,
+                                    opacity: 0.6,
+                                  },
+                                  (e) => {
+                                    (e.width = t.size.fullWidth),
+                                      (e.height = t.size.fullHeight),
+                                      (e.gradient.height = t.size.fullHeight);
+                                  }
+                                )
+                              : p(
+                                  {
+                                    color: bgTable[e?.bgColor] || "#050229",
+                                    width: t.size.fullWidth,
+                                    height: t.size.fullHeight,
+                                    opacity:
+                                      bgTable[e?.bgColor] == undefined
+                                        ? 0
+                                        : 0.6,
+                                  },
+                                  (j) => {
+                                    (j.width = t.size.fullWidth),
+                                      (j.height = t.size.fullHeight),
+                                      (j.color =
+                                        bgTable[e?.bgColor] || "#050229");
+                                    j.opacity =
+                                      bgTable[e?.bgColor] == undefined
+                                        ? 0
+                                        : 0.6;
+                                  }
+                                ),
+                          ];
+                        case "red": {
+                          const i = 1920 / 1080,
+                            { bgWidth: n, bgHeight: s } = Mg(
+                              i,
+                              t.size.fullWidth,
+                              t.size.fullHeight
+                            );
+                          return [
+                            y(
+                              {
+                                fileName:
+                                  "images/themes/red/background/background.png",
+                                width: n,
+                                height: s,
+                              },
+                              (e) => {
+                                const { bgWidth: a, bgHeight: n } = Mg(
+                                  i,
+                                  t.size.fullWidth,
+                                  t.size.fullHeight
+                                );
+                                (e.width = a), (e.height = n);
                               }
                             ),
-                            update: (a, i) => {
-                              (a.moveX = e.cameraX * i.speed),
-                                (a.moveY = e.cameraY * i.speed),
-                                (a.halfDeviceHeight = t.size.fullHeight / 2),
-                                (a.halfDeviceWidth = t.size.fullWidth / 2);
-                            },
-                            array: () => a,
-                            key: (e, t) => t,
-                          }),
-                          dg.Single(
-                            {
+                            rg.Array({
+                              props: (e) => ({
+                                moveX: 0,
+                                moveY: 0,
+                                element: e,
+                                halfDeviceHeight: t.size.fullHeight / 2,
+                                halfDeviceWidth: t.size.fullWidth / 2,
+                              }),
+                              update: (a, i) => {
+                                (a.moveX = e.cameraX * i.speed),
+                                  (a.moveY = e.cameraY * i.speed),
+                                  (a.halfDeviceHeight = t.size.fullHeight / 2),
+                                  (a.halfDeviceWidth = t.size.fullWidth / 2);
+                              },
+                              array: () => a,
+                              key: (e, t) => t,
+                            }),
+                          ];
+                        }
+                        case "world2":
+                          return [
+                            p(
+                              {
+                                color: "#5A20BE",
+                                width: t.size.fullWidth,
+                                height: t.size.fullHeight,
+                              },
+                              (e) => {
+                                (e.width = t.size.fullWidth),
+                                  (e.height = t.size.fullHeight);
+                              }
+                            ),
+                            p(
+                              {
+                                color: "#7E38B5",
+                                width: t.size.fullWidth,
+                                height: 402,
+                                anchorY: -201,
+                                y: -337.5,
+                              },
+                              (e) => {
+                                e.width = t.size.fullWidth;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/world2/background/BG_01.png",
+                                playerX: 0.15 * e.cameraX,
+                                playerY: 0.15 * e.cameraY,
+                                height: 140,
+                                y: 132.5,
+                              },
+                              (t) => {
+                                (t.playerX = 0.15 * e.cameraX),
+                                  (t.playerY = 0.15 * e.cameraY);
+                              }
+                            ),
+                            p(
+                              {
+                                color: "#C05082",
+                                width: t.size.fullWidth,
+                                height: 324,
+                                anchorY: -162,
+                                y: -337.5,
+                              },
+                              (e) => {
+                                e.width = t.size.fullWidth;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/world2/background/BG_02.png",
+                                playerX: 0.2 * e.cameraX,
+                                playerY: 0.2 * e.cameraY,
+                                height: 153,
+                                y: 60,
+                              },
+                              (t) => {
+                                (t.playerX = 0.2 * e.cameraX),
+                                  (t.playerY = 0.2 * e.cameraY);
+                              }
+                            ),
+                            p(
+                              {
+                                color: "#7E38B5",
+                                width: t.size.fullWidth,
+                                height: 298,
+                                anchorY: -149,
+                                y: -337.5,
+                              },
+                              (e) => {
+                                e.width = t.size.fullWidth;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/world2/background/BG_03.png",
+                                playerX: 0.25 * e.cameraX,
+                                playerY: 0.25 * e.cameraY,
+                                height: 159,
+                                y: 36,
+                              },
+                              (t) => {
+                                (t.playerX = 0.25 * e.cameraX),
+                                  (t.playerY = 0.25 * e.cameraY);
+                              }
+                            ),
+                            p(
+                              {
+                                color: "#5A20BE",
+                                width: t.size.fullWidth,
+                                height: 238,
+                                anchorY: -119,
+                                y: -337.5,
+                              },
+                              (e) => {
+                                e.width = t.size.fullWidth;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/world2/background/BG_04.png",
+                                playerX: 0.3 * e.cameraX,
+                                playerY: 0.3 * e.cameraY,
+                                height: 168,
+                                y: -19,
+                              },
+                              (t) => {
+                                (t.playerX = 0.3 * e.cameraX),
+                                  (t.playerY = 0.3 * e.cameraY);
+                              }
+                            ),
+                            p(
+                              {
+                                color: "#3B178A",
+                                width: t.size.fullWidth,
+                                height: 126,
+                                anchorY: -63,
+                                y: -337.5,
+                              },
+                              (e) => {
+                                e.width = t.size.fullWidth;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/world2/background/BG_05.png",
+                                playerX: 0.35 * e.cameraX,
+                                playerY: 0.35 * e.cameraY,
+                                height: 253,
+                                y: -88,
+                              },
+                              (t) => {
+                                (t.playerX = 0.35 * e.cameraX),
+                                  (t.playerY = 0.35 * e.cameraY);
+                              }
+                            ),
+                          ];
+                        case "world2Red":
+                          return [
+                            p(
+                              {
+                                color: "#722431",
+                                width: t.size.fullWidth,
+                                height: t.size.fullHeight,
+                              },
+                              (e) => {
+                                (e.width = t.size.fullWidth),
+                                  (e.height = t.size.fullHeight);
+                              }
+                            ),
+                            p(
+                              {
+                                color: "#C42B33",
+                                width: t.size.fullWidth,
+                                height: 402,
+                                anchorY: -201,
+                                y: -337.5,
+                              },
+                              (e) => {
+                                e.width = t.size.fullWidth;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName: "images/themes/world2Red/BG_01.png",
+                                playerX: 0.15 * e.cameraX,
+                                playerY: 0.15 * e.cameraY,
+                                height: 140,
+                                y: 132.5,
+                              },
+                              (t) => {
+                                (t.playerX = 0.15 * e.cameraX),
+                                  (t.playerY = 0.15 * e.cameraY);
+                              }
+                            ),
+                            p(
+                              {
+                                color: "#F45921",
+                                width: t.size.fullWidth,
+                                height: 324,
+                                anchorY: -162,
+                                y: -337.5,
+                              },
+                              (e) => {
+                                e.width = t.size.fullWidth;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName: "images/themes/world2Red/BG_02.png",
+                                playerX: 0.2 * e.cameraX,
+                                playerY: 0.2 * e.cameraY,
+                                height: 153,
+                                y: 60,
+                              },
+                              (t) => {
+                                (t.playerX = 0.2 * e.cameraX),
+                                  (t.playerY = 0.2 * e.cameraY);
+                              }
+                            ),
+                            p(
+                              {
+                                color: "#C42B33",
+                                width: t.size.fullWidth,
+                                height: 298,
+                                anchorY: -149,
+                                y: -337.5,
+                              },
+                              (e) => {
+                                e.width = t.size.fullWidth;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName: "images/themes/world2Red/BG_03.png",
+                                playerX: 0.25 * e.cameraX,
+                                playerY: 0.25 * e.cameraY,
+                                height: 159,
+                                y: 36,
+                              },
+                              (t) => {
+                                (t.playerX = 0.25 * e.cameraX),
+                                  (t.playerY = 0.25 * e.cameraY);
+                              }
+                            ),
+                            p(
+                              {
+                                color: "#722431",
+                                width: t.size.fullWidth,
+                                height: 238,
+                                anchorY: -119,
+                                y: -337.5,
+                              },
+                              (e) => {
+                                e.width = t.size.fullWidth;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName: "images/themes/world2Red/BG_04.png",
+                                playerX: 0.3 * e.cameraX,
+                                playerY: 0.3 * e.cameraY,
+                                height: 168,
+                                y: -19,
+                              },
+                              (t) => {
+                                (t.playerX = 0.3 * e.cameraX),
+                                  (t.playerY = 0.3 * e.cameraY);
+                              }
+                            ),
+                            p(
+                              {
+                                color: "#3D1D2E",
+                                width: t.size.fullWidth,
+                                height: 126,
+                                anchorY: -63,
+                                y: -337.5,
+                              },
+                              (e) => {
+                                e.width = t.size.fullWidth;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName: "images/themes/world2Red/BG_05.png",
+                                playerX: 0.35 * e.cameraX,
+                                playerY: 0.35 * e.cameraY,
+                                height: 253,
+                                y: -88,
+                              },
+                              (t) => {
+                                (t.playerX = 0.35 * e.cameraX),
+                                  (t.playerY = 0.35 * e.cameraY);
+                              }
+                            ),
+                          ];
+                        case "world3":
+                        case "virtual":
+                        case "world3Red":
+                          var bgTable = world3BgTable();
+                          const i = "world3Red" === e.theme.id,
+                            v = false; //"virtual" === e.theme.id,
+                          var n =
+                            bgTable[e?.bgColor] || (i ? "#a20e05" : "#40a5de");
+                          return [
+                            Hg.Single(
+                              { isRed: i, isVirtual: v, bgColor: n },
+                              (x) => {
+                                x.bgColor =
+                                  bgTable[e?.bgColor] ||
+                                  (i ? "#a20e05" : "#40a5de");
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/world3/background/cloud.png",
+                                playerX: 0.01 * e.cameraX,
+                                playerY: 0.01 * e.cameraY,
+                                height: 356,
+                              },
+                              (t) => {
+                                (t.playerX = 0.01 * e.cameraX),
+                                  (t.playerY = 0.01 * e.cameraY);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/world3/background/stars-moving.png",
+                                playerX: 0.02 * e.cameraX,
+                                playerY: 0.02 * e.cameraY,
+                                height: 240,
+                              },
+                              (t) => {
+                                (t.playerX = 0.02 * e.cameraX),
+                                  (t.playerY = 0.02 * e.cameraY);
+                              }
+                            ),
+                            qg.Single({ paused: e.paused }, (x) => {
+                              x.paused = e.paused;
+                            }),
+                            Xg.Single(
+                              { isRed: i, isVirtual: v, bgColor: n },
+                              (x) => {
+                                x.bgColor = bgTable[e?.bgColor] || n;
+                              }
+                            ),
+                            Ig.Single(
+                              {
+                                color: n,
+                                narrowLines: !0,
+                                opacity: 0.5,
+                                thickness: 4,
+                                playerX: 0.04 * e.cameraX,
+                                offsetY: -100,
+                              },
+                              (t) => {
+                                t.playerX = 0.04 * e.cameraX;
+                                t.color = bgTable[e?.bgColor] || n;
+                              }
+                            ),
+                            Ig.Single(
+                              {
+                                color: n,
+                                narrowLines: !0,
+                                opacity: 0.5,
+                                thickness: 4,
+                                playerX: 0.04 * e.cameraX,
+                                offsetY: -100,
+                                scaleY: -1,
+                              },
+                              (t) => {
+                                t.playerX = 0.04 * e.cameraX;
+                                t.color = bgTable[e?.bgColor] || n;
+                              }
+                            ),
+                            rg.Array({
+                              props: (j) => ({
+                                moveX: e.cameraX * Dg,
+                                moveY: e.cameraY * Dg,
+                                element: {
+                                  fileName: `images/themes/world3/background/${
+                                    i ? "red" : "pink"
+                                  }-triangle.png`,
+                                  speed: Dg,
+                                  width: 252,
+                                  height: 279,
+                                  xRangeMin: 300,
+                                  xRangeMax: 600,
+                                  yMin: t.size.fullHeight / 4 + 170,
+                                  yMax: t.size.fullHeight / 2 + 80,
+                                  dontMoveY: true,
+                                  spinning: true,
+                                },
+                                halfDeviceHeight: t.size.fullHeight / 2,
+                                halfDeviceWidth: t.size.fullWidth / 2,
+                              }),
+                              update: (a) => {
+                                (a.moveX = e.cameraX * Dg),
+                                  (a.moveY = e.cameraY * Dg),
+                                  (a.halfDeviceHeight = t.size.fullHeight / 2),
+                                  (a.halfDeviceWidth = t.size.fullWidth / 2),
+                                  (a.element.yMin =
+                                    t.size.fullHeight / 4 + 170),
+                                  (a.element.yMax = t.size.fullHeight / 2 + 80);
+                              },
+                              array: () => a,
+                              key: (e, t) => t,
+                            }),
+                          ];
+                        case "synthwave":
+                          return [
+                            y({
                               fileName:
-                                "images/themes/punch/background/water.png",
-                              playerX: 0.03 * e.cameraX,
-                              playerY: 0.03 * e.cameraY,
-                              height: 177,
-                              y: -100,
-                            },
-                            (t) => {
-                              (t.playerX = 0.03 * e.cameraX),
-                                (t.playerY = 0.03 * e.cameraY);
-                            }
-                          ),
-                          y({
-                            fileName:
-                              "images/themes/punch/background/Building_01.png",
-                            width: 213,
-                            height: 178,
-                            x: -200,
-                            y: 20,
-                          }),
-                          dg.Single(
-                            {
+                                "images/themes/synthwave/background.png",
+                              width: 950,
+                              height: 383,
+                              anchorY: 191,
+                              y: 337,
+                            }),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/synthwave/mountains.png",
+                                playerX: 0.04 * e.cameraX,
+                                playerY: 0.04 * e.cameraY,
+                                height: 259,
+                                y: 56,
+                              },
+                              (t) => {
+                                (t.playerX = 0.04 * e.cameraX),
+                                  (t.playerY = 0.04 * e.cameraY);
+                              }
+                            ),
+                            zg.Single({}),
+                            Ig.Single(
+                              {
+                                color: "#181d4c",
+                                narrowLines: !1,
+                                playerX: 0.04 * e.cameraX,
+                                thickness: 2,
+                                offsetY: -65,
+                              },
+                              (t) => {
+                                t.playerX = 0.04 * e.cameraX;
+                              }
+                            ),
+                          ];
+                        case "world4":
+                          return [
+                            y({
                               fileName:
-                                "images/themes/punch/background/ground.png",
-                              playerX: 0.03 * e.cameraX,
-                              playerY: 0.03 * e.cameraY,
-                              height: 370,
-                              y: -165,
-                            },
-                            (t) => {
-                              (t.playerX = 0.03 * e.cameraX),
-                                (t.playerY = 0.03 * e.cameraY);
-                            }
-                          ),
-                        ];
-                      case "speed":
-                        return [
-                          p(
-                            {
-                              color: "#1B222D",
-                              width: t.size.fullWidth,
-                              height: t.size.fullHeight / 2,
-                              y: t.size.fullHeight / 4,
-                            },
-                            (e) => {
-                              (e.width = t.size.fullWidth),
-                                (e.height = t.size.fullHeight / 2),
-                                (e.y = t.size.fullHeight / 4);
-                            }
-                          ),
-                          y({
-                            fileName: "images/themes/speed/moon.png",
-                            width: 217,
-                            height: 162,
-                            y: 100,
-                          }),
-                          Go.Single(
-                            {
-                              targetOpacity: e.speedMultiplier / 5,
-                              sprite: (e) => [
-                                y(
-                                  {
-                                    fileName:
-                                      "images/themes/speed/red_moon.png",
-                                    width: 217,
-                                    height: 162,
-                                    y: 100,
+                                "images/themes/world4/background/background.png",
+                              width: 950,
+                              height: 514,
+                              y: 81,
+                            }),
+                            rg.Array({
+                              props: (e) => ({
+                                moveX: 0,
+                                moveY: 0,
+                                element: e,
+                                halfDeviceHeight: t.size.fullHeight / 2,
+                                halfDeviceWidth: t.size.fullWidth / 2,
+                              }),
+                              update: (a, i) => {
+                                (a.moveX = e.cameraX * i.speed),
+                                  (a.moveY = e.cameraY * i.speed),
+                                  (a.halfDeviceHeight = t.size.fullHeight / 2),
+                                  (a.halfDeviceWidth = t.size.fullWidth / 2);
+                              },
+                              array: () => a,
+                              key: (e, t) => t,
+                            }),
+                            y({
+                              fileName:
+                                "images/themes/world4/background/castle.png",
+                              width: 950,
+                              height: 274,
+                              y: -40,
+                            }),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/world4/background/front-mountain2.png",
+                                playerX: 0.04 * e.cameraX,
+                                playerY: 0.04 * e.cameraY,
+                                height: 233,
+                                y: -180,
+                              },
+                              (t) => {
+                                (t.playerX = 0.04 * e.cameraX),
+                                  (t.playerY = 0.04 * e.cameraY);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/world4/background/front-mountain1.png",
+                                playerX: 0.1 * e.cameraX,
+                                playerY: 0.1 * e.cameraY,
+                                height: 602,
+                                y: -36,
+                              },
+                              (t) => {
+                                (t.playerX = 0.1 * e.cameraX),
+                                  (t.playerY = 0.1 * e.cameraY);
+                              }
+                            ),
+                          ];
+                        case "world4Boss":
+                        case "world4Red": {
+                          const i =
+                            "world4Boss" === e.theme.id ? "boss" : "red";
+                          return [
+                            y({
+                              fileName: `images/themes/world4/${i}/background.png`,
+                              width: 950,
+                              height: 541,
+                              y: 67,
+                            }),
+                            rg.Array({
+                              props: (e) => ({
+                                moveX: 0,
+                                moveY: 0,
+                                element: e,
+                                halfDeviceHeight: t.size.fullHeight / 2,
+                                halfDeviceWidth: t.size.fullWidth / 2,
+                              }),
+                              update: (a, i) => {
+                                (a.moveX = e.cameraX * i.speed),
+                                  (a.moveY = e.cameraY * i.speed),
+                                  (a.halfDeviceHeight = t.size.fullHeight / 2),
+                                  (a.halfDeviceWidth = t.size.fullWidth / 2);
+                              },
+                              array: () => a,
+                              key: (e, t) => t,
+                            }),
+                            y({
+                              fileName: `images/themes/world4/${i}/castle.png`,
+                              width: 855,
+                              height: 345,
+                              y: -50,
+                            }),
+                            dg.Single(
+                              {
+                                fileName: `images/themes/world4/${i}/front-mountain2.png`,
+                                playerX: 0.04 * e.cameraX,
+                                playerY: 0.04 * e.cameraY,
+                                height: 206,
+                                y: -190,
+                              },
+                              (t) => {
+                                (t.playerX = 0.04 * e.cameraX),
+                                  (t.playerY = 0.04 * e.cameraY);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName: `images/themes/world4/${i}/front-mountain1.png`,
+                                playerX: 0.1 * e.cameraX,
+                                playerY: 0.1 * e.cameraY,
+                                height: 565,
+                                y: -55,
+                              },
+                              (t) => {
+                                (t.playerX = 0.1 * e.cameraX),
+                                  (t.playerY = 0.1 * e.cameraY);
+                              }
+                            ),
+                          ];
+                        }
+                        case "skater":
+                          return [
+                            y({
+                              fileName:
+                                "images/themes/skater/background/sky.png",
+                              width: 950,
+                              height: 205,
+                              y: 235,
+                            }),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/skater/background/distant-buildings2.png",
+                                playerX: 0.005 * e.cameraX,
+                                playerY: 0.005 * e.cameraY,
+                                height: 111,
+                                y: 169,
+                              },
+                              (t) => {
+                                (t.playerX = 0.005 * e.cameraX),
+                                  (t.playerY = 0.005 * e.cameraY);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/skater/background/distant-buildings.png",
+                                playerX: 0.01 * e.cameraX,
+                                playerY: 0.01 * e.cameraY,
+                                height: 138,
+                                y: 144,
+                              },
+                              (t) => {
+                                (t.playerX = 0.01 * e.cameraX),
+                                  (t.playerY = 0.01 * e.cameraY);
+                              }
+                            ),
+                            rg.Array({
+                              props: (e) => ({
+                                moveX: 0,
+                                moveY: 0,
+                                element: e,
+                                halfDeviceHeight: t.size.fullHeight / 2,
+                                halfDeviceWidth: t.size.fullWidth / 2,
+                              }),
+                              update: (a, i) => {
+                                (a.moveX = e.cameraX * i.speed),
+                                  (a.moveY = e.cameraY * i.speed),
+                                  (a.halfDeviceHeight = t.size.fullHeight / 2),
+                                  (a.halfDeviceWidth = t.size.fullWidth / 2);
+                              },
+                              array: () => a,
+                              key: (e, t) => t,
+                            }),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/skater/background/hedges.png",
+                                playerX: 0.02 * e.cameraX,
+                                playerY: 0.02 * e.cameraY,
+                                height: 74,
+                                y: 100,
+                              },
+                              (t) => {
+                                (t.playerX = 0.02 * e.cameraX),
+                                  (t.playerY = 0.02 * e.cameraY);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/skater/background/sky-buildings.png",
+                                playerX: 0.05 * e.cameraX,
+                                playerY: 0.05 * e.cameraY,
+                                height: 300,
+                                y: 183,
+                              },
+                              (t) => {
+                                (t.playerX = 0.05 * e.cameraX),
+                                  (t.playerY = 0.05 * e.cameraY);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/skater/background/ground-buildings.png",
+                                playerX: 0.1 * e.cameraX,
+                                playerY: 0.1 * e.cameraY,
+                                height: 515,
+                                y: -80,
+                              },
+                              (t) => {
+                                (t.playerX = 0.1 * e.cameraX),
+                                  (t.playerY = 0.1 * e.cameraY);
+                              }
+                            ),
+                          ];
+                        case "arrows":
+                          return [
+                            vg.Single(
+                              { paused: !1, bgColor: e.bgColor },
+                              (t) => {
+                                t.paused = e.paused;
+                                t.bgColor = e.bgColor;
+                              }
+                            ),
+                          ];
+                        case "dreamy":
+                          return [
+                            Cg(
+                              {
+                                id: "ShaderBg",
+                                frame: e.frame,
+                                bgSwitch:
+                                  e.switchBlockSpikes ==
+                                  (globalPlayerScale == 1),
+                              },
+                              (t) => {
+                                (t.frame = e.frame),
+                                  (t.bgSwitch =
+                                    e.switchBlockSpikes ==
+                                    (globalPlayerScale == 1));
+                              }
+                            ),
+                          ];
+                        case "classic":
+                          return [
+                            p(
+                              {
+                                color: e?.bgColor || "#3a3535",
+                                width: t.size.fullWidth,
+                                height: t.size.fullHeight,
+                              },
+                              (a) => {
+                                var parseHex = (hex) => {
+                                    return [
+                                      parseInt(`${hex[1]}${hex[2]}`, 16),
+                                      parseInt(`${hex[3]}${hex[4]}`, 16),
+                                      parseInt(`${hex[5]}${hex[6]}`, 16),
+                                    ];
                                   },
-                                  (t) => {
-                                    t.opacity = e.ref;
-                                  }
-                                ),
-                              ],
-                            },
-                            (t) => {
-                              t.targetOpacity = e.speedMultiplier / 5;
-                            }
-                          ),
-                          dg.Single(
-                            {
-                              fileName: "images/themes/speed/plan1.png",
-                              playerX: 0.04 * e.cameraX,
-                              playerY: 0.04 * e.cameraY,
-                              height: 380,
-                              y: -147.5,
-                            },
-                            (t) => {
-                              (t.playerX = 0.04 * e.cameraX),
-                                (t.playerY = 0.04 * e.cameraY);
-                            }
-                          ),
-                          Go.Single(
-                            {
-                              targetOpacity: e.speedMultiplier / 10,
-                              sprite: (e) => [
-                                p(
-                                  {
-                                    color: "#9D0808",
-                                    width: t.size.fullWidth,
-                                    height: t.size.fullHeight,
+                                  parseRGB = (r, g, b) => {
+                                    return `#${r.toString(16)}${g.toString(
+                                      16
+                                    )}${b.toString(16)}`;
                                   },
-                                  (a) => {
-                                    (a.opacity = e.ref),
-                                      (a.width = t.size.fullWidth),
-                                      (a.height = t.size.fullHeight);
-                                  }
-                                ),
-                              ],
-                            },
-                            (t) => {
-                              t.targetOpacity = Math.min(
-                                0.5,
-                                e.speedMultiplier / 10
-                              );
-                            }
-                          ),
-                        ];
-                    }
-                  })(); 
-                  //*()
-                  b.push( Go.Single(
-                            {
-                              targetOpacity: e.flash,
-                              sprite: (s) => [
-                                p(
-                                  {
-                                    color: "#FFFFFF",
-                                    width: t.size.fullWidth,
-                                    height: t.size.fullHeight,
-                                  },
-                                  (a) => {
-                                    (a.opacity = e.flash),
-                                      (a.width = t.size.fullWidth),
-                                      (a.height = t.size.fullHeight);
-                                      
-                                      
-                                  }
-                                ),
-                              ],
-                            },
-                            (t) => {
-                              t.targetOpacity = e.flash;
-                              
-                            }
-                          )); 
-                  return b
-                }
+                                  transition = (x, y, proportion) => {
+                                    var fract = proportion / 100,
+                                      idx = -1;
+
+                                    return parseRGB(
+                                      ...parseHex(x).map((a) => {
+                                        idx++;
+                                        return (
+                                          a * fract +
+                                          parseHex(y)[idx] * (fract - 1)
+                                        );
+                                      })
+                                    );
+                                  };
+
+                                a.color != e?.bgColor
+                                  ? (a.color = e?.bgColor || "#3a3535")
+                                  : void 0,
+                                  (a.width = t.size.fullWidth),
+                                  (a.height = t.size.fullHeight);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/classic/background/fade.png",
+                                playerX: 0,
+                                playerY: 0,
+                                height: t.size.fullHeight,
+                                y: 50,
+                              },
+                              (t) => {
+                                (t.playerX = 0), (t.playerY = 0);
+                              }
+                            ),
+                          ];
+                        case "fighter":
+                          return [
+                            p(
+                              {
+                                color: "#0a0353",
+                                width: t.size.fullWidth,
+                                height: t.size.fullHeight,
+                              },
+                              (e) => {
+                                (e.width = t.size.fullWidth),
+                                  (e.height = t.size.fullHeight);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/punch/background/BG_05.png",
+                                playerX: 0.03 * e.cameraX,
+                                playerY: 0.03 * e.cameraY,
+                                height: 140,
+                                y: 158,
+                              },
+                              (t) => {
+                                (t.playerX = 0.03 * e.cameraX),
+                                  (t.playerY = 0.03 * e.cameraY);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/punch/background/BG_04.png",
+                                playerX: 0.05 * e.cameraX,
+                                playerY: 0.05 * e.cameraY,
+                                height: 132,
+                                y: 85,
+                              },
+                              (t) => {
+                                (t.playerX = 0.05 * e.cameraX),
+                                  (t.playerY = 0.05 * e.cameraY);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/punch/background/BG_03.png",
+                                playerX: 0.06 * e.cameraX,
+                                playerY: 0.06 * e.cameraY,
+                                height: 212,
+                                y: 71,
+                              },
+                              (t) => {
+                                (t.playerX = 0.06 * e.cameraX),
+                                  (t.playerY = 0.06 * e.cameraY);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/punch/background/BG_02.png",
+                                playerX: 0.07 * e.cameraX,
+                                playerY: 0.07 * e.cameraY,
+                                height: 167,
+                                y: 26,
+                              },
+                              (t) => {
+                                (t.playerX = 0.07 * e.cameraX),
+                                  (t.playerY = 0.07 * e.cameraY);
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/punch/background/BG_01.png",
+                                playerX: 0.08 * e.cameraX,
+                                playerY: 0.08 * e.cameraY,
+                                height: 138,
+                                y: -23,
+                              },
+                              (t) => {
+                                (t.playerX = 0.08 * e.cameraX),
+                                  (t.playerY = 0.08 * e.cameraY);
+                              }
+                            ),
+                            y({
+                              fileName:
+                                "images/themes/punch/background/moon.png",
+                              width: 77,
+                              height: 77,
+                              x: 200,
+                              y: 120,
+                            }),
+                            rg.Array({
+                              props: (e) => ({
+                                moveX: 0,
+                                moveY: 0,
+                                element: e,
+                                halfDeviceHeight: t.size.fullHeight / 2,
+                                halfDeviceWidth: t.size.fullWidth / 2,
+                              }),
+                              update: (a, i) => {
+                                (a.moveX = e.cameraX * i.speed),
+                                  (a.moveY = e.cameraY * i.speed),
+                                  (a.halfDeviceHeight = t.size.fullHeight / 2),
+                                  (a.halfDeviceWidth = t.size.fullWidth / 2);
+                              },
+                              array: () => a,
+                              key: (e, t) => t,
+                            }),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/punch/background/water.png",
+                                playerX: 0.03 * e.cameraX,
+                                playerY: 0.03 * e.cameraY,
+                                height: 177,
+                                y: -100,
+                              },
+                              (t) => {
+                                (t.playerX = 0.03 * e.cameraX),
+                                  (t.playerY = 0.03 * e.cameraY);
+                              }
+                            ),
+                            y({
+                              fileName:
+                                "images/themes/punch/background/Building_01.png",
+                              width: 213,
+                              height: 178,
+                              x: -200,
+                              y: 20,
+                            }),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/punch/background/ground.png",
+                                playerX: 0.03 * e.cameraX,
+                                playerY: 0.03 * e.cameraY,
+                                height: 370,
+                                y: -165,
+                              },
+                              (t) => {
+                                (t.playerX = 0.03 * e.cameraX),
+                                  (t.playerY = 0.03 * e.cameraY);
+                              }
+                            ),
+                          ];
+                        case "speed":
+                          return [
+                            p(
+                              {
+                                color: "#1B222D",
+                                width: t.size.fullWidth,
+                                height: t.size.fullHeight / 2,
+                                y: t.size.fullHeight / 4,
+                              },
+                              (e) => {
+                                (e.width = t.size.fullWidth),
+                                  (e.height = t.size.fullHeight / 2),
+                                  (e.y = t.size.fullHeight / 4);
+                              }
+                            ),
+                            y({
+                              fileName: "images/themes/speed/moon.png",
+                              width: 217,
+                              height: 162,
+                              y: 100,
+                            }),
+                            Go.Single(
+                              {
+                                targetOpacity: e.speedMultiplier / 5,
+                                sprite: (e) => [
+                                  y(
+                                    {
+                                      fileName:
+                                        "images/themes/speed/red_moon.png",
+                                      width: 217,
+                                      height: 162,
+                                      y: 100,
+                                    },
+                                    (t) => {
+                                      t.opacity = e.ref;
+                                    }
+                                  ),
+                                ],
+                              },
+                              (t) => {
+                                t.targetOpacity = e.speedMultiplier / 5;
+                              }
+                            ),
+                            dg.Single(
+                              {
+                                fileName: "images/themes/speed/plan1.png",
+                                playerX: 0.04 * e.cameraX,
+                                playerY: 0.04 * e.cameraY,
+                                height: 380,
+                                y: -147.5,
+                              },
+                              (t) => {
+                                (t.playerX = 0.04 * e.cameraX),
+                                  (t.playerY = 0.04 * e.cameraY);
+                              }
+                            ),
+                            Go.Single(
+                              {
+                                targetOpacity: e.speedMultiplier / 10,
+                                sprite: (e) => [
+                                  p(
+                                    {
+                                      color: "#9D0808",
+                                      width: t.size.fullWidth,
+                                      height: t.size.fullHeight,
+                                    },
+                                    (a) => {
+                                      (a.opacity = e.ref),
+                                        (a.width = t.size.fullWidth),
+                                        (a.height = t.size.fullHeight);
+                                    }
+                                  ),
+                                ],
+                              },
+                              (t) => {
+                                t.targetOpacity = Math.min(
+                                  0.5,
+                                  e.speedMultiplier / 10
+                                );
+                              }
+                            ),
+                          ];
+                      }
+                    })();
+                    //*()
+                    b.push(
+                      Go.Single(
+                        {
+                          targetOpacity: e.flash,
+                          sprite: (s) => [
+                            p(
+                              {
+                                color: "#FFFFFF",
+                                width: t.size.fullWidth,
+                                height: t.size.fullHeight,
+                              },
+                              (a) => {
+                                (a.opacity = e.flash),
+                                  (a.width = t.size.fullWidth),
+                                  (a.height = t.size.fullHeight);
+                              }
+                            ),
+                          ],
+                        },
+                        (t) => {
+                          t.targetOpacity = e.flash;
+                        }
+                      )
+                    );
+                    return b;
+                  }
                 ),
               ];
-              return  bg
+              return bg;
             },
           }),
           Pg = v({
@@ -51372,7 +51404,10 @@ var bgOnly = false;
                 var newColor = g | (b << 8) | (r << 16);
                 return "#" + newColor.toString(16);
               }
-              var clr = e.bgColor == "#40a5de" || e.bgColor == "#a20e05" ? undefined : e.bgColor;
+              var clr =
+                e.bgColor == "#40a5de" || e.bgColor == "#a20e05"
+                  ? undefined
+                  : e.bgColor;
               function calcColors(clr) {
                 return clr
                   ? [
@@ -51383,7 +51418,7 @@ var bgOnly = false;
                       darker(clr, 4),
                       clr,
                     ]
-                  : (e.isRed
+                  : e.isRed
                   ? [
                       "#840901",
                       "#260402",
@@ -51401,7 +51436,7 @@ var bgOnly = false;
                       "#050522",
                       "#210089",
                       "#7D00EB",
-                    ]);
+                    ];
               }
               const a = {
                 type: "linearVert",
@@ -51419,9 +51454,8 @@ var bgOnly = false;
                   (e) => {
                     (e.width = t.size.fullWidth),
                       (e.height = t.size.fullHeight),
-                      (e.gradient.colors = calcColors(clr)),(
-                        (e.gradient.height = t.size.fullHeight)
-                      );
+                      (e.gradient.colors = calcColors(clr)),
+                      (e.gradient.height = t.size.fullHeight);
                   }
                 ),
                 y({
@@ -51432,12 +51466,9 @@ var bgOnly = false;
               ];
             },
           }),
-          
           Xg = v({
             render({ props: e, device: t }) {
-              var a =
-                  
-                  (e.isRed ? "#a20e05" : "#40a5de"),
+              var a = e.isRed ? "#a20e05" : "#40a5de",
                 i = e.isRed ? 0.7 : 0.5;
               return [
                 ...Array.from({ length: 15 }).flatMap((e, n) => {
@@ -51446,33 +51477,36 @@ var bgOnly = false;
                     O(
                       () => [t.size.fullWidth, e?.bgColor || a],
                       () => [
-                        m({
-                          color: e?.bgColor || a,
-                          opacity: i,
-                          path: [
-                            [-t.size.fullWidth / 2, 0],
-                            [t.size.fullWidth / 2, 0],
-                          ],
-                          y: -s - 100,
-                          thickness: 0.1 + s / 40,
-                        },
-                        (t) => {
-                          t.color = e?.bgColor || a;
-                        }
-                      ),
-                        m({
-                          color: e?.bgColor || a,
-                          opacity: i,
-                          path: [
-                            [-t.size.fullWidth / 2, 0],
-                            [t.size.fullWidth / 2, 0],
-                          ],
-                          y: s + 100,
-                          thickness: 0.1 + s / 40,
-                        },
-                        (t) => {
-                          t.color = e?.bgColor || a;
-                        }),
+                        m(
+                          {
+                            color: e?.bgColor || a,
+                            opacity: i,
+                            path: [
+                              [-t.size.fullWidth / 2, 0],
+                              [t.size.fullWidth / 2, 0],
+                            ],
+                            y: -s - 100,
+                            thickness: 0.1 + s / 40,
+                          },
+                          (t) => {
+                            t.color = e?.bgColor || a;
+                          }
+                        ),
+                        m(
+                          {
+                            color: e?.bgColor || a,
+                            opacity: i,
+                            path: [
+                              [-t.size.fullWidth / 2, 0],
+                              [t.size.fullWidth / 2, 0],
+                            ],
+                            y: s + 100,
+                            thickness: 0.1 + s / 40,
+                          },
+                          (t) => {
+                            t.color = e?.bgColor || a;
+                          }
+                        ),
                       ]
                     ),
                   ];
@@ -52059,7 +52093,7 @@ var bgOnly = false;
               didCrash: !1,
             }),
             loop({ props: e, state: t }) {
-              console.warn(e.frame)
+              console.warn(e.frame);
               if (!e.crashed)
                 return 0 !== t.fade
                   ? ((t.fade = 0), (t.show = !1), void (t.didCrash = !1))
@@ -52144,7 +52178,6 @@ var bgOnly = false;
                     (e.speedMultiplier = t.playerSpeedMultiplier),
                     (e.bgColor = t?.bgColor),
                     (e.flash = t?.flash || 0),
-                    
                     (e.switchBlockSpikes = t.switchBlockSpikes),
                     (e.plain = a(Se).settings.plainBackground),
                     (e.frame = t.frame),
@@ -52209,7 +52242,7 @@ var bgOnly = false;
                   started: t.started,
                   playerScale: t.playerScale,
                   bgColor: t.bgColor,
-                  flash: t?.flash
+                  flash: t?.flash,
                 },
                 (e) => {
                   (e.frame = t.frame),
@@ -52255,8 +52288,7 @@ var bgOnly = false;
                     (e.y = -t.cameraY),
                     (e.hidePlayer = t.hidePlayer),
                     (e.started = t.started);
-                    (e.flash = t.flash),
-                    (e.bgColor = t?.bgColor)
+                  (e.flash = t.flash), (e.bgColor = t?.bgColor);
                 }
               ),
               Pg.Single(
@@ -54601,7 +54633,6 @@ var bgOnly = false;
                       if (!s) return;
                       t.view = { type: "loading" };
                       const { online: o } = i(Se);
-                      console.log(i(Se))
                       o
                         ? bp
                             .useItem(o.backend, s)
@@ -54634,8 +54665,7 @@ var bgOnly = false;
                           (null === (n = e.booster) || void 0 === n
                             ? void 0
                             : n.type),
-                        disable:
-                          true,///null !== e.booster && "autopilot" !== e.booster.type,
+                        disable: true, ///null !== e.booster && "autopilot" !== e.booster.type,
                         numBooster: t.view.boosters.numAutopilots,
                         onUseBooster: () => {
                           d(Pu());
@@ -54654,9 +54684,8 @@ var bgOnly = false;
                           (null === (i = e.booster) || void 0 === i
                             ? void 0
                             : i.type)),
-                          (a.disable =
-                            true/*null !== e.booster &&
-                            "autopilot" !== e.booster.type*/),
+                          (a.disable = true) /*null !== e.booster &&
+                            "autopilot" !== e.booster.type*/,
                           "boosters" === t.view.type &&
                             (a.numBooster = t.view.boosters.numAutopilots);
                       }
@@ -54894,7 +54923,10 @@ var bgOnly = false;
               R(
                 () => null === i(Se).online,
                 () => [
-                  c({ text: localize("CONNECT ONLINE TO BUY BOOSTERS"), color: Ye }),
+                  c({
+                    text: localize("CONNECT ONLINE TO BUY BOOSTERS"),
+                    color: Ye,
+                  }),
                   vm.Single({ y: -50 }),
                 ],
                 () => {
@@ -55448,7 +55480,9 @@ var bgOnly = false;
               ),
               c({
                 font: { size: 15 },
-                text: `${localize('PREVIOUS BEST')}: ${t.toLocaleString()} ${localize('ATTEMPT')}${
+                text: `${localize(
+                  "PREVIOUS BEST"
+                )}: ${t.toLocaleString()} ${localize("ATTEMPT")}${
                   1 === t ? "" : "S"
                 }`,
                 color: ve,
@@ -56078,7 +56112,9 @@ var bgOnly = false;
                       (null === (s = e.world) || void 0 === s
                         ? void 0
                         : s.highScore) || 0,
-                    collectiblesTotal: e.level.layout.collectibles.filter(x=>(x.form == "coin")).length,
+                    collectiblesTotal: e.level.layout.collectibles.filter(
+                      (x) => x.form == "coin"
+                    ).length,
                     touchingPortals: t.mutValues.levelState.touchingPortals,
                     justHitObject: t.mutValues.levelState.justHitObject,
                     bossState: t.mutValues.levelState.bossState,
@@ -56118,7 +56154,7 @@ var bgOnly = false;
                     fadeOutAttempts: Ml(t.mutValues.levelState.bossState),
                     playerScale: t.mutValues.levelState.playerScale,
                     bgColor: "#FF00FF",
-                    flash: t?.flash
+                    flash: t?.flash,
                   },
                   (a) => {
                     var i, n, s, o, r;
@@ -56157,8 +56193,9 @@ var bgOnly = false;
                         (null === (n = e.world) || void 0 === n
                           ? void 0
                           : n.highScore) || 0),
-                      (a.collectiblesTotal =
-                        e.level.layout.collectibles.filter(x=>(x.form == "coin")).length),
+                      (a.collectiblesTotal = e.level.layout.collectibles.filter(
+                        (x) => x.form == "coin"
+                      ).length),
                       (a.touchingPortals =
                         t.mutValues.levelState.touchingPortals),
                       (a.justHitObject = t.mutValues.levelState.justHitObject),
@@ -56205,8 +56242,7 @@ var bgOnly = false;
                       (a.cameraY = t.mutValues.levelState.cameraY),
                       (a.bgColor =
                         t.mutValues.levelState?.bgColor || "#00FFFF"),
-                      (a.flash =
-                        t.mutValues.levelState?.flash || 0),
+                      (a.flash = t.mutValues.levelState?.flash || 0),
                       (a.showAttempts = void 0 === e.editor),
                       (a.tutorial = t.tutorial),
                       (a.hidePlayer = Ll(
@@ -56850,7 +56886,11 @@ var bgOnly = false;
                       },
                       x: 140,
                     }),
-                    ((window.onbeforeunload = d.saved ? undefined : (()=>("You have unsaved changes. Are you sure you want to return to the main menu?"))), void 0),
+                    ((window.onbeforeunload = d.saved
+                      ? undefined
+                      : () =>
+                          "You have unsaved changes. Are you sure you want to return to the main menu?"),
+                    void 0),
                     Fo({
                       id: "ExitButton",
                       text: localize("MENU"),
@@ -56860,7 +56900,9 @@ var bgOnly = false;
                         d.saved
                           ? ((window.onbeforeunload = undefined), s())
                           : e.alert.okCancel(
-                              localize("You have unsaved changes. Are you sure you want to return to the main menu?"),
+                              localize(
+                                "You have unsaved changes. Are you sure you want to return to the main menu?"
+                              ),
                               (e) => {
                                 e && s();
                               }
@@ -56869,8 +56911,6 @@ var bgOnly = false;
                       strokeColor: Ye,
                       x: 280,
                     }),
-                    
-                    
                   ];
             },
           }),
@@ -57126,7 +57166,13 @@ var bgOnly = false;
                     y: -50,
                   }),
                   ...("loading" === t.unlockedFeatures.type
-                    ? [n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } })]
+                    ? [
+                        n({
+                          text: `${localize("LOADING")}...`,
+                          color: ve,
+                          font: { size: 15 },
+                        }),
+                      ]
                     : [
                         n({
                           text: `ERROR LOADING EDITOR: ${t.unlockedFeatures.message}`,
@@ -57661,7 +57707,13 @@ var bgOnly = false;
             }),
             render: ({ props: e, state: t }) =>
               !t.level || "then" in t.animationAssets
-                ? [n({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve })]
+                ? [
+                    n({
+                      text: `${localize("LOADING")}...`,
+                      font: { size: 15 },
+                      color: ve,
+                    }),
+                  ]
                 : [
                     Se.Sprite({
                       context: e.globalContext,
@@ -57783,7 +57835,7 @@ var bgOnly = false;
                   onPress: () => null,
                 }),
                 We({ color: Re, width: 360, height: 290, y: -5, x: 5 * f }),
-                We({ color: ve, width: Wf, height: qf}),
+                We({ color: ve, width: Wf, height: qf }),
                 r({
                   fillColor: Re,
                   path: [
@@ -57830,30 +57882,32 @@ var bgOnly = false;
                   x: -120,
                   y: 80,
                 }),
-                author && n({
-                  font: {
-                    align: "left",
-                    weight: 500,
-                    baseline: "bottom",
-                    style: "italic",
-                  },
-                  text: localize("level by"),
-                  color: Be,
-                  x: -155,
-                  y: 60,
-                }),
-              author &&   n({
-                  font: {
-                    size: author.length > 20 ? 12 : 15,
-                    align: "left",
-                    weight: 600,
-                    baseline: "bottom",
-                  },
-                  text: author,
-                  color: Be,
-                  x: -110,
-                  y: 60,
-                }),
+                author &&
+                  n({
+                    font: {
+                      align: "left",
+                      weight: 500,
+                      baseline: "bottom",
+                      style: "italic",
+                    },
+                    text: localize("level by"),
+                    color: Be,
+                    x: -155,
+                    y: 60,
+                  }),
+                author &&
+                  n({
+                    font: {
+                      size: author.length > 20 ? 12 : 15,
+                      align: "left",
+                      weight: 600,
+                      baseline: "bottom",
+                    },
+                    text: author,
+                    color: Be,
+                    x: -110,
+                    y: 60,
+                  }),
                 e.label
                   ? n({
                       font: {
@@ -57897,11 +57951,13 @@ var bgOnly = false;
                   font: { weight: 500 },
                   text: "BPM",
                   color: Be,
-                  x: -110 ,
+                  x: -110,
                   y: -40 + offset,
                 }),
                 l({
-                  fileName: `images/mainMenu/levelSelect/difficultyIconsModal/${Math.round(t)}.png`,
+                  fileName: `images/mainMenu/levelSelect/difficultyIconsModal/${Math.round(
+                    t
+                  )}.png`,
                   width: 40,
                   height: 87,
                   anchorY: -40,
@@ -57985,7 +58041,7 @@ var bgOnly = false;
                     );
                   },
                 }),
-                (Fo({
+                Fo({
                   id: "PlayButton",
                   text: localize("PLAY"),
                   disabled: (!h && !s.checkpoints.didFinish) || i,
@@ -57997,8 +58053,8 @@ var bgOnly = false;
                   onPress: () => {
                     o(h);
                   },
-                })),
-                (u ? zf({ id: "LevelsHelp", x: 100, y: -30 }) : null),
+                }),
+                u ? zf({ id: "LevelsHelp", x: 100, y: -30 }) : null,
                 i
                   ? n({
                       text: "COMING SOON!",
@@ -58063,7 +58119,7 @@ var bgOnly = false;
               return [
                 Uf({
                   id: "Title",
-                  text: `${localize('WORLD')} ${e.world}`,
+                  text: `${localize("WORLD")} ${e.world}`,
                   width: 200,
                   height: 35,
                   x: -s / 2 + 120,
@@ -58607,7 +58663,11 @@ var bgOnly = false;
               if ("loading" === s)
                 return [
                   ...r,
-                  n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } }),
+                  n({
+                    text: `${localize("LOADING")}...`,
+                    color: ve,
+                    font: { size: 15 },
+                  }),
                 ];
               const l = null === i ? null : Hl.bonusLevels[i],
                 c = null !== l && ty(l, s),
@@ -58665,7 +58725,7 @@ var bgOnly = false;
                         id: `Lvl-${n}`,
                         song: a.song,
 
-                        name: (a.levelName),
+                        name: a.levelName,
                         author: a.author,
                         locked: r,
                         selected: i === n,
@@ -58961,7 +59021,11 @@ var bgOnly = false;
                 l = a.size.height + 2 * a.size.heightMargin;
               if (t.isLoading)
                 return [
-                  n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } }),
+                  n({
+                    text: `${localize("LOADING")}...`,
+                    color: ve,
+                    font: { size: 15 },
+                  }),
                 ];
               const c = e.view;
               if ("inWorld" === c.type) {
@@ -59355,7 +59419,11 @@ var bgOnly = false;
             }) {
               if (!t || !r.songLoaded)
                 return [
-                  n({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve }),
+                  n({
+                    text: `${localize("LOADING")}...`,
+                    font: { size: 15 },
+                    color: ve,
+                  }),
                 ];
               const c = a / r.songDuration;
               const d = 700 * c - 350,
@@ -59485,7 +59553,13 @@ var bgOnly = false;
             const o = a.size.height + 2 * a.size.heightMargin,
               r = a.size.width + 2 * a.size.widthMargin;
             if ("loading" === t.data)
-              return [n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } })];
+              return [
+                n({
+                  text: `${localize("LOADING")}...`,
+                  color: ve,
+                  font: { size: 15 },
+                }),
+              ];
             const {
               levels: l,
               availableSongs: c,
@@ -59732,7 +59806,9 @@ var bgOnly = false;
                               fontSize: 12,
                               onPress: () => {
                                 a.alert.okCancel(
-                                  `${localize('Are you sure you want to delete level')} ${p.name}?`,
+                                  `${localize(
+                                    "Are you sure you want to delete level"
+                                  )} ${p.name}?`,
                                   (e) =>
                                     uy(this, void 0, void 0, function* () {
                                       if (!e) return;
@@ -59983,7 +60059,7 @@ var bgOnly = false;
                         width: 100,
                         height: 40,
                         text: localize("NEXT"),
-                        disabled: false,//r,
+                        disabled: false, //r,
                         onPress: () => {
                           i((e) =>
                             Object.assign(Object.assign({}, e), {
@@ -63037,7 +63113,9 @@ var bgOnly = false;
                   : [
                       Fo({
                         id: "BuyPass",
-                        text: `${localize("BUY")} - ${s.blocksPrice} ${localize("BLOCKS")}`,
+                        text: `${localize("BUY")} - ${s.blocksPrice} ${localize(
+                          "BLOCKS"
+                        )}`,
                         width: 250,
                         height: 60,
                         onPress: () => {
@@ -63213,7 +63291,11 @@ var bgOnly = false;
               return "loading" === c
                 ? [
                     ...g,
-                    n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } }),
+                    n({
+                      text: `${localize("LOADING")}...`,
+                      color: ve,
+                      font: { size: 15 },
+                    }),
                   ]
                 : [
                     ...g,
@@ -63431,13 +63513,16 @@ var bgOnly = false;
                 e.unlocked
                   ? i
                     ? n({
-                        text: "loading" === i ? `${localize("LOADING")}...` : "COLLECTED!",
+                        text:
+                          "loading" === i
+                            ? `${localize("LOADING")}...`
+                            : "COLLECTED!",
                         color: Ye,
                         font: { size: 16 },
                         x: t / 2 - 90,
                       })
                     : Fo({
-                      // achivements menu
+                        // achivements menu
                         id: "CollectButton",
                         text: localize("COLLECT"),
                         width: 100,
@@ -63446,7 +63531,7 @@ var bgOnly = false;
                         disabled: false,
                         strokeColor: Ye,
                         onPress: async () => {
-                                  /*
+                          /*
                                   return wh(
                               e.itemId,
                               e.version,
@@ -63457,7 +63542,7 @@ var bgOnly = false;
                                 : void 0
                             );
                                   */
-                                 /*
+                          /*
                                  function wh(
         e, // itemId
         t, // itemVersion
@@ -63465,32 +63550,30 @@ var bgOnly = false;
         i, // defId
         n = 1 //usesLeft
                                  */
-                                  console.log(e.rewards.items, e)
-                                  var s = await Jp.getEncryptedStorage(),
-                                  items = [...s.ownedItems, ...e.rewards.items.map(
-                                    (r)=>(
-                                    bp.getItemFromResponse(
-                                    r?.itemId, 
-                                    r?.version || 1, 
-                                    r?.defId, 
-                                    r?.quantity || 1
-                                  )
+                          var s = await Jp.getEncryptedStorage(),
+                            items = [
+                              ...s.ownedItems,
+                              ...e.rewards.items.map((r) =>
+                                bp.getItemFromResponse(
+                                  r?.itemId,
+                                  r?.version || 1,
+                                  r?.defId,
+                                  r?.quantity || 1
                                 )
-                              )];
-                                  Jp.saveEncryptedStorage(u.now, {
-                                    ownedItems: items,
-                                  });
-                                  u
-                                  .audio(
-                                    "audio/achievement/rewards-collect.wav"
-                                  )
-                                  .play(0);
-                                  d((e) =>
-                                    Object.assign(Object.assign({}, e), {
-                                      collected: !0,
-                                    })
-                                  );
-                                
+                              ),
+                            ];
+                          Jp.saveEncryptedStorage(u.now, {
+                            ownedItems: items,
+                          });
+                          u.audio("audio/achievement/rewards-collect.wav").play(
+                            0
+                          );
+                          d((e) =>
+                            Object.assign(Object.assign({}, e), {
+                              collected: !0,
+                            })
+                          );
+
                           return;
                           h &&
                             (bp
@@ -63558,8 +63641,8 @@ var bgOnly = false;
                   width: 100,
                   height: 100,
                   onPress: () => {
-                  if(!disabled) {
-                    o.audio("audio/global/button.wav").play(0), i();
+                    if (!disabled) {
+                      o.audio("audio/global/button.wav").play(0), i();
                     }
                   },
                   sprites: (t) => [
@@ -63583,7 +63666,7 @@ var bgOnly = false;
                       height: 100,
                       rotation: 45,
                       rad: 10,
-                      color: disabled? Xe :(t ? ke : Re),
+                      color: disabled ? Xe : t ? ke : Re,
                       x: ox,
                       y: oy - +!disabled * (t ? 3 : 0),
                     }),
@@ -63591,7 +63674,7 @@ var bgOnly = false;
                       font: { size: 20, style: "italic" },
                       text: e,
                       rotation: -8,
-                      color: disabled ? ze :(t ? Ae : Be),
+                      color: disabled ? ze : t ? Ae : Be,
                       x: ox,
                       y: oy - +!disabled * (t ? 3 : 0),
                     }),
@@ -63647,9 +63730,11 @@ var bgOnly = false;
                       og({
                         id: "Text2",
                         text:
-                          localize("checkpoints" === e.isEndOfGame
-                            ? "NOW TRY WITHOUT CHECKPOINTS"
-                            : "THANK YOU FOR PLAYING") + "!",
+                          localize(
+                            "checkpoints" === e.isEndOfGame
+                              ? "NOW TRY WITHOUT CHECKPOINTS"
+                              : "THANK YOU FOR PLAYING"
+                          ) + "!",
                         delay: 225,
                         showTime: 450,
                         y: -20,
@@ -63706,9 +63791,13 @@ var bgOnly = false;
                 ["MENU MUSIC", ["MONSTAZ. - POPCORN FUNK"]],
                 [
                   "LEVEL MUSIC BY",
-                  [...new Set((Object.values(hl.songs)
-                    .map((e) => e.author.toLocaleUpperCase())
-                    .sort()))], // it was really funny to have four GEOXORs in there :D
+                  [
+                    ...new Set(
+                      Object.values(hl.songs)
+                        .map((e) => e.author.toLocaleUpperCase())
+                        .sort()
+                    ),
+                  ], // it was really funny to have four GEOXORs in there :D
                 ],
                 void 0,
                 [
@@ -63792,7 +63881,7 @@ var bgOnly = false;
                   height: 40,
                   y: s - 100,
                 }),
-                 Fo({
+                Fo({
                   id: "repo",
                   width: 200,
                   height: 40,
@@ -63802,7 +63891,7 @@ var bgOnly = false;
                   },
                   y: s - 150,
                 }),
-                
+
                 /*Fo({
                   id: "TC",
                   width: 200,
@@ -63829,12 +63918,12 @@ var bgOnly = false;
                   height: 40,
                   text: localize("CHANGE LANGUAGE"),
                   onPress: () => {
-                    if(LANG == "") {
-                      LANG = 'es'
+                    if (LANG == "") {
+                      LANG = "es";
                     } else {
-                      LANG = ""
+                      LANG = "";
                     }
-                    localStorage.setItem('lang', LANG)
+                    localStorage.setItem("lang", LANG);
                   },
                   y: s - 200,
                 }),
@@ -63932,7 +64021,7 @@ var bgOnly = false;
                   font: { size: 18 },
                   color: Ae,
                   gradient: i,
-                  x: 3 - e / 2 + 305,//-e / 2 + 305,
+                  x: 3 - e / 2 + 305, //-e / 2 + 305,
                   y: t / 2 - 20,
                 }),
                 We({
@@ -64018,7 +64107,11 @@ var bgOnly = false;
               if ("loading" === c)
                 return [
                   ...u,
-                  n({ text: `${localize("LOADING")}...`, color: ve, font: { size: 15 } }),
+                  n({
+                    text: `${localize("LOADING")}...`,
+                    color: ve,
+                    font: { size: 15 },
+                  }),
                 ];
               const m = (e) => {
                 i((e) => Object.assign(Object.assign({}, e), { isBuying: !0 })),
@@ -64172,7 +64265,9 @@ var bgOnly = false;
               props: i,
               getContext: n,
             }) {
-              const s = localStorage.getItem('endOfGame') || ("credits" === i.view.type && i.view.endOfGame),
+              const s =
+                  localStorage.getItem("endOfGame") ||
+                  ("credits" === i.view.type && i.view.endOfGame),
                 o = `audio/tracks/monstaz-popcorn-funk${
                   s ? "-credits" : ""
                 }.mp3`;
@@ -64236,7 +64331,11 @@ var bgOnly = false;
                 y = a.size.width + 2 * a.size.widthMargin;
               if (t.loading)
                 return [
-                  n({ text: localize(`${localize("LOADING")}...`), font: { size: 15 }, color: ve }),
+                  n({
+                    text: localize(`${localize("LOADING")}...`),
+                    font: { size: 15 },
+                    color: ve,
+                  }),
                 ];
               const E = t.frame / eE,
                 b = E > 0.9 ? 10 * (E - 0.9) : E < 0.2 ? 5 * (0.2 - E) : 0;
@@ -64263,15 +64362,16 @@ var bgOnly = false;
                   Wy({
                     id: "Levels",
                     text: localize("LEVELS"),
-                    onPress: () => r({
-                            type: "levels",
-                            worldsView: { type: "worldsList" },
-                          }),
+                    onPress: () =>
+                      r({
+                        type: "levels",
+                        worldsView: { type: "worldsList" },
+                      }),
                     y: -30,
                     x: -200,
                     disabled: true,
                     shadowOffsetX: -1,
-                    shadowOffsetY:0,
+                    shadowOffsetY: 0,
                     beatSize: b,
                   }),
                   Wy({
@@ -64285,7 +64385,7 @@ var bgOnly = false;
                   }),
                   Wy({
                     id: "Online",
-                    text: localize("SKINS"),//ONLINE"),
+                    text: localize("SKINS"), //ONLINE"),
                     onPress: () => r({ type: "online" }),
                     x: 200,
                     y: -30,
@@ -64302,7 +64402,7 @@ var bgOnly = false;
                     onPress: () => {
                       r({ type: "more" });
                     },
-                    x: 0,//100,
+                    x: 0, //100,
                     y: h,
                   }),
                   /*Fo({
@@ -64368,7 +64468,7 @@ var bgOnly = false;
                           }),
                         ]
                       : []
-                    : []),/*[
+                    : []) /*[
                         n({
                           text: localize("OFFLINE"),
                           font: { size: 15 },
@@ -64377,7 +64477,7 @@ var bgOnly = false;
                           y: f / 2 - 40,
                         }),
                         _m({ id: "GoOnline", x: y / 2 - 80, y: f / 2 - 40 }),
-                      ]),*/
+                      ]),*/,
                   null,
                   null,
                   "signIn" === t.modal
@@ -65174,7 +65274,9 @@ var bgOnly = false;
                     highScore: 0,
                     collectibles:
                       e.viewingPlayer.state.mutValues.levelState.collectibles,
-                    collectiblesTotal: e.level.layout.collectibles.filter(x=>(x.form == "coin")).length,
+                    collectiblesTotal: e.level.layout.collectibles.filter(
+                      (x) => x.form == "coin"
+                    ).length,
                     playerSpeedMultiplier:
                       e.viewingPlayer.state.mutValues.levelState
                         .playerSpeedMultiplier,
@@ -67098,7 +67200,9 @@ var bgOnly = false;
                                   case "disconnected":
                                     return [
                                       c({
-                                        text: localize("FAILED TO RECONNECT, GOING BACK TO MAIN MENU"),
+                                        text: localize(
+                                          "FAILED TO RECONNECT, GOING BACK TO MAIN MENU"
+                                        ),
                                         color: ve,
                                         strokeColor: Ye,
                                         strokeThickness: 6,
@@ -67711,8 +67815,7 @@ var bgOnly = false;
                     i((t) =>
                       Object.assign(Object.assign({}, t), {
                         loading: !1,
-                        hasSuperLevelPack:
-                          true,
+                        hasSuperLevelPack: true,
                       })
                     );
                 }),
@@ -67838,10 +67941,9 @@ var bgOnly = false;
                                 y: -130,
                                 strokeColor: Ye,
                                 onPress: () => {
-                                  console.log(d)
-                            Jp.saveEncryptedStorage(s.now, {
-                                          ownedItems: d.rewards.items,
-                                        })
+                                  Jp.saveEncryptedStorage(s.now, {
+                                    ownedItems: d.rewards.items,
+                                  });
                                   return;
                                   bp
                                     .collectAchievementRewards(c.backend, d)
@@ -68093,7 +68195,11 @@ var bgOnly = false;
               R(
                 () => !t.level || "then" in t.spineContext,
                 () => [
-                  c({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve }),
+                  c({
+                    text: `${localize("LOADING")}...`,
+                    font: { size: 15 },
+                    color: ve,
+                  }),
                 ],
                 () => [
                   Se.Single({
@@ -68167,7 +68273,11 @@ var bgOnly = false;
               R(
                 () => "then" in t.spineContext,
                 () => [
-                  c({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve }),
+                  c({
+                    text: `${localize("LOADING")}...`,
+                    font: { size: 15 },
+                    color: ve,
+                  }),
                 ],
                 () => [
                   Se.Single({
@@ -68571,7 +68681,7 @@ var bgOnly = false;
             };
           },
           loop: ({ state: e }) =>
-            (e && e.onPressQueue.length > 0)
+            e && e.onPressQueue.length > 0
               ? (e.onPressQueue[e.onPressQueue.length - 1](),
                 Object.assign(Object.assign({}, e), { onPressQueue: [] }))
               : e,
@@ -68615,17 +68725,20 @@ var bgOnly = false;
                         }),
                       ],
                     })*/ a((e) =>
-                                  Object.assign(Object.assign({}, e), {
-                                    accountState: { type: "offline" },
-                                    view: {
-                                      type: "menu",
-                                      menuView: { type: "main" },
-                                    },
-                                  })
-                                )
-                  : n({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve }),
-             
-                ];
+                      Object.assign(Object.assign({}, e), {
+                        accountState: { type: "offline" },
+                        view: {
+                          type: "menu",
+                          menuView: { type: "main" },
+                        },
+                      })
+                    )
+                  : n({
+                      text: `${localize("LOADING")}...`,
+                      font: { size: 15 },
+                      color: ve,
+                    }),
+              ];
             if ("termsConditions" === e.view.type)
               return [
                 Se.Sprite({
@@ -68831,25 +68944,28 @@ var bgOnly = false;
                                 ? void 0
                                 : r.noCheckpoints.didFinish) ||
                               (d = "noCheckpoints")),
-                            a((t) =>
-                              (localStorage.setItem('endOfGame', d), Object.assign(Object.assign({}, t), {
-                                view: {
-                                  type: "level",
-                                  levelFileName: e.levelFileName,
-                                  boss: e.boss,
-                                  world: Object.assign(Object.assign({}, i), {
-                                    tutorialType: n,
-                                    showBoostersPrompt: s,
-                                    startState: l,
-                                    highScore:
-                                      (null == r ? void 0 : r.highScore) || 0,
-                                    maxFrame: e.maxFrames,
-                                    prevBestAttempts: null === c ? void 0 : c,
-                                    isEndOfGame: d,
-                                  }),
-                                },
-                                isFirstTimePlaying: !1,
-                              }))
+                            a(
+                              (t) => (
+                                localStorage.setItem("endOfGame", d),
+                                Object.assign(Object.assign({}, t), {
+                                  view: {
+                                    type: "level",
+                                    levelFileName: e.levelFileName,
+                                    boss: e.boss,
+                                    world: Object.assign(Object.assign({}, i), {
+                                      tutorialType: n,
+                                      showBoostersPrompt: s,
+                                      startState: l,
+                                      highScore:
+                                        (null == r ? void 0 : r.highScore) || 0,
+                                      maxFrame: e.maxFrames,
+                                      prevBestAttempts: null === c ? void 0 : c,
+                                      isEndOfGame: d,
+                                    }),
+                                  },
+                                  isFirstTimePlaying: !1,
+                                })
+                              )
                             );
                         }),
                       playTestCase: (e) => {
@@ -69040,7 +69156,11 @@ var bgOnly = false;
               ];
             }
             const r = [
-              n({ text: `${localize("LOADING")}...`, font: { size: 15 }, color: ve }),
+              n({
+                text: `${localize("LOADING")}...`,
+                font: { size: 15 },
+                color: ve,
+              }),
             ];
             return [
               Gf({
@@ -69108,66 +69228,64 @@ var bgOnly = false;
                           )
                         );
                     },
-                    online:
-                      true ? null : "loggedIn" === a.accountState.type
-                        ? {
-                            signedInAccount: "anon" !== a.accountState.auth,
-                            backend: a.accountState.backend,
-                            blocksBalance: a.accountState.profile.blocksBalance,
-                            updateBlocksBalance: (a) => {
-                              e(
-                                (i) => (
-                                  HE(e, t),
-                                  "loggedIn" === i.accountState.type
-                                    ? Object.assign(Object.assign({}, i), {
-                                        accountState: Object.assign(
-                                          Object.assign({}, i.accountState),
-                                          {
-                                            profile: Object.assign(
-                                              Object.assign(
-                                                {},
-                                                i.accountState.profile
-                                              ),
-                                              { blocksBalance: a }
+                    online: true
+                      ? null
+                      : "loggedIn" === a.accountState.type
+                      ? {
+                          signedInAccount: "anon" !== a.accountState.auth,
+                          backend: a.accountState.backend,
+                          blocksBalance: a.accountState.profile.blocksBalance,
+                          updateBlocksBalance: (a) => {
+                            e(
+                              (i) => (
+                                HE(e, t),
+                                "loggedIn" === i.accountState.type
+                                  ? Object.assign(Object.assign({}, i), {
+                                      accountState: Object.assign(
+                                        Object.assign({}, i.accountState),
+                                        {
+                                          profile: Object.assign(
+                                            Object.assign(
+                                              {},
+                                              i.accountState.profile
                                             ),
-                                          }
-                                        ),
-                                      })
-                                    : i
-                                )
-                              );
-                            },
-                            attributes: a.attributes,
-                            updateAttributes: (a) => {
-                              e((i) => {
-                                if (
-                                  (HE(e, t), "loggedIn" === i.accountState.type)
-                                ) {
-                                  const e = Object.assign(
-                                    Object.assign({}, i.attributes),
-                                    a
-                                  );
-                                  return (
-                                    bp
-                                      .updateAttributes(
-                                        i.accountState.backend,
-                                        e
-                                      )
-                                      .catch(() => {
-                                        console.error(
-                                          "Failed to update attributes"
-                                        );
-                                      }),
-                                    Object.assign(Object.assign({}, i), {
-                                      attributes: e,
+                                            { blocksBalance: a }
+                                          ),
+                                        }
+                                      ),
                                     })
-                                  );
-                                }
-                                return i;
-                              });
-                            },
-                          }
-                        : null,
+                                  : i
+                              )
+                            );
+                          },
+                          attributes: a.attributes,
+                          updateAttributes: (a) => {
+                            e((i) => {
+                              if (
+                                (HE(e, t), "loggedIn" === i.accountState.type)
+                              ) {
+                                const e = Object.assign(
+                                  Object.assign({}, i.attributes),
+                                  a
+                                );
+                                return (
+                                  bp
+                                    .updateAttributes(i.accountState.backend, e)
+                                    .catch(() => {
+                                      console.error(
+                                        "Failed to update attributes"
+                                      );
+                                    }),
+                                  Object.assign(Object.assign({}, i), {
+                                    attributes: e,
+                                  })
+                                );
+                              }
+                              return i;
+                            });
+                          },
+                        }
+                      : null,
                     sendAccountAction: (a) => {
                       HE(e, t),
                         e((e) =>
