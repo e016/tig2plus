@@ -30834,7 +30834,7 @@ var bgOnly = false;
                                 (t.x = e.enemy.x),
                                   (t.y = e.enemy.y),
                                   (t.frame = e.frame || 7),
-                                  (t.scaleX = e.enemy.enemyDir || -1);
+                                  (t.scaleX = e.enemyDir || e.enemy.enemyDir || -1);
                               }
                             ),
                           ];
@@ -64336,7 +64336,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.0.1",
+                    text: "v1.0.3",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,

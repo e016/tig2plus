@@ -68,7 +68,6 @@
         font-size: 24px;
         border: unset;
         user-select: none;
-        corner-shape: bevel;
         border-radius: 7px;
         outline: 4px solid var(--purple);
         width: 200px;
@@ -76,6 +75,18 @@
         bottom: 0px;
         left: 50%;
         margin: 0px;
+
+        /* octagon shape */
+        clip-path: polygon(
+    10px 0, /* Top-left bevel start */
+    calc(100% - 10px) 0, /* Top-right bevel start */
+    100% 10px, /* Top-right bevel end */
+    100% calc(100% - 10px), /* Bottom-right bevel start */
+    calc(100% - 10px) 100%, /* Bottom-right bevel end */
+    10px 100%, /* Bottom-left bevel start */
+    0 calc(100% - 10px), /* Bottom-left bevel end */
+    0 10px /* Top-left bevel end */
+  )
       }
       button:active {
         background: var(--cyan);
