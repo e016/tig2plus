@@ -42659,7 +42659,7 @@ var bgOnly = false;
         const Bd = Gc([
             mc,
             mc,
-            fc,
+            Bc([Gc(mc, fc, mc, mc), fc]),
             Bc([
               nd.tuple([
                 Gc([mc]),
@@ -42911,7 +42911,7 @@ var bgOnly = false;
                     S,
                     switchBlocks,
                   ] = n,
-                  I = Vd[i] || hl.songs.dragonfly,
+                  I = (Vd[i] || {fileName: i.fileName, bpm: i.bpm, name: i.name, author: i.author}) || hl.songs.dragonfly,
                   _ = G.getJumpFrames(I.bpm),
                   v = jd(o, r.length + c.length + f.length),
                   T = {
@@ -43091,7 +43091,7 @@ var bgOnly = false;
                   a,
                   Number(
                     (Object.entries(Vd).find(([, e]) => e.name === n.name) || [
-                      "0",
+                      [n.fileName, n.bpm, n.name, n.author]
                     ])[0]
                   ),
                   [
@@ -59575,11 +59575,7 @@ var bgOnly = false;
                   selectSong: (t, i) => {
                     const n = Sr(
                       ry(a.random),
-                      `Untitled-${l.length + 1}${
-                        customSong !== undefined
-                          ? ` ?l= ["${customSong.fileName}","${customSong.bpm}","${customSong.name}","${customSong.author}"]`
-                          : ""
-                      }`,
+                      `Untitled-${l.length + 1}`,
                       t,
                       void 0,
                       null,
@@ -60277,19 +60273,12 @@ var bgOnly = false;
               const n = e.level;
               let s = n.name,
                 o =
-                  s.split("?l=").length > 1
-                    ? JSON.parse(s.split("?l=")[1])[2]
-                    : n.song.name,
+                  n.song.name,
                 r =
-                  s.split("?l=").length > 1
-                    ? JSON.parse(s.split("?l=")[1])[3]
-                    : n.song.author;
+                  n.song.author;
               const l = () =>
-                `${s.split("?l=")[0]} - ${o} ${localize("by")} ${r} - ${
-                  String(s).includes("?l=")
-                    ? JSON.parse(s.split("?l=")[1])[1]
-                    : n.song.bpm
-                } BPM`;
+                `${s} - ${o} ${localize("by")} ${r} - ${
+                  n.song.bpm}`;
               return (
                 l().length > 60 &&
                   ((r = cy.truncate(n.song.author, 10)),
@@ -64543,25 +64532,11 @@ var bgOnly = false;
                   hy({
                     id: "LevelEditorMenu",
                     editLevel: (t) => {
-                      if (t.level.name.includes("?l=")) {
-                        var songData = JSON.parse(t.level.name.split("?l=")[1]);
-                        t.level.song = { ...t.level.song };
-                        t.level.song.fileName = songData[0];
-                        t.level.song.bpm = songData[1];
-                        t.level.song.name = songData[2];
-                        t.level.song.author = songData[3];
-                      }
+                      
                       p(), e.editLevel(t);
                     },
                     playLevel: (t) => {
-                      if (t.name.includes("?l=")) {
-                        var songData = JSON.parse(t.name.split("?l=")[1]);
-                        t.song = { ...t.song };
-                        t.song.fileName = songData[0];
-                        t.song.bpm = songData[1];
-                        t.song.name = songData[2];
-                        t.song.author = songData[3];
-                      }
+                      
                       p(), e.playEditorLevel(t);
                     },
                     fadeInMusic: m,
