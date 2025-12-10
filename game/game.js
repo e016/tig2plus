@@ -41040,7 +41040,7 @@ var bgOnly = false;
           },
           ql = function (e) {
             return [
-              ...Object.values(hl.songs),
+              ...Object.values(hl.songs)/*,
               {
                 name: `${"Custom song"}...`,
                 author: "",
@@ -41049,7 +41049,7 @@ var bgOnly = false;
                 label: "",
                 isBonusSong: !1,
                 custom: !0,
-              },
+              },*/
             ];
           },
           $l = function (e) {},
