@@ -33338,12 +33338,12 @@ var bgOnly = false;
                     unlocked:
                       e.includes("moveOnJump") || e.includes("switchButton"),
                   },
-                  /*{
+                  {
                     name: localize("SWITCH BLOCK"),
                     object: q,
                     iconName: "images/editor/objects/block.png",
                     unlocked: !0,
-                  },*/
+                  },
                   {
                     name: localize(Zo(g.type)),
                     object: g,
@@ -64359,7 +64359,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.0.3",
+                    text: "v1.0.5",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
