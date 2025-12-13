@@ -17746,9 +17746,9 @@ var bgOnly = false;
                 block: "classic",
                 spike: "classic",
                 platform: "classic",
-                dirChange: "world1",
+                dirChange: "world2",
                 flag: "world1",
-                saw: "world1",
+                saw: "classic",
                 bottom: "world3",
               },
               isBonusTheme: !0,
@@ -18371,14 +18371,14 @@ var bgOnly = false;
           };
         function wa(e, t, i) {
           //*
-          // console.warn(e,t,i)
+          //console.warn(e,t,i)
           switch (e) {
             case "blocks":
               if ("atIndex" in i) {
                 i = { ...i };
                 i.index = i.atIndex;
               }
-              var iowejfaiomfhao = {
+              var block = {
                 type: "blockSpikeState",
                 isVoid: t == undefined ? false : t.blocks[i.index]?.isVoid,
                 steel: t == undefined ? false : t.blocks[i.index]?.steel,
@@ -18386,11 +18386,11 @@ var bgOnly = false;
               };
 
               if (t == undefined ? undefined : t.blocks[i.index]?.init) {
-                Object.assign(iowejfaiomfhao, {
+                Object.assign(block, {
                   init: t == undefined ? undefined : t.blocks[i.index]?.init,
                 });
               }
-              return iowejfaiomfhao;
+              return block;
             case "spikes":
               return { type: "blockSpikeState" };
             case "saws":
@@ -19281,7 +19281,7 @@ var bgOnly = false;
                             : o[n];
                         (a.show =
                           !(e.inGame ? r?.steel : i?.steel) &&
-                          !(r == undefined ? false : "init" in r) &&
+                          !((e.inGame ? r : i) == undefined ? false : "init" in (e.inGame ? r : i)) &&
                           !(e.inGame ? r?.isVoid : i?.isVoid) &&
                           !(e.inGame ? r?.isBoss : i?.isBoss) &&
                           !(null == r ? void 0 : r.destroyed)),
@@ -19794,7 +19794,7 @@ var bgOnly = false;
                                 ? void 0
                                 : s.spikeStates) || void 0 === o
                             ? void 0
-                            : o[n];
+                            : s.spikeStates[n];
                         (a.show = !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = i.y),
@@ -19855,6 +19855,7 @@ var bgOnly = false;
                     }),
                     za.Array({
                       props: (a, i) => {
+                        
                         const n = e.inGame.spikeStates[i];
                         return {
                           objectX: a.x,
@@ -19878,7 +19879,7 @@ var bgOnly = false;
                                 )
                               : y(
                                   {
-                                    fileName: `images/themes/${e.theme}/spike.png`,
+                                    fileName: a.isLazer ? `images/themes/world3/bottom/laser-line.png` : `images/themes/${e.theme}/spike.png`,
                                     width: a.width * t,
                                     height: a.height * t,
                                     rotation: a.rotation,
@@ -30834,7 +30835,7 @@ var bgOnly = false;
                                 (t.x = e.enemy.x),
                                   (t.y = e.enemy.y),
                                   (t.frame = e.frame || 7),
-                                  (t.scaleX = e.enemy.enemyDir || -1);
+                                  (t.scaleX = e.enemyDir || e.enemy.enemyDir || -1);
                               }
                             ),
                           ];
@@ -33337,12 +33338,12 @@ var bgOnly = false;
                     unlocked:
                       e.includes("moveOnJump") || e.includes("switchButton"),
                   },
-                  /*{
+                  {
                     name: localize("SWITCH BLOCK"),
                     object: q,
                     iconName: "images/editor/objects/block.png",
                     unlocked: !0,
-                  },*/
+                  },
                   {
                     name: localize(Zo(g.type)),
                     object: g,
@@ -33813,7 +33814,7 @@ var bgOnly = false;
                       options: [
                         {
                           name: "Up",
-                          selected: 0 === t.rotation,
+                          selected: !t.isLazer && 0 === t.rotation,
                           onPress: () => {
                             a.map((j) => {
                               e({
@@ -33823,6 +33824,7 @@ var bgOnly = false;
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     rotation: 0,
+                                    isLazer: false,
                                   }),
                               });
                             });
@@ -33840,6 +33842,7 @@ var bgOnly = false;
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     rotation: 270,
+                                    isLazer: false,
                                   }),
                               });
                             });
@@ -33857,6 +33860,7 @@ var bgOnly = false;
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     rotation: 180,
+                                    isLazer: false,
                                   }),
                               });
                             });
@@ -33874,11 +33878,30 @@ var bgOnly = false;
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     rotation: 90,
+                                    isLazer: false,
                                   }),
                               });
                             });
                           },
                         },
+                        /*{
+                          name: "Lazer",
+                          selected: t.isLazer,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 0,
+                                    isLazer: true,
+                                  }),
+                              });
+                            });
+                          },
+                        },*/
                       ],
                     },
                   ];
@@ -64336,7 +64359,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.0.1",
+                    text: "v1.0.5",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
