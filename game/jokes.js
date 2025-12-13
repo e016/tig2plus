@@ -43,5 +43,6 @@ var JOKES = [
     "The falling saw is quite the novel concept",
     "Move-On-Switch Platforms and Saws!",
     "Only the variables and functions are obfuscated; object properties are not.",
+    
   ],
-  currentJoke = JOKES[Math.floor(Math.random() * JOKES.length)];
+  currentJoke = Math.random() > 0.5 ? "This is actually the APK version. Have fun!" : "Outline/Alfredo Gamer approved!"//JOKES[Math.floor(Math.random() * JOKES.length)];
