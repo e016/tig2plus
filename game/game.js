@@ -19278,7 +19278,8 @@ var bgOnly = false;
                                 ? void 0
                                 : s.blockStates) || void 0 === o
                             ? void 0
-                            : o[n];
+                            : o[n],
+                            gravity = e?.inGame?.gravity || 1;
                         (a.show =
                           !(e.inGame ? r?.steel : i?.steel) &&
                           !((e.inGame ? r : i) == undefined ? false : "init" in (e.inGame ? r : i)) &&
@@ -19288,7 +19289,7 @@ var bgOnly = false;
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = i.y);
+                          (a.y = i.y * (gravity));
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -31936,6 +31937,24 @@ var bgOnly = false;
                 () => e.switchButton.affects,
                 () => {
                   switch (e.switchButton.affects) {
+                    case "gravity":
+                      if (e.isEditor) {
+                        return [
+                          y(
+                            {
+                              fileName:
+                                "images/themes/world3/switch-button.png",
+                              width: e.switchButton.width,
+                              height: e.switchButton.height,
+                            },
+                            (t) => {
+                              (t.x = e.switchButton.x),
+                                (t.y = e.switchButton.y);
+                            }
+                          ),
+                        ];
+                      }
+                      return [];
                     case "color":
                       if (e.isEditor) {
                         return [
@@ -34067,6 +34086,23 @@ var bgOnly = false;
                                   });
                                 },
                               },
+                             /*{
+                                name: "Gravity",
+                                selected: "gravity" === t.affects,
+                                onPress: () => {
+                                  i.map((j) => {
+                                    e({
+                                      type: "setProperty",
+                                      array: "switchButtons",
+                                      index: j,
+                                      set: (e) =>
+                                        Object.assign(Object.assign({}, e), {
+                                          affects: "gravity",
+                                        }),
+                                    });
+                                  });
+                                },
+                              },*/
                             ],
                           },
                         ]
@@ -37462,6 +37498,7 @@ var bgOnly = false;
                   playerScale: 1,
                   bgColor: "#00FFFF",
                   flash: 0,
+                  gravity: 1,
                 };
           },
           el = function (e, t) {
@@ -37537,6 +37574,7 @@ var bgOnly = false;
               playerScale: e.playerScale,
               bgColor: e.bgColor,
               flash: e.flash,
+              gravity: e.gravity
             };
           },
           al = v({
@@ -38343,7 +38381,7 @@ var bgOnly = false;
                   ? ((U.playerScale = U.playerScale === 1 ? 0.5 : 1),
                     ((U.playerScaleX = U.playerScale),
                     (U.playerScaleY = U.playerScale)))
-                  : (U.switchBlockSpikes = !U.switchBlockSpikes),
+                  : "gravity" ? (U.gravity = -U.gravity) : (U.switchBlockSpikes = !U.switchBlockSpikes),
                 null == v || v.hitSwitch(),
                 (U.justHitObject = { array: "switchButtons", index: ie });
             }
@@ -43665,6 +43703,10 @@ var bgOnly = false;
                     speedChanges: [],
                   }),
                 }),
+                (e) =>
+                Object.assign(Object.assign({}, e), {
+                  gravity: 1,
+                }),
             ],
             finalSchema: kc({
               frame: fc,
@@ -43727,6 +43769,7 @@ var bgOnly = false;
               playerScale: fc,
               bgColor: mc,
               flash: fc,
+              gravity: fc,
             }),
             uncompress: (e) => e,
             compress: (e) =>
@@ -52193,6 +52236,7 @@ var bgOnly = false;
                   jumpFrames: t.jumpFrames,
                   playerDir: t.playerDir,
                   crashed: t.crashed,
+                  gravity: t.gravity,
                 },
                 (e) => {
                   (e.cameraX = t.cameraX),
@@ -52201,6 +52245,7 @@ var bgOnly = false;
                     (e.speedMultiplier = t.playerSpeedMultiplier),
                     (e.bgColor = t?.bgColor),
                     (e.flash = t?.flash || 0),
+                    (e.gravity = t.gravity || 1),
                     (e.switchBlockSpikes = t.switchBlockSpikes),
                     (e.plain = a(Se).settings.plainBackground),
                     (e.frame = t.frame),
@@ -52266,6 +52311,7 @@ var bgOnly = false;
                   playerScale: t.playerScale,
                   bgColor: t.bgColor,
                   flash: t?.flash,
+                  gravity: t.gravity,
                 },
                 (e) => {
                   (e.frame = t.frame),
@@ -52311,7 +52357,7 @@ var bgOnly = false;
                     (e.y = -t.cameraY),
                     (e.hidePlayer = t.hidePlayer),
                     (e.started = t.started);
-                  (e.flash = t.flash), (e.bgColor = t?.bgColor);
+                  (e.flash = t.flash), (e.bgColor = t?.bgColor), (e.gravity = t.gravity);
                 }
               ),
               Pg.Single(
@@ -52446,12 +52492,14 @@ var bgOnly = false;
                       playerY: t.playerY,
                       cameraY: t.cameraY,
                       info: t.otherPlayersInfo,
+                      gravity: t.gravity
                     },
                     (e) => {
                       (e.playerX = t.playerX),
                         (e.playerY = t.playerY),
                         (e.cameraY = t.cameraY),
-                        (e.info = t.otherPlayersInfo);
+                        (e.info = t.otherPlayersInfo),
+                        (e.gravity = t.gravity);
                     }
                   ),
                 ]
@@ -52509,6 +52557,8 @@ var bgOnly = false;
                       frame: e.frame,
                       paused: e.paused,
                       df: e.df,
+                      cameraY: e.cameraY,
+                      gravity: e.gravity
                     },
                   },
                   (t) => {
@@ -52518,7 +52568,9 @@ var bgOnly = false;
                       (t.inGame.indexes = e.layoutStateIndex.blocks),
                       (t.inGame.frame = e.frame),
                       (t.inGame.paused = e.paused),
-                      (t.inGame.df = e.df);
+                      (t.inGame.df = e.df),
+                      (t.inGame.cameraY = e.cameraY),
+                      (t.inGame.gravity = e.gravity);
                   }
                 ),
                 Za.Single(
@@ -52533,6 +52585,8 @@ var bgOnly = false;
                       df: e.df,
                       playerX: e.playerX,
                       playerY: e.playerY,
+                      cameraY: e.cameraY * e.gravity,
+                      gravity: e.gravity
                     },
                   },
                   (t) => {
@@ -52544,7 +52598,9 @@ var bgOnly = false;
                       (t.inGame.paused = e.paused),
                       (t.inGame.df = e.df),
                       (t.inGame.playerX = e.playerX),
-                      (t.inGame.playerY = e.playerY);
+                      (t.inGame.playerY = e.playerY),
+                      (t.inGame.cameraY = e.cameraY * e.gravity),
+                      (t.inGame.gravity = e.gravity);
                   }
                 ),
                 Qa.Single(
@@ -52800,7 +52856,7 @@ var bgOnly = false;
                     Ao.Single(
                       {
                         x: e.playerX,
-                        y: e.playerY,
+                        y: e.playerY * e.gravity,
                         scaleX: e.playerDir,
                         powerup: e.playerPowerup,
                         isUsing: e.playerUsingPowerup,
@@ -52841,7 +52897,7 @@ var bgOnly = false;
                         No.Single(
                           {
                             x: e.playerX,
-                            y: e.playerY,
+                            y: e.playerY * e.gravity,
                             scaleX: e.playerDir,
                             powerup: e.playerPowerupOut,
                             playerRot: e.playerRot,
@@ -52901,7 +52957,7 @@ var bgOnly = false;
                         qa.Single(
                           {
                             x: e.playerX,
-                            y: e.playerY,
+                            y: e.playerY * e.gravity,
                             justDestroyed: !0,
                             paused: e.paused,
                             trail: e.playerSkin.trail,
@@ -52920,7 +52976,7 @@ var bgOnly = false;
                             Kg.Single(
                               {
                                 x: e.playerX,
-                                y: e.playerY,
+                                y: e.playerY * e.gravity,
                                 playerX: e.playerX,
                                 playerY: e.playerY,
                                 landTimer: e.landTimer,
@@ -53041,7 +53097,7 @@ var bgOnly = false;
                                   {
                                     powerup: e.playerPowerup,
                                     x: e.playerX,
-                                    y: e.playerY,
+                                    y: e.playerY * e.gravity,
                                     scaleX: e.playerDir,
                                     isUsing: e.playerUsingPowerup,
                                     playerRot: e.playerRot * e.playerDir,
@@ -53069,7 +53125,7 @@ var bgOnly = false;
                                 ko.Single(
                                   {
                                     x: e.playerX,
-                                    y: e.playerY,
+                                    y: e.playerY * e.gravity,
                                     scaleX: e.playerDir,
                                     powerup: e.playerPowerupOut,
                                     playerRot: e.playerRot,
@@ -56176,8 +56232,9 @@ var bgOnly = false;
                     ),
                     fadeOutAttempts: Ml(t.mutValues.levelState.bossState),
                     playerScale: t.mutValues.levelState.playerScale,
-                    bgColor: "#FF00FF",
+                    bgColor: "#00FFFF",
                     flash: t?.flash,
+                    gravity: t.gravity,
                   },
                   (a) => {
                     var i, n, s, o, r;
@@ -56266,6 +56323,7 @@ var bgOnly = false;
                       (a.bgColor =
                         t.mutValues.levelState?.bgColor || "#00FFFF"),
                       (a.flash = t.mutValues.levelState?.flash || 0),
+                      (a.gravity = t.mutValues.levelState?.gravity || 0),
                       (a.showAttempts = void 0 === e.editor),
                       (a.tutorial = t.tutorial),
                       (a.hidePlayer = Ll(
@@ -65326,6 +65384,7 @@ var bgOnly = false;
                       e.viewingPlayer.state.mutValues.levelState.playerScale,
                     bgColor: t.bgColor,
                     flash: t?.flash,
+                    gravity: t.gravity
                   },
                   (a) => {
                     var i;
@@ -65391,6 +65450,7 @@ var bgOnly = false;
                       (a.cameraY = t.cameraY);
                     a.bgColor = t?.bgColor;
                     a.flash = t?.flash;
+                    a.gravity = t?.gravity;
                   }
                 ),
               ];
