@@ -60359,7 +60359,7 @@ var bgOnly = false;
                   n.song.author;
               const l = () =>
                 `${s} - ${o} ${localize("by")} ${r} - ${
-                  n.song.bpm}`;
+                  n.song.bpm} BPM`;
               return (
                 l().length > 60 &&
                   ((r = cy.truncate(n.song.author, 10)),
@@ -64417,7 +64417,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.0.5",
+                    text: "v1.0.6",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
