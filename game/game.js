@@ -18378,7 +18378,7 @@ var bgOnly = false;
           //console.warn(e,t,i)
           switch (e) {
             case "blocks":
-              if ("atIndex" in i) {
+              if (i?.atIndex) {
                 i = { ...i };
                 i.index = i.atIndex;
               }
@@ -19324,7 +19324,6 @@ var bgOnly = false;
                       fileName: `images/themes/world1/red-outline.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
-                        console.log(i.midY)
                         var s, o;
                         const r =
                           null ===
@@ -38402,7 +38401,7 @@ var bgOnly = false;
                 );
                 (U.switchButtons.on = e.switchesOn),
                   (U.jumpSwitch.on = e.switchesOn),
-                  (U.switchBlockSpikes = !1),
+                  (U.switchBlockSpikes = false),
                   !e?.retainSpeed && (U.playerSpeedMultiplier = 1),
                   "skateboard" !==
                     (null === (c = U.playerPowerup) || void 0 === c
@@ -42926,7 +42925,7 @@ var bgOnly = false;
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum4, nd.enum9]), Gc([fc, fc, nd.enum4])])
+                  Bc([Gc([fc, fc, nd.enum5, nd.enum9]), Gc([fc, fc, nd.enum5])])
                 ),
                 Oc(
                   Bc([
@@ -64553,7 +64552,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.0.6",
+                    text: "v1.1",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
