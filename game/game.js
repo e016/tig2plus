@@ -38381,7 +38381,7 @@ var bgOnly = false;
                   ? ((U.playerScale = U.playerScale === 1 ? 0.5 : 1),
                     ((U.playerScaleX = U.playerScale),
                     (U.playerScaleY = U.playerScale)))
-                  : "gravity" ? (U.gravity = -U.gravity) : (U.switchBlockSpikes = !U.switchBlockSpikes),
+                  : ("blockSpike" ? (U.switchBlockSpikes = !U.switchBlockSpikes)  : (U.gravity = -U.gravity)),
                 null == v || v.hitSwitch(),
                 (U.justHitObject = { array: "switchButtons", index: ie });
             }
@@ -39326,8 +39326,22 @@ var bgOnly = false;
                 bpm: 116,
                 isBonusSong: false,
               },
+              superUltra: {
+                name: "Super Ultra",
+                author: "MDK",
+                fileName: "audio/tracks/mdk-super-ultra.mp3",
+                bpm: 201,
+                isBonusSong: false,
+              },
+              rummy: {
+                name: "Rum n Bass",
+                author: "BoomKitty",
+                fileName: "audio/tracks/boomkitty-rum-and-bass.mp3",
+                bpm: 132,
+                isBonusSong: true,
+              },
             },
-            getSnippetName: (e) => e.replace("tracks", "snippets"),
+            getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
           pl = 2.5 * G.jumpDistance,
           gl = G.getJumpFrames(130);
@@ -42608,6 +42622,9 @@ var bgOnly = false;
             e[(e.PirateManners = 35)] = "PirateManners";
             e[(e.EightBitShuffle = 36)] = "EightBitShuffle";
             e[(e.FinalTheory = 37)] = "FinalTheory";
+            e[(e.SuperUltra = 38)] = "SuperUltra";
+            e[(e.Rummy = 39)] = "Rummy";
+            
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -42697,6 +42714,8 @@ var bgOnly = false;
             e[(e.PirateManners = 35)] = "PirateManners";
             e[(e.EightBitShuffle = 36)] = "EightBitShuffle";
             e[(e.FinalTheory = 37)] = "FinalTheory";
+            e[(e.SuperUltra = 38)] = "SuperUltra";
+            e[(e.Rummy = 39)] = "Rummy";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -43383,6 +43402,8 @@ var bgOnly = false;
             [Nd.PirateManners]: hl.songs.piratemanners,
             [Nd.EightBitShuffle]: hl.songs.eightBitShuffle,
             [Nd.FinalTheory]: hl.songs.finalTheory,
+            [Nd.SuperUltra]: hl.songs.superUltra,
+            [Nd.Rummy]: hl.songs.rummy,
           },
           Hd = {
             [ld.Rot0]: 0,
