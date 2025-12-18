@@ -16072,7 +16072,6 @@ var bgOnly = false;
                     ? l
                     : "beat",
                 multiplier: e == undefined ? 1 : e?.multiplier || 1,
-                inverse: Math.random() > 0.5
               };
             },
             newEnemy: (e) => {
@@ -16507,9 +16506,14 @@ var bgOnly = false;
                 ? Y().pointInCircle(K(e, t), a)
                 : Y().pointInPolygon(K(e, t), a),
             polygonHitSomething: function (e, t) {
-              return "r" in t
+              try {
+              return ("r" in t)
                 ? Y().testPolygonCircle(e, t)
                 : Y().testPolygonPolygon(e, t);
+                } catch (e) {
+                  console.error(e)
+                  return () => (false)
+                }
             },
             getPlayerPoly: (e, t, a, i, n, s, o) => {
               const r = i * (s ? M + $.skateboardHeight : M),
@@ -17766,7 +17770,6 @@ var bgOnly = false;
             world4: aa,
             world4Boss: ia,
             world4Red: na,
-
           };
         const da = 660;
         function ua(x, y, a, i) {
@@ -18395,7 +18398,7 @@ var bgOnly = false;
             case "spikes":
               return { type: "blockSpikeState" };
             case "saws":
-              return { type: "sawState" };
+              return { type: "sawState", inverse: Math.random() > 0.5 };
             case "directionChanges":
               return { type: "directionChangeState", wasHit: !1 };
             case "speedChanges":
@@ -19273,24 +19276,118 @@ var bgOnly = false;
                       update: (a, i, n) => {
                         var s, o;
                         const r =
-                          null ===
-                            (o =
-                              null === (s = e.inGame) || void 0 === s
-                                ? void 0
-                                : s.blockStates) || void 0 === o
-                            ? void 0
-                            : o[n],
-                            gravity = e?.inGame?.gravity || 1;
+                            null ===
+                              (o =
+                                null === (s = e.inGame) || void 0 === s
+                                  ? void 0
+                                  : s.blockStates) || void 0 === o
+                              ? void 0
+                              : o[n],
+                          gravity = e?.inGame?.gravity || 1;
                         (a.show =
                           !(e.inGame ? r?.steel : i?.steel) &&
-                          !((e.inGame ? r : i) == undefined ? false : "init" in (e.inGame ? r : i)) &&
+                          !((e.inGame ? r : i) == undefined
+                            ? false
+                            : "init" in (e.inGame ? r : i)) &&
                           !(e.inGame ? r?.isVoid : i?.isVoid) &&
                           !(e.inGame ? r?.isBoss : i?.isBoss) &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = i.y * (gravity));
+                          (a.y = i.y * gravity);
+                      },
+                      array: () => e.blocks,
+                      testId: (t, a) => {
+                        var i, n;
+                        return `Block-${
+                          null !==
+                            (n =
+                              null === (i = e.inGame) || void 0 === i
+                                ? void 0
+                                : i.indexes[a]) && void 0 !== n
+                            ? n
+                            : a
+                        }`;
+                      },
+                    }),
+                  ];
+                }
+              ),
+              // outlines
+              O(
+                () => e.theme,
+                () => {
+                  const t = "world3" === e.theme ? 1 : 1;
+                  return [
+                    E({
+                      fileName: `images/themes/world1/red-outline.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        console.log(i.midY)
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.blockStates) || void 0 === o
+                            ? void 0
+                            : o[n];
+                        (a.show =
+                          (e.inGame ? r?.init == "red" : i?.init == "red") &&
+                          !(null == r ? void 0 : r.destroyed)),
+                          (a.width = i.width * t),
+                          (a.height = i.height * t),
+                          (a.x = i.x),
+                          (a.y = i?.midY);
+                      },
+                      array: () => e.blocks,
+                      testId: (t, a) => {
+                        var i, n;
+                        return `Block-${
+                          null !==
+                            (n =
+                              null === (i = e.inGame) || void 0 === i
+                                ? void 0
+                                : i.indexes[a]) && void 0 !== n
+                            ? n
+                            : a
+                        }`;
+                      },
+                    }),
+                  ];
+                }
+              ),
+              O(
+                () => e.theme,
+                () => {
+                  const t = "world3" === e.theme ? 1 : 1;
+                  return [
+                    E({
+                      fileName: `images/themes/world1/blue-outline.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.blockStates) || void 0 === o
+                            ? void 0
+                            : o[n];
+                        (a.show =
+                          !(e.inGame
+                            ? r?.init == undefined
+                              ? true
+                              : r?.init == "red"
+                            : i?.init == "red" || i?.init == undefined) &&
+                          !(null == r ? void 0 : r.destroyed)),
+                          (a.width = i.width * t),
+                          (a.height = i.height * t),
+                          (a.x = i.x),
+                          (a.y = i?.midY);
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -19857,7 +19954,6 @@ var bgOnly = false;
                     }),
                     za.Array({
                       props: (a, i) => {
-                        
                         const n = e.inGame.spikeStates[i];
                         return {
                           objectX: a.x,
@@ -19881,7 +19977,9 @@ var bgOnly = false;
                                 )
                               : y(
                                   {
-                                    fileName: a.isLazer ? `images/themes/world3/bottom/laser-line.png` : `images/themes/${e.theme}/spike.png`,
+                                    fileName: a.isLazer
+                                      ? `images/themes/world3/bottom/laser-line.png`
+                                      : `images/themes/${e.theme}/spike.png`,
                                     width: a.width * t,
                                     height: a.height * t,
                                     rotation: a.rotation,
@@ -29250,6 +29348,8 @@ var bgOnly = false;
               `images/themes/${e.objects.spike}/spike.png`,
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
+              "images/themes/world1/red-outline.png",
+              "images/themes/world1/blue-outline.png",
               "images/themes/world2/block-explosion.png",
               "images/themes/world2/spike-explosion.png",
               "images/themes/world2/gun/bullet.png",
@@ -29746,7 +29846,6 @@ var bgOnly = false;
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
-                      console.warn(t, a, i)
                       const r =
                         null ===
                           (s =
@@ -29764,7 +29863,7 @@ var bgOnly = false;
                         (null === (o = e.inGame) || void 0 === o
                           ? void 0
                           : o.frame) || 0;
-                      t.rotation = ((a?.inverse ? -3 : 3) * l) % 360;
+                      t.rotation = ((r?.inverse ? -3 : 3) * l) % 360;
                     },
                     array: () => e.saws,
                     testId: (e, t) => `Saw-${t}`,
@@ -30838,7 +30937,8 @@ var bgOnly = false;
                                 (t.x = e.enemy.x),
                                   (t.y = e.enemy.y),
                                   (t.frame = e.frame || 7),
-                                  (t.scaleX = e.enemyDir || e.enemy.enemyDir || -1);
+                                  (t.scaleX =
+                                    e.enemyDir || e.enemy.enemyDir || -1);
                               }
                             ),
                           ];
@@ -33317,7 +33417,11 @@ var bgOnly = false;
                     name: localize(Zo(h.type)),
                     object: h,
                     iconName: "images/editor/objects/saw.png",
-                    sprite: eo.Single({ id: "Saws", saws: [$.newSaw()], theme: t.saw }),
+                    sprite: eo.Single({
+                      id: "Saws",
+                      saws: [$.newSaw()],
+                      theme: t.saw,
+                    }),
                     unlocked: e.includes("saws"),
                   },
                   {
@@ -34088,7 +34192,7 @@ var bgOnly = false;
                                   });
                                 },
                               },
-                             /*{
+                              /*{
                                 name: "Gravity",
                                 selected: "gravity" === t.affects,
                                 onPress: () => {
@@ -37576,7 +37680,7 @@ var bgOnly = false;
               playerScale: e.playerScale,
               bgColor: e.bgColor,
               flash: e.flash,
-              gravity: e.gravity
+              gravity: e.gravity,
             };
           },
           al = v({
@@ -38383,7 +38487,9 @@ var bgOnly = false;
                   ? ((U.playerScale = U.playerScale === 1 ? 0.5 : 1),
                     ((U.playerScaleX = U.playerScale),
                     (U.playerScaleY = U.playerScale)))
-                  : ("blockSpike" ? (U.switchBlockSpikes = !U.switchBlockSpikes)  : (U.gravity = -U.gravity)),
+                  : "blockSpike"
+                  ? (U.switchBlockSpikes = !U.switchBlockSpikes)
+                  : (U.gravity = -U.gravity),
                 null == v || v.hitSwitch(),
                 (U.justHitObject = { array: "switchButtons", index: ie });
             }
@@ -41117,7 +41223,7 @@ var bgOnly = false;
           },
           ql = function (e) {
             return [
-              ...Object.values(hl.songs)/*,
+              ...Object.values(hl.songs) /*,
               {
                 name: `${"Custom song"}...`,
                 author: "",
@@ -41126,7 +41232,7 @@ var bgOnly = false;
                 label: "",
                 isBonusSong: !1,
                 custom: !0,
-              },*/
+              },*/,
             ];
           },
           $l = function (e) {},
@@ -42407,9 +42513,11 @@ var bgOnly = false;
                     .map((e) => e.context.map((e) => e.key).join(","))
                     .join(" --- ")
                 ),
-                console.error(`Couldn't decode JSON ${
+                console.error(
+                  `Couldn't decode JSON ${
                     void 0 === e ? String(e) : JSON.stringify(e).slice(0, 10)
-                  }`) /*,
+                  }`
+                ) /*,
                 new Error(
                   `Couldn't decode JSON ${
                     void 0 === e ? String(e) : JSON.stringify(e).slice(0, 10)
@@ -42626,7 +42734,6 @@ var bgOnly = false;
             e[(e.FinalTheory = 37)] = "FinalTheory";
             e[(e.SuperUltra = 38)] = "SuperUltra";
             e[(e.Rummy = 39)] = "Rummy";
-            
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -42993,7 +43100,14 @@ var bgOnly = false;
                     S,
                     switchBlocks,
                   ] = n,
-                  I = (Vd[i] || {fileName: i.fileName, bpm: i.bpm, name: i.name, author: i.author}) || hl.songs.dragonfly,
+                  I =
+                    Vd[i] || {
+                      fileName: i.fileName,
+                      bpm: i.bpm,
+                      name: i.name,
+                      author: i.author,
+                    } ||
+                    hl.songs.dragonfly,
                   _ = G.getJumpFrames(I.bpm),
                   v = jd(o, r.length + c.length + f.length),
                   T = {
@@ -43173,7 +43287,7 @@ var bgOnly = false;
                   a,
                   Number(
                     (Object.entries(Vd).find(([, e]) => e.name === n.name) || [
-                      [n.fileName, n.bpm, n.name, n.author]
+                      [n.fileName, n.bpm, n.name, n.author],
                     ])[0]
                   ),
                   [
@@ -43726,7 +43840,7 @@ var bgOnly = false;
                     speedChanges: [],
                   }),
                 }),
-                (e) =>
+              (e) =>
                 Object.assign(Object.assign({}, e), {
                   gravity: 1,
                 }),
@@ -52380,7 +52494,9 @@ var bgOnly = false;
                     (e.y = -t.cameraY),
                     (e.hidePlayer = t.hidePlayer),
                     (e.started = t.started);
-                  (e.flash = t.flash), (e.bgColor = t?.bgColor), (e.gravity = t.gravity);
+                  (e.flash = t.flash),
+                    (e.bgColor = t?.bgColor),
+                    (e.gravity = t.gravity);
                 }
               ),
               Pg.Single(
@@ -52515,7 +52631,7 @@ var bgOnly = false;
                       playerY: t.playerY,
                       cameraY: t.cameraY,
                       info: t.otherPlayersInfo,
-                      gravity: t.gravity
+                      gravity: t.gravity,
                     },
                     (e) => {
                       (e.playerX = t.playerX),
@@ -52581,7 +52697,7 @@ var bgOnly = false;
                       paused: e.paused,
                       df: e.df,
                       cameraY: e.cameraY,
-                      gravity: e.gravity
+                      gravity: e.gravity,
                     },
                   },
                   (t) => {
@@ -52609,7 +52725,7 @@ var bgOnly = false;
                       playerX: e.playerX,
                       playerY: e.playerY,
                       cameraY: e.cameraY * e.gravity,
-                      gravity: e.gravity
+                      gravity: e.gravity,
                     },
                   },
                   (t) => {
@@ -60376,13 +60492,10 @@ var bgOnly = false;
             .map((e) => {
               const n = e.level;
               let s = n.name,
-                o =
-                  n.song.name,
-                r =
-                  n.song.author;
+                o = n.song.name,
+                r = n.song.author;
               const l = () =>
-                `${s} - ${o} ${localize("by")} ${r} - ${
-                  n.song.bpm} BPM`;
+                `${s} - ${o} ${localize("by")} ${r} - ${n.song.bpm} BPM`;
               return (
                 l().length > 60 &&
                   ((r = cy.truncate(n.song.author, 10)),
@@ -64636,11 +64749,9 @@ var bgOnly = false;
                   hy({
                     id: "LevelEditorMenu",
                     editLevel: (t) => {
-                      
                       p(), e.editLevel(t);
                     },
                     playLevel: (t) => {
-                      
                       p(), e.playEditorLevel(t);
                     },
                     fadeInMusic: m,
@@ -65407,7 +65518,7 @@ var bgOnly = false;
                       e.viewingPlayer.state.mutValues.levelState.playerScale,
                     bgColor: t.bgColor,
                     flash: t?.flash,
-                    gravity: t.gravity
+                    gravity: t.gravity,
                   },
                   (a) => {
                     var i;
