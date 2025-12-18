@@ -16072,6 +16072,7 @@ var bgOnly = false;
                     ? l
                     : "beat",
                 multiplier: e == undefined ? 1 : e?.multiplier || 1,
+                inverse: Math.random() > 0.5
               };
             },
             newEnemy: (e) => {
@@ -29745,6 +29746,7 @@ var bgOnly = false;
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
+                      console.warn(t, a, i)
                       const r =
                         null ===
                           (s =
@@ -29762,7 +29764,7 @@ var bgOnly = false;
                         (null === (o = e.inGame) || void 0 === o
                           ? void 0
                           : o.frame) || 0;
-                      t.rotation = (-3 * l) % 360;
+                      t.rotation = ((a?.inverse ? -3 : 3) * l) % 360;
                     },
                     array: () => e.saws,
                     testId: (e, t) => `Saw-${t}`,
@@ -33315,7 +33317,7 @@ var bgOnly = false;
                     name: localize(Zo(h.type)),
                     object: h,
                     iconName: "images/editor/objects/saw.png",
-                    sprite: eo.Single({ id: "Saws", saws: [h], theme: t.saw }),
+                    sprite: eo.Single({ id: "Saws", saws: [$.newSaw()], theme: t.saw }),
                     unlocked: e.includes("saws"),
                   },
                   {
