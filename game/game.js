@@ -71,33 +71,33 @@ var bgOnly = false;
               (e._fileUploadUrl = e._serverUrl + "/uploader");
           }
           (e._appVersion = ""),
-            (e._debugEnabled = !0),
-            (e._requestInProgress = !1),
-            (e._bundleDelayActive = !1),
+            (e._debugEnabled = true),
+            (e._requestInProgress = false),
+            (e._bundleDelayActive = false),
             (e._statusCodeCache = 403),
             (e._reasonCodeCache = 40304),
             (e._statusMessageCache = "No session"),
             (e._killSwitchThreshold = 11),
-            (e._killSwitchEngaged = !1),
+            (e._killSwitchEngaged = false),
             (e._killSwitchErrorCount = 0),
             (e._killSwitchService = ""),
             (e._killSwitchOperation = ""),
-            (e._isInitialized = !1),
-            (e._isAuthenticated = !1),
+            (e._isInitialized = false),
+            (e._isAuthenticated = false),
             (e.initialize = function (t, a, i) {
               (e._appId = t),
                 (e._secret = a),
                 (e._secretMap = {}),
                 (e._secretMap[t] = a),
                 (e._appVersion = i),
-                (e._isInitialized = !0);
+                (e._isInitialized = true);
             }),
             (e.initializeWithApps = function (t, a, i) {
               (e._appId = t),
                 (e._secret = a[t]),
                 (e._secretMap = a),
                 (e._appVersion = i),
-                (e._isInitialized = !0);
+                (e._isInitialized = true);
             }),
             (e.setServerUrl = function (t) {
               for (
@@ -135,7 +135,7 @@ var bgOnly = false;
             }),
             (e.setSessionId = function (t) {
               null !== t || "" !== t
-                ? (e._isAuthenticated = !0)
+                ? (e._isAuthenticated = true)
                 : (e._packetId = -1),
                 (e._sessionId = t);
             }),
@@ -182,19 +182,19 @@ var bgOnly = false;
               return e._isAuthenticated;
             }),
             (e.setAuthenticated = function () {
-              (e._isAuthenticated = !0), e.startHeartBeat();
+              (e._isAuthenticated = true), e.startHeartBeat();
             }),
             (e.debugLog = function (t, a) {
-              !0 === e._debugEnabled && (a ? console.error(t) : console.log(t));
+              true === e._debugEnabled && (a ? console.error(t) : console.log(t));
             }),
             (e.sendRequest = function (t) {
               e.debugLog("SendRequest: " + JSON.stringify(t)),
                 e._sendQueue.push(t),
                 e._requestInProgress ||
                   e._bundleDelayActive ||
-                  ((e._bundleDelayActive = !0),
+                  ((e._bundleDelayActive = true),
                   setTimeout(function () {
-                    (e._bundleDelayActive = !1), e.processQueue();
+                    (e._bundleDelayActive = false), e.processQueue();
                   }, 0));
             }),
             (e.resetCommunication = function () {
@@ -203,8 +203,8 @@ var bgOnly = false;
                 (e._inProgressQueue = []),
                 (e._sessionId = ""),
                 (e.packetId = -1),
-                (e._isAuthenticated = !1),
-                (e._requestInProgress = !1),
+                (e._isAuthenticated = false),
+                (e._requestInProgress = false),
                 e.resetErrorCache();
             }),
             (e.resetErrorCache = function () {
@@ -223,7 +223,7 @@ var bgOnly = false;
                     e._killSwitchErrorCount++,
                 !e._killSwitchEngaged &&
                   e._killSwitchErrorCount >= e._killSwitchThreshold &&
-                  ((e._killSwitchEngaged = !0),
+                  ((e._killSwitchEngaged = true),
                   e.debugLog(
                     "Client disabled due to repeated errors from a single API call: " +
                       t +
@@ -264,7 +264,7 @@ var bgOnly = false;
                           a[i].status +
                           "): " +
                           JSON.stringify(a[i]),
-                        !0
+                        true
                       );
               for (i = 0; i < e._inProgressQueue.length && i < a.length; ++i) {
                 var n = e._inProgressQueue[i].callback;
@@ -292,7 +292,7 @@ var bgOnly = false;
                     ("LOGOUT" != e._inProgressQueue[i].operation &&
                       "FULL_RESET" != e._inProgressQueue[i].operation)
                       ? "AUTHENTICATE" == e._inProgressQueue[i].operation &&
-                        ((e._isAuthenticated = !0),
+                        ((e._isAuthenticated = true),
                         s.hasOwnProperty("playerSessionExpiry")
                           ? (e._idleTimeout = 0.85 * s.playerSessionExpiry)
                           : (e._idleTimeout = 30),
@@ -301,7 +301,7 @@ var bgOnly = false;
                         e.resetErrorCache(),
                         e.startHeartBeat())
                       : (e.stopHeartBeat(),
-                        (e._isAuthenticated = !1),
+                        (e._isAuthenticated = false),
                         (e._sessionId = ""),
                         (e.authentication.profileId = "")),
                     e._rewardCallback)
@@ -331,7 +331,7 @@ var bgOnly = false;
                     l = a[i].reason_code;
                   (40303 !== l && 40304 !== l && 40356 !== l) ||
                     (e.stopHeartBeat(),
-                    (e._isAuthenticated = !1),
+                    (e._isAuthenticated = false),
                     (e._sessionID = ""),
                     (e._statusCodeCache = r),
                     (e._reasonCodeCache = l),
@@ -372,45 +372,45 @@ var bgOnly = false;
             (e.retry = function () {
               e._retry <= e._packetTimeouts.length
                 ? (e._retry++,
-                  e.debugLog("Retry # " + e._retry.toString(), !1),
+                  e.debugLog("Retry # " + e._retry.toString(), false),
                   1 === e._retry
-                    ? (e.debugLog("Retrying right away", !1), e.performQuery())
+                    ? (e.debugLog("Retrying right away", false), e.performQuery())
                     : (e.debugLog(
                         "Waiting for " +
                           e._packetTimeouts[e._retry - 1] +
                           " sec...",
-                        !1
+                        false
                       ),
                       setTimeout(
                         e.performQuery,
                         1e3 * e._packetTimeouts[e._retry - 1]
                       )))
-                : (e.debugLog("Failed after " + e._retry + " retries.", !0),
+                : (e.debugLog("Failed after " + e._retry + " retries.", true),
                   null != e._errorCallback && e._errorCallback,
                   e.fakeErrorResponse(
                     e.statusCodes.CLIENT_NETWORK_ERROR,
                     e.reasonCodes.CLIENT_NETWORK_ERROR_TIMEOUT,
                     "Request timed out"
                   ),
-                  (e._requestInProgress = !1),
+                  (e._requestInProgress = false),
                   e.processQueue());
             }),
             (e.performQuery = function () {
               var t;
               clearTimeout(e.xml_timeoutId),
                 (e.xml_timeoutId = null),
-                (e._requestInProgress = !0),
+                (e._requestInProgress = true),
                 ((t = window.XMLHttpRequest
                   ? new XMLHttpRequest()
                   : new ActiveXObject("Microsoft.XMLHTTP")).requestId =
                   ++e._requestId),
                 (t.ontimeout_bc = function () {
                   t.readyState < 4 &&
-                    ((t.hasTimedOut = !0),
+                    ((t.hasTimedOut = true),
                     t.abort(),
                     (t.hasTimedOut = null),
                     (e.xml_timeoutId = null),
-                    e.debugLog("timeout", !1),
+                    e.debugLog("timeout", false),
                     e.retry());
                 }),
                 (t.onreadystatechange = function () {
@@ -428,12 +428,12 @@ var bgOnly = false;
                     ) {
                       var a = JSON.parse(t.responseText);
                       e.handleSuccessResponse(a),
-                        (e._requestInProgress = !1),
+                        (e._requestInProgress = false),
                         e.processQueue();
                     } else {
                       if (503 == t.status)
                         return (
-                          e.debugLog("packet in progress", !1), void e.retry()
+                          e.debugLog("packet in progress", false), void e.retry()
                         );
                       try {
                         var i = JSON.parse(t.responseText);
@@ -445,7 +445,7 @@ var bgOnly = false;
                         (reasonCode = 0), (statusMessage = t.responseText);
                       }
                       var n = t.responseText;
-                      e.debugLog("Failed", !0),
+                      e.debugLog("Failed", true),
                         null != e._errorCallback &&
                           "function" == typeof e._errorCallback &&
                           e._errorCallback(n),
@@ -463,7 +463,7 @@ var bgOnly = false;
                   t.ontimeout_bc,
                   1e3 * e._packetTimeouts[0]
                 )),
-                t.open("POST", e._dispatcherUrl, !0),
+                t.open("POST", e._dispatcherUrl, true),
                 t.setRequestHeader("Content-type", "application/json");
               var a = n.MD5(e._jsonedQueue + e._secret);
               t.setRequestHeader("X-SIG", a),
@@ -504,7 +504,7 @@ var bgOnly = false;
                     "Client disabled due to repeated errors from a single API call"
                   );
                 if (!e._isAuthenticated) {
-                  var n = !1;
+                  var n = false;
                   for (i = 0; i < e._inProgressQueue.length; i++)
                     if (
                       "AUTHENTICATE" == e._inProgressQueue[i].operation ||
@@ -513,7 +513,7 @@ var bgOnly = false;
                       "RESET_EMAIL_PASSWORD_ADVANCED" ==
                         e._inProgressQueue[i].operation
                     ) {
-                      n = !0;
+                      n = true;
                       break;
                     }
                   if (!n)
@@ -1244,7 +1244,7 @@ var bgOnly = false;
                 a,
                 e.authentication.AUTHENTICATION_TYPE_HANDOFF,
                 null,
-                !1,
+                false,
                 null,
                 i
               );
@@ -1255,7 +1255,7 @@ var bgOnly = false;
                 "",
                 e.authentication.AUTHENTICATION_TYPE_SETTOP_HANDOFF,
                 null,
-                !1,
+                false,
                 null,
                 a
               );
@@ -1303,10 +1303,10 @@ var bgOnly = false;
               e.brainCloudManager.sendRequest(f);
             }),
             (e.invokeRawAPI = function (t, a, i, n) {
-              var s = !1;
+              var s = false;
               t == e.SERVICE_AUTHENTICATION &&
                 a == e.authentication.OPERATION_AUTHENTICATE &&
-                ((s = !0), e.setSessionId(""));
+                ((s = true), e.setSessionId(""));
               var o = {
                 service: t,
                 operation: a,
@@ -2031,7 +2031,7 @@ var bgOnly = false;
               var s = e.brainCloudManager.getFileUploadUrl(),
                 o = new FormData(),
                 r = a.size;
-              t.open("POST", s, !0),
+              t.open("POST", s, true),
                 o.append("sessionId", e.brainCloudManager.getSessionId()),
                 void 0 !== n && o.append("peerCode", n),
                 o.append("uploadId", i),
@@ -2043,7 +2043,7 @@ var bgOnly = false;
               var s = e.brainCloudManager.getFileUploadUrl(),
                 o = new FormData(),
                 r = a.size;
-              t.open("POST", s, !0),
+              t.open("POST", s, true),
                 o.append("sessionId", e.brainCloudManager.getSessionId()),
                 void 0 !== n && o.append("peerCode", n),
                 o.append("uploadId", i),
@@ -2115,7 +2115,7 @@ var bgOnly = false;
                           i.open(
                             "POST",
                             e.brainCloudManager._fileUploadUrl,
-                            !0
+                            true
                           ),
                           i.send(n));
                   } else o && o(result);
@@ -3742,10 +3742,10 @@ var bgOnly = false;
               );
             }),
             (e.identity.switchToChildProfile = function (t, a, i, n) {
-              e.identity.switchToChildProfileInternal(t, a, i, !1, n);
+              e.identity.switchToChildProfileInternal(t, a, i, false, n);
             }),
             (e.identity.switchToSingletonChildProfile = function (t, a, i) {
-              e.identity.switchToChildProfileInternal(null, t, a, !0, i);
+              e.identity.switchToChildProfileInternal(null, t, a, true, i);
             }),
             (e.identity.attachBlockchainIdentity = function (t, a, i) {
               e.brainCloudManager.sendRequest({
@@ -4044,25 +4044,25 @@ var bgOnly = false;
             } else
               !(function (e, t) {
                 var a,
-                  i = !1,
+                  i = false,
                   n = "http://" + e.url;
                 a = window.XMLHttpRequest
                   ? new XMLHttpRequest()
                   : new ActiveXObject("Microsoft.XMLHTTP");
-                var s = !1,
+                var s = false,
                   o = setTimeout(function () {
-                    (s = !0), a.abort(), t(999);
+                    (s = true), a.abort(), t(999);
                   }, 2e3),
                   r = 0;
                 (a.onreadystatechange = function () {
                   if (!s && a.readyState == XMLHttpRequest.DONE) {
-                    s || clearTimeout(o), 200 == a.status && (i = !0);
+                    s || clearTimeout(o), 200 == a.status && (i = true);
                     var e = new Date().getTime(),
                       n = Math.min(999, e - r);
                     (n < 0 || !i) && (n = 999), t(n);
                   }
                 }),
-                  a.open("GET", n, !0),
+                  a.open("GET", n, true),
                   a.setRequestHeader("Access-Control-Allow-Origin", ":*"),
                   a.setRequestHeader("Access-Control-Allow-Headers", ":*"),
                   (r = new Date().getTime()),
@@ -7943,18 +7943,18 @@ var bgOnly = false;
             (t.ORDERED_BIT = 16384),
             (t.m_client = e),
             (t.name = "BrainCloudRelayComms"),
-            (t.isConnected = !1),
+            (t.isConnected = false),
             (t._cxId = null),
             (t._ownerCxId = null),
             (t._netIdToCxId = {}),
             (t._cxIdToNetId = {}),
-            (t._debugEnabled = !1),
+            (t._debugEnabled = false),
             (t._netId = t.INVALID_NET_ID),
             (t._systemCallback = null),
             (t._relayCallback = null),
             (t._pingIntervalMS = 1e3),
             (t._pingIntervalId = null),
-            (t._pingInFlight = !1),
+            (t._pingInFlight = false),
             (t._pingTime = null),
             (t._sendPacketId = {}),
             (t.ping = 999),
@@ -7991,7 +7991,7 @@ var bgOnly = false;
                 r = e.passcode,
                 l = e.lobbyId;
               if (
-                ((t.isConnected = !1),
+                ((t.isConnected = false),
                 (t.connectCallback = { success: a, failure: i }),
                 (t.connectInfo = { passcode: r, lobbyId: l }),
                 s && o && r && l)
@@ -8017,7 +8017,7 @@ var bgOnly = false;
                   t.socket.removeEventListener("message", t.onSocketMessage),
                   t.socket.close(),
                   (t.socket = null)),
-                (t.isConnected = !1),
+                (t.isConnected = false),
                 (t._sendPacketId = {}),
                 (t._netIdToProfileId = {}),
                 (t._profileIdToNetId = {}),
@@ -8045,7 +8045,7 @@ var bgOnly = false;
             (t.stopPing = function () {
               t._pingIntervalId &&
                 (clearInterval(t._pingIntervalId), (t._pingIntervalId = null)),
-                (t._pingInFlight = !1);
+                (t._pingInFlight = false);
             }),
             (t.startPing = function () {
               t.stopPing(),
@@ -8157,7 +8157,7 @@ var bgOnly = false;
             }),
             (t.sendPing = function () {
               t._debugEnabled && console.log("RELAY SEND PING: " + t.ping),
-                (t._pingInFlight = !0),
+                (t._pingInFlight = true),
                 (t._pingTime = new Date().getTime());
               var e = new Buffer(5);
               e.writeUInt16BE(5, 0),
@@ -8189,7 +8189,7 @@ var bgOnly = false;
               if (i == t.RS2CL_RSMG) t.onRSMG(e);
               else if (i == t.RS2CL_PONG)
                 t._pingInFlight &&
-                  ((t._pingInFlight = !1),
+                  ((t._pingInFlight = false),
                   (t.ping = Math.min(999, new Date().getTime() - t._pingTime))),
                   t._debugEnabled && console.log("RELAY RECV PONG: " + t.ping);
               else if (i == t.RS2CL_ACK);
@@ -8217,7 +8217,7 @@ var bgOnly = false;
                       (t.isConnected ||
                         ((t._netId = n.netId),
                         (t._ownerCxId = n.ownerCxId),
-                        (t.isConnected = !0),
+                        (t.isConnected = true),
                         t.startPing(),
                         t.connectCallback.success &&
                           t.connectCallback.success(n)));
@@ -8295,7 +8295,7 @@ var bgOnly = false;
           K.apply(
             (window.brainCloudRelayComms = window.brainCloudRelayComms || {})
           );
-        var Z = !1,
+        var Z = false,
           ee = null;
         function te(e) {
           var t = this;
@@ -8312,7 +8312,7 @@ var bgOnly = false;
             (t._rttConnectionStatus = t.RTTConnectionStatus.DISCONNECTED),
             (t.auth = {}),
             (t.callbacks = {}),
-            (t._debugEnabled = !1),
+            (t._debugEnabled = false),
             (t.connectionId = null),
             (t.setDebugEnabled = function (e) {
               t._debugEnabled = e;
@@ -8419,7 +8419,7 @@ var bgOnly = false;
                           t.startHeartbeat(),
                           t.connectCallback.success(e))
                         : "DISCONNECT" == e.operation &&
-                          ((Z = !0),
+                          ((Z = true),
                           (ee = {
                             severity: "ERROR",
                             reason: e.data.reason,
@@ -8471,7 +8471,7 @@ var bgOnly = false;
                 t.callbacks[e.service] && t.callbacks[e.service](e);
             }),
             (t.enableRTT = function (a, i) {
-              (Z = !1),
+              (Z = false),
                 t.isRTTEnabled() ||
                   t._rttConnectionStatus == t.RTTConnectionStatus.CONNECTING ||
                   ((t.connectCallback = { success: a, failure: i }),
@@ -8582,7 +8582,7 @@ var bgOnly = false;
                 (t.brainCloudClient = window.brainCloudClient =
                   window.brainCloudClient || {})),
             (t.wrapperName = void 0 === e ? "" : e),
-            (t._alwaysAllowProfileSwitch = !0),
+            (t._alwaysAllowProfileSwitch = true),
             (t._initializeIdentity = function (e) {
               var a = t.getStoredProfileId(),
                 i = t.getStoredAnonymousId();
@@ -8653,16 +8653,16 @@ var bgOnly = false;
               t._alwaysAllowProfileSwitch = e;
             }),
             (t.authenticateAnonymous = function (e) {
-              t._initializeIdentity(!0),
+              t._initializeIdentity(true),
                 t.brainCloudClient.authentication.authenticateAnonymous(
-                  !0,
+                  true,
                   function (a) {
                     t._authResponseHandler(a), e(a);
                   }
                 );
             }),
             (t.authenticateEmailPassword = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateEmailPassword(
                   e,
                   a,
@@ -8673,7 +8673,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateExternal = function (e, a, i, n, s) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateExternal(
                   e,
                   a,
@@ -8685,7 +8685,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateFacebook = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateFacebook(
                   e,
                   a,
@@ -8696,7 +8696,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateFacebookLimited = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateFacebookLimited(
                   e,
                   a,
@@ -8707,7 +8707,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateGameCenter = function (e, a, i) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateGameCenter(
                   e,
                   a,
@@ -8717,7 +8717,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateApple = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateApple(
                   e,
                   a,
@@ -8728,7 +8728,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateUltra = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateUltra(
                   e,
                   a,
@@ -8739,7 +8739,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateGoogle = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateGoogle(
                   e,
                   a,
@@ -8750,7 +8750,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateGoogleOpenId = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateGoogleOpenId(
                   e,
                   a,
@@ -8761,7 +8761,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateSteam = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateSteam(
                   e,
                   a,
@@ -8772,7 +8772,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateTwitter = function (e, a, i, n, s) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateTwitter(
                   e,
                   a,
@@ -8784,7 +8784,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateUniversal = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateUniversal(
                   e,
                   a,
@@ -8795,7 +8795,7 @@ var bgOnly = false;
                 );
             }),
             (t.authenticateAdvanced = function (e, a, i, n, s) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 t.brainCloudClient.authentication.authenticateAdvanced(
                   e,
                   a,
@@ -8812,7 +8812,7 @@ var bgOnly = false;
                 a,
                 bc.authentication.AUTHENTICATION_TYPE_HANDOFF,
                 null,
-                !1,
+                false,
                 i
               );
             }),
@@ -8822,12 +8822,12 @@ var bgOnly = false;
                 "",
                 bc.authentication.AUTHENTICATION_TYPE_SETTOP_HANDOFF,
                 null,
-                !1,
+                false,
                 a
               );
             }),
             (t.smartSwitchAuthenticateEmailPassword = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateEmailPassword(
                     e,
@@ -8843,7 +8843,7 @@ var bgOnly = false;
                 );
             }),
             (t.smartSwitchAuthenticateExternal = function (e, a, i, n, s) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateExternal(
                     e,
@@ -8859,7 +8859,7 @@ var bgOnly = false;
                 );
             }),
             (t.smartSwitchAuthenticateFacebook = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateFacebook(
                     e,
@@ -8875,7 +8875,7 @@ var bgOnly = false;
                 );
             }),
             (t.smartSwitchAuthenticateFacebookLimited = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateFacebookLimited(
                     e,
@@ -8891,7 +8891,7 @@ var bgOnly = false;
                 );
             }),
             (t.smartSwitchAuthenticateGameCenter = function (e, a, i) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateGameCenter(
                     e,
@@ -8906,7 +8906,7 @@ var bgOnly = false;
                 );
             }),
             (t.smartSwitchAuthenticateGoogle = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateGoogle(
                     e,
@@ -8922,7 +8922,7 @@ var bgOnly = false;
                 );
             }),
             (t.smartSwitchAuthenticateUltra = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateUltra(
                     e,
@@ -8938,7 +8938,7 @@ var bgOnly = false;
                 );
             }),
             (t.smartSwitchAuthenticateSteam = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateSteam(
                     e,
@@ -8954,7 +8954,7 @@ var bgOnly = false;
                 );
             }),
             (t.smartSwitchAuthenticateTwitter = function (e, a, i, n, s) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateTwitter(
                     e,
@@ -8971,7 +8971,7 @@ var bgOnly = false;
                 );
             }),
             (t.smartSwitchAuthenticateUniversal = function (e, a, i, n) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateUniversal(
                     e,
@@ -8987,7 +8987,7 @@ var bgOnly = false;
                 );
             }),
             (t.smartSwitchAuthenticateAdvanced = function (e, a, i, n, s) {
-              t._initializeIdentity(!1),
+              t._initializeIdentity(false),
                 (authenticationCallback = function () {
                   t.brainCloudClient.authentication.authenticateAdvanced(
                     e,
@@ -9086,7 +9086,7 @@ var bgOnly = false;
               var a = t.getStoredProfileId(),
                 i = t.getStoredAnonymousId();
               t.brainCloudClient.initializeIdentity(a, i),
-                (t.brainCloudClient.brainCloudManager._isAuthenticated = !0),
+                (t.brainCloudClient.brainCloudManager._isAuthenticated = true),
                 (t.brainCloudClient.brainCloudManager._packetId =
                   localStorage.getItem("lastPacketId"));
               var n = t.getStoredSessionId();
@@ -9354,7 +9354,7 @@ var bgOnly = false;
               })),
             (s.StreamCipher = h.extend({
               _doFinalize: function () {
-                return this._process(!0);
+                return this._process(true);
               },
               blockSize: 1,
             })),
@@ -9449,8 +9449,8 @@ var bgOnly = false;
                 return (
                   this._xformMode == this._ENC_XFORM_MODE
                     ? (t.pad(this._data, this.blockSize),
-                      (e = this._process(!0)))
-                    : ((e = this._process(!0)), t.unpad(e)),
+                      (e = this._process(true)))
+                    : ((e = this._process(true)), t.unpad(e)),
                   e
                 );
               },
@@ -9853,7 +9853,7 @@ var bgOnly = false;
           ((i = a(8249)),
           (s = (n = i).lib.WordArray),
           (n.enc.Base64url = {
-            stringify: function (e, t = !0) {
+            stringify: function (e, t = true) {
               var a = e.words,
                 i = e.sigBytes,
                 n = t ? this._safe_map : this._map;
@@ -9875,7 +9875,7 @@ var bgOnly = false;
               if (c) for (; s.length % 4; ) s.push(c);
               return s.join("");
             },
-            parse: function (e, t = !0) {
+            parse: function (e, t = true) {
               var a = e.length,
                 i = t ? this._safe_map : this._map,
                 n = this._reverseMap;
@@ -11247,8 +11247,8 @@ var bgOnly = false;
             !(function () {
               function t(t) {
                 for (var a = e.sqrt(t), i = 2; i <= a; i++)
-                  if (!(t % i)) return !1;
-                return !0;
+                  if (!(t % i)) return false;
+                return true;
               }
               function a(e) {
                 return (4294967296 * (e - (0 | e))) | 0;
@@ -12609,7 +12609,7 @@ var bgOnly = false;
             return setTimeout(I(e, a), t);
           }
           function m(e, t, a) {
-            return !!Array.isArray(e) && (f(e, a[t], a), !0);
+            return !!Array.isArray(e) && (f(e, a[t], a), true);
           }
           function f(e, t, a) {
             var i;
@@ -12660,7 +12660,7 @@ var bgOnly = false;
             ),
             b = y(
               function (e, t) {
-                return E(e, t, !0);
+                return E(e, t, true);
               },
               "merge",
               "Use `assign`."
@@ -12685,20 +12685,20 @@ var bgOnly = false;
           }
           function T(e, t, a) {
             f(w(t), function (t) {
-              e.addEventListener(t, a, !1);
+              e.addEventListener(t, a, false);
             });
           }
           function R(e, t, a) {
             f(w(t), function (t) {
-              e.removeEventListener(t, a, !1);
+              e.removeEventListener(t, a, false);
             });
           }
           function O(e, t) {
             for (; e; ) {
-              if (e == t) return !0;
+              if (e == t) return true;
               e = e.parentNode;
             }
-            return !1;
+            return false;
           }
           function C(e, t) {
             return e.indexOf(t) > -1;
@@ -12784,7 +12784,7 @@ var bgOnly = false;
                 a.firstInput || (a.firstInput = H(t)),
                   n > 1 && !a.firstMultiple
                     ? (a.firstMultiple = H(t))
-                    : 1 === n && (a.firstMultiple = !1);
+                    : 1 === n && (a.firstMultiple = false);
                 var s = a.firstInput,
                   o = a.firstMultiple,
                   l = o ? o.center : s.center,
@@ -12927,16 +12927,16 @@ var bgOnly = false;
           function Z() {
             (this.evEl = K),
               (this.evWin = Q),
-              (this.pressed = !1),
+              (this.pressed = false),
               G.apply(this, arguments);
           }
           S(Z, G, {
             handler: function (e) {
               var t = J[e.type];
-              1 & t && 0 === e.button && (this.pressed = !0),
+              1 & t && 0 === e.button && (this.pressed = true),
                 2 & t && 1 !== e.which && (t = 4),
                 this.pressed &&
-                  (4 & t && (this.pressed = !1),
+                  (4 & t && (this.pressed = false),
                   this.callback(this.manager, t, {
                     pointers: [e],
                     changedPointers: [e],
@@ -12968,7 +12968,7 @@ var bgOnly = false;
             S(ne, G, {
               handler: function (e) {
                 var t = this.store,
-                  a = !1,
+                  a = false,
                   i = e.type.toLowerCase().replace("ms", ""),
                   n = ee[i],
                   s = te[e.pointerType] || e.pointerType,
@@ -12976,7 +12976,7 @@ var bgOnly = false;
                   r = A(t, e.pointerId, "pointerId");
                 1 & n && (0 === e.button || o)
                   ? r < 0 && (t.push(e), (r = t.length - 1))
-                  : 12 & n && (a = !0),
+                  : 12 & n && (a = true),
                   r < 0 ||
                     ((t[r] = e),
                     this.callback(this.manager, n, {
@@ -12994,20 +12994,20 @@ var bgOnly = false;
           function le() {
             (this.evTarget = oe),
               (this.evWin = re),
-              (this.started = !1),
+              (this.started = false),
               G.apply(this, arguments);
           }
           function ce(e, t) {
             var a = k(e.touches),
               i = k(e.changedTouches);
-            return 12 & t && (a = N(a.concat(i), "identifier", !0)), [a, i];
+            return 12 & t && (a = N(a.concat(i), "identifier", true)), [a, i];
           }
           S(le, G, {
             handler: function (e) {
               var t = se[e.type];
-              if ((1 === t && (this.started = !0), this.started)) {
+              if ((1 === t && (this.started = true), this.started)) {
                 var a = ce.call(this, e, t);
-                12 & t && a[0].length - a[1].length == 0 && (this.started = !1),
+                12 & t && a[0].length - a[1].length == 0 && (this.started = false),
                   this.callback(this.manager, t, {
                     pointers: a[0],
                     changedPointers: a[1],
@@ -13028,7 +13028,7 @@ var bgOnly = false;
             var a = k(e.touches),
               i = this.targetIds;
             if (3 & t && 1 === a.length)
-              return (i[a[0].identifier] = !0), [a, a];
+              return (i[a[0].identifier] = true), [a, a];
             var n,
               s,
               o = k(e.changedTouches),
@@ -13040,12 +13040,12 @@ var bgOnly = false;
               })),
               1 === t)
             )
-              for (n = 0; n < s.length; ) (i[s[n].identifier] = !0), n++;
+              for (n = 0; n < s.length; ) (i[s[n].identifier] = true), n++;
             for (n = 0; n < o.length; )
               i[o[n].identifier] && r.push(o[n]),
                 12 & t && delete i[o[n].identifier],
                 n++;
-            return r.length ? [N(s.concat(r), "identifier", !0), r] : void 0;
+            return r.length ? [N(s.concat(r), "identifier", true), r] : void 0;
           }
           function ge() {
             G.apply(this, arguments);
@@ -13082,9 +13082,9 @@ var bgOnly = false;
               var n = this.lastTouches[i],
                 s = Math.abs(t - n.x),
                 o = Math.abs(a - n.y);
-              if (s <= 25 && o <= 25) return !0;
+              if (s <= 25 && o <= 25) return true;
             }
-            return !1;
+            return false;
           }
           S(he, G, {
             handler: function (e) {
@@ -13128,7 +13128,7 @@ var bgOnly = false;
             Te = "pan-x",
             Re = "pan-y",
             Oe = (function () {
-              if (!be) return !1;
+              if (!be) return false;
               var e = {},
                 t = n.CSS && n.CSS.supports;
               return (
@@ -13205,7 +13205,7 @@ var bgOnly = false;
               }
             },
             preventSrc: function (e) {
-              (this.manager.session.prevented = !0), e.preventDefault();
+              (this.manager.session.prevented = true), e.preventDefault();
             },
           };
           var we = 32;
@@ -13213,7 +13213,7 @@ var bgOnly = false;
             (this.options = l({}, this.defaults, e || {})),
               (this.id = P++),
               (this.manager = null),
-              (this.options.enable = v(this.options.enable, !0)),
+              (this.options.enable = v(this.options.enable, true)),
               (this.state = 1),
               (this.simultaneous = {}),
               (this.requireFail = []);
@@ -13266,8 +13266,8 @@ var bgOnly = false;
           }
           function Ye() {
             Ae.apply(this, arguments),
-              (this.pTime = !1),
-              (this.pCenter = !1),
+              (this.pTime = false),
+              (this.pCenter = false),
               (this._timer = null),
               (this._input = null),
               (this.count = 0);
@@ -13292,7 +13292,7 @@ var bgOnly = false;
               (this.input = new (this.options.inputClass ||
                 (D ? ne : B ? he : L ? ge : Z))(this, V)),
               (this.touchAction = new Ce(this, this.options.touchAction)),
-              Ge(this, !0),
+              Ge(this, true),
               f(
                 this.options.recognizers,
                 function (e) {
@@ -13377,10 +13377,10 @@ var bgOnly = false;
             },
             canEmit: function () {
               for (var e = 0; e < this.requireFail.length; ) {
-                if (!(33 & this.requireFail[e].state)) return !1;
+                if (!(33 & this.requireFail[e].state)) return false;
                 e++;
               }
-              return !0;
+              return true;
             },
             recognize: function (e) {
               var t = l({}, e);
@@ -13430,7 +13430,7 @@ var bgOnly = false;
               },
               directionTest: function (e) {
                 var t = this.options,
-                  a = !0,
+                  a = true,
                   i = e.distance,
                   n = e.direction,
                   s = e.deltaX,
@@ -13638,14 +13638,14 @@ var bgOnly = false;
             }),
             (Ue.VERSION = "2.0.7"),
             (Ue.defaults = {
-              domEvents: !1,
+              domEvents: false,
               touchAction: Se,
-              enable: !0,
+              enable: true,
               inputTarget: null,
               inputClass: null,
               preset: [
-                [Be, { enable: !1 }],
-                [Le, { enable: !1 }, ["rotate"]],
+                [Be, { enable: false }],
+                [Le, { enable: false }, ["rotate"]],
                 [Fe, { direction: 6 }],
                 [Me, { direction: 6 }, ["swipe"]],
                 [Ye],
@@ -13745,7 +13745,7 @@ var bgOnly = false;
                 this.options.domEvents &&
                   (function (e, t) {
                     var a = s.createEvent("Event");
-                    a.initEvent(e, !0, !0),
+                    a.initEvent(e, true, true),
                       (a.gesture = t),
                       t.target.dispatchEvent(a);
                   })(e, t);
@@ -13759,7 +13759,7 @@ var bgOnly = false;
                 }
               },
               destroy: function () {
-                this.element && Ge(this, !1),
+                this.element && Ge(this, false),
                   (this.handlers = {}),
                   (this.session = {}),
                   this.input.destroy(),
@@ -13908,7 +13908,7 @@ var bgOnly = false;
                 ? self
                 : {},
             i = function (e, t) {
-              if (((t = t.split(":")[0]), !(e = +e))) return !1;
+              if (((t = t.split(":")[0]), !(e = +e))) return false;
               switch (t) {
                 case "http":
                 case "ws":
@@ -13921,7 +13921,7 @@ var bgOnly = false;
                 case "gopher":
                   return 70 !== e;
                 case "file":
-                  return !1;
+                  return false;
               }
               return 0 !== e;
             },
@@ -14106,7 +14106,7 @@ var bgOnly = false;
                         .concat(e.split("/")),
                       i = a.length,
                       n = a[i - 1],
-                      s = !1,
+                      s = false,
                       o = 0;
                     i--;
 
@@ -14115,7 +14115,7 @@ var bgOnly = false;
                       ? a.splice(i, 1)
                       : ".." === a[i]
                       ? (a.splice(i, 1), o++)
-                      : o && (0 === i && (s = !0), a.splice(i, 1), o--);
+                      : o && (0 === i && (s = true), a.splice(i, 1), o--);
                   return (
                     s && a.unshift(""),
                     ("." !== n && ".." !== n) || a.push(""),
@@ -14275,7 +14275,7 @@ var bgOnly = false;
                 (s.forEach(function (i) {
                   a.length > 0 ? i.apply(t, a) : i.call(t, e);
                 }),
-                !0)
+                true)
               );
             });
           var T = function () {
@@ -14364,8 +14364,8 @@ var bgOnly = false;
             (k.prototype.stopImmediatePropagation = function () {}),
             (k.prototype.initEvent = function (e, t, a) {
               void 0 === e && (e = "undefined"),
-                void 0 === t && (t = !1),
-                void 0 === a && (a = !1),
+                void 0 === t && (t = false),
+                void 0 === a && (a = false),
                 (this.type = "" + e),
                 (this.bubbles = Boolean(t)),
                 (this.cancelable = Boolean(a));
@@ -14387,13 +14387,13 @@ var bgOnly = false;
                   (this.timeStamp = Date.now()),
                   (this.target = null),
                   (this.srcElement = null),
-                  (this.returnValue = !0),
-                  (this.isTrusted = !1),
+                  (this.returnValue = true),
+                  (this.isTrusted = false),
                   (this.eventPhase = 0),
-                  (this.defaultPrevented = !1),
+                  (this.defaultPrevented = false),
                   (this.currentTarget = null),
                   (this.cancelable = !!n && Boolean(n)),
-                  (this.canncelBubble = !1),
+                  (this.canncelBubble = false),
                   (this.bubbles = !!i && Boolean(i));
               }
               return (
@@ -14425,13 +14425,13 @@ var bgOnly = false;
                   (this.timeStamp = Date.now()),
                   (this.target = null),
                   (this.srcElement = null),
-                  (this.returnValue = !0),
-                  (this.isTrusted = !1),
+                  (this.returnValue = true),
+                  (this.isTrusted = false),
                   (this.eventPhase = 0),
-                  (this.defaultPrevented = !1),
+                  (this.defaultPrevented = false),
                   (this.currentTarget = null),
                   (this.cancelable = !!n && Boolean(n)),
-                  (this.canncelBubble = !1),
+                  (this.canncelBubble = false),
                   (this.bubbles = !!i && Boolean(i)),
                   (this.origin = "" + o),
                   (this.ports = void 0 === l ? null : l),
@@ -14465,13 +14465,13 @@ var bgOnly = false;
                   (this.timeStamp = Date.now()),
                   (this.target = null),
                   (this.srcElement = null),
-                  (this.returnValue = !0),
-                  (this.isTrusted = !1),
+                  (this.returnValue = true),
+                  (this.isTrusted = false),
                   (this.eventPhase = 0),
-                  (this.defaultPrevented = !1),
+                  (this.defaultPrevented = false),
                   (this.currentTarget = null),
                   (this.cancelable = !!n && Boolean(n)),
-                  (this.cancelBubble = !1),
+                  (this.cancelBubble = false),
                   (this.bubbles = !!i && Boolean(i)),
                   (this.code = "number" == typeof s ? parseInt(s, 10) : 0),
                   (this.reason = "" + (o || "")),
@@ -14793,7 +14793,7 @@ var bgOnly = false;
                             target: e.target,
                             code: t,
                             reason: a,
-                            wasClean: !1,
+                            wasClean: false,
                           }),
                           s = M({ type: "error", target: e.target });
                         b(function () {
@@ -15102,7 +15102,7 @@ var bgOnly = false;
                   a[i] = arguments[i + 1];
                 var n = e.type,
                   s = this.listeners[n];
-                if (!Array.isArray(s)) return !1;
+                if (!Array.isArray(s)) return false;
                 s.forEach(function (i) {
                   a.length > 0 ? i.apply(t, a) : i.call(t, e.data ? e.data : e);
                 });
@@ -15124,7 +15124,7 @@ var bgOnly = false;
           (e.Server = z),
             (e.WebSocket = W),
             (e.SocketIO = q),
-            Object.defineProperty(e, "__esModule", { value: !0 });
+            Object.defineProperty(e, "__esModule", { value: true });
         })(t);
       },
       6154: (e, t, a) => {
@@ -15228,7 +15228,7 @@ var bgOnly = false;
               e
             ),
             update: t,
-            isMut: !0,
+            isMut: true,
           }),
           d = ({ props: e, mask: t, update: a, array: i, testId: n }) => ({
             type: "textArray",
@@ -15238,7 +15238,7 @@ var bgOnly = false;
             update: a,
             testId: n,
             array: i,
-            isMut: !0,
+            isMut: true,
           }),
           u = (e, t) => ({
             type: "circle",
@@ -15252,7 +15252,7 @@ var bgOnly = false;
               e
             ),
             update: t,
-            isMut: !0,
+            isMut: true,
           }),
           h = ({ props: e, mask: t, update: a, array: i, testId: n }) => ({
             type: "circleArray",
@@ -15262,7 +15262,7 @@ var bgOnly = false;
             update: a,
             testId: n,
             array: i,
-            isMut: !0,
+            isMut: true,
           }),
           p = (e, t) => ({
             type: "rectangle",
@@ -15277,7 +15277,7 @@ var bgOnly = false;
               e
             ),
             update: t,
-            isMut: !0,
+            isMut: true,
           }),
           g = ({ props: e, mask: t, update: a, array: i, testId: n }) => ({
             type: "rectangleArray",
@@ -15287,7 +15287,7 @@ var bgOnly = false;
             update: a,
             testId: n,
             array: i,
-            isMut: !0,
+            isMut: true,
           }),
           m = (e, t) => {
             var a;
@@ -15307,7 +15307,7 @@ var bgOnly = false;
                 e
               ),
               update: t,
-              isMut: !0,
+              isMut: true,
             };
           },
           f = ({ props: e, mask: t, update: a, array: i, testId: n }) => ({
@@ -15318,7 +15318,7 @@ var bgOnly = false;
             update: a,
             testId: n,
             array: i,
-            isMut: !0,
+            isMut: true,
           }),
           y = (e, t) => ({
             type: "image",
@@ -15332,7 +15332,7 @@ var bgOnly = false;
               e
             ),
             update: t,
-            isMut: !0,
+            isMut: true,
           }),
           E = ({
             props: e,
@@ -15350,7 +15350,7 @@ var bgOnly = false;
             update: i,
             testId: s,
             array: n,
-            isMut: !0,
+            isMut: true,
           }),
           b = (e, t) => ({
             type: "spriteSheet",
@@ -15367,7 +15367,7 @@ var bgOnly = false;
               e
             ),
             update: t,
-            isMut: !0,
+            isMut: true,
           });
         function S(e) {
           return function (t) {
@@ -15485,11 +15485,11 @@ var bgOnly = false;
             },
             loop: ({ props: e, state: t, utils: a }) => {
               const i = t.domId;
-              let n = !1;
+              let n = false;
               for (const [a, i] of Object.entries(e)) {
                 for (const [e, s] of Object.entries(t.storedProps))
                   if (a === e && i !== s && !N.includes(a)) {
-                    n = !0;
+                    n = true;
                     break;
                   }
                 if (n) break;
@@ -15762,7 +15762,7 @@ var bgOnly = false;
                     ? o
                     : 15,
                 snapSize: { offsetY: 7.5 },
-                canJumpThrough: !0,
+                canJumpThrough: true,
                 movement:
                   null !== (r = null == e ? void 0 : e.movement) && void 0 !== r
                     ? r
@@ -15831,7 +15831,7 @@ var bgOnly = false;
                 isVoid: e == undefined ? false : e?.isVoid || false,
                 isBoss: e == undefined ? false : e?.isBoss || false,
                 rotation: 0,
-                skipMissiles: !1,
+                skipMissiles: false,
                 snapSize: null == e ? void 0 : e.snapSize,
               };
             },
@@ -15860,7 +15860,7 @@ var bgOnly = false;
                 steel: e != undefined && (e?.steel || false),
                 isVoid: e != undefined && (e?.isVoid || false),
                 isBoss: e == undefined ? false : e?.isBoss || false,
-                skipMissiles: !1,
+                skipMissiles: false,
                 snapSize: { offsetX: 7.5, offsetY: 7.5 },
               };
             },
@@ -16654,7 +16654,7 @@ var bgOnly = false;
           pe = (e, t, a, i, n) => {
             const s = n % 360;
             let o, r, l;
-            switch (!0) {
+            switch (true) {
               case s <= 45:
                 (o = B.toRad(s)), (r = ue * a), (l = ue * i);
                 break;
@@ -16685,7 +16685,7 @@ var bgOnly = false;
           me = (e, t, a, i, n, s) => {
             const o = n % 360;
             let r, l, c, d;
-            switch (!0) {
+            switch (true) {
               case o <= 45:
                 (r = B.toRad(o - 90)), (l = ue * a), (c = ue * i), (d = 1);
                 break;
@@ -16836,7 +16836,7 @@ var bgOnly = false;
                 de.pooledPlayerPoly1
               );
               return (t) => {
-                if (t.x > e + t.width + ue || t.x < e - t.width - ue) return !1;
+                if (t.x > e + t.width + ue || t.x < e - t.width - ue) return false;
                 const a = de.getObjectPolygon(t, o);
                 return de.polygonHitSomething(r, a);
               };
@@ -16916,7 +16916,7 @@ var bgOnly = false;
           },
           Se = A(),
           Ie = S({
-            init: () => ({ isPressed: !1 }),
+            init: () => ({ isPressed: false }),
             loop({
               state: e,
               getInputs: t,
@@ -16950,10 +16950,10 @@ var bgOnly = false;
                 g && c ? d(i) : m && n && !f() ? d(n) : y && d(() => null),
                 y && (m || c)
                   ? (d(() => {
-                      l(() => ({ isPressed: !0 }));
+                      l(() => ({ isPressed: true }));
                     }),
                     e)
-                  : { isPressed: !1 }
+                  : { isPressed: false }
               );
             },
             render: ({
@@ -16962,7 +16962,7 @@ var bgOnly = false;
             }) => e(!t && a),
           }),
           _e = v({
-            init: () => ({ isPressed: !1 }),
+            init: () => ({ isPressed: false }),
             loop({ state: e, getInputs: t, props: a, getContext: i }) {
               if (a.disabled) return;
               const { addToOnPressQueue: n } = i(Se),
@@ -16982,15 +16982,15 @@ var bgOnly = false;
                 : u && n(() => null),
                 u && (c || e.isPressed)
                   ? n(() => {
-                      e.isPressed = !0;
+                      e.isPressed = true;
                     })
-                  : (e.isPressed = !1);
+                  : (e.isPressed = false);
             },
             render: ({ props: e, state: t }) => [
               R(
                 () => t.isPressed && !e.disabled,
-                () => e.sprites(!0),
-                () => e.sprites(!1)
+                () => e.sprites(true),
+                () => e.sprites(false)
               ),
             ],
           }),
@@ -17456,14 +17456,14 @@ var bgOnly = false;
             fileName: "tester",
             size: 66,
             trail: ct({ topColour: "#FFF142", bottomColour: "#C57700" }),
-            hidden: !0,
+            hidden: true,
           },
           Xt = {
             name: "Dev",
             fileName: "dev",
             size: 47,
             trail: ct(),
-            hidden: !0,
+            hidden: true,
           },
           zt = {
             default: dt,
@@ -17536,7 +17536,7 @@ var bgOnly = false;
               fileName: "blank",
               size: 47,
               trail: ct(),
-              hidden: !0,
+              hidden: true,
             },
             dev: Xt,
           },
@@ -17563,7 +17563,7 @@ var bgOnly = false;
               saw: "world2",
               bottom: "world2",
             },
-            isBonusTheme: !1,
+            isBonusTheme: false,
           },
           $t = Object.assign(Object.assign({}, qt), {
             id: "world2Red",
@@ -17586,7 +17586,7 @@ var bgOnly = false;
               saw: "world1",
               bottom: "world1",
             },
-            isBonusTheme: !1,
+            isBonusTheme: false,
           },
           Kt = Object.assign(Object.assign({}, Jt), {
             id: "red",
@@ -17618,7 +17618,7 @@ var bgOnly = false;
               saw: "world1",
               bottom: "world3",
             },
-            isBonusTheme: !1,
+            isBonusTheme: false,
           },
           ea = Object.assign(Object.assign({}, Zt), {
             id: "world3Red",
@@ -17647,7 +17647,7 @@ var bgOnly = false;
               saw: "world1",
               bottom: "world4",
             },
-            isBonusTheme: !1,
+            isBonusTheme: false,
           },
           ia = Object.assign(Object.assign({}, aa), {
             id: "world4Boss",
@@ -17675,7 +17675,7 @@ var bgOnly = false;
               saw: "skater",
               bottom: "world1",
             },
-            isBonusTheme: !0,
+            isBonusTheme: true,
           },
           oa = {
             id: "speed",
@@ -17692,7 +17692,7 @@ var bgOnly = false;
               saw: "world1",
               bottom: "world3",
             },
-            isBonusTheme: !0,
+            isBonusTheme: true,
           },
           ra = {
             id: "dreamy",
@@ -17709,7 +17709,7 @@ var bgOnly = false;
               saw: "world1",
               bottom: "world1",
             },
-            isBonusTheme: !0,
+            isBonusTheme: true,
           },
           la = Object.assign(Object.assign({}, qt), {
             id: "fighter",
@@ -17717,7 +17717,7 @@ var bgOnly = false;
             colour: "#0a0353",
             background: "fighter",
             player: Wt.skins.fighter,
-            isBonusTheme: !0,
+            isBonusTheme: true,
           }),
           ca = {
             skater: sa,
@@ -17736,7 +17736,7 @@ var bgOnly = false;
                 saw: "world1",
                 bottom: "world3",
               },
-              isBonusTheme: !0,
+              isBonusTheme: true,
             },
             fighter: la,
             dreamy: ra,
@@ -17756,7 +17756,7 @@ var bgOnly = false;
                 saw: "classic",
                 bottom: "world3",
               },
-              isBonusTheme: !0,
+              isBonusTheme: true,
             },
             synthwave: ta,
             world1: Jt,
@@ -18147,7 +18147,7 @@ var bgOnly = false;
                   S = y;
                 for (; S < m.length; ) {
                   const e = m[S],
-                    l = pa(e, d[g][b], s.enemies, S, i, n, t, a, o, r, !0);
+                    l = pa(e, d[g][b], s.enemies, S, i, n, t, a, o, r, true);
                   if (null !== l)
                     null === E && (E = S),
                       (h[g][b] = S),
@@ -18196,7 +18196,7 @@ var bgOnly = false;
               ["saws", "platforms", "switchPlatforms", "enemies"].forEach(
                 (r) => {
                   for (let l = 0; l < e[r].length; l++)
-                    e[r][l] = pa(e[r][l], void 0, t, l, a, 0, i, n, s, o, !1);
+                    e[r][l] = pa(e[r][l], void 0, t, l, a, 0, i, n, s, o, false);
                 }
               );
             },
@@ -18400,11 +18400,11 @@ var bgOnly = false;
             case "saws":
               return { type: "sawState", inverse: Math.random() > 0.5 };
             case "directionChanges":
-              return { type: "directionChangeState", wasHit: !1 };
+              return { type: "directionChangeState", wasHit: false };
             case "speedChanges":
               return { type: "speedChangeState" };
             case "flags":
-              return { type: "flagState", wasHit: !1 };
+              return { type: "flagState", wasHit: false };
             case "enemies":
               return {
                 type: "enemyState",
@@ -18416,7 +18416,7 @@ var bgOnly = false;
                   t == undefined ? -1 : t.enemies[i.index]?.enemyDir || -1,
               };
             case "powerups":
-              return { type: "powerupState", wasPickedUp: !1 };
+              return { type: "powerupState", wasPickedUp: false };
             case "platforms":
               return { type: "platformState" };
             case "switchButtons":
@@ -18428,7 +18428,7 @@ var bgOnly = false;
             case "portals":
               return { type: "portalState" };
             case "collectibles":
-              return { type: "collectibleState", wasPickedUp: !1 };
+              return { type: "collectibleState", wasPickedUp: false };
           }
         }
         const Aa = ["saws", "blocks", "spikes", "enemies"],
@@ -18570,7 +18570,7 @@ var bgOnly = false;
               for (let c = 0; c < t[l].length; c++) {
                 const d = t[l][c],
                   u = a[l][c];
-                ("skipMissiles" in d && !1 !== d.skipMissiles) ||
+                ("skipMissiles" in d && false !== d.skipMissiles) ||
                   u.destroyed ||
                   !be.pointInBox({ x: i, y: n, width: 840, height: 240 })(d) ||
                   Na(
@@ -18801,13 +18801,13 @@ var bgOnly = false;
                 e.objects.forEach((obj) => {
                   const t = Da.moveObjectUntilCanPlace(i, obj.levelObject);
                   if (!t) return;
-                  let a = !1;
+                  let a = false;
                   if ("portal" === t.type) {
                     const n = $.addPortalPairId(t, i);
                     i = Ca.insertObject(i, obj.array, obj.atIndex, n);
                     const s = Da.moveObjectUntilCanPlace(i, $.newPortalPair(n));
                     if (!s) return;
-                    (a = !0),
+                    (a = true),
                       (i = Ca.insertObject(i, obj.array, obj.atIndex, s));
                   } else i = Ca.insertObject(i, obj.array, obj.atIndex, t);
                   n = n.map((t) => {
@@ -19112,7 +19112,7 @@ var bgOnly = false;
                 const { settings: t } = a(Se);
                 Ga("audio/levels/missile.wav", e, t, {
                   fromPosition: 0,
-                  overwrite: !0,
+                  overwrite: true,
                 });
               }
               return {
@@ -19214,11 +19214,11 @@ var bgOnly = false;
           Wa = 6,
           qa = v({
             init({ device: e, props: t }) {
-              if (t.justDestroyed && !1 !== t.sfx) {
+              if (t.justDestroyed && false !== t.sfx) {
                 const t = st(1, 3, e.random);
                 e.audio(`audio/levels/explosion${t}.wav`).play({
                   fromPosition: 0,
-                  overwrite: !0,
+                  overwrite: true,
                 });
               }
             },
@@ -19647,10 +19647,10 @@ var bgOnly = false;
                               (a.x = i.x),
                               (a.y = i.y),
                               (a.opacity = n),
-                              void (a.show = !0)
+                              void (a.show = true)
                             );
                         }
-                        a.show = !1;
+                        a.show = false;
                       },
                       array: () => e.blocks,
                     }),
@@ -19681,7 +19681,7 @@ var bgOnly = false;
                         (t.paused =
                           (null === (a = e.inGame) || void 0 === a
                             ? void 0
-                            : a.paused) || !1),
+                            : a.paused) || false),
                           (t.df =
                             (null === (i = e.inGame) || void 0 === i
                               ? void 0
@@ -19699,7 +19699,7 @@ var bgOnly = false;
                 const { settings: i } = a(Se);
                 "stomped" === e.destroyedBy
                   ? Ga("audio/levels/boss4/block_explosion.mp3", t, i, {
-                      overwrite: !0,
+                      overwrite: true,
                     })
                   : Ga("audio/levels/object-explosion.wav", t, i, 0);
               }
@@ -19720,7 +19720,7 @@ var bgOnly = false;
                       paused: t.paused,
                       df: t.df,
                       onEnd: () => {
-                        e.show = !1;
+                        e.show = false;
                       },
                     },
                     (e) => {
@@ -19944,7 +19944,7 @@ var bgOnly = false;
                         (t.paused =
                           (null === (a = e.inGame) || void 0 === a
                             ? void 0
-                            : a.paused) || !1),
+                            : a.paused) || false),
                           (t.df =
                             (null === (i = e.inGame) || void 0 === i
                               ? void 0
@@ -19963,7 +19963,7 @@ var bgOnly = false;
                             i
                               ? ei.Single(
                                   {
-                                    justDestroyed: !0,
+                                    justDestroyed: true,
                                     paused: e.inGame.paused,
                                     df: e.inGame.df,
                                     x: n.x,
@@ -20010,7 +20010,7 @@ var bgOnly = false;
                         (t.paused =
                           (null === (i = e.inGame) || void 0 === i
                             ? void 0
-                            : i.paused) || !1),
+                            : i.paused) || false),
                           (t.playerX = e.inGame.playerX),
                           (t.playerY = e.inGame.playerY),
                           (t.objectX = a.x),
@@ -20045,7 +20045,7 @@ var bgOnly = false;
                       paused: t.paused,
                       df: t.df,
                       onEnd: () => {
-                        e.show = !1;
+                        e.show = false;
                       },
                     },
                     (e) => {
@@ -20062,7 +20062,7 @@ var bgOnly = false;
           }
           add(e) {
             let t = this.entries[e];
-            return (this.entries[e] = !0), !t && (this.size++, !0);
+            return (this.entries[e] = true), !t && (this.size++, true);
           }
           addAll(e) {
             let t = this.size;
@@ -20230,9 +20230,9 @@ var bgOnly = false;
             return ni.SUPPORTS_TYPED_ARRAYS ? Math.fround(e) : e;
           }
           static webkit602BugfixHelper(e, t) {}
-          static contains(e, t, a = !0) {
-            for (var i = 0; i < e.length; i++) if (e[i] == t) return !0;
-            return !1;
+          static contains(e, t, a = true) {
+            for (var i = 0; i < e.length; i++) if (e[i] == t) return true;
+            return false;
           }
           static enumValue(e, t) {
             return e[t[0].toUpperCase() + t.slice(1)];
@@ -20438,8 +20438,8 @@ var bgOnly = false;
           }
           hasTimeline(e) {
             for (let t = 0; t < e.length; t++)
-              if (this.timelineIds.contains(e[t])) return !0;
-            return !1;
+              if (this.timelineIds.contains(e[t])) return true;
+            return false;
           }
           apply(e, t, a, i, n, s, o, r) {
             if (!e) throw new Error("skeleton cannot be null.");
@@ -22079,7 +22079,7 @@ var bgOnly = false;
               (this.listeners = new Array()),
               (this.queue = new zi(this)),
               (this.propertyIDs = new ti()),
-              (this.animationsChanged = !1),
+              (this.animationsChanged = false),
               (this.trackEntryPool = new si(() => new Xi())),
               (this.data = e);
           }
@@ -22110,7 +22110,7 @@ var bgOnly = false;
                           ? 0
                           : (t / i.timeScale + e) * s.timeScale,
                       i.trackTime += n,
-                      this.setCurrent(a, s, !0);
+                      this.setCurrent(a, s, true);
                     s.mixingFrom;
 
                   )
@@ -22132,7 +22132,7 @@ var bgOnly = false;
           }
           updateMixingFrom(e, t) {
             let a = e.mixingFrom;
-            if (!a) return !0;
+            if (!a) return true;
             let i = this.updateMixingFrom(a, t);
             return (
               (a.animationLast = a.nextAnimationLast),
@@ -22144,7 +22144,7 @@ var bgOnly = false;
                     (e.interruptAlpha = a.interruptAlpha),
                     this.queue.end(a)),
                   i)
-                : ((a.trackTime += t * a.timeScale), (e.mixTime += t), !1)
+                : ((a.trackTime += t * a.timeScale), (e.mixTime += t), false)
             );
           }
           apply(e) {
@@ -22152,11 +22152,11 @@ var bgOnly = false;
             this.animationsChanged && this._animationsChanged();
             let t = this.events,
               a = this.tracks,
-              i = !1;
+              i = false;
             for (let s = 0, o = a.length; s < o; s++) {
               let o = a[s];
               if (!o || o.delay > 0) continue;
-              i = !0;
+              i = true;
               let r = 0 == s ? pi.first : o.mixBlend,
                 l = o.alpha;
               o.mixingFrom
@@ -22174,7 +22174,7 @@ var bgOnly = false;
                   ni.webkit602BugfixHelper(l, r);
                   var n = p[t];
                   n instanceof Mi
-                    ? this.applyAttachmentTimeline(n, e, u, r, !0)
+                    ? this.applyAttachmentTimeline(n, e, u, r, true)
                     : n.apply(e, c, u, h, l, r, gi.mixIn);
                 }
               else {
@@ -22196,7 +22196,7 @@ var bgOnly = false;
                         a
                       )
                     : n instanceof Mi
-                    ? this.applyAttachmentTimeline(n, e, u, r, !0)
+                    ? this.applyAttachmentTimeline(n, e, u, r, true)
                     : (ni.webkit602BugfixHelper(l, r),
                       n.apply(e, c, u, h, l, s, gi.mixIn));
                 }
@@ -22378,7 +22378,7 @@ var bgOnly = false;
               if (t.time < s) break;
               t.time > i || this.queue.event(e, t);
             }
-            let c = !1;
+            let c = false;
             for (
               c = e.loop
                 ? 0 == n || s > e.trackTime % n
@@ -22393,7 +22393,7 @@ var bgOnly = false;
           }
           clearTracks() {
             let e = this.queue.drainDisabled;
-            this.queue.drainDisabled = !0;
+            this.queue.drainDisabled = true;
             for (let e = 0, t = this.tracks.length; e < t; e++)
               this.clearTrack(e);
             (this.tracks.length = 0),
@@ -22431,14 +22431,14 @@ var bgOnly = false;
                 (i.timelinesRotation.length = 0)),
               this.queue.start(t);
           }
-          setAnimation(e, t, a = !1) {
+          setAnimation(e, t, a = false) {
             let i = this.data.skeletonData.findAnimation(t);
             if (!i) throw new Error("Animation not found: " + t);
             return this.setAnimationWith(e, i, a);
           }
-          setAnimationWith(e, t, a = !1) {
+          setAnimationWith(e, t, a = false) {
             if (!t) throw new Error("animation cannot be null.");
-            let i = !0,
+            let i = true,
               n = this.expandToIndex(e);
             n &&
               (-1 == n.nextTrackLast
@@ -22447,17 +22447,17 @@ var bgOnly = false;
                   this.queue.end(n),
                   this.clearNext(n),
                   (n = n.mixingFrom),
-                  (i = !1))
+                  (i = false))
                 : this.clearNext(n));
             let s = this.trackEntry(e, t, a, n);
             return this.setCurrent(e, s, i), this.queue.drain(), s;
           }
-          addAnimation(e, t, a = !1, i = 0) {
+          addAnimation(e, t, a = false, i = 0) {
             let n = this.data.skeletonData.findAnimation(t);
             if (!n) throw new Error("Animation not found: " + t);
             return this.addAnimationWith(e, n, a, i);
           }
-          addAnimationWith(e, t, a = !1, i = 0) {
+          addAnimationWith(e, t, a = false, i = 0) {
             if (!t) throw new Error("animation cannot be null.");
             let n = this.expandToIndex(e);
             if (n) for (; n.next; ) n = n.next;
@@ -22467,17 +22467,17 @@ var bgOnly = false;
                 ? ((n.next = s),
                   (s.previous = n),
                   i <= 0 && (i += n.getTrackComplete() - s.mixDuration))
-                : (this.setCurrent(e, s, !0), this.queue.drain()),
+                : (this.setCurrent(e, s, true), this.queue.drain()),
               (s.delay = i),
               s
             );
           }
           setEmptyAnimation(e, t = 0) {
-            let a = this.setAnimationWith(e, Hi.emptyAnimation(), !1);
+            let a = this.setAnimationWith(e, Hi.emptyAnimation(), false);
             return (a.mixDuration = t), (a.trackEnd = t), a;
           }
           addEmptyAnimation(e, t = 0, a = 0) {
-            let i = this.addAnimationWith(e, Hi.emptyAnimation(), !1, a);
+            let i = this.addAnimationWith(e, Hi.emptyAnimation(), false, a);
             return (
               a <= 0 && (i.delay += i.mixDuration - t),
               (i.mixDuration = t),
@@ -22487,7 +22487,7 @@ var bgOnly = false;
           }
           setEmptyAnimations(e = 0) {
             let t = this.queue.drainDisabled;
-            this.queue.drainDisabled = !0;
+            this.queue.drainDisabled = true;
             for (let t = 0, a = this.tracks.length; t < a; t++) {
               let a = this.tracks[t];
               a && this.setEmptyAnimation(a.trackIndex, e);
@@ -22507,7 +22507,7 @@ var bgOnly = false;
               (n.trackIndex = e),
               (n.animation = t),
               (n.loop = a),
-              (n.holdPrevious = !1),
+              (n.holdPrevious = false),
               (n.eventThreshold = 0),
               (n.attachmentThreshold = 0),
               (n.drawOrderThreshold = 0),
@@ -22535,7 +22535,7 @@ var bgOnly = false;
             e.next = null;
           }
           _animationsChanged() {
-            (this.animationsChanged = !1), this.propertyIDs.clear();
+            (this.animationsChanged = false), this.propertyIDs.clear();
             let e = this.tracks;
             for (let t = 0, a = e.length; t < a; t++) {
               let a = e[t];
@@ -22656,13 +22656,13 @@ var bgOnly = false;
         class zi {
           constructor(e) {
             (this.objects = []),
-              (this.drainDisabled = !1),
+              (this.drainDisabled = false),
               (this.animState = e);
           }
           start(e) {
             this.objects.push(Wi.start),
               this.objects.push(e),
-              (this.animState.animationsChanged = !0);
+              (this.animState.animationsChanged = true);
           }
           interrupt(e) {
             this.objects.push(Wi.interrupt), this.objects.push(e);
@@ -22670,7 +22670,7 @@ var bgOnly = false;
           end(e) {
             this.objects.push(Wi.end),
               this.objects.push(e),
-              (this.animState.animationsChanged = !0);
+              (this.animState.animationsChanged = true);
           }
           dispose(e) {
             this.objects.push(Wi.dispose), this.objects.push(e);
@@ -22685,7 +22685,7 @@ var bgOnly = false;
           }
           drain() {
             if (this.drainDisabled) return;
-            this.drainDisabled = !0;
+            this.drainDisabled = true;
             let e = this.objects,
               t = this.animState.listeners;
             for (let a = 0; a < e.length; a += 2) {
@@ -22723,7 +22723,7 @@ var bgOnly = false;
                     t[e].event && t[e].event(n, i);
               }
             }
-            this.clear(), (this.drainDisabled = !1);
+            this.clear(), (this.drainDisabled = false);
           }
           clear() {
             this.objects.length = 0;
@@ -23110,8 +23110,8 @@ var bgOnly = false;
         class In extends li {
           constructor(e) {
             super(e),
-              (this.closed = !1),
-              (this.constantSpeed = !1),
+              (this.closed = false),
+              (this.constantSpeed = false),
               (this.color = new ai(1, 1, 1, 1));
           }
           copy() {
@@ -23382,7 +23382,7 @@ var bgOnly = false;
               (this.shearX = 0),
               (this.shearY = 0),
               (this.transformMode = ln.Normal),
-              (this.skinRequired = !1),
+              (this.skinRequired = false),
               (this.color = new ai()),
               e < 0)
             )
@@ -23422,8 +23422,8 @@ var bgOnly = false;
               (this.d = 0),
               (this.worldY = 0),
               (this.worldX = 0),
-              (this.sorted = !1),
-              (this.active = !1),
+              (this.sorted = false),
+              (this.active = false),
               !e)
             )
               throw new Error("data cannot be null.");
@@ -23732,7 +23732,7 @@ var bgOnly = false;
               return;
             }
             let i = new XMLHttpRequest();
-            i.overrideMimeType("text/html"), i.open("GET", e, !0);
+            i.overrideMimeType("text/html"), i.open("GET", e, true);
             let n = () => {
               this.finish(e, i.status, i.responseText);
             };
@@ -23759,7 +23759,7 @@ var bgOnly = false;
               return;
             }
             let i = new XMLHttpRequest();
-            i.open("GET", e, !0), (i.responseType = "arraybuffer");
+            i.open("GET", e, true), (i.responseType = "arraybuffer");
             let n = () => {
               this.finish(e, i.status, i.response);
             };
@@ -23774,7 +23774,7 @@ var bgOnly = false;
           start(e, t, a) {
             let i = this.callbacks[e];
             try {
-              if (i) return !0;
+              if (i) return true;
               this.callbacks[e] = i = [];
             } finally {
               i.push(t, a);
@@ -23792,11 +23792,11 @@ var bgOnly = false;
           constructor(e, t) {
             if (
               ((this.bendDirection = 0),
-              (this.compress = !1),
-              (this.stretch = !1),
+              (this.compress = false),
+              (this.stretch = false),
               (this.mix = 1),
               (this.softness = 0),
-              (this.active = !1),
+              (this.active = false),
               !e)
             )
               throw new Error("data cannot be null.");
@@ -23941,7 +23941,7 @@ var bgOnly = false;
               B = t.data.length * m;
             if (D < 1e-4)
               return (
-                this.apply1(e, a, i, !1, s, !1, l),
+                this.apply1(e, a, i, false, s, false, l),
                 void t.updateWorldTransformWith(
                   b,
                   S,
@@ -24052,7 +24052,7 @@ var bgOnly = false;
         }
         class kn extends An {
           constructor(e) {
-            super(e, 0, !1),
+            super(e, 0, false),
               (this.bones = new Array()),
               (this.mixRotate = 0),
               (this.mixX = 0),
@@ -24084,7 +24084,7 @@ var bgOnly = false;
               (this.curves = new Array()),
               (this.lengths = new Array()),
               (this.segments = new Array()),
-              (this.active = !1),
+              (this.active = false),
               !e)
             )
               throw new Error("data cannot be null.");
@@ -24169,10 +24169,10 @@ var bgOnly = false;
               g = p[0],
               m = p[1],
               f = n.offsetRotation,
-              y = !1;
+              y = false;
             if (0 == f) y = n.rotateMode == un.Chain;
             else {
-              y = !1;
+              y = false;
               let e = this.target.bone;
               f *= e.a * e.d - e.b * e.c > 0 ? ii.degRad : -ii.degRad;
             }
@@ -24582,7 +24582,7 @@ var bgOnly = false;
               (this.mixScaleY = 0),
               (this.mixShearY = 0),
               (this.temp = new oi()),
-              (this.active = !1),
+              (this.active = false),
               !e)
             )
               throw new Error("data cannot be null.");
@@ -24879,7 +24879,7 @@ var bgOnly = false;
               for (let t = 0, a = this.skin.bones.length; t < a; t++) {
                 let a = this.bones[e[t].index];
                 do {
-                  (a.sorted = !1), (a.active = !0), (a = a.parent);
+                  (a.sorted = false), (a.active = true), (a = a.parent);
                 } while (a);
               }
             }
@@ -24921,7 +24921,7 @@ var bgOnly = false;
                 e.target.isActive() &&
                 (!e.data.skinRequired ||
                   (this.skin &&
-                    ni.contains(this.skin.constraints, e.data, !0)))),
+                    ni.contains(this.skin.constraints, e.data, true)))),
               !e.active)
             )
               return;
@@ -24936,7 +24936,7 @@ var bgOnly = false;
               this.sortBone(t),
                 this._updateCache.push(e),
                 this.sortReset(i.children),
-                (t.sorted = !0);
+                (t.sorted = true);
             }
           }
           sortPathConstraint(e) {
@@ -24945,7 +24945,7 @@ var bgOnly = false;
                 e.target.bone.isActive() &&
                 (!e.data.skinRequired ||
                   (this.skin &&
-                    ni.contains(this.skin.constraints, e.data, !0)))),
+                    ni.contains(this.skin.constraints, e.data, true)))),
               !e.active)
             )
               return;
@@ -24965,7 +24965,7 @@ var bgOnly = false;
             for (let e = 0; e < o; e++) this.sortBone(s[e]);
             this._updateCache.push(e);
             for (let e = 0; e < o; e++) this.sortReset(s[e].children);
-            for (let e = 0; e < o; e++) s[e].sorted = !0;
+            for (let e = 0; e < o; e++) s[e].sorted = true;
           }
           sortTransformConstraint(e) {
             if (
@@ -24973,7 +24973,7 @@ var bgOnly = false;
                 e.target.isActive() &&
                 (!e.data.skinRequired ||
                   (this.skin &&
-                    ni.contains(this.skin.constraints, e.data, !0)))),
+                    ni.contains(this.skin.constraints, e.data, true)))),
               !e.active)
             )
               return;
@@ -24988,7 +24988,7 @@ var bgOnly = false;
             else for (let e = 0; e < a; e++) this.sortBone(t[e]);
             this._updateCache.push(e);
             for (let e = 0; e < a; e++) this.sortReset(t[e].children);
-            for (let e = 0; e < a; e++) t[e].sorted = !0;
+            for (let e = 0; e < a; e++) t[e].sorted = true;
           }
           sortPathConstraintAttachment(e, t, a) {
             let i = e.attachments[t];
@@ -25009,13 +25009,13 @@ var bgOnly = false;
           sortBone(e) {
             if (e.sorted) return;
             let t = e.parent;
-            t && this.sortBone(t), (e.sorted = !0), this._updateCache.push(e);
+            t && this.sortBone(t), (e.sorted = true), this._updateCache.push(e);
           }
           sortReset(e) {
             for (let t = 0, a = e.length; t < a; t++) {
               let a = e[t];
               a.active &&
-                (a.sorted && this.sortReset(a.children), (a.sorted = !1));
+                (a.sorted && this.sortReset(a.children), (a.sorted = false));
             }
           }
           updateWorldTransform() {
@@ -25261,20 +25261,20 @@ var bgOnly = false;
           addSkin(e) {
             for (let t = 0; t < e.bones.length; t++) {
               let a = e.bones[t],
-                i = !1;
+                i = false;
               for (let e = 0; e < this.bones.length; e++)
                 if (this.bones[e] == a) {
-                  i = !0;
+                  i = true;
                   break;
                 }
               i || this.bones.push(a);
             }
             for (let t = 0; t < e.constraints.length; t++) {
               let a = e.constraints[t],
-                i = !1;
+                i = false;
               for (let e = 0; e < this.constraints.length; e++)
                 if (this.constraints[e] == a) {
-                  i = !0;
+                  i = true;
                   break;
                 }
               i || this.constraints.push(a);
@@ -25288,20 +25288,20 @@ var bgOnly = false;
           copySkin(e) {
             for (let t = 0; t < e.bones.length; t++) {
               let a = e.bones[t],
-                i = !1;
+                i = false;
               for (let e = 0; e < this.bones.length; e++)
                 if (this.bones[e] == a) {
-                  i = !0;
+                  i = true;
                   break;
                 }
               i || this.bones.push(a);
             }
             for (let t = 0; t < e.constraints.length; t++) {
               let a = e.constraints[t],
-                i = !1;
+                i = false;
               for (let e = 0; e < this.constraints.length; e++)
                 if (this.constraints[e] == a) {
-                  i = !0;
+                  i = true;
                   break;
                 }
               i || this.constraints.push(a);
@@ -25470,11 +25470,11 @@ var bgOnly = false;
               (e >= o && a >= o) ||
               (t >= r && i >= r)
             )
-              return !1;
+              return false;
             let l = (i - t) / (a - e),
               c = l * (n - e) + t;
-            if (c > s && c < r) return !0;
-            if (((c = l * (o - e) + t), c > s && c < r)) return !0;
+            if (c > s && c < r) return true;
+            if (((c = l * (o - e) + t), c > s && c < r)) return true;
             let d = (s - t) / l + e;
             return (d > n && d < o) || ((d = (r - t) / l + e), d > n && d < o);
           }
@@ -25497,7 +25497,7 @@ var bgOnly = false;
             let i = e,
               n = e.length,
               s = n - 2,
-              o = !1;
+              o = false;
             for (let e = 0; e < n; e += 2) {
               let n = i[e + 1],
                 r = i[s + 1];
@@ -25541,11 +25541,11 @@ var bgOnly = false;
                   ((e >= u && e <= h) || (e >= h && e <= u)) &&
                   ((e >= a && e <= n) || (e >= n && e <= a))
                 )
-                  return !0;
+                  return true;
               }
               (d = o), (u = h);
             }
-            return !1;
+            return false;
           }
           getPolygon(e) {
             if (!e) throw new Error("boundingBox cannot be null.");
@@ -25652,12 +25652,12 @@ var bgOnly = false;
                 m = a[d + 1],
                 f = a[u],
                 y = a[u + 1],
-                E = !1;
+                E = false;
               if (r == c) {
                 let e = o.length - 4,
                   t = Yn.winding(o[e], o[e + 1], o[e + 2], o[e + 3], f, y),
                   a = Yn.winding(f, y, o[0], o[1], o[2], o[3]);
-                t == l && a == l && (o.push(f), o.push(y), s.push(u), (E = !0));
+                t == l && a == l && (o.push(f), o.push(y), s.push(u), (E = true));
               }
               E ||
                 (o.length > 0
@@ -25935,7 +25935,7 @@ var bgOnly = false;
           }
           clip(e, t, a, i, n, s, o, r) {
             let l = r,
-              c = !1,
+              c = false,
               d = null;
             o.length % 4 >= 2
               ? ((d = r), (r = this.scratch))
@@ -25990,9 +25990,9 @@ var bgOnly = false;
                   } else r.push(t), r.push(a);
                   r.push(u), r.push(h);
                 }
-                c = !0;
+                c = true;
               }
-              if (m == r.length) return (l.length = 0), !0;
+              if (m == r.length) return (l.length = 0), true;
               if ((r.push(r[0]), r.push(r[1]), e == h)) break;
               let f = r;
               ((r = d).length = 0), (d = f);
@@ -26042,12 +26042,12 @@ var bgOnly = false;
         }
         class Vn extends An {
           constructor(e) {
-            super(e, 0, !1),
+            super(e, 0, false),
               (this.bones = new Array()),
               (this.bendDirection = 1),
-              (this.compress = !1),
-              (this.stretch = !1),
-              (this.uniform = !1),
+              (this.compress = false),
+              (this.stretch = false),
+              (this.uniform = false),
               (this.mix = 1),
               (this.softness = 0);
           }
@@ -26139,7 +26139,7 @@ var bgOnly = false;
         }
         class Xn extends An {
           constructor(e) {
-            super(e, 0, !1),
+            super(e, 0, false),
               (this.bones = new Array()),
               (this.mixRotate = 0),
               (this.mixX = 0),
@@ -26153,8 +26153,8 @@ var bgOnly = false;
               (this.offsetScaleX = 0),
               (this.offsetScaleY = 0),
               (this.offsetShearY = 0),
-              (this.relative = !1),
-              (this.local = !1);
+              (this.relative = false),
+              (this.local = false);
           }
         }
         class zn {
@@ -26198,7 +26198,7 @@ var bgOnly = false;
                     ln,
                     Kn(n, "transform", "Normal")
                   )),
-                  (r.skinRequired = Kn(n, "skin", !1));
+                  (r.skinRequired = Kn(n, "skin", false));
                 let l = Kn(n, "color", null);
                 l && r.color.setFromString(l), a.bones.push(r);
               }
@@ -26220,16 +26220,16 @@ var bgOnly = false;
                 let n = i.ik[e],
                   s = new Vn(n.name);
                 (s.order = Kn(n, "order", 0)),
-                  (s.skinRequired = Kn(n, "skin", !1));
+                  (s.skinRequired = Kn(n, "skin", false));
                 for (let e = 0; e < n.bones.length; e++)
                   s.bones.push(a.findBone(n.bones[e]));
                 (s.target = a.findBone(n.target)),
                   (s.mix = Kn(n, "mix", 1)),
                   (s.softness = Kn(n, "softness", 0) * t),
-                  (s.bendDirection = Kn(n, "bendPositive", !0) ? 1 : -1),
-                  (s.compress = Kn(n, "compress", !1)),
-                  (s.stretch = Kn(n, "stretch", !1)),
-                  (s.uniform = Kn(n, "uniform", !1)),
+                  (s.bendDirection = Kn(n, "bendPositive", true) ? 1 : -1),
+                  (s.compress = Kn(n, "compress", false)),
+                  (s.stretch = Kn(n, "stretch", false)),
+                  (s.uniform = Kn(n, "uniform", false)),
                   a.ikConstraints.push(s);
               }
             if (i.transform)
@@ -26237,13 +26237,13 @@ var bgOnly = false;
                 let n = i.transform[e],
                   s = new Xn(n.name);
                 (s.order = Kn(n, "order", 0)),
-                  (s.skinRequired = Kn(n, "skin", !1));
+                  (s.skinRequired = Kn(n, "skin", false));
                 for (let e = 0; e < n.bones.length; e++)
                   s.bones.push(a.findBone(n.bones[e]));
                 let o = n.target;
                 (s.target = a.findBone(o)),
-                  (s.local = Kn(n, "local", !1)),
-                  (s.relative = Kn(n, "relative", !1)),
+                  (s.local = Kn(n, "local", false)),
+                  (s.relative = Kn(n, "relative", false)),
                   (s.offsetRotation = Kn(n, "rotation", 0)),
                   (s.offsetX = Kn(n, "x", 0) * t),
                   (s.offsetY = Kn(n, "y", 0) * t),
@@ -26263,7 +26263,7 @@ var bgOnly = false;
                 let n = i.path[e],
                   s = new kn(n.name);
                 (s.order = Kn(n, "order", 0)),
-                  (s.skinRequired = Kn(n, "skin", !1));
+                  (s.skinRequired = Kn(n, "skin", false));
                 for (let e = 0; e < n.bones.length; e++)
                   s.bones.push(a.findBone(n.bones[e]));
                 let o = n.target;
@@ -26401,7 +26401,7 @@ var bgOnly = false;
                         Kn(e, "skin", null),
                         a,
                         c,
-                        Kn(e, "timelines", !0)
+                        Kn(e, "timelines", true)
                       )
                     ),
                     r
@@ -26420,8 +26420,8 @@ var bgOnly = false;
               case "path": {
                 let a = this.attachmentLoader.newPathAttachment(t, i);
                 if (!a) return null;
-                (a.closed = Kn(e, "closed", !1)),
-                  (a.constantSpeed = Kn(e, "constantSpeed", !0));
+                (a.closed = Kn(e, "closed", false)),
+                  (a.constantSpeed = Kn(e, "constantSpeed", true));
                 let n = e.vertexCount;
                 this.readVertices(e, a, n << 1);
                 let o = ni.newArray(n / 3, 0);
@@ -26673,9 +26673,9 @@ var bgOnly = false;
                     d,
                     u,
                     h,
-                    Kn(o, "bendPositive", !0) ? 1 : -1,
-                    Kn(o, "compress", !1),
-                    Kn(o, "stretch", !1)
+                    Kn(o, "bendPositive", true) ? 1 : -1,
+                    Kn(o, "compress", false),
+                    Kn(o, "stretch", false)
                   );
                   let a = s[e + 1];
                   if (!a) {
@@ -27078,7 +27078,7 @@ var bgOnly = false;
                 throw new Error("Unknown blend mode: " + e);
             }
           }
-          static getSourceColorGLBlendMode(e, t = !1) {
+          static getSourceColorGLBlendMode(e, t = false) {
             switch (e) {
               case hn.Normal:
               case hn.Additive:
@@ -27113,11 +27113,11 @@ var bgOnly = false;
             return this._image;
           }
         } {
-          constructor(e, t, a = !1) {
+          constructor(e, t, a = false) {
             super(t),
               (this.texture = null),
               (this.boundUnit = 0),
-              (this.useMipMaps = !1),
+              (this.useMipMaps = false),
               (this.context = e instanceof Zn ? e : new Zn(e)),
               (this.useMipMaps = a),
               this.restore(),
@@ -27156,7 +27156,7 @@ var bgOnly = false;
             this.texture || (this.texture = this.context.gl.createTexture()),
               this.bind(),
               ts.DISABLE_UNPACK_PREMULTIPLIED_ALPHA_WEBGL &&
-                t.pixelStorei(t.UNPACK_PREMULTIPLY_ALPHA_WEBGL, !1),
+                t.pixelStorei(t.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false),
               t.texImage2D(
                 t.TEXTURE_2D,
                 0,
@@ -27194,7 +27194,7 @@ var bgOnly = false;
               this.context.gl.deleteTexture(this.texture);
           }
         }
-        ts.DISABLE_UNPACK_PREMULTIPLIED_ALPHA_WEBGL = !1;
+        ts.DISABLE_UNPACK_PREMULTIPLIED_ALPHA_WEBGL = false;
         class as extends class {
           constructor(e, t = "", a = null) {
             (this.assets = {}),
@@ -27312,7 +27312,7 @@ var bgOnly = false;
                   try {
                     let s = new fn(i),
                       o = s.pages.length,
-                      r = !1;
+                      r = false;
                     for (let i of s.pages)
                       this.loadTexture(
                         n + i.name,
@@ -27328,7 +27328,7 @@ var bgOnly = false;
                               e,
                               `Couldn't load texture atlas ${e} page image: ${t}`
                             ),
-                            (r = !0);
+                            (r = true);
                         }
                       );
                   } catch (t) {
@@ -28013,17 +28013,17 @@ var bgOnly = false;
           setUniform2x2f(e, t) {
             let a = this.context.gl;
             this.tmp2x2.set(t),
-              a.uniformMatrix2fv(this.getUniformLocation(e), !1, this.tmp2x2);
+              a.uniformMatrix2fv(this.getUniformLocation(e), false, this.tmp2x2);
           }
           setUniform3x3f(e, t) {
             let a = this.context.gl;
             this.tmp3x3.set(t),
-              a.uniformMatrix3fv(this.getUniformLocation(e), !1, this.tmp3x3);
+              a.uniformMatrix3fv(this.getUniformLocation(e), false, this.tmp3x3);
           }
           setUniform4x4f(e, t) {
             let a = this.context.gl;
             this.tmp4x4.set(t),
-              a.uniformMatrix4fv(this.getUniformLocation(e), !1, this.tmp4x4);
+              a.uniformMatrix4fv(this.getUniformLocation(e), false, this.tmp4x4);
           }
           getUniformLocation(e) {
             let t = this.context.gl,
@@ -28082,9 +28082,9 @@ var bgOnly = false;
           constructor(e, t, a, i) {
             (this.attributes = t),
               (this.verticesLength = 0),
-              (this.dirtyVertices = !1),
+              (this.dirtyVertices = false),
               (this.indicesLength = 0),
-              (this.dirtyIndices = !1),
+              (this.dirtyIndices = false),
               (this.elementsPerVertex = 0),
               (this.context = e instanceof Zn ? e : new Zn(e)),
               (this.elementsPerVertex = 0);
@@ -28104,7 +28104,7 @@ var bgOnly = false;
             return this.verticesLength / this.elementsPerVertex;
           }
           setVerticesLength(e) {
-            (this.dirtyVertices = !0), (this.verticesLength = e);
+            (this.dirtyVertices = true), (this.verticesLength = e);
           }
           getVertices() {
             return this.vertices;
@@ -28116,7 +28116,7 @@ var bgOnly = false;
             return this.indicesLength;
           }
           setIndicesLength(e) {
-            (this.dirtyIndices = !0), (this.indicesLength = e);
+            (this.dirtyIndices = true), (this.indicesLength = e);
           }
           getIndices() {
             return this.indices;
@@ -28128,14 +28128,14 @@ var bgOnly = false;
             return e;
           }
           setVertices(e) {
-            if (((this.dirtyVertices = !0), e.length > this.vertices.length))
+            if (((this.dirtyVertices = true), e.length > this.vertices.length))
               throw Error(
                 "Mesh can't store more than " + this.maxVertices() + " vertices"
               );
             this.vertices.set(e, 0), (this.verticesLength = e.length);
           }
           setIndices(e) {
-            if (((this.dirtyIndices = !0), e.length > this.indices.length))
+            if (((this.dirtyIndices = true), e.length > this.indices.length))
               throw Error(
                 "Mesh can't store more than " + this.maxIndices() + " indices"
               );
@@ -28172,7 +28172,7 @@ var bgOnly = false;
                   s,
                   n.numElements,
                   t.FLOAT,
-                  !1,
+                  false,
                   4 * this.elementsPerVertex,
                   4 * a
                 ),
@@ -28202,7 +28202,7 @@ var bgOnly = false;
                 this.vertices.subarray(0, this.verticesLength),
                 e.DYNAMIC_DRAW
               ),
-              (this.dirtyVertices = !1)),
+              (this.dirtyVertices = false)),
               this.dirtyIndices &&
                 (this.indicesBuffer || (this.indicesBuffer = e.createBuffer()),
                 e.bindBuffer(e.ELEMENT_ARRAY_BUFFER, this.indicesBuffer),
@@ -28211,7 +28211,7 @@ var bgOnly = false;
                   this.indices.subarray(0, this.indicesLength),
                   e.DYNAMIC_DRAW
                 ),
-                (this.dirtyIndices = !1));
+                (this.dirtyIndices = false));
           }
           restore() {
             (this.verticesBuffer = null),
@@ -28255,9 +28255,9 @@ var bgOnly = false;
           e[(e.Float = 0)] = "Float";
         })(ws || (ws = {}));
         class xs {
-          constructor(e, t = !0, a = 10920) {
+          constructor(e, t = true, a = 10920) {
             if (
-              ((this.isDrawing = !1),
+              ((this.isDrawing = false),
               (this.shader = null),
               (this.lastTexture = null),
               (this.verticesLength = 0),
@@ -28285,7 +28285,7 @@ var bgOnly = false;
             (this.drawCalls = 0),
               (this.shader = e),
               (this.lastTexture = null),
-              (this.isDrawing = !0);
+              (this.isDrawing = true);
             let t = this.context.gl;
             t.enable(t.BLEND),
               t.blendFuncSeparate(
@@ -28341,7 +28341,7 @@ var bgOnly = false;
             (this.verticesLength > 0 || this.indicesLength > 0) && this.flush(),
               (this.shader = null),
               (this.lastTexture = null),
-              (this.isDrawing = !1);
+              (this.isDrawing = false);
             let e = this.context.gl;
             e.disable(e.BLEND);
           }
@@ -28366,15 +28366,15 @@ var bgOnly = false;
               (this.pathColor = new ai().setFromString("FF7F00")),
               (this.clipColor = new ai(0.8, 0, 0, 2)),
               (this.aabbColor = new ai(0, 1, 0, 0.5)),
-              (this.drawBones = !0),
-              (this.drawRegionAttachments = !0),
-              (this.drawBoundingBoxes = !0),
-              (this.drawMeshHull = !0),
-              (this.drawMeshTriangles = !0),
-              (this.drawPaths = !0),
-              (this.drawSkeletonXY = !1),
-              (this.drawClipping = !0),
-              (this.premultipliedAlpha = !1),
+              (this.drawBones = true),
+              (this.drawRegionAttachments = true),
+              (this.drawBoundingBoxes = true),
+              (this.drawMeshHull = true),
+              (this.drawMeshTriangles = true),
+              (this.drawPaths = true),
+              (this.drawSkeletonXY = false),
+              (this.drawClipping = true),
+              (this.premultipliedAlpha = false),
               (this.scale = 1),
               (this.boneWidth = 2),
               (this.bounds = new Fn()),
@@ -28398,7 +28398,7 @@ var bgOnly = false;
                 let n = i.data.length * i.a + i.worldX,
                   s = i.data.length * i.c + i.worldY;
                 e.rectLine(
-                  !0,
+                  true,
                   i.worldX,
                   i.worldY,
                   n,
@@ -28444,7 +28444,7 @@ var bgOnly = false;
                       i = 2 * r[t + 1],
                       n = 2 * r[t + 2];
                     e.triangle(
-                      !1,
+                      false,
                       o[a],
                       o[a + 1],
                       o[i],
@@ -28468,9 +28468,9 @@ var bgOnly = false;
             }
             if (this.drawBoundingBoxes) {
               let a = this.bounds;
-              a.update(t, !0),
+              a.update(t, true),
                 e.setColor(this.aabbColor),
-                e.rect(!1, a.minX, a.minY, a.getWidth(), a.getHeight());
+                e.rect(false, a.minX, a.minY, a.getWidth(), a.getHeight());
               let i = a.polygons,
                 n = a.boundingBoxes;
               for (let t = 0, a = i.length; t < a; t++) {
@@ -28530,7 +28530,7 @@ var bgOnly = false;
               for (let t = 0, i = r.length; t < i; t++) {
                 let i = r[t];
                 (a && a.indexOf(i.data.name) > -1) ||
-                  e.circle(!0, i.worldX, i.worldY, 3 * this.scale, Ps.GREEN, 8);
+                  e.circle(true, i.worldX, i.worldY, 3 * this.scale, Ps.GREEN, 8);
               }
             }
             if (this.drawClipping) {
@@ -28565,13 +28565,13 @@ var bgOnly = false;
           }
         }
         class Ls {
-          constructor(e, t = !0) {
-            (this.premultipliedAlpha = !1),
+          constructor(e, t = true) {
+            (this.premultipliedAlpha = false),
               (this.vertexEffect = null),
               (this.tempColor = new ai()),
               (this.tempColor2 = new ai()),
               (this.vertexSize = 8),
-              (this.twoColorTint = !1),
+              (this.twoColorTint = false),
               (this.renderable = new Ms(null, 0, 0)),
               (this.clipper = new Un()),
               (this.temp = new oi()),
@@ -28598,8 +28598,8 @@ var bgOnly = false;
               f = null,
               y = t.color,
               E = o ? 12 : 8,
-              b = !1;
-            -1 == a && (b = !0);
+              b = false;
+            -1 == a && (b = true);
             for (let t = 0, S = m.length; t < S; t++) {
               let S = n.isClipping() ? 2 : E,
                 I = m[t];
@@ -28607,11 +28607,11 @@ var bgOnly = false;
                 n.clipEndWithSlot(I);
                 continue;
               }
-              if ((a >= 0 && a == I.data.index && (b = !0), !b)) {
+              if ((a >= 0 && a == I.data.index && (b = true), !b)) {
                 n.clipEndWithSlot(I);
                 continue;
               }
-              i >= 0 && i == I.data.index && (b = !1);
+              i >= 0 && i == I.data.index && (b = false);
               let _ = I.getAttachment(),
                 v = null;
               if (_ instanceof vn) {
@@ -28839,7 +28839,7 @@ var bgOnly = false;
               i = new xs(t),
               n = new Ls(t);
             return (
-              (n.premultipliedAlpha = !0),
+              (n.premultipliedAlpha = true),
               {
                 context: t,
                 renderer: (e, t, s, o, r = 1, l = 0) => {
@@ -28945,7 +28945,7 @@ var bgOnly = false;
             (!e.dead && n > 5175) || (o.update(Ds * t), o.apply(r)),
               r.updateWorldTransform();
             const l = new Fn();
-            l.update(r, !0);
+            l.update(r, true);
             const c = r.slots
               .filter((e) => e.data.name.startsWith("Thorn_0"))
               .map((e) => {
@@ -28962,27 +28962,27 @@ var bgOnly = false;
                     be.pointInBox2(e.x, e.y, 2 * e.width, 2 * e.height, t, i)
                   ) {
                     const a = de.getDiamondPoly(e.x, e.y, e.width, e.height);
-                    if (be.objectPolyInPoint2(a, t, i)) return !0;
+                    if (be.objectPolyInPoint2(a, t, i)) return true;
                   }
-                  return !1;
+                  return false;
                 })
               )
-                return !0;
+                return true;
               const n = t - a,
                 d = i;
               if (!e.dead && l.aabbContainsPoint(n, d)) {
                 const t = l.containsPoint(n, d);
                 if (null !== t) {
-                  if ("5" !== t.name) return !0;
+                  if ("5" !== t.name) return true;
                   {
-                    (e.dead = !0), s("audio/levels/boss1/death.mp3");
+                    (e.dead = true), s("audio/levels/boss1/death.mp3");
                     const t = o.getCurrent(0).trackTime,
                       a = 86.23;
                     t < a && (o.update(a - t), o.apply(r));
                   }
                 }
               }
-              return !1;
+              return false;
             };
           },
           js = function ({ animationState: e, skeleton: t }, a, i, n) {
@@ -28993,10 +28993,10 @@ var bgOnly = false;
               t.updateWorldTransform(),
               a.skeleton.updateWorldTransform();
             const s = new Fn();
-            s.update(t, !1);
+            s.update(t, false);
             const o = new Fn();
             return (
-              o.update(a.skeleton, !1),
+              o.update(a.skeleton, false),
               {
                 collisionFn: (e, t) => null !== s.containsPoint(e - n, t),
                 blockCollisionFn: (e, t) => null !== o.containsPoint(e - n, t),
@@ -29657,7 +29657,7 @@ var bgOnly = false;
             ],
           },
           Zs = v({
-            init: ({ props: e }) => ({ wasAlreadyHit: e.wasHit || !1 }),
+            init: ({ props: e }) => ({ wasAlreadyHit: e.wasHit || false }),
             render({ props: e, state: t, getContext: a }) {
               const i = (e) => ("right" === e.direction ? -1 : 1);
               return [
@@ -29665,7 +29665,7 @@ var bgOnly = false;
                   () => "world2" === e.theme,
                   () => [
                     R(
-                      () => !0 === e.wasHit,
+                      () => true === e.wasHit,
                       () => {
                         var a;
                         return [
@@ -29737,7 +29737,7 @@ var bgOnly = false;
                           { animationAssets: s, animationRenderer: o } = a(Ws);
                         return [
                           R(
-                            () => !0 === e.wasHit,
+                            () => true === e.wasHit,
                             () => {
                               var a;
                               return [
@@ -29748,8 +29748,8 @@ var bgOnly = false;
                                     animationRenderer: o,
                                     fileNames: Qs.spineFiles.directionChangeHit,
                                     animationName: "animation",
-                                    loop: !1,
-                                    paused: e.paused || !1,
+                                    loop: false,
+                                    paused: e.paused || false,
                                     height: 0,
                                     x: e.directionChange.x + 22 * n,
                                     y: e.directionChange.y,
@@ -29762,7 +29762,7 @@ var bgOnly = false;
                                   },
                                   (t) => {
                                     var a;
-                                    (t.paused = e.paused || !1),
+                                    (t.paused = e.paused || false),
                                       (t.x = e.directionChange.x + 22 * n),
                                       (t.y = e.directionChange.y),
                                       (t.df =
@@ -29783,8 +29783,8 @@ var bgOnly = false;
                                     animationRenderer: o,
                                     fileNames: Qs.spineFiles.directionChange,
                                     animationName: "animation",
-                                    loop: !0,
-                                    paused: e.paused || !1,
+                                    loop: true,
+                                    paused: e.paused || false,
                                     height: 0,
                                     x: e.directionChange.x + 22 * n,
                                     y: e.directionChange.y,
@@ -29796,7 +29796,7 @@ var bgOnly = false;
                                   },
                                   (t) => {
                                     var a;
-                                    (t.paused = e.paused || !1),
+                                    (t.paused = e.paused || false),
                                       (t.x = e.directionChange.x + 22 * n),
                                       (t.y = e.directionChange.y),
                                       (t.df =
@@ -29893,7 +29893,7 @@ var bgOnly = false;
                       (t.paused =
                         (null === (a = e.inGame) || void 0 === a
                           ? void 0
-                          : a.paused) || !1),
+                          : a.paused) || false),
                         (t.df =
                           (null === (i = e.inGame) || void 0 === i
                             ? void 0
@@ -29912,7 +29912,7 @@ var bgOnly = false;
                           a
                             ? to.Single(
                                 {
-                                  justDestroyed: !0,
+                                  justDestroyed: true,
                                   paused: e.inGame.paused,
                                   df: e.inGame.df,
                                   x: i.x,
@@ -30070,7 +30070,7 @@ var bgOnly = false;
                       paused: t.paused,
                       df: t.df,
                       onEnd: () => {
-                        e.show = !1;
+                        e.show = false;
                       },
                     },
                     (e) => {
@@ -30088,7 +30088,7 @@ var bgOnly = false;
                 wasAlreadyHit:
                   (null === (t = e.inGame) || void 0 === t
                     ? void 0
-                    : t.wasHit) || !1,
+                    : t.wasHit) || false,
               };
             },
             render: ({ props: e, getContext: t, state: a }) => [
@@ -30096,7 +30096,7 @@ var bgOnly = false;
                 () => {
                   var t;
                   return (
-                    !0 ===
+                    true ===
                     (null === (t = e.inGame) || void 0 === t
                       ? void 0
                       : t.isFlying)
@@ -30115,7 +30115,7 @@ var bgOnly = false;
                             animationRenderer: n,
                             fileNames: Qs.spineFiles.flyingFlag,
                             animationName: "idle",
-                            loop: !0,
+                            loop: true,
                             paused: e.inGame.paused,
                             x: e.flag.x,
                             y: e.flag.y,
@@ -30138,7 +30138,7 @@ var bgOnly = false;
                             animationRenderer: n,
                             fileNames: Qs.spineFiles.flyingFlag,
                             animationName: "finish",
-                            loop: !1,
+                            loop: false,
                             startFromFrame: a.wasAlreadyHit ? 200 : 0,
                             paused: e.inGame.paused,
                             x: e.flag.x,
@@ -30198,7 +30198,7 @@ var bgOnly = false;
                                     animationRenderer: n,
                                     animationName: "animation",
                                     fileNames: Qs.spineFiles.checkpointEnd,
-                                    loop: !0,
+                                    loop: true,
                                     paused: e.inGame.paused,
                                     x: e.flag.x,
                                     y: e.flag.y,
@@ -30218,7 +30218,7 @@ var bgOnly = false;
                                   () => {
                                     var t;
                                     return (
-                                      !0 ===
+                                      true ===
                                       (null === (t = e.inGame) || void 0 === t
                                         ? void 0
                                         : t.wasHit)
@@ -30232,7 +30232,7 @@ var bgOnly = false;
                                         animationRenderer: n,
                                         animationName: "animation",
                                         fileNames: Qs.spineFiles.checkpointHit,
-                                        loop: !1,
+                                        loop: false,
                                         startFromFrame: a.wasAlreadyHit
                                           ? 200
                                           : 0,
@@ -30259,7 +30259,7 @@ var bgOnly = false;
                                         animationName: "animation",
                                         fileNames:
                                           Qs.spineFiles.checkpointBasic,
-                                        loop: !0,
+                                        loop: true,
                                         paused: e.inGame.paused,
                                         x: e.flag.x,
                                         y: e.flag.y,
@@ -30317,7 +30317,7 @@ var bgOnly = false;
                             () => {
                               var t;
                               return (
-                                !0 ===
+                                true ===
                                 (null === (t = e.inGame) || void 0 === t
                                   ? void 0
                                   : t.wasHit)
@@ -30355,7 +30355,7 @@ var bgOnly = false;
                                     fileName:
                                       "images/themes/world2/flag/confetti.png",
                                     startFrame: a.wasAlreadyHit ? 200 : 0,
-                                    hideOnEnd: !0,
+                                    hideOnEnd: true,
                                     columns: 5,
                                     rows: 2,
                                     frameRate: 3,
@@ -30484,7 +30484,7 @@ var bgOnly = false;
           }),
           oo = (e, t, a) => ({ x: e, y: t, width: 23, height: 12, speed: a }),
           ro = 3 * G.jumpDistance,
-          lo = { ref: !1 },
+          lo = { ref: false },
           co = { ref: 0 };
         function uo(e, t, a, i, n, s, o, r, l, c) {
           const d = be.rectTouchesRect(t),
@@ -30494,7 +30494,7 @@ var bgOnly = false;
             g = t.y - h;
           let m = null,
             f = a.direction,
-            y = !1;
+            y = false;
           for (const { object: e, index: a } of n) {
             if ("enemy" === e.type && a === i) continue;
             let n = e;
@@ -30506,8 +30506,8 @@ var bgOnly = false;
                   1,
                   0.5,
                   0,
-                  !1,
-                  !1
+                  false,
+                  false
                 )(e);
                 //**
                 be.hitObject(
@@ -30516,11 +30516,11 @@ var bgOnly = false;
                   1,
                   0.5,
                   0,
-                  !1,
-                  !1
+                  false,
+                  false
                 )(e) && e.rotation > -45
                   ? (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2)
-                  : a && (y = !0);
+                  : a && (y = true);
                 continue;
               }
               n = $.getSwitchPlatformUpRectangle(e);
@@ -30584,7 +30584,7 @@ var bgOnly = false;
                 m.y,
                 m.speed + Math.sign(m.speed) * c * (r / 20)
               )),
-              u(m) && ((g.ref = !0), (m = null))),
+              u(m) && ((g.ref = true), (m = null))),
             a.destroyed)
           )
             return Object.assign(Object.assign({}, a), { bullet: m });
@@ -30665,7 +30665,7 @@ var bgOnly = false;
                     "shooter" === I.kind
                       ? po(e, I, _, r, l, c, d, u, h, p, g, m, f, co, lo)
                       : uo(e, I, _, t, S, a, s, o, u, p);
-                xa.updateLayoutStateField("enemies", t, v, y, E, b, !1);
+                xa.updateLayoutStateField("enemies", t, v, y, E, b, false);
               }
               return lo.ref;
             },
@@ -30683,7 +30683,7 @@ var bgOnly = false;
                     t.giant && (r.y += t.height / 8),
                     o(r)
                       ? 0 === n
-                        ? { enemyState: a, playerCrashed: !0, playerGradY: n }
+                        ? { enemyState: a, playerCrashed: true, playerGradY: n }
                         : {
                             enemyState: Object.assign(Object.assign({}, a), {
                               destroyed: {
@@ -30693,10 +30693,10 @@ var bgOnly = false;
                                 by: "stomped",
                               },
                             }),
-                            playerCrashed: !1,
+                            playerCrashed: false,
                             playerGradY: G.initGrad(s),
                           }
-                      : { enemyState: a, playerCrashed: !1, playerGradY: n }
+                      : { enemyState: a, playerCrashed: false, playerGradY: n }
                   );
               }
               return null;
@@ -30709,7 +30709,7 @@ var bgOnly = false;
                 () => null !== e.enemyState.bullet,
                 () => [
                   io.Single(
-                    { bullet: e.enemyState.bullet, isEnemy: !0 },
+                    { bullet: e.enemyState.bullet, isEnemy: true },
                     (t) => {
                       (t.x = e.enemyState.bullet.x),
                         (t.y = e.enemyState.bullet.y),
@@ -30750,7 +30750,7 @@ var bgOnly = false;
                                 ? bo.Single({
                                     x: a.x,
                                     y: a.y,
-                                    justDestroyed: !0,
+                                    justDestroyed: true,
                                     paused: e.paused,
                                     df: e.df,
                                     giant: e.enemy.giant,
@@ -30836,7 +30836,7 @@ var bgOnly = false;
                           {
                             enemy: e.enemy,
                             enemyDir: e.enemyState.direction,
-                            aboutToShoot: !1,
+                            aboutToShoot: false,
                             frame: e.frame,
                             df: e.df,
                           },
@@ -30863,13 +30863,13 @@ var bgOnly = false;
             ],
           }),
           yo = v({
-            init: () => ({ shooting: !1 }),
+            init: () => ({ shooting: false }),
             loop({ state: e, props: t }) {
-              t.aboutToShoot && (e.shooting = !0);
+              t.aboutToShoot && (e.shooting = true);
             },
             render: ({ props: e, state: t }) => [
               T(
-                () => !0 === e.showArea,
+                () => true === e.showArea,
                 () => [
                   p(
                     {
@@ -30963,7 +30963,7 @@ var bgOnly = false;
                                           ? a
                                           : 1,
                                       onEnd: () => {
-                                        t.shooting = !1;
+                                        t.shooting = false;
                                       },
                                     },
                                     (t) => {
@@ -31035,7 +31035,7 @@ var bgOnly = false;
                         height: i,
                         y: 2,
                         onEnd: () => {
-                          t.show = !1;
+                          t.show = false;
                         },
                         df: e.df,
                       },
@@ -31073,7 +31073,7 @@ var bgOnly = false;
                         paused: t.paused,
                         df: t.df,
                         onEnd: () => {
-                          e.show = !1;
+                          e.show = false;
                         },
                       },
                       (e) => {
@@ -31237,8 +31237,8 @@ var bgOnly = false;
                 iconHeight: a,
                 width: i,
                 height: n,
-                noSound: s = !1,
-                disabled: o = !1,
+                noSound: s = false,
+                disabled: o = false,
                 testId: r,
                 onPress: c,
               },
@@ -31346,12 +31346,12 @@ var bgOnly = false;
                   overwrite: e.overwrite,
                   playbackRate: e.df,
                 });
-              return { fileName: e.fileName, paused: !1 };
+              return { fileName: e.fileName, paused: false };
             },
             loop({ props: e, state: t, device: a, getContext: i }) {
               if (e.paused !== t.paused) {
                 if (e.paused)
-                  return a.audio(t.fileName).pause(), void (t.paused = !0);
+                  return a.audio(t.fileName).pause(), void (t.paused = true);
                 if (e.isGameSfx) {
                   const { settings: t } = i(Se);
                   Ga(e.fileName, a, t, { loop: e.loop, playbackRate: e.df });
@@ -31360,7 +31360,7 @@ var bgOnly = false;
                     loop: e.loop,
                     playbackRate: e.df,
                   });
-                t.paused = !1;
+                t.paused = false;
               }
             },
             render: () => [],
@@ -31378,7 +31378,7 @@ var bgOnly = false;
                   () => {
                     return [
                       ((e = () => {
-                        t.didJustFinishUsing && t.setDidJustFinishUsing(!1);
+                        t.didJustFinishUsing && t.setDidJustFinishUsing(false);
                       }),
                       { type: "run", fn: e }),
                       Hs(
@@ -31388,7 +31388,7 @@ var bgOnly = false;
                           animationRenderer: i,
                           animationName: "ollie2",
                           fileNames: Qs.spineFiles.skateboard,
-                          loop: !1,
+                          loop: false,
                           paused: t.paused,
                           df: t.df,
                           scale: { x: t.playerDir, y: 1 },
@@ -31420,7 +31420,7 @@ var bgOnly = false;
                             animationRenderer: i,
                             animationName: "enter_grinding",
                             fileNames: Qs.spineFiles.skateboard,
-                            loop: !1,
+                            loop: false,
                             scale: { x: t.playerDir, y: 1 },
                             paused: t.paused,
                             df: t.df,
@@ -31440,8 +31440,8 @@ var bgOnly = false;
                           {
                             fileName: "audio/levels/skateboard/grind.wav",
                             paused: t.paused,
-                            loop: !0,
-                            isGameSfx: !0,
+                            loop: true,
+                            isGameSfx: true,
                           },
                           (e) => {
                             (e.paused = t.paused), (e.df = t.df);
@@ -31459,7 +31459,7 @@ var bgOnly = false;
                                 animationRenderer: i,
                                 animationName: "leave_grinding",
                                 fileNames: Qs.spineFiles.skateboard,
-                                loop: !1,
+                                loop: false,
                                 scale: { x: t.playerDir, y: 1 },
                                 paused: t.paused,
                                 df: t.df,
@@ -31467,7 +31467,7 @@ var bgOnly = false;
                                 y: n(),
                                 height: 0,
                                 onEnd: () => {
-                                  t.setDidJustFinishUsing(!1);
+                                  t.setDidJustFinishUsing(false);
                                 },
                               },
                               (e) => {
@@ -31487,7 +31487,7 @@ var bgOnly = false;
                                 animationRenderer: i,
                                 animationName: "move",
                                 fileNames: Qs.spineFiles.skateboard,
-                                loop: !0,
+                                loop: true,
                                 paused: t.paused,
                                 df: t.df,
                                 scale: { x: t.playerDir, y: 1 },
@@ -31513,8 +31513,8 @@ var bgOnly = false;
                                     fileName:
                                       "audio/levels/skateboard/move.wav",
                                     paused: t.paused,
-                                    loop: !0,
-                                    isGameSfx: !0,
+                                    loop: true,
+                                    isGameSfx: true,
                                   },
                                   (e) => {
                                     (e.paused = t.paused), (e.df = t.df);
@@ -31566,8 +31566,8 @@ var bgOnly = false;
                                   animationRenderer: n,
                                   animationName: "animation",
                                   fileNames: Qs.spineFiles.doubleJump,
-                                  loop: !0,
-                                  paused: e.paused || !1,
+                                  loop: true,
+                                  paused: e.paused || false,
                                   df:
                                     null !== (a = e.df) && void 0 !== a ? a : 1,
                                   x: e.powerup.x,
@@ -31576,7 +31576,7 @@ var bgOnly = false;
                                 },
                                 (t) => {
                                   var a;
-                                  (t.paused = e.paused || !1),
+                                  (t.paused = e.paused || false),
                                     (t.df =
                                       null !== (a = e.df) && void 0 !== a
                                         ? a
@@ -31688,7 +31688,7 @@ var bgOnly = false;
                             animationRenderer: i,
                             animationName: "on_Player",
                             fileNames: Qs.spineFiles.doubleJumpOnPlayer,
-                            loop: !0,
+                            loop: true,
                             paused: e.paused,
                             df: e.df,
                             x: e.powerup.x,
@@ -31755,13 +31755,13 @@ var bgOnly = false;
             ],
           }),
           Ao = v({
-            init: () => ({ didJustStartUsing: !0, didJustFinishUsing: !1 }),
+            init: () => ({ didJustStartUsing: true, didJustFinishUsing: false }),
             loop({ props: e, state: t }) {
               e.isUsing || t.didJustStartUsing
                 ? e.isUsing &&
                   !t.didJustFinishUsing &&
-                  (t.didJustFinishUsing = !0)
-                : (t.didJustStartUsing = !0);
+                  (t.didJustFinishUsing = true)
+                : (t.didJustStartUsing = true);
             },
             render: ({ props: e, state: t }) => [
               O(
@@ -31777,8 +31777,8 @@ var bgOnly = false;
                               {
                                 fileName: "audio/levels/jetpack/loop.wav",
                                 paused: e.paused,
-                                loop: !0,
-                                isGameSfx: !0,
+                                loop: true,
+                                isGameSfx: true,
                               },
                               (t) => {
                                 (t.paused = e.paused), (t.df = e.df);
@@ -31817,7 +31817,7 @@ var bgOnly = false;
                                     width: 73,
                                     height: 110,
                                     onEnd: () => {
-                                      t.didJustFinishUsing = !1;
+                                      t.didJustFinishUsing = false;
                                     },
                                     df: e.df,
                                   },
@@ -31924,7 +31924,7 @@ var bgOnly = false;
                         animationRenderer: i,
                         animationName: "on_PlayerUse_FadeOut",
                         fileNames: Qs.spineFiles.doubleJumpOnPlayer,
-                        loop: !1,
+                        loop: false,
                         paused: e.paused,
                         df: e.df,
                         x: e.powerup.x,
@@ -31951,7 +31951,7 @@ var bgOnly = false;
                         width: 170,
                         height: 97,
                         df: e.df,
-                        hideOnEnd: !0,
+                        hideOnEnd: true,
                       },
                       (t) => {
                         (t.x = e.powerup.x), (t.y = e.powerup.y), (t.df = e.df);
@@ -31985,7 +31985,7 @@ var bgOnly = false;
                         frameRate: 3,
                         width: 73,
                         height: 110,
-                        hideOnEnd: !0,
+                        hideOnEnd: true,
                         df: e.df,
                       },
                       (t) => {
@@ -32014,7 +32014,7 @@ var bgOnly = false;
                         frameRate: 3,
                         width: 73,
                         height: 110,
-                        hideOnEnd: !0,
+                        hideOnEnd: true,
                         df: e.df,
                       },
                       (t) => {
@@ -32108,8 +32108,8 @@ var bgOnly = false;
                                     globalPlayerScale === 1
                                       ? "switch_1"
                                       : "switch_2",
-                                  loop: !1,
-                                  paused: e.paused || !1,
+                                  loop: false,
+                                  paused: e.paused || false,
                                   startFromFrame: a.justHitTimer > 0 ? 0 : 400,
                                   height: 0,
                                   x: e.switchButton.x,
@@ -32126,7 +32126,7 @@ var bgOnly = false;
                                   var i;
                                   (t.x = e.switchButton.x),
                                     (t.y = e.switchButton.y),
-                                    (t.paused = e.paused || !1),
+                                    (t.paused = e.paused || false),
                                     (t.df =
                                       a.justHitTimer > 0
                                         ? 1.5 *
@@ -32188,8 +32188,8 @@ var bgOnly = false;
                                   animationName: e.switchBlockSpikes
                                     ? "switch_1"
                                     : "switch_2",
-                                  loop: !1,
-                                  paused: e.paused || !1,
+                                  loop: false,
+                                  paused: e.paused || false,
                                   startFromFrame: a.justHitTimer > 0 ? 0 : 400,
                                   height: 0,
                                   x: e.switchButton.x,
@@ -32206,7 +32206,7 @@ var bgOnly = false;
                                   var i;
                                   (t.x = e.switchButton.x),
                                     (t.y = e.switchButton.y),
-                                    (t.paused = e.paused || !1),
+                                    (t.paused = e.paused || false),
                                     (t.df =
                                       a.justHitTimer > 0
                                         ? 1.5 *
@@ -32307,7 +32307,7 @@ var bgOnly = false;
                     })
                   );
               };
-              document.addEventListener("wheel", n, !1);
+              document.addEventListener("wheel", n, false);
               const s = a - t;
               return {
                 scrollY: B.clamp([0, s])(e),
@@ -32331,7 +32331,7 @@ var bgOnly = false;
                   r.x >= -n / 2 &&
                   r.y > -i &&
                   r.y <= 0 &&
-                  (l = { y: c - r.y, pointerY: r.y, moved: !1 }),
+                  (l = { y: c - r.y, pointerY: r.y, moved: false }),
                 l)
               ) {
                 const e = s - i;
@@ -32339,7 +32339,7 @@ var bgOnly = false;
                   r.pressed || r.justReleased
                     ? !l.moved &&
                       Math.abs(l.pointerY - r.y) > 10 &&
-                      (l = Object.assign(Object.assign({}, l), { moved: !0 }))
+                      (l = Object.assign(Object.assign({}, l), { moved: true }))
                     : (l = null);
               }
               return { startScroll: l, scrollY: c, onScroll: t.onScroll };
@@ -32356,9 +32356,9 @@ var bgOnly = false;
               getInputs: r,
             }) {
               var l;
-              if (i <= t) return e(!1);
+              if (i <= t) return e(false);
               const c =
-                  !0 ===
+                  true ===
                   (null === (l = s.startScroll) || void 0 === l
                     ? void 0
                     : l.moved),
@@ -32384,7 +32384,7 @@ var bgOnly = false;
               ];
             },
             cleanup({ state: e }) {
-              document.removeEventListener("wheel", e.onScroll, !1);
+              document.removeEventListener("wheel", e.onScroll, false);
             },
           }),
           Bo = v({
@@ -32401,12 +32401,12 @@ var bgOnly = false;
                 0 === e.deltaMode &&
                   (t.scrollY = B.clamp([0, s])(t.scrollY + e.deltaY));
               };
-              document.addEventListener("wheel", n, !1);
+              document.addEventListener("wheel", n, false);
               const s = a - t;
               return {
                 scrollY: B.clamp([0, s])(e),
                 startScroll: null,
-                noPress: { ref: !1 },
+                noPress: { ref: false },
                 onScroll: n,
               };
             },
@@ -32429,7 +32429,7 @@ var bgOnly = false;
                   (t.startScroll = {
                     y: t.scrollY - l.y,
                     pointerY: l.y,
-                    moved: !1,
+                    moved: false,
                   }),
                 t.startScroll)
               ) {
@@ -32438,11 +32438,11 @@ var bgOnly = false;
                   l.pressed || l.justReleased
                     ? !t.startScroll.moved &&
                       Math.abs(t.startScroll.pointerY - l.y) > 10 &&
-                      (t.startScroll.moved = !0)
+                      (t.startScroll.moved = true)
                     : (t.startScroll = null);
               }
               const c =
-                  !0 ===
+                  true ===
                   (null === (i = t.startScroll) || void 0 === i
                     ? void 0
                     : i.moved),
@@ -32472,7 +32472,7 @@ var bgOnly = false;
               ),
             ],
             cleanup({ state: e }) {
-              document.removeEventListener("wheel", e.onScroll, !1);
+              document.removeEventListener("wheel", e.onScroll, false);
             },
           }),
           Fo = S({
@@ -32481,9 +32481,9 @@ var bgOnly = false;
                 text: e,
                 width: t,
                 height: a,
-                darkText: i = !1,
-                darkBg: s = !1,
-                disabled: o = !1,
+                darkText: i = false,
+                darkBg: s = false,
+                disabled: o = false,
                 fontSize: r = 15,
                 shadowDir: l,
                 onPress: c,
@@ -32609,7 +32609,7 @@ var bgOnly = false;
             ],
           }),
           Uo = S({
-            init: ({ props: { initShow: e = !1, fadeFrames: t = 10 } }) => ({
+            init: ({ props: { initShow: e = false, fadeFrames: t = 10 } }) => ({
               fade: e ? t : 0,
             }),
             loop: ({
@@ -32627,7 +32627,7 @@ var bgOnly = false;
               0 === a.fade ? [] : e(a.fade / t),
           }),
           jo = v({
-            init({ props: { initShow: e = !1, fadeFrames: t = 10 } }) {
+            init({ props: { initShow: e = false, fadeFrames: t = 10 } }) {
               const a = e ? t : 0;
               return { fade: a, opacity: { ref: a / t } };
             },
@@ -32657,7 +32657,7 @@ var bgOnly = false;
           }),
           Vo = 25,
           Ho = v({
-            init: () => ({ showArrows: [!1, !1, !1, !1] }),
+            init: () => ({ showArrows: [false, false, false, false] }),
             loop({ state: e, props: t }) {
               (e.showArrows[0] = Xo(t.playerYRelative, 0)),
                 (e.showArrows[1] = Xo(t.playerYRelative, 30)),
@@ -32804,8 +32804,8 @@ var bgOnly = false;
                                           animationRenderer: i,
                                           fileNames: Qs.spineFiles.arrow,
                                           animationName: "animation",
-                                          loop: !1,
-                                          paused: e.paused || !1,
+                                          loop: false,
+                                          paused: e.paused || false,
                                           x: (e.playerX || e.collectible.x) + n,
                                           y: e.collectible.y,
                                           height: 0,
@@ -32820,7 +32820,7 @@ var bgOnly = false;
                                         },
                                         (t) => {
                                           var a;
-                                          (t.paused = e.paused || !1),
+                                          (t.paused = e.paused || false),
                                             (t.x =
                                               e.playerX || e.collectible.x),
                                             (t.y = e.collectible.y),
@@ -32833,8 +32833,8 @@ var bgOnly = false;
                                         }
                                       ),
                                       jo.Single({
-                                        shouldShow: !1,
-                                        initShow: !0,
+                                        shouldShow: false,
+                                        initShow: true,
                                         fadeFrames: 50,
                                         sprite: (t) => [
                                           c(
@@ -32874,8 +32874,8 @@ var bgOnly = false;
                                       ),
                                     }),
                                     jo.Single({
-                                      shouldShow: !1,
-                                      initShow: !0,
+                                      shouldShow: false,
+                                      initShow: true,
                                       fadeFrames: 50,
                                       sprite: (t) => [
                                         c(
@@ -32929,9 +32929,9 @@ var bgOnly = false;
                                   height: 52,
                                   x: e.collectible.x,
                                   y: e.collectible.y,
-                                  paused: !1,
+                                  paused: false,
                                   df: 1,
-                                  hideOnEnd: !0,
+                                  hideOnEnd: true,
                                 },
                                 (t) => {
                                   (t.x = e.collectible.x),
@@ -33001,9 +33001,9 @@ var bgOnly = false;
                         animationRenderer: n,
                         animationName: "animation",
                         fileNames: Qs.spineFiles.spring,
-                        loop: !1,
+                        loop: false,
                         df: 0 === t.hitCount ? 0 : e.df || 1,
-                        paused: e.paused || !1,
+                        paused: e.paused || false,
                         x: e.spring.x,
                         y: e.spring.y,
                         scale: { x: 1, y: e.spring.direction || 1 },
@@ -33011,7 +33011,7 @@ var bgOnly = false;
                       },
                       (a) => {
                         (a.df = 0 === t.hitCount ? 0 : e.df || 1),
-                          (a.paused = e.paused || !1),
+                          (a.paused = e.paused || false),
                           (a.x = e.spring.x),
                           (a.y =
                             e.spring.y + (e.spring.direction < 0 ? 15 : 0));
@@ -33070,8 +33070,8 @@ var bgOnly = false;
                     animationRenderer: n,
                     animationName: `${d}_${s}`,
                     fileNames: Qs.spineFiles.portal,
-                    loop: !0,
-                    paused: e.paused || !1,
+                    loop: true,
+                    paused: e.paused || false,
                     df: null !== (a = e.df) && void 0 !== a ? a : 1,
                     scale: { x: l, y: c },
                     x: e.portal.x - o,
@@ -33080,7 +33080,7 @@ var bgOnly = false;
                   },
                   (t) => {
                     var a;
-                    (t.paused = e.paused || !1),
+                    (t.paused = e.paused || false),
                       (t.df = null !== (a = e.df) && void 0 !== a ? a : 1),
                       (t.x = e.portal.x - o),
                       (t.y = e.portal.y - 3 + r);
@@ -33145,10 +33145,10 @@ var bgOnly = false;
                         animationRenderer: n,
                         animationName: "animation",
                         fileNames: Qs.spineFiles.speedChange,
-                        loop: !1,
+                        loop: false,
                         df: 0 === t.hitCount ? 0 : e.df || 1.5,
                         startFromFrame: 2,
-                        paused: e.paused || !1,
+                        paused: e.paused || false,
                         x: e.speedChange.x,
                         y: e.speedChange.y,
                         scale: {
@@ -33159,7 +33159,7 @@ var bgOnly = false;
                       },
                       (a) => {
                         (a.df = 0 === t.hitCount ? 0 : e.df || 1),
-                          (a.paused = e.paused || !1),
+                          (a.paused = e.paused || false),
                           (a.x = e.speedChange.x),
                           (a.y = e.speedChange.y);
                       }
@@ -33189,7 +33189,7 @@ var bgOnly = false;
                   e.selectTool({ type: "pointer" });
                 },
                 isSelected: "pointer" === e.selectedTool.type,
-                isOpen: !1,
+                isOpen: false,
                 y: 120,
               }),
               vo({
@@ -33200,7 +33200,7 @@ var bgOnly = false;
                   e.selectTool({ type: "selectDrag" });
                 },
                 isSelected: "selectDrag" === e.selectedTool.type,
-                isOpen: !1,
+                isOpen: false,
                 y: 76,
               }),
               vo({
@@ -33221,7 +33221,7 @@ var bgOnly = false;
                   e.selectTool({ type: "erase" });
                 },
                 isSelected: "erase" === e.selectedTool.type,
-                isOpen: !1,
+                isOpen: false,
                 y: -12,
               }),
               vo({
@@ -33231,8 +33231,8 @@ var bgOnly = false;
                 onPress: () => {
                   e.unselectAllObjects(), e.send({ type: "undo" });
                 },
-                isSelected: !1,
-                isOpen: !1,
+                isSelected: false,
+                isOpen: false,
                 y: -56,
               }),
               vo({
@@ -33242,7 +33242,7 @@ var bgOnly = false;
                   e.setMenuOpen("theme");
                 },
                 isOpen: "theme" === e.menuView,
-                isSelected: !1,
+                isSelected: false,
                 y: -100,
               }),
               "objects" === e.menuView
@@ -33347,7 +33347,7 @@ var bgOnly = false;
                       blocks: [i],
                       theme: t.block,
                     }),
-                    unlocked: !0,
+                    unlocked: true,
                   },
                   {
                     name: localize("MINI BLOCK"),
@@ -33358,7 +33358,7 @@ var bgOnly = false;
                       blocks: [n],
                       theme: t.block,
                     }),
-                    unlocked: !0,
+                    unlocked: true,
                   },
                   {
                     name: localize(Zo(s.type)),
@@ -33369,7 +33369,7 @@ var bgOnly = false;
                       spikes: [s],
                       theme: t.spike,
                     }),
-                    unlocked: !0,
+                    unlocked: true,
                   },
                   {
                     name: localize("MINI SPIKE"),
@@ -33380,7 +33380,7 @@ var bgOnly = false;
                       spikes: [o],
                       theme: t.spike,
                     }),
-                    unlocked: !0,
+                    unlocked: true,
                   },
                   {
                     name: localize(Zo(r.type)),
@@ -33391,7 +33391,7 @@ var bgOnly = false;
                       platforms: [r],
                       theme: t.platform,
                     }),
-                    unlocked: !0,
+                    unlocked: true,
                   },
                   {
                     name: localize(Zo(l.type)),
@@ -33401,16 +33401,16 @@ var bgOnly = false;
                       id: "DirectionChange",
                       directionChange: l,
                       theme: t.dirChange,
-                      isEditor: !0,
+                      isEditor: true,
                     }),
-                    unlocked: !0,
+                    unlocked: true,
                   },
                   {
                     name: localize(Zo(d.type)),
                     object: d,
                     iconName: "images/editor/objects/flag.png",
                     sprite: ao.Single({ id: "Flag", flag: d, theme: t.flag }),
-                    unlocked: !0,
+                    unlocked: true,
                   },
                   {
                     name: localize(Zo(h.type)),
@@ -33431,7 +33431,7 @@ var bgOnly = false;
                       id: "Powerup",
                       powerup: u,
                       skin: a,
-                      isEditor: !0,
+                      isEditor: true,
                     }),
                     unlocked:
                       e.includes("gun") ||
@@ -33466,7 +33466,7 @@ var bgOnly = false;
                     name: localize("SWITCH BLOCK"),
                     object: q,
                     iconName: "images/editor/objects/block.png",
-                    unlocked: !0,
+                    unlocked: true,
                   },
                   {
                     name: localize(Zo(g.type)),
@@ -33476,9 +33476,9 @@ var bgOnly = false;
                       id: "SwitchButton",
                       switchButton: g,
                       switchRotation: 0,
-                      switchBlockSpikes: !1,
-                      isEditor: !0,
-                      justHit: !1,
+                      switchBlockSpikes: false,
+                      isEditor: true,
+                      justHit: false,
                     }),
                     unlocked:
                       e.includes("switchButton") ||
@@ -33491,8 +33491,8 @@ var bgOnly = false;
                     sprite: qo.Single({
                       id: "Collectible",
                       collectible: f,
-                      wasPickedUp: !1,
-                      isEditor: !0,
+                      wasPickedUp: false,
+                      isEditor: true,
                     }),
                     unlocked: e.includes("collectible") || e.includes("arrows"),
                   },
@@ -33503,8 +33503,8 @@ var bgOnly = false;
                     sprite: $o.Single({
                       id: "Spring",
                       spring: y,
-                      justHit: !1,
-                      isEditor: !0,
+                      justHit: false,
+                      isEditor: true,
                     }),
                     unlocked: e.includes("spring"),
                   },
@@ -33515,7 +33515,7 @@ var bgOnly = false;
                     sprite: Jo.Single({
                       id: "Portal",
                       portal: E,
-                      isEditor: !0,
+                      isEditor: true,
                     }),
                     unlocked: e.includes("portals"),
                   },
@@ -33526,8 +33526,8 @@ var bgOnly = false;
                     sprite: er.Single({
                       id: "SpeedChange",
                       speedChange: c,
-                      isEditor: !0,
-                      justHit: !1,
+                      isEditor: true,
+                      justHit: false,
                     }),
                     unlocked: e.includes("speedChange"),
                   },
@@ -33757,26 +33757,26 @@ var bgOnly = false;
               vo({
                 id: "Erase",
                 fileName: "images/editor/delete.png",
-                noSound: !0,
+                noSound: true,
                 onPress: () => {
                   eraseObjects(e, t);
                 },
-                isSelected: !1,
-                isOpen: !1,
-                large: !0,
+                isSelected: false,
+                isOpen: false,
+                large: true,
                 x: -25,
               }),
               vo({
                 id: "Duplicate",
                 testId: "DuplicateButton",
                 fileName: "images/editor/duplicate.png",
-                noSound: !0,
+                noSound: true,
                 onPress: () => {
                   duplicateObjects(e, t);
                 },
-                isSelected: !1,
-                isOpen: !1,
-                large: !0,
+                isSelected: false,
+                isOpen: false,
+                large: true,
                 x: 25,
               }),
             ],
@@ -34108,7 +34108,7 @@ var bgOnly = false;
                       options: [
                         {
                           name: String(t.pairId),
-                          selected: !0,
+                          selected: true,
                           onPress: () => null,
                         },
                       ],
@@ -34713,7 +34713,7 @@ var bgOnly = false;
                                   array: "enemies",
                                   index: j,
                                   set: (e, t) =>
-                                    n($.changeEnemyGiant(e, !0), t),
+                                    n($.changeEnemyGiant(e, true), t),
                                 });
                               });
                             },
@@ -34728,7 +34728,7 @@ var bgOnly = false;
                                   array: "enemies",
                                   index: j,
                                   set: (e, t) =>
-                                    n($.changeEnemyGiant(e, !1), t),
+                                    n($.changeEnemyGiant(e, false), t),
                                 });
                               });
                             },
@@ -35463,7 +35463,7 @@ var bgOnly = false;
                                   index: j,
                                   set: (e) =>
                                     Object.assign(Object.assign({}, e), {
-                                      switchesOn: !0,
+                                      switchesOn: true,
                                     }),
                                 });
                               });
@@ -35480,7 +35480,7 @@ var bgOnly = false;
                                   index: j,
                                   set: (e) =>
                                     Object.assign(Object.assign({}, e), {
-                                      switchesOn: !1,
+                                      switchesOn: false,
                                     }),
                                 });
                               });
@@ -35502,7 +35502,7 @@ var bgOnly = false;
                                   index: j,
                                   set: (e) =>
                                     Object.assign(Object.assign({}, e), {
-                                      retainSpeed: !0,
+                                      retainSpeed: true,
                                     }),
                                 });
                               });
@@ -35519,7 +35519,7 @@ var bgOnly = false;
                                   index: j,
                                   set: (e) =>
                                     Object.assign(Object.assign({}, e), {
-                                      retainSpeed: !1,
+                                      retainSpeed: false,
                                     }),
                                 });
                               });
@@ -36241,7 +36241,7 @@ var bgOnly = false;
             ],
           }),
           Fr = I({
-            shouldRerender: () => !0,
+            shouldRerender: () => true,
             render({
               props: {
                 levelSpeeds: {
@@ -36435,18 +36435,18 @@ var bgOnly = false;
               justPlacedObject: null,
               dragStart: null,
               dragSelectPos: null,
-              isDraggingSelected: !1,
-              isPinching: !1,
+              isDraggingSelected: false,
+              isPinching: false,
               lastTwoTaps: [
                 [0, 0],
                 [0, 0],
               ],
-              didMoveView: !1,
-              isMultiTouching: !1,
-              pointerReleasedAfterSelectingObject: !0,
+              didMoveView: false,
+              isMultiTouching: false,
+              pointerReleasedAfterSelectingObject: true,
               toolsMenuView: "closed",
               levelSpeeds: _r(e.level),
-              canMoveSelectedObjects: !1,
+              canMoveSelectedObjects: false,
             }),
             loop({
               props: e,
@@ -36560,8 +36560,8 @@ var bgOnly = false;
               }
               if (
                 (pointer.numberPressed > 1
-                  ? (_ = !0)
-                  : 0 === pointer.numberPressed && (_ = !1),
+                  ? (_ = true)
+                  : 0 === pointer.numberPressed && (_ = false),
                 pointer.justReleased &&
                   ("pointer" === t.selectedTool.type ||
                     "selectDrag" === t.selectedTool.type) &&
@@ -36581,7 +36581,7 @@ var bgOnly = false;
                       h(t);
                     });
                 }
-                I = !1;
+                I = false;
               }
               if (pointer.pressed && !t.isPinching && !_)
                 switch (t.selectedTool.type) {
@@ -36646,7 +36646,7 @@ var bgOnly = false;
                                         1
                                       ))
                                 : (slctedObjs = [want]),
-                                (m = !1);
+                                (m = false);
                             }
                           }
                           y =
@@ -36688,7 +36688,7 @@ var bgOnly = false;
                       o(() => {
                         a
                           .audio("audio/editor/place.wav")
-                          .play({ overwrite: !0 }),
+                          .play({ overwrite: true }),
                           c({
                             type: "placeObjects",
                             objects: [
@@ -36727,14 +36727,14 @@ var bgOnly = false;
                     const e = pointer.x - y.x,
                       t = pointer.y - y.y;
                     (d.x === e && d.y === t) ||
-                      ((I = !0),
+                      ((I = true),
                       u({ viewOffset: { x: e, y: t, scale: d.scale } }));
                   } else if (
                     "dragObject" === y.type &&
                     slctedObjs.length > 0 &&
                     (b || y.x !== C.x || y.y !== C.y)
                   ) {
-                    (b = !0),
+                    (b = true),
                       (slctedObjs = slctedObjs.map((e) => {
                         if (!y) return e;
                         const t = p[e.array][e.index],
@@ -36764,7 +36764,7 @@ var bgOnly = false;
                       Object.assign(Object.assign({}, e), {
                         dragStart: null,
                         dragSelectPos: null,
-                        isDraggingSelected: !1,
+                        isDraggingSelected: false,
                       })
                     );
                   }, 0),
@@ -36824,7 +36824,7 @@ var bgOnly = false;
                     () =>
                       n((e) =>
                         Object.assign(Object.assign({}, e), {
-                          pointerReleasedAfterSelectingObject: !0,
+                          pointerReleasedAfterSelectingObject: true,
                         })
                       ),
                     10
@@ -36899,7 +36899,7 @@ var bgOnly = false;
               let S = [],
                 I = "",
                 _ = [],
-                v = !1;
+                v = false;
               if (selectedObjects.length > 0 && t.isDraggingSelected) {
                 const t = m;
                 m = Ca.removeObjects(m, selectedObjects);
@@ -36926,7 +36926,7 @@ var bgOnly = false;
                     $.updateXY(t[e.array][e.index], e.draggingX, e.draggingY)
                   )),
                   (v = !g),
-                  (S = _.flatMap((e, t) => $r(e, m, t, !1)));
+                  (S = _.flatMap((e, t) => $r(e, m, t, false)));
               }
               const T = {
                 x: (r.pointer.x - d.x) / d.scale,
@@ -37074,15 +37074,15 @@ var bgOnly = false;
                         startPinch: () => {
                           a((e) =>
                             Object.assign(Object.assign({}, e), {
-                              isPinching: !0,
-                              didMoveView: !0,
+                              isPinching: true,
+                              didMoveView: true,
                             })
                           );
                         },
                         endPinch: () => {
                           a((e) =>
                             Object.assign(Object.assign({}, e), {
-                              isPinching: !1,
+                              isPinching: false,
                             })
                           );
                         },
@@ -37113,15 +37113,15 @@ var bgOnly = false;
                         startPinch: () => {
                           a((e) =>
                             Object.assign(Object.assign({}, e), {
-                              isPinching: !0,
-                              didMoveView: !0,
+                              isPinching: true,
+                              didMoveView: true,
                             })
                           );
                         },
                         endPinch: () => {
                           a((e) =>
                             Object.assign(Object.assign({}, e), {
-                              isPinching: !1,
+                              isPinching: false,
                             })
                           );
                         },
@@ -37225,15 +37225,15 @@ var bgOnly = false;
                     id: `DirectionChange-${t}`,
                     directionChange: e,
                     theme: v.dirChange,
-                    isEditor: !0,
+                    isEditor: true,
                   })
                 ),
                 ...h.speedChanges.map((e, t) =>
                   er.Single({
                     id: `SpeedChange-${t}`,
                     speedChange: e,
-                    isEditor: !0,
-                    justHit: !1,
+                    isEditor: true,
+                    justHit: false,
                   })
                 ),
                 ...h.flags.map((e, t) =>
@@ -37244,7 +37244,7 @@ var bgOnly = false;
                     id: `Powerup-${t}`,
                     powerup: e,
                     skin: R,
-                    isEditor: !0,
+                    isEditor: true,
                   })
                 ),
                 eo.Single({
@@ -37265,9 +37265,9 @@ var bgOnly = false;
                     id: `SwitchButton-${t}`,
                     switchButton: e,
                     switchRotation: 0,
-                    switchBlockSpikes: !1,
-                    isEditor: !0,
-                    justHit: !1,
+                    switchBlockSpikes: false,
+                    isEditor: true,
+                    justHit: false,
                   })
                 ),
                 Po.Single({
@@ -37281,19 +37281,19 @@ var bgOnly = false;
                   $o.Single({
                     id: `Spring-${t}`,
                     spring: e,
-                    justHit: !1,
-                    isEditor: !0,
+                    justHit: false,
+                    isEditor: true,
                   })
                 ),
                 ...h.portals.map((e, t) =>
-                  Jo.Single({ id: `Portal-${t}`, portal: e, isEditor: !0 })
+                  Jo.Single({ id: `Portal-${t}`, portal: e, isEditor: true })
                 ),
                 ...h.collectibles.map((e, t) =>
                   qo.Single({
                     id: `Collectible-${t}`,
                     collectible: e,
-                    wasPickedUp: !1,
-                    isEditor: !0,
+                    wasPickedUp: false,
+                    isEditor: true,
                   })
                 ),
                 ...s,
@@ -37411,14 +37411,14 @@ var bgOnly = false;
                     id: `PlacingDirectionChange-${a}`,
                     directionChange: e,
                     theme: n.dirChange,
-                    isEditor: !0,
+                    isEditor: true,
                   });
                 case "speedChange":
                   return er.Single({
                     id: `PlacingSpeedChange-${a}`,
                     speedChange: e,
-                    isEditor: !0,
-                    justHit: !1,
+                    isEditor: true,
+                    justHit: false,
                   });
                 case "saw":
                   return eo.Single({
@@ -37438,7 +37438,7 @@ var bgOnly = false;
                     id: `PlacingPowerup-${a}`,
                     powerup: e,
                     skin: s,
-                    isEditor: !0,
+                    isEditor: true,
                   });
                 case "enemy":
                   return yo.Single({ id: `PlacingEnemy-${a}`, enemy: e });
@@ -37447,9 +37447,9 @@ var bgOnly = false;
                     id: `PlacingSwitchButton-${a}`,
                     switchButton: e,
                     switchRotation: 0,
-                    switchBlockSpikes: !1,
-                    isEditor: !0,
-                    justHit: !1,
+                    switchBlockSpikes: false,
+                    isEditor: true,
+                    justHit: false,
                   });
                 case "switchPlatform":
                   return Po.Single({
@@ -37460,22 +37460,22 @@ var bgOnly = false;
                 case "collectible":
                   return qo.Single({
                     id: `PlacingCollectible-${a}`,
-                    wasPickedUp: !1,
+                    wasPickedUp: false,
                     collectible: e,
-                    isEditor: !0,
+                    isEditor: true,
                   });
                 case "spring":
                   return $o.Single({
                     id: `PlacingSpring-${a}`,
                     spring: e,
-                    justHit: !1,
-                    isEditor: !0,
+                    justHit: false,
+                    isEditor: true,
                   });
                 case "portal":
                   return Jo.Single({
                     id: `PlacingPortal-${a}`,
                     portal: e,
-                    isEditor: !0,
+                    isEditor: true,
                   });
               }
             })(),
@@ -37517,7 +37517,7 @@ var bgOnly = false;
               );
             -1 !== r &&
               a(() => {
-                i.audio("audio/editor/erase.wav").play({ overwrite: !0 }),
+                i.audio("audio/editor/erase.wav").play({ overwrite: true }),
                   n({
                     type: "eraseObjects",
                     objects: [{ array: o, index: r }],
@@ -37530,11 +37530,11 @@ var bgOnly = false;
               const t = (t) => {
                 0 === t.deltaMode && e.onScaleDelta(t.deltaY);
               };
-              return document.addEventListener("wheel", t, !1), { onScroll: t };
+              return document.addEventListener("wheel", t, false), { onScroll: t };
             },
             render: () => [],
             cleanup({ state: e }) {
-              document.removeEventListener("wheel", e.onScroll, !1);
+              document.removeEventListener("wheel", e.onScroll, false);
             },
           }),
           Zr = function (e, t, a, i, n, s) {
@@ -37558,7 +37558,7 @@ var bgOnly = false;
                   playerScaleX: 1,
                   playerScaleY: 1,
                   justDownInputTimer: 0,
-                  jumping: !0,
+                  jumping: true,
                   playerX: et.initialPosition.x,
                   playerY: et.initialPosition.y,
                   playerOnGroundY: et.initialPosition.y,
@@ -37570,16 +37570,16 @@ var bgOnly = false;
                   playerPowerup: null,
                   playerBullets: [],
                   playerJetpackFuel: 0,
-                  playerUsingPowerup: !1,
+                  playerUsingPowerup: false,
                   playerStacks: [],
                   playerStackIndex: 0,
                   explosions: [],
                   bottomLine: null,
                   collectibles: 0,
                   score: { local: 0, total: 0, multiplier: 0 },
-                  switchButtons: { on: !1, rot: 0 },
-                  jumpSwitch: { on: !1, ratio: 0, delay: 0, timeout: 0 },
-                  switchBlockSpikes: !1,
+                  switchButtons: { on: false, rot: 0 },
+                  jumpSwitch: { on: false, ratio: 0, delay: 0, timeout: 0 },
+                  switchBlockSpikes: false,
                   touchingPortals: null,
                   justHitObject: null,
                   skateboardJumpCharge: 0,
@@ -37596,8 +37596,8 @@ var bgOnly = false;
                   onObject: null,
                   cameraXOffset: 0,
                   cameraY: 0,
-                  crashed: !1,
-                  finishedLevel: !1,
+                  crashed: false,
+                  finishedLevel: false,
                   frameCountSinceHistoryPush: 0,
                   layoutState: xa.getInitState(e),
                   playerScale: 1,
@@ -37735,11 +37735,11 @@ var bgOnly = false;
             } else if ("right" === h.direction && a < h.x) {
               if (!l || 1 === n) return (il.crashed = true), il;
             } else if ("up" === h.direction && i < h.y) {
-              if (!l) return (il.crashed = !0), il;
+              if (!l) return (il.crashed = true), il;
             } else {
               if (!("down" === h.direction && i > h.y))
                 return (il.touchingPortals = g), il;
-              if (!l) return (il.crashed = !0), il;
+              if (!l) return (il.crashed = true), il;
             }
             switch (`${h.direction}-${p.direction}`) {
               case "left-right":
@@ -37837,7 +37837,7 @@ var bgOnly = false;
               t = be.getObjectTopY(E.object, a, i) + 15 * e;
             switch (E.result.type) {
               case "crashed":
-                g = !0;
+                g = true;
                 break;
               case "hitMidLine":
                 m = t;
@@ -37856,7 +37856,7 @@ var bgOnly = false;
                   f,
                   p
                 );
-                "crashed" === e ? (g = !0) : (m = e);
+                "crashed" === e ? (g = true) : (m = e);
             }
           }
           return (ll.crashed = g), (ll.onGroundY = m), (ll.hitObject = E), ll;
@@ -37901,7 +37901,7 @@ var bgOnly = false;
                 fullLayoutState: e.layoutState,
                 fullLayoutStateIndexes: r,
               }) &&
-              (e.crashed = !0)),
+              (e.crashed = true)),
             (e.crashed = mo.updateEnemies(
               e.frame,
               l,
@@ -37949,7 +37949,7 @@ var bgOnly = false;
             const { a: j, b: V } = A;
             L.blockJumpUntilReleased &&
               "up" === I &&
-              (L.blockJumpUntilReleased = !1);
+              (L.blockJumpUntilReleased = false);
             let H =
               ("up" !== I || U.justDownInputTimer > 0) &&
               !L.blockJumpUntilReleased;
@@ -38002,7 +38002,7 @@ var bgOnly = false;
                   q,
                   Ca.getAllLandableObjects(z, W, X),
                   Ca.getAllDeadlyObjects(z, W),
-                  () => !1,
+                  () => false,
                   v
                 ),
                 0 === L.resetTimer && N)
@@ -38039,7 +38039,7 @@ var bgOnly = false;
                     state: tl(e, _.boss),
                   }),
                   (L.levelState = e),
-                  (L.blockJumpUntilReleased = !1),
+                  (L.blockJumpUntilReleased = false),
                   (L.landTimer = 0),
                   (L.resetTimer = null),
                   void (L.layoutFirstIndexes = t)
@@ -38049,8 +38049,8 @@ var bgOnly = false;
             }
             U.playerX +=
               w * U.playerSpeedMultiplier * k * U.playerDir * (X ? 1.5 : 1);
-            let J = !1;
-            U.playerUsingPowerup = !1;
+            let J = false;
+            U.playerUsingPowerup = false;
             const K = U.switchBlockSpikes;
             if (
               null === (a = _.boss) || void 0 === a
@@ -38093,8 +38093,8 @@ var bgOnly = false;
                                 ));
                     });
                 if (a)
-                  (L.blockJumpUntilReleased = !0),
-                    (H = !1),
+                  (L.blockJumpUntilReleased = true),
+                    (H = false),
                     (U.justDownInputTimer = 0),
                     z.collectibles.forEach((e, a) => {
                       var i, n;
@@ -38114,7 +38114,7 @@ var bgOnly = false;
                             a,
                             {
                               type: "collectibleState",
-                              wasPickedUp: !0,
+                              wasPickedUp: true,
                               score: i,
                             },
                             U.layoutState,
@@ -38133,7 +38133,7 @@ var bgOnly = false;
                             xa.updateLayoutStateField(
                               "collectibles",
                               a,
-                              { type: "collectibleState", wasPickedUp: !0 },
+                              { type: "collectibleState", wasPickedUp: true },
                               U.layoutState,
                               W,
                               q,
@@ -38148,8 +38148,8 @@ var bgOnly = false;
                       : i.item)
                 )
                   null == v || v.useUpPowerup("punch"),
-                    (L.blockJumpUntilReleased = !0),
-                    (H = !1),
+                    (L.blockJumpUntilReleased = true),
+                    (H = false),
                     (U.justDownInputTimer = 0),
                     (U.playerPowerup = null),
                     xa.updateHitPunchState(
@@ -38171,8 +38171,8 @@ var bgOnly = false;
                       : n.item)
                 )
                   null == v || v.useUpPowerup("gun"),
-                    (L.blockJumpUntilReleased = !0),
-                    (H = !1),
+                    (L.blockJumpUntilReleased = true),
+                    (H = false),
                     (U.justDownInputTimer = 0),
                     (U.playerPowerup = null),
                     U.playerBullets.push(
@@ -38192,7 +38192,7 @@ var bgOnly = false;
                     (U.playerPowerup = null),
                     (U.justDownInputTimer = 0),
                     null == v || v.useUpPowerup("doubleJump"),
-                    (U.jumping = !0);
+                    (U.jumping = true);
                 else if (
                   "jetpack" ===
                   (null === (o = U.playerPowerup) || void 0 === o
@@ -38205,14 +38205,14 @@ var bgOnly = false;
                       U.playerGradY += (e * (V - U.playerGradY)) / 5;
                     }
                   } else
-                    (U.jumping = !0),
+                    (U.jumping = true),
                       (U.playerGradY = G.initGrad(V) / 2),
                       U.playerJetpackFuel < 8 &&
                         ((U.playerGradY = G.initGrad(V)),
                         (U.playerPowerup = null),
                         null == v || v.useUpPowerup("jetpack"));
                   (U.playerJetpackFuel -= k * (w / 5)),
-                    (U.playerUsingPowerup = !0),
+                    (U.playerUsingPowerup = true),
                     U.playerJetpackFuel <= 0 &&
                       ((U.playerPowerup = null),
                       null == v || v.useUpPowerup("jetpack"));
@@ -38221,17 +38221,17 @@ var bgOnly = false;
                     0 !== U.playerGradY ||
                     (X
                       ? (U.skateboardJumpCharge += k)
-                      : ((U.jumping = !0),
+                      : ((U.jumping = true),
                         (U.playerGradY = G.initGrad(V)),
                         (U.jumpSwitch.on = !U.jumpSwitch.on),
                         (U.jumpSwitch.delay = 2),
                         (U.justDownInputTimer = 0),
-                        null == v || v.jump(!1)));
+                        null == v || v.jump(false)));
               } else
                 U.skateboardJumpCharge > 0 &&
                   !U.jumping &&
                   0 === U.playerGradY &&
-                  ((U.jumping = !0),
+                  ((U.jumping = true),
                   (U.playerGradY =
                     G.initGrad(V) *
                     B.clamp2(1, 1.4, 1 + U.skateboardJumpCharge / 60)),
@@ -38239,7 +38239,7 @@ var bgOnly = false;
                   (U.jumpSwitch.delay = 2),
                   (U.justDownInputTimer = 0),
                   (U.skateboardJumpCharge = 0),
-                  null == v || v.jump(!0));
+                  null == v || v.jump(true));
               if (((J = 0 === U.playerGradY), X))
                 if (
                   ((U.playerScaleX = 1 * globalPlayerScale),
@@ -38274,7 +38274,7 @@ var bgOnly = false;
                     const e = Math.sign(-U.playerRot) || U.playerDir;
                     (U.playerRot -= 12 * k * e),
                       276 === Math.abs(U.playerRot % 360) &&
-                        ((U.score = zo.addScore(U.score, !0, !0)),
+                        ((U.score = zo.addScore(U.score, true, true)),
                         null == v || v.scoreMultiplier(U.score.multiplier));
                   }
                 } else U.playerRot = 0;
@@ -38322,7 +38322,7 @@ var bgOnly = false;
                 ((1 === U.playerDir && "left" === t.direction && a <= 0) ||
                   (-1 === U.playerDir && "right" === t.direction && a >= 0)) &&
                 (W.directionChanges[e].wasHit
-                  ? (U.crashed = !0)
+                  ? (U.crashed = true)
                   : ((U.playerDir = "left" === t.direction ? -1 : 1),
                     t.fixSync ? (U.playerX += a) : void 0,
                     (U.playerX += a),
@@ -38378,7 +38378,7 @@ var bgOnly = false;
                 (xa.updateLayoutStateField(
                   "flags",
                   ae,
-                  { type: "flagState", wasHit: !0 },
+                  { type: "flagState", wasHit: true },
                   U.layoutState,
                   W,
                   q,
@@ -38386,9 +38386,9 @@ var bgOnly = false;
                 ),
                 "endOfLevel" === z.flags[ae].role)
               )
-                (U.finishedLevel = !0),
+                (U.finishedLevel = true),
                   null == v || v.pauseSong(),
-                  R(!0, U.checkpoint.index, null);
+                  R(true, U.checkpoint.index, null);
               else {
                 null == v || v.hitFlag();
                 const t = Zr(
@@ -38439,7 +38439,7 @@ var bgOnly = false;
                   (a.onObject = t.onObject),
                   X && (a.score = zo.didLand(U.score)),
                   (U.checkpoint = { index: U.checkpoint.index + 1, state: a }),
-                  R(!1, U.checkpoint.index, a);
+                  R(false, U.checkpoint.index, a);
               }
             }
             const ie = z.switchButtons.findIndex((e) => {
@@ -38520,7 +38520,7 @@ var bgOnly = false;
                   xa.updateLayoutStateField(
                     "collectibles",
                     e,
-                    { type: "collectibleState", wasPickedUp: !0 },
+                    { type: "collectibleState", wasPickedUp: true },
                     U.layoutState,
                     W,
                     q,
@@ -38539,7 +38539,7 @@ var bgOnly = false;
                 (xa.updateLayoutStateField(
                   "collectibles",
                   ne,
-                  { type: "collectibleState", wasPickedUp: !0 },
+                  { type: "collectibleState", wasPickedUp: true },
                   U.layoutState,
                   W,
                   q,
@@ -38550,7 +38550,7 @@ var bgOnly = false;
             const se = z.springs.findIndex((e) => Z(e));
             if (-1 !== se) {
               const e = z.springs[se];
-              (U.jumping = !0),
+              (U.jumping = true),
                 (U.playerGradY =
                   (e.direction > 0
                     ? Math.max(1.5 * G.initGrad(V), Math.abs(U.playerGradY))
@@ -38613,7 +38613,7 @@ var bgOnly = false;
                 (xa.updateLayoutStateField(
                   "powerups",
                   re,
-                  { type: "powerupState", wasPickedUp: !0 },
+                  { type: "powerupState", wasPickedUp: true },
                   U.layoutState,
                   W,
                   q,
@@ -38709,15 +38709,15 @@ var bgOnly = false;
               const e = G.getOvershootPercent(U.playerY - Q, U.playerGradY, j);
               if (X) {
                 const e = Math.abs(U.playerRot % 360);
-                if (e > 60 && e < 300) U.crashed = !0;
+                if (e > 60 && e < 300) U.crashed = true;
                 else if (
                   "platform" === de.object.type &&
                   "rail" === de.object.movement
                 ) {
                   const e = 0 === U.playerWasOnGroundCooldown;
-                  (U.score = zo.addScore(U.score, !1, e)),
+                  (U.score = zo.addScore(U.score, false, e)),
                     e && (null == v || v.scoreMultiplier(U.score.multiplier)),
-                    (U.playerUsingPowerup = !0);
+                    (U.playerUsingPowerup = true);
                 } else
                   !J &&
                     U.score.local > 0 &&
@@ -38748,9 +38748,9 @@ var bgOnly = false;
                 );
                 for (let e = 0; e < ue.length; e++) {
                   const { object: t } = ue[e];
-                  Z(t) && (U.crashed = !0);
+                  Z(t) && (U.crashed = true);
                 }
-                null == v || v.jump(!1);
+                null == v || v.jump(false);
                 const { y: t, gradY: a } = G.stepY(
                   U.playerY,
                   G.initGrad(V),
@@ -38806,11 +38806,11 @@ var bgOnly = false;
                       q,
                       K
                     ),
-                    e.playerCrashed && (U.crashed = !0);
+                    e.playerCrashed && (U.crashed = true);
                   continue;
                 }
               }
-              Z(t) && (U.crashed = !0);
+              Z(t) && (U.crashed = true);
             }
             const pe =
               null !==
@@ -38935,7 +38935,7 @@ var bgOnly = false;
                     })(U.playerX, U.playerY, Y);
               for (let t = 0; t < e.length; t++) {
                 const a = e[t];
-                he(a) && (U.crashed = !0),
+                he(a) && (U.crashed = true),
                   Ca.isObjectInViewX(a, U.playerX) ||
                     (e[t] = Object.assign(Object.assign({}, a), {
                       x: a.x + 2 * Ca.inViewAreaWidth * U.playerDir,
@@ -38974,14 +38974,14 @@ var bgOnly = false;
                       i,
                       d,
                       h,
-                      !1,
+                      false,
                       1,
                       1,
                       0,
                       s,
-                      !1,
+                      false,
                       null,
-                      !1,
+                      false,
                       u
                     );
                     null !== g.onGroundY
@@ -38993,8 +38993,8 @@ var bgOnly = false;
                       : (stacks[l] = { y: d, gradY: h, stackCrash: g.crashed });
                   }
                   lt(stacks, (e) => {
-                    let t = !1;
-                    if (e.stackCrash) t = !0;
+                    let t = false;
+                    if (e.stackCrash) t = true;
                     else {
                       const a = be.rectTouchesRect({
                         x: i,
@@ -39004,11 +39004,11 @@ var bgOnly = false;
                       });
                       for (let e = 0; e < l.length; e++) {
                         const { object: i } = l[e];
-                        a(i) && (t = !0);
+                        a(i) && (t = true);
                       }
                       for (let e = 0; e < c.length; e++) {
                         const i = c[e].bullet;
-                        i && a(i) && (t = !0);
+                        i && a(i) && (t = true);
                       }
                     }
                     return (
@@ -39083,7 +39083,7 @@ var bgOnly = false;
                     (U.playerY = U.playerStacks[U.playerStackIndex].y),
                     (U.playerGradY = U.playerStacks[U.playerStackIndex].gradY),
                     U.playerStacks.splice(U.playerStackIndex, 1),
-                    (U.crashed = !1),
+                    (U.crashed = false),
                     0 === U.playerStacks.length && (U.playerPowerup = null))
                   : ("skateboard" !==
                       (null === (S = U.playerPowerup) || void 0 === S
@@ -39161,21 +39161,21 @@ var bgOnly = false;
                 fileName: "audio/tracks/nitro-fun-dragonfly.mp3",
                 bpm: 130,
                 label: "Wolf Beats",
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               solace: {
                 name: "Solace",
                 author: "Avenza",
                 fileName: "audio/tracks/avenza-solace.mp3",
                 bpm: 115,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               thinkDifferent: {
                 name: "Think Different",
                 author: "Panda Eyes & Gabriel Guardian",
                 fileName: "audio/tracks/panda-eyes-think-different.mp3",
                 bpm: 150,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               indestructable: {
                 name: "Indestructable",
@@ -39183,7 +39183,7 @@ var bgOnly = false;
                 fileName: "audio/tracks/aaro-indestructable.mp3",
                 bpm: 128,
                 label: "Tasty",
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               lighthouse: {
                 name: "Lighthouse",
@@ -39191,7 +39191,7 @@ var bgOnly = false;
                 fileName: "audio/tracks/ghost-n-ghost-lighthouse.mp3",
                 bpm: 128,
                 label: "Argofox",
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               frontier: {
                 name: "Frontier",
@@ -39199,7 +39199,7 @@ var bgOnly = false;
                 fileName: "audio/tracks/doctor-vox-frontier.mp3",
                 bpm: 124,
                 label: "Argofox",
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               awake: {
                 name: "Awake",
@@ -39207,7 +39207,7 @@ var bgOnly = false;
                 fileName: "audio/tracks/amidst-awake.mp3",
                 bpm: 130,
                 label: "Argofox",
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               octane: {
                 name: "Octane",
@@ -39215,7 +39215,7 @@ var bgOnly = false;
                 fileName: "audio/tracks/inova-octane.mp3",
                 bpm: 125,
                 label: "Argofox",
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               eightBitShuffle: {
                 name: "8 Bit Shuffle",
@@ -39223,14 +39223,14 @@ var bgOnly = false;
                 fileName: "audio/tracks/inova-8-bit-shuffle.mp3",
                 bpm: 133,
                 label: "Argofox",
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               stardust: {
                 name: "Stardust",
                 author: "Geoxor",
                 fileName: "audio/tracks/geoxor-stardust.mp3",
                 bpm: 110,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
 
               blythe: {
@@ -39238,28 +39238,28 @@ var bgOnly = false;
                 author: "Aika (feat. TOFIE)",
                 fileName: "audio/tracks/aika-blythe.mp3",
                 bpm: 105,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               aura: {
                 name: "Aura",
                 author: "Creo",
                 fileName: "audio/tracks/creo-aura.mp3",
                 bpm: 128,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               mutant: {
                 name: "Mutant",
                 author: "Evilwave & Teminite (ft. Prey For Me)",
                 fileName: "audio/tracks/evilwave-mutant.mp3",
                 bpm: 150,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               accelerated: {
                 name: "Accelerated",
                 author: "Miami Nights 1984",
                 fileName: "audio/tracks/miami-nights-1984-accelerated.mp3",
                 bpm: 130,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
 
               polymorph: {
@@ -39267,21 +39267,21 @@ var bgOnly = false;
                 author: "The Brig",
                 fileName: "audio/tracks/the-brig-polymorph.mp3",
                 bpm: 150,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               darkSheep: {
                 name: "Dark Sheep",
                 author: "Chroma",
                 fileName: "audio/tracks/chroma-dark-sheep.mp3",
                 bpm: 177,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               eightBitAdventure: {
                 name: "8 Bit Adventure",
                 author: "AdhesiveWombat",
                 fileName: "audio/tracks/adhesive-wombat-8-bit-adventure.mp3",
                 bpm: 153,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
 
               skyFracture: {
@@ -39289,21 +39289,21 @@ var bgOnly = false;
                 author: "Getsix",
                 fileName: "audio/tracks/getsix-sky-fracture.mp3",
                 bpm: 176,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               criticalHit: {
                 name: "Critical Hit",
                 author: "MDK",
                 fileName: "audio/tracks/mdk-critical-hit.mp3",
                 bpm: 130,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               breathe: {
                 name: "Breathe",
                 author: "meganeko & RoccoW",
                 fileName: "audio/tracks/meganeko-breathe.mp3",
                 bpm: 155,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               coincidence: {
                 name: "Coincidence",
@@ -39311,21 +39311,21 @@ var bgOnly = false;
                 fileName: "audio/tracks/3b-coincidence.mp3",
                 bpm: 124,
                 label: "Wolf Beats",
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               coolFriends: {
                 name: "Cool Friends",
                 author: "Silva Hound (Murtagh & Veschell Remix)",
                 fileName: "audio/tracks/silva-hound-cool-friends.mp3",
                 bpm: 115,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               overdrive: {
                 name: "Overdrive",
                 author: "Far Out",
                 fileName: "audio/tracks/far-out-overdrive.mp3",
                 bpm: 172,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               cloud9: {
                 name: "Cloud 9",
@@ -39333,98 +39333,98 @@ var bgOnly = false;
                 fileName: "audio/tracks/valesco-cloud-9.mp3",
                 bpm: 140,
                 label: "Argofox",
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               nacreousSnowmelt: {
                 name: "Nacreous Snowmelt",
                 author: "Camellia",
                 fileName: "audio/tracks/camellia-nacreous-snowmelt.mp3",
                 bpm: 201,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               forYou: {
                 name: "For You",
                 author: "ColBreakz & EXODIE",
                 fileName: "audio/tracks/colbreakz-for-you.mp3",
                 bpm: 145,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               fireAura: {
                 name: "Fire Aura",
                 author: "Kid2Will",
                 fileName: "audio/tracks/kid2will-fire-aura.mp3",
                 bpm: 180,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               chaozFantasy: {
                 name: "Chaoz Fantasy",
                 author: "ParagonX9",
                 fileName: "audio/tracks/paragonx9-chaoz-fantasy.mp3",
                 bpm: 162,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               heaven: {
                 name: "Heaven",
                 author: "EnV",
                 fileName: "audio/tracks/env-heaven.mp3",
                 bpm: 150,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               phazd: {
                 name: "Phazd",
                 author: "tobycreed",
                 fileName: "audio/tracks/tobycreed-phazd.mp3",
                 bpm: 165,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               virtual: {
                 name: "Virtual",
                 author: "Geoxor",
                 fileName: "audio/tracks/geoxor-virtual.mp3",
                 bpm: 128,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               solarAbyss: {
                 name: "Solar Abyss",
                 author: "Lchvasse",
                 fileName: "audio/tracks/lchvasse-solar-abyss.mp3",
                 bpm: 150,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               toe3: {
                 name: "Theory Of Everything 3",
                 author: "dj-Nate",
                 fileName: "audio/tracks/dj-nate-theory-of-everything-3.mp3",
                 bpm: 140,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               finalTheory: {
                 name: "Final Theory",
                 author: "dj-Nate",
                 fileName: "audio/tracks/dj-nate-final-theory.mp3",
                 bpm: 132,
-                isBonusSong: !1,
+                isBonusSong: false,
               },
               silverdust: {
                 name: "Silverdust",
                 author: "Geoxor",
                 fileName: "audio/tracks/geoxor-silverdust.mp3",
                 bpm: 140,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               truecolors: {
                 name: "True Colors",
                 author: "Geoxor",
                 fileName: "audio/tracks/geoxor-true-colors.mp3",
                 bpm: 128,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               soulless2: {
                 name: "Mechanical Machine (Soulless 2)",
                 author: "Exilelord",
                 fileName: "audio/tracks/exilelord-mechanical-machine.mp3",
                 bpm: 125,
-                isBonusSong: !0,
+                isBonusSong: true,
               },
               piratemanners: {
                 name: "Pirate Manners",
@@ -39958,7 +39958,7 @@ var bgOnly = false;
           ],
           Al = function () {
             return {
-              mutatesState: !0,
+              mutatesState: true,
               fileNames: {
                 spine: [Qs.spineFiles.world1Boss],
                 audio: ["audio/levels/boss1/death.mp3"],
@@ -39972,19 +39972,19 @@ var bgOnly = false;
                     e,
                     a,
                     "AnimationBoss",
-                    !1,
+                    false,
                     et.initialPosition.x + pl,
                     -57
                   ),
-                  dead: !1,
-                  collisionFn: () => !1,
+                  dead: false,
+                  collisionFn: () => false,
                   debug: [],
                 };
               },
               cloneState: (e) => ({
                 type: "robot",
                 runtime: e.runtime,
-                collisionFn: () => !1,
+                collisionFn: () => false,
                 debug: [],
                 dead: e.dead,
               }),
@@ -40022,7 +40022,7 @@ var bgOnly = false;
           },
           kl = function () {
             return {
-              mutatesState: !1,
+              mutatesState: false,
               fileNames: {
                 pixelArtImages: [1, 2, 3, 4, 5]
                   .flatMap((e) => [
@@ -40079,7 +40079,7 @@ var bgOnly = false;
                 takingDamageTimeout: 0,
                 health: 5,
                 bullets: [],
-                destroyed: !1,
+                destroyed: false,
               }),
               cloneState: (e) =>
                 Object.assign(Object.assign({}, e), {
@@ -40156,7 +40156,7 @@ var bgOnly = false;
                         e.health--,
                         (a.length = 0),
                         (e.takingDamageTimeout = 30));
-                  0 === e.health && ((e.view = "death"), (e.destroyed = !0)),
+                  0 === e.health && ((e.view = "death"), (e.destroyed = true)),
                     (l = -50);
                 } else if (i < 450) r = Math.max(r, e.bossX + 3.9 * n);
                 else if (i < 1322) {
@@ -40236,15 +40236,15 @@ var bgOnly = false;
                   (e.bossY += n * ((l - e.bossY) / 10));
               },
               crashed: ({ bossState: e, rectangleHitPlayer: t }) => {
-                let a = !1;
-                for (const i of e.bullets) t(i) && (a = !0);
+                let a = false;
+                for (const i of e.bullets) t(i) && (a = true);
                 return a;
               },
             };
           },
           Nl = function () {
             return {
-              mutatesState: !1,
+              mutatesState: false,
               fileNames: {
                 images: [
                   "images/level/boss3/player-ship.png",
@@ -40296,12 +40296,12 @@ var bgOnly = false;
               },
               initState: () => ({
                 type: "flying",
-                mutatesState: !1,
+                mutatesState: false,
                 bossX: 1e3,
                 bossY: 0,
                 gunView: "up",
                 shootFrames: 0,
-                isUp: !0,
+                isUp: true,
                 allAsteroids: Il.map(([e, t, a], i) => ({
                   x: e,
                   y: t,
@@ -40312,7 +40312,7 @@ var bgOnly = false;
                 asteroids: [],
                 insideAsteroid: [],
                 bullets: [],
-                destroyed: !1,
+                destroyed: false,
                 moveFrames: [
                   191, 272, 379, 411, 439, 477, 587, 604, 625, 655, 695, 717,
                   758, 804, 845, 875, 928, 946, 1055, 1117, 1155, 1178, 1441,
@@ -40433,12 +40433,12 @@ var bgOnly = false;
                   : (e.bossY = Sl),
                   r < t + 38 &&
                     !e.destroyed &&
-                    (n("audio/levels/boss3/death.wav"), (e.destroyed = !0)),
+                    (n("audio/levels/boss3/death.wav"), (e.destroyed = true)),
                   e.shootFrames > 0 && (e.shootFrames -= i),
                   e.destroyed || (e.bossX = r);
               },
               crashed: ({ playerX: e, playerY: t, bossState: a }) => {
-                let i = !1;
+                let i = false;
                 for (const n of a.asteroids) {
                   const a = be.pointInCircle(n);
                   n.x > e + n.radius + El ||
@@ -40450,7 +40450,7 @@ var bgOnly = false;
                       a({ x: e - 15, y: t - 15 }) ||
                       a({ x: e + 15, y: t - 15 })
                     ) ||
-                    (i = !0);
+                    (i = true);
                 }
                 const n = be.rectTouchesRect({
                   x: e,
@@ -40477,8 +40477,8 @@ var bgOnly = false;
                       n({ x: e.x, y: bl + 25 - 45, width: 40, height: 90 })) ||
                     ("bottomStalecmite" === e.hitType &&
                       n({ x: e.x, y: Sl - 25 + 45, width: 40, height: 90 }))) &&
-                    (i = !0);
-                for (const e of a.bullets) n(e) && (i = !0);
+                    (i = true);
+                for (const e of a.bullets) n(e) && (i = true);
                 return i;
               },
             };
@@ -40508,7 +40508,7 @@ var bgOnly = false;
                   "audio/levels/boss4/block_explosion.mp3",
                 ],
               },
-              mutatesState: !0,
+              mutatesState: true,
               initState: ({
                 assets: e,
                 checkpointState: t,
@@ -40535,7 +40535,7 @@ var bgOnly = false;
                       e,
                       n,
                       "animation",
-                      !1,
+                      false,
                       -100,
                       -243,
                       void 0,
@@ -40571,12 +40571,12 @@ var bgOnly = false;
                       e,
                       n,
                       "animation",
-                      !1,
+                      false,
                       -100,
                       -243
                     ),
-                    collisionFn: () => !1,
-                    blockCollisionFn: () => !1,
+                    collisionFn: () => false,
+                    blockCollisionFn: () => false,
                     allMinions: o,
                     minions: r,
                     allFireballs: l,
@@ -40588,8 +40588,8 @@ var bgOnly = false;
                 type: "demon",
                 runtime: e.runtime,
                 fistRuntime: e.fistRuntime,
-                collisionFn: () => !1,
-                blockCollisionFn: () => !1,
+                collisionFn: () => false,
+                blockCollisionFn: () => false,
                 allMinions: e.allMinions.map((e) => Object.assign({}, e)),
                 minions: e.minions.map((e) => Object.assign({}, e)),
                 allFireballs: e.allFireballs.map((e) => Object.assign({}, e)),
@@ -40635,13 +40635,13 @@ var bgOnly = false;
                 fullLayoutState: r,
                 fullLayoutStateIndexes: l,
               }) => {
-                let c = !1;
+                let c = false;
                 (e.collisionFn(t, a) ||
                   e.collisionFn(t - 15, a + 15) ||
                   e.collisionFn(t + 15, a + 15) ||
                   e.collisionFn(t + 15, a - 15) ||
                   e.collisionFn(t - 15, a - 15)) &&
-                  (c = !0);
+                  (c = true);
                 const d = e.blockCollisionFn;
                 for (let e = 0; e < s.blocks.length; e++) {
                   const t = s.blocks[e],
@@ -40657,11 +40657,11 @@ var bgOnly = false;
                       r,
                       o,
                       l,
-                      !1
+                      false
                     );
                 }
-                for (const t of e.minions) n(t) && (c = !0);
-                for (const t of e.fireballs) n(t) && (c = !0);
+                for (const t of e.minions) n(t) && (c = true);
+                for (const t of e.fireballs) n(t) && (c = true);
                 return c;
               },
             };
@@ -41119,12 +41119,12 @@ var bgOnly = false;
                       lastCheckpointState: l || null,
                     }
                   : {
-                      didFinish: !1,
+                      didFinish: false,
                       furthestFrame: 0,
                       lastCheckpointState: null,
                     },
                 u = n
-                  ? { didFinish: !1, furthestFrame: 0 }
+                  ? { didFinish: false, furthestFrame: 0 }
                   : { didFinish: s, furthestFrame: o };
               return [
                 ...e,
@@ -41180,10 +41180,10 @@ var bgOnly = false;
             return {
               checkpoints: {
                 furthestFrame: 0,
-                didFinish: !1,
+                didFinish: false,
                 lastCheckpointState: null,
               },
-              noCheckpoints: { furthestFrame: 0, didFinish: !1 },
+              noCheckpoints: { furthestFrame: 0, didFinish: false },
               levelIndex: t,
               levelName: a,
               world: e,
@@ -41229,8 +41229,8 @@ var bgOnly = false;
                 fileName: "",
                 bpm: "120",
                 label: "",
-                isBonusSong: !1,
-                custom: !0,
+                isBonusSong: false,
+                custom: true,
               },*/,
             ];
           },
@@ -41401,7 +41401,7 @@ var bgOnly = false;
                     this,
                     "unknown",
                     function (e) {
-                      return !0;
+                      return true;
                     },
                     dc,
                     oc
@@ -41596,8 +41596,8 @@ var bgOnly = false;
           get: function () {
             return this.runDefinition();
           },
-          enumerable: !0,
-          configurable: !0,
+          enumerable: true,
+          configurable: true,
         });
         var Rc = (function (e) {
             function t(t, a, i, n, s) {
@@ -41650,8 +41650,8 @@ var bgOnly = false;
           })(sc),
           wc = function (e) {
             for (var t = 0; t < e.length; t++)
-              if (e[t].encode !== oc) return !1;
-            return !0;
+              if (e[t].encode !== oc) return false;
+            return true;
           },
           Ac = function (e) {
             return (
@@ -41681,11 +41681,11 @@ var bgOnly = false;
                     var s = a[t],
                       o = e[s];
                     if ((void 0 === o && !vc.call(e, s)) || !i[t].is(o))
-                      return !1;
+                      return false;
                   }
-                  return !0;
+                  return true;
                 }
-                return !1;
+                return false;
               },
               function (e, t) {
                 var s = bc.validate(e, t);
@@ -41738,11 +41738,11 @@ var bgOnly = false;
                   for (var i = 0; i < n; i++) {
                     var s = a[i],
                       o = t[s];
-                    if (void 0 !== o && !e[s].is(o)) return !1;
+                    if (void 0 !== o && !e[s].is(o)) return false;
                   }
-                  return !0;
+                  return true;
                 }
-                return !1;
+                return false;
               },
               function (t, i) {
                 var s = bc.validate(t, i);
@@ -41836,7 +41836,7 @@ var bgOnly = false;
                     var s = bc.validate(t, i);
                     if (tc(s)) return s;
                     for (
-                      var o = s.right, r = {}, l = [], c = !1, d = 0;
+                      var o = s.right, r = {}, l = [], c = false, d = 0;
                       d < n;
                       d++
                     ) {
@@ -41886,7 +41886,7 @@ var bgOnly = false;
                             s = [],
                             o = Object.keys(a),
                             r = o.length,
-                            l = !1,
+                            l = false,
                             c = 0;
                           c < r;
                           c++
@@ -41992,7 +41992,7 @@ var bgOnly = false;
                     var a = o(t[i]);
                     return void 0 !== a && e[a].is(t);
                   }
-                  return !1;
+                  return false;
                 },
                 function (t, a) {
                   var n = bc.validate(t, a);
@@ -42056,11 +42056,11 @@ var bgOnly = false;
           })(sc),
           Yc = function (e, t) {
             for (
-              var a = !0, i = !0, n = !bc.is(e), s = 0, o = t;
+              var a = true, i = true, n = !bc.is(e), s = 0, o = t;
               s < o.length;
               s++
             )
-              (d = o[s]) !== e && (a = !1), bc.is(d) && (i = !1);
+              (d = o[s]) !== e && (a = false), bc.is(d) && (i = false);
             if (a) return e;
             if (i) return t[t.length - 1];
             for (var r = {}, l = 0, c = t; l < c.length; l++) {
@@ -42205,7 +42205,7 @@ var bgOnly = false;
                     this,
                     "never",
                     function (e) {
-                      return !1;
+                      return false;
                     },
                     function (e, t) {
                       return cc(e, t);
@@ -42225,7 +42225,7 @@ var bgOnly = false;
                     this,
                     "any",
                     function (e) {
-                      return !0;
+                      return true;
                     },
                     dc,
                     oc
@@ -42544,9 +42544,9 @@ var bgOnly = false;
                 "number" == typeof i[1]
               ) {
                 let [n, s, o] = i,
-                  r = !1;
+                  r = false;
                 try {
-                  for (; n < e.length; ) (o = e[n](o)), n++, (r = !0);
+                  for (; n < e.length; ) (o = e[n](o)), n++, (r = true);
                 } catch (e) {
                   return Error("Unable to map data to latest version");
                 }
@@ -43586,7 +43586,7 @@ var bgOnly = false;
           iu = { [Ed.Switch]: "switch", [Ed.Jump]: "jump" },
           nu = { [bd.A]: "a", [bd.B]: "b" },
           su = { [Ad.Coin]: "coin", [Ad.Arrows]: "arrow" },
-          ou = { [sd.True]: !0, [sd.False]: !1 };
+          ou = { [sd.True]: true, [sd.False]: false };
         function ru(e, t) {
           return Number(Object.entries(t).find(([, t]) => t === e)[0]);
         }
@@ -43822,7 +43822,7 @@ var bgOnly = false;
               },
               (e) =>
                 Object.assign(Object.assign({}, e), {
-                  switchBlockSpikes: !1,
+                  switchBlockSpikes: false,
                   playerSpeedMultiplier: 1,
                   justHitObject: null,
                   layoutState: Object.assign(Object.assign({}, e.layoutState), {
@@ -43949,7 +43949,7 @@ var bgOnly = false;
                 ]),
                 e[2],
               ],
-              (e) => [e[0], e[1], e[2], [!1, !1, !1, !1, !1, !1]],
+              (e) => [e[0], e[1], e[2], [false, false, false, false, false, false]],
               (e) => [e[1], e[2], e[3]],
               (e) => [e[0].map((e) => [...e, 0, null]), e[1], e[2]],
               (e) => [...e, []],
@@ -44141,13 +44141,13 @@ var bgOnly = false;
                 }),
               (e) =>
                 Object.assign(Object.assign({}, e), {
-                  hasRegisteredNotifications: !1,
+                  hasRegisteredNotifications: false,
                 }),
               (e) =>
-                Object.assign(Object.assign({}, e), { hasAskedForReview: !1 }),
+                Object.assign(Object.assign({}, e), { hasAskedForReview: false }),
               (e) =>
                 Object.assign(Object.assign({}, e), {
-                  hasVisitedSuperLevelPack: !1,
+                  hasVisitedSuperLevelPack: false,
                   offlineCache: { achievements: _u },
                 }),
               (e) =>
@@ -44187,7 +44187,7 @@ var bgOnly = false;
                   })
                 ),
               }),
-              hasRegisteredNotifications: Bc([_c(!1), fc]),
+              hasRegisteredNotifications: Bc([_c(false), fc]),
               hasAskedForReview: yc,
               hasVisitedSuperLevelPack: yc,
             }),
@@ -44656,10 +44656,10 @@ var bgOnly = false;
             ju.requestReview();
           },
           hasIAP: function () {
-            return !1;
+            return false;
           },
           supportsFiles: function () {
-            return !1;
+            return false;
           },
           openFile: function () {
             return Xu(this, void 0, void 0, function* () {
@@ -44669,7 +44669,7 @@ var bgOnly = false;
           },
           saveFile: function (e, t) {
             return Xu(this, void 0, void 0, function* () {
-              return !1;
+              return false;
             });
           },
           googleSignIn: function () {
@@ -45623,7 +45623,7 @@ var bgOnly = false;
                           hasPass: !zu.hasIAP(),
                           achievements: [
                             {
-                              justUnlocked: !0,
+                              justUnlocked: true,
                               achievement: {
                                 id: "test",
                                 title:
@@ -46086,13 +46086,13 @@ var bgOnly = false;
                           void console.error(`Login apple error: ${r.message}`)
                         );
                       202 !== r.status || 40212 !== r.reason_code
-                        ? n({ didCancel: !1, newProfile: null })
+                        ? n({ didCancel: false, newProfile: null })
                         : a(i, (a) => {
                             a
                               ? e.authenticateApple(
                                   t.userId,
                                   t.idToken,
-                                  !1,
+                                  false,
                                   (e) => {
                                     const t = Zu(e, Qu);
                                     if (t instanceof Error)
@@ -46104,13 +46104,13 @@ var bgOnly = false;
                                       );
                                     200 === t.status
                                       ? n({
-                                          didCancel: !1,
+                                          didCancel: false,
                                           newProfile: ch(t.data),
                                         })
                                       : s(dh(t.reason_code));
                                   }
                                 )
-                              : n({ didCancel: !0, newProfile: null });
+                              : n({ didCancel: true, newProfile: null });
                           });
                     });
                     break;
@@ -46128,13 +46128,13 @@ var bgOnly = false;
                             )
                           );
                         202 !== r.status || 40212 !== r.reason_code
-                          ? n({ didCancel: !1, newProfile: null })
+                          ? n({ didCancel: false, newProfile: null })
                           : a(i, (a) => {
                               a
                                 ? e.authenticateGoogleOpenId(
                                     t.id,
                                     t.idToken,
-                                    !1,
+                                    false,
                                     (e) => {
                                       const t = Zu(e, Qu);
                                       if (t instanceof Error)
@@ -46146,13 +46146,13 @@ var bgOnly = false;
                                         );
                                       200 === t.status
                                         ? n({
-                                            didCancel: !1,
+                                            didCancel: false,
                                             newProfile: ch(t.data),
                                           })
                                         : s(dh(t.reason_code));
                                     }
                                   )
-                                : n({ didCancel: !0, newProfile: null });
+                                : n({ didCancel: true, newProfile: null });
                             });
                       }
                     );
@@ -46163,7 +46163,7 @@ var bgOnly = false;
               return new Promise((a, i) => {
                 switch (t.type) {
                   case "apple":
-                    e.identity.detachAppleIdentity(t.userId, !0, (e) => {
+                    e.identity.detachAppleIdentity(t.userId, true, (e) => {
                       const t = Zu(e, rh);
                       if (t instanceof Error)
                         return (
@@ -46174,7 +46174,7 @@ var bgOnly = false;
                     });
                     break;
                   case "google":
-                    e.identity.detachGoogleOpenIdIdentity(t.id, !0, (e) => {
+                    e.identity.detachGoogleOpenIdIdentity(t.id, true, (e) => {
                       const t = Zu(e, rh);
                       if (t instanceof Error)
                         return (
@@ -46318,7 +46318,7 @@ var bgOnly = false;
                       t
                     );
                   })(a),
-                  !0,
+                  true,
                   (s) => {
                     const o = Zu(s, gh);
                     if (!(o instanceof Error))
@@ -46455,7 +46455,7 @@ var bgOnly = false;
                   (e) => {
                     console.log(e);
                   },
-                  !1
+                  false
                 );
               });
             },
@@ -46604,7 +46604,7 @@ var bgOnly = false;
                           : {},
                       sortCriteria: {},
                     },
-                    !1,
+                    false,
                     (s) => {
                       const o = Zu(s, Ah);
                       if (o instanceof Error) return void n(o);
@@ -46684,7 +46684,7 @@ var bgOnly = false;
             buyItem: function e(t, a) {
               return Wu(this, void 0, void 0, function* () {
                 return new Promise((i, n) => {
-                  t.userItems.purchaseUserItem(a.defId, 1, null, !1, (s) => {
+                  t.userItems.purchaseUserItem(a.defId, 1, null, false, (s) => {
                     var o, r;
                     const l = Zu(s, Oh);
                     if (l instanceof Error) return void n(l);
@@ -46731,7 +46731,7 @@ var bgOnly = false;
                     a.itemId,
                     a.itemVersion,
                     null,
-                    !1,
+                    false,
                     (s) => {
                       var o;
                       const r = Zu(s, Ch);
@@ -46877,7 +46877,7 @@ var bgOnly = false;
                   ip,
                   s,
                   ep,
-                  !0,
+                  true,
                   tp,
                   "",
                   (s) => {
@@ -46898,7 +46898,7 @@ var bgOnly = false;
             },
             joinFriendsLobby: function e(t, a, i, n) {
               return new Promise((s, o) => {
-                t.lobby.joinLobby(a, !1, np(i, n), "", null, (r) => {
+                t.lobby.joinLobby(a, false, np(i, n), "", null, (r) => {
                   const l = Zu(r, rp);
                   if (!(l instanceof Error))
                     return 200 !== l.status
@@ -46921,7 +46921,7 @@ var bgOnly = false;
                   "friends",
                   0,
                   r,
-                  !1,
+                  false,
                   null === r
                     ? np(n, l)
                     : ((e, t, a, i) => {
@@ -46961,7 +46961,7 @@ var bgOnly = false;
                   "friends_server",
                   0,
                   o,
-                  !0,
+                  true,
                   tp,
                   "",
                   i,
@@ -47450,7 +47450,7 @@ var bgOnly = false;
                       .map((e) => e.id)
                       .includes(e.layout.properties.theme.id)
                   ? `${e.layout.properties.theme.name} is a bonus level theme you haven't unlocked`
-                  : Ap(t.flatMap(wp), e, !0)
+                  : Ap(t.flatMap(wp), e, true)
                 : null;
             },
             canEditLevel: function (e, t, a, i) {
@@ -47509,7 +47509,7 @@ var bgOnly = false;
                       )) &&
                     !n.includes("moveOnJump")
                   ? "Move on jump not unlocked"
-                  : Ap(n, e, !1)
+                  : Ap(n, e, false)
                 : "Walking enemy not unlocked";
             },
             isPassItem: function (e) {
@@ -47661,7 +47661,7 @@ var bgOnly = false;
           return Lp(this, void 0, void 0, function* () {
             const a = yield e.getItem(Yp);
             if (null === a)
-              return { data: vu.getDefaultData(), firstTimePlaying: !0 };
+              return { data: vu.getDefaultData(), firstTimePlaying: true };
             try {
               const e = JSON.parse(a),
                 i = vu.jsonToData(e);
@@ -47670,16 +47670,16 @@ var bgOnly = false;
                 return (
                   null == t || t.ok(e),
                   Ql(e),
-                  { data: vu.getDefaultData(), firstTimePlaying: !1 }
+                  { data: vu.getDefaultData(), firstTimePlaying: false }
                 );
               }
-              return { data: i.data, firstTimePlaying: !1 };
+              return { data: i.data, firstTimePlaying: false };
             } catch (e) {
               const a = `Error loading local saved data: ${e.message}`;
               return (
                 null == t || t.ok(a),
                 Ql(a),
-                { data: vu.getDefaultData(), firstTimePlaying: !1 }
+                { data: vu.getDefaultData(), firstTimePlaying: false }
               );
             }
           });
@@ -48504,7 +48504,7 @@ var bgOnly = false;
             ],
           }),
           lg = (e, t, a, i) => {
-            const { yMin: n = 0, yMax: s = t, alternateY: o = !0 } = e;
+            const { yMin: n = 0, yMax: s = t, alternateY: o = true } = e;
             if (s === n) return n;
             const r = st(n, s, i);
             return o ? a * r : r;
@@ -48681,10 +48681,10 @@ var bgOnly = false;
                               Ro.Single(
                                 {
                                   fileName: "audio/levels/boss2/laser.wav",
-                                  loop: !1,
+                                  loop: false,
                                   paused: e.paused,
                                   fromPosition: 0,
-                                  isGameSfx: !0,
+                                  isGameSfx: true,
                                   df: e.df,
                                 },
                                 (t) => {
@@ -48716,10 +48716,10 @@ var bgOnly = false;
                               Ro.Single(
                                 {
                                   fileName: "audio/levels/boss2/damage.wav",
-                                  loop: !1,
+                                  loop: false,
                                   paused: e.paused,
                                   fromPosition: 0,
-                                  isGameSfx: !0,
+                                  isGameSfx: true,
                                   df: e.df,
                                 },
                                 (t) => {
@@ -48747,10 +48747,10 @@ var bgOnly = false;
                               Ro.Single(
                                 {
                                   fileName: "audio/levels/boss2/death.wav",
-                                  loop: !1,
+                                  loop: false,
                                   paused: e.paused,
                                   fromPosition: 0,
-                                  isGameSfx: !0,
+                                  isGameSfx: true,
                                   df: e.df,
                                 },
                                 (t) => {
@@ -48830,9 +48830,9 @@ var bgOnly = false;
                             },
                             paused: e.paused,
                             df: e.df,
-                            justDestroyed: !0,
+                            justDestroyed: true,
                             playerRot: 0,
-                            sfx: !1,
+                            sfx: false,
                           },
                           (t) => {
                             const a = e.bossState;
@@ -48895,8 +48895,8 @@ var bgOnly = false;
                         Ro.Single(
                           {
                             fileName: "audio/levels/boss4/minion.mp3",
-                            loop: !0,
-                            isGameSfx: !0,
+                            loop: true,
+                            isGameSfx: true,
                             paused: e.paused,
                             df: e.df,
                           },
@@ -48934,8 +48934,8 @@ var bgOnly = false;
                         Ro.Single(
                           {
                             fileName: "audio/levels/boss4/fireball.mp3",
-                            loop: !0,
-                            isGameSfx: !0,
+                            loop: true,
+                            isGameSfx: true,
                             paused: e.paused,
                             df: e.df,
                           },
@@ -48957,7 +48957,7 @@ var bgOnly = false;
                               animationRenderer: a,
                               animationName: `short_${t}`,
                               fileNames: Qs.spineFiles.world4BossPlayerHit,
-                              loop: !1,
+                              loop: false,
                               paused: e.paused,
                               df: e.df,
                               x: e.playerX + 52,
@@ -48981,8 +48981,8 @@ var bgOnly = false;
                           {
                             fileName: "audio/levels/boss4/death.mp3",
                             paused: e.paused,
-                            loop: !1,
-                            isGameSfx: !0,
+                            loop: false,
+                            isGameSfx: true,
                             df: e.df,
                           },
                           (t) => {
@@ -49096,7 +49096,7 @@ var bgOnly = false;
                 : [],
           }),
           gg = v({
-            init: () => ({ isGunOut: !1, gunFired: !1 }),
+            init: () => ({ isGunOut: false, gunFired: false }),
             render: ({ props: e, state: t }) => [
               R(
                 () => t.gunFired,
@@ -49180,7 +49180,7 @@ var bgOnly = false;
                           paused: e.paused,
                           df: e.df,
                           onEnd: () => {
-                            t.gunFired = !0;
+                            t.gunFired = true;
                           },
                         },
                         (t) => {
@@ -49200,7 +49200,7 @@ var bgOnly = false;
                           paused: e.paused,
                           df: e.df,
                           onEnd: () => {
-                            t.isGunOut = !0;
+                            t.isGunOut = true;
                           },
                         },
                         (t) => {
@@ -49270,12 +49270,12 @@ var bgOnly = false;
                         ),
                         bo.Array({
                           props: () => ({
-                            justDestroyed: !0,
+                            justDestroyed: true,
                             frameRate: 6,
-                            mute: !0,
+                            mute: true,
                             paused: e.paused,
                             df: e.df,
-                            giant: !1,
+                            giant: false,
                           }),
                           update: (t, a) => {
                             (t.paused = e.paused),
@@ -49348,7 +49348,7 @@ var bgOnly = false;
                             y: -10,
                             paused: e.paused,
                             df: e.df,
-                            hideOnEnd: !0,
+                            hideOnEnd: true,
                           },
                           (t) => {
                             (t.paused = e.paused), (t.df = e.df);
@@ -49379,7 +49379,7 @@ var bgOnly = false;
                               animationName: "out",
                               fileNames: Qs.spineFiles.bossSpaceGun,
                               startFromFrame: "toUp" === t.gunView ? 0 : 9999,
-                              loop: !1,
+                              loop: false,
                               paused: t.paused,
                               df: t.df,
                               x: 0,
@@ -49402,7 +49402,7 @@ var bgOnly = false;
                               animationName: "in",
                               fileNames: Qs.spineFiles.bossSpaceGun,
                               startFromFrame: "toDown" === t.gunView ? 0 : 9999,
-                              loop: !1,
+                              loop: false,
                               paused: t.paused,
                               df: t.df,
                               x: 0,
@@ -49423,7 +49423,7 @@ var bgOnly = false;
                               animationRenderer: i,
                               animationName: "fire",
                               fileNames: Qs.spineFiles.bossSpaceGun,
-                              loop: !1,
+                              loop: false,
                               paused: t.paused,
                               df: t.df,
                               x: 0,
@@ -49506,7 +49506,7 @@ var bgOnly = false;
                   animationRenderer: e.animationRenderer,
                   animationName: "animation",
                   fileNames: Qs.spineFiles.world4BossMinion,
-                  loop: !0,
+                  loop: true,
                   paused: e.paused,
                   df: e.df,
                   x: e.xVal,
@@ -49535,7 +49535,7 @@ var bgOnly = false;
                   animationRenderer: e.animationRenderer,
                   animationName: "animation",
                   fileNames: Qs.spineFiles.world4BossFireBall,
-                  loop: !0,
+                  loop: true,
                   paused: e.paused,
                   df: e.df,
                   x: e.xVal,
@@ -49730,12 +49730,12 @@ var bgOnly = false;
                     ? e.fade < 0.7
                       ? (e.fade += 0.01)
                       : ((e.fade = 0.7),
-                        (e.fadeIn = !1),
+                        (e.fadeIn = false),
                         (e.timeout = Math.round(600 * t.random())))
                     : e.fade > 0
                     ? (e.fade -= 0.01)
                     : ((e.fade = 0),
-                      (e.fadeIn = !0),
+                      (e.fadeIn = true),
                       (e.timeout = Math.round(600 * t.random())));
                 });
             },
@@ -49841,7 +49841,7 @@ var bgOnly = false;
                 o = t.createBuffer();
               t.bindBuffer(t.ARRAY_BUFFER, o),
                 t.enableVertexAttribArray(s),
-                t.vertexAttribPointer(s, 2, t.FLOAT, !1, 0, 0),
+                t.vertexAttribPointer(s, 2, t.FLOAT, false, 0, 0),
                 t.bufferData(
                   t.ARRAY_BUFFER,
                   new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
@@ -50436,7 +50436,7 @@ var bgOnly = false;
                             Ig.Single(
                               {
                                 color: n,
-                                narrowLines: !0,
+                                narrowLines: true,
                                 opacity: 0.5,
                                 thickness: 4,
                                 playerX: 0.04 * e.cameraX,
@@ -50450,7 +50450,7 @@ var bgOnly = false;
                             Ig.Single(
                               {
                                 color: n,
-                                narrowLines: !0,
+                                narrowLines: true,
                                 opacity: 0.5,
                                 thickness: 4,
                                 playerX: 0.04 * e.cameraX,
@@ -50524,7 +50524,7 @@ var bgOnly = false;
                             Ig.Single(
                               {
                                 color: "#181d4c",
-                                narrowLines: !1,
+                                narrowLines: false,
                                 playerX: 0.04 * e.cameraX,
                                 thickness: 2,
                                 offsetY: -65,
@@ -50758,7 +50758,7 @@ var bgOnly = false;
                         case "arrows":
                           return [
                             vg.Single(
-                              { paused: !1, bgColor: e.bgColor },
+                              { paused: false, bgColor: e.bgColor },
                               (t) => {
                                 t.paused = e.paused;
                                 t.bgColor = e.bgColor;
@@ -51186,7 +51186,7 @@ var bgOnly = false;
               xRangeMax: 1200,
               yMin: 0,
               yMax: 0,
-              dontMoveY: !0,
+              dontMoveY: true,
               opacity: 0.7,
             },
             {
@@ -51477,8 +51477,8 @@ var bgOnly = false;
               initXOffset: 1,
               yMin: 240,
               yMax: 300,
-              alternateY: !1,
-              dontMoveY: !0,
+              alternateY: false,
+              dontMoveY: true,
             },
             {
               fileName: "images/themes/skater/background/cloud2.png",
@@ -51490,8 +51490,8 @@ var bgOnly = false;
               initXOffset: 500,
               yMin: 240,
               yMax: 300,
-              alternateY: !1,
-              dontMoveY: !0,
+              alternateY: false,
+              dontMoveY: true,
             },
           ],
           Gg = [
@@ -51505,8 +51505,8 @@ var bgOnly = false;
               initXOffset: 1,
               yMin: 50,
               yMax: 200,
-              alternateY: !1,
-              dontMoveY: !0,
+              alternateY: false,
+              dontMoveY: true,
             },
             {
               fileName: "images/themes/punch/background/cloud_02.png",
@@ -51518,8 +51518,8 @@ var bgOnly = false;
               initXOffset: 500,
               yMin: 50,
               yMax: 200,
-              alternateY: !1,
-              dontMoveY: !0,
+              alternateY: false,
+              dontMoveY: true,
             },
             {
               fileName: "images/themes/punch/background/cloud_03.png",
@@ -51531,8 +51531,8 @@ var bgOnly = false;
               initXOffset: 250,
               yMin: 50,
               yMax: 200,
-              alternateY: !1,
-              dontMoveY: !0,
+              alternateY: false,
+              dontMoveY: true,
             },
             {
               fileName: "images/themes/punch/background/cloud_04.png",
@@ -51544,8 +51544,8 @@ var bgOnly = false;
               initXOffset: 800,
               yMin: 50,
               yMax: 200,
-              alternateY: !1,
-              dontMoveY: !0,
+              alternateY: false,
+              dontMoveY: true,
             },
           ],
           Vg = (e, t) => {
@@ -51566,8 +51566,8 @@ var bgOnly = false;
                 initXOffset: 1,
                 yMin: 150,
                 yMax: 0.5 * e - 30,
-                alternateY: !1,
-                dontMoveY: !0,
+                alternateY: false,
+                dontMoveY: true,
               },
               {
                 fileName: `images/themes/world4/${a}/cloud2.png`,
@@ -51579,8 +51579,8 @@ var bgOnly = false;
                 initXOffset: 300,
                 yMin: 0.5 * e + 30,
                 yMax: e - 60,
-                alternateY: !1,
-                dontMoveY: !0,
+                alternateY: false,
+                dontMoveY: true,
               },
             ];
           },
@@ -52291,16 +52291,16 @@ var bgOnly = false;
               fade: 0,
               text: "",
               bestFrame: 0,
-              show: !1,
-              didCrash: !1,
+              show: false,
+              didCrash: false,
             }),
             loop({ props: e, state: t }) {
               console.warn(e.frame);
               if (!e.crashed)
                 return 0 !== t.fade
-                  ? ((t.fade = 0), (t.show = !1), void (t.didCrash = !1))
+                  ? ((t.fade = 0), (t.show = false), void (t.didCrash = false))
                   : t.show || t.didCrash
-                  ? ((t.show = !1), void (t.didCrash = !1))
+                  ? ((t.show = false), void (t.didCrash = false))
                   : void 0;
               if (!t.didCrash && (e.frame > t.bestFrame || !e.hasCheckpoints)) {
                 const a = Math.floor((e.frame / e.maxFrame) * 100);
@@ -52309,8 +52309,8 @@ var bgOnly = false;
                     (t.fade = 0),
                     (t.text = `${a}%`),
                     (t.bestFrame = e.frame),
-                    (t.show = !0),
-                    void (t.didCrash = !0)
+                    (t.show = true),
+                    void (t.didCrash = true)
                   );
               }
               if (t.fade < 10)
@@ -52319,9 +52319,9 @@ var bgOnly = false;
                   (t.text = t.text),
                   (t.bestFrame = t.bestFrame),
                   (t.show = t.show),
-                  void (t.didCrash = !0)
+                  void (t.didCrash = true)
                 );
-              t.didCrash || (t.didCrash = !0);
+              t.didCrash || (t.didCrash = true);
             },
             render: ({ state: e }) => [
               T(
@@ -52521,8 +52521,8 @@ var bgOnly = false;
                       () => t.attempt,
                       () => [
                         jo.Single({
-                          initShow: !0,
-                          shouldShow: !1,
+                          initShow: true,
+                          shouldShow: false,
                           fadeFrames: 120,
                           sprite: (e) => [
                             um.Single({ attempt: t.attempt }, (a) => {
@@ -52760,7 +52760,7 @@ var bgOnly = false;
                     switchBlockSpikes: e.switchBlockSpikes,
                     paused: e.paused,
                     df: e.df,
-                    justHit: !1,
+                    justHit: false,
                   }),
                   update: (t, a) => {
                     (t.switchButton = a),
@@ -52788,7 +52788,7 @@ var bgOnly = false;
                 $o.Array({
                   props: (t) => ({
                     spring: t,
-                    justHit: !1,
+                    justHit: false,
                     df: e.df,
                     paused: e.paused,
                   }),
@@ -52833,7 +52833,7 @@ var bgOnly = false;
                 er.Array({
                   props: (t) => ({
                     speedChange: t,
-                    justHit: !1,
+                    justHit: false,
                     df: e.df,
                     paused: e.paused,
                   }),
@@ -53055,7 +53055,7 @@ var bgOnly = false;
                   ]
                 ),
                 io.Array({
-                  props: (e) => ({ x: e.x, y: e.y, bullet: e, isEnemy: !1 }),
+                  props: (e) => ({ x: e.x, y: e.y, bullet: e, isEnemy: false }),
                   update: (e, t) => {
                     (e.x = t.x), (e.y = t.y), (e.bullet = t);
                   },
@@ -53096,7 +53096,7 @@ var bgOnly = false;
                           {
                             x: e.playerX,
                             y: e.playerY * e.gravity,
-                            justDestroyed: !0,
+                            justDestroyed: true,
                             paused: e.paused,
                             trail: e.playerSkin.trail,
                             playerRot: e.playerRot,
@@ -53124,7 +53124,7 @@ var bgOnly = false;
                                 playerScaleX: e.playerScaleX,
                                 playerScaleY: e.playerScaleY,
                                 playerScale: e.playerScale,
-                                onSkateboard: !1,
+                                onSkateboard: false,
                                 touchingPortals: e.touchingPortals,
                               },
                               (t) => {
@@ -53217,7 +53217,7 @@ var bgOnly = false;
                                     playerX: e.playerX,
                                     playerY: t,
                                     playerDir: e.playerDir,
-                                    crashed: !1,
+                                    crashed: false,
                                     paused: e.paused,
                                   }),
                                   update: (t, { y: a }) => {
@@ -53552,7 +53552,7 @@ var bgOnly = false;
                   i.alert.ok(`Failed to retrieve store items: ${t.message}`, e);
                 });
               }
-              return { purchases: "loading", isPurchasing: !1 };
+              return { purchases: "loading", isPurchasing: false };
             },
             render({
               state: e,
@@ -53630,7 +53630,7 @@ var bgOnly = false;
                           t &&
                             (a((e) =>
                               Object.assign(Object.assign({}, e), {
-                                isPurchasing: !0,
+                                isPurchasing: true,
                               })
                             ),
                             ym
@@ -53653,7 +53653,7 @@ var bgOnly = false;
                               .finally(() => {
                                 a((e) =>
                                   Object.assign(Object.assign({}, e), {
-                                    isPurchasing: !1,
+                                    isPurchasing: false,
                                   })
                                 );
                               }));
@@ -53691,7 +53691,7 @@ var bgOnly = false;
                   a.alert.ok(`Failed to retrieve store items: ${t.message}`, e);
                 });
               }
-              return { purchases: "loading", isPurchasing: !1 };
+              return { purchases: "loading", isPurchasing: false };
             },
             render: ({ state: e, props: t, device: a, getContext: i }) => [
               _e.Single({
@@ -53763,7 +53763,7 @@ var bgOnly = false;
                           onPress: () => {
                             const { online: s } = i(Se);
                             s &&
-                              ((e.isPurchasing = !0),
+                              ((e.isPurchasing = true),
                               ym
                                 .makePurchase(s.backend, n)
                                 .then((e) => {
@@ -53782,7 +53782,7 @@ var bgOnly = false;
                                       a.alert.ok("Couldn't complete purchase"));
                                 })
                                 .finally(() => {
-                                  e.isPurchasing = !1;
+                                  e.isPurchasing = false;
                                 }));
                           },
                           x: 80,
@@ -53828,7 +53828,7 @@ var bgOnly = false;
           });
         };
         const _m = S({
-            init: () => ({ didRequest: !1 }),
+            init: () => ({ didRequest: false }),
             loop({ state: e, props: t, getContext: a }) {
               var i;
               if (e.didRequest) {
@@ -53836,7 +53836,7 @@ var bgOnly = false;
                 if (e)
                   return (
                     null === (i = t.onConnect) || void 0 === i || i.call(t),
-                    { didRequest: !1 }
+                    { didRequest: false }
                   );
               }
               return e;
@@ -53850,7 +53850,7 @@ var bgOnly = false;
                   height: 40,
                   onPress: () =>
                     Im(this, void 0, void 0, function* () {
-                      a(() => ({ didRequest: !0 }));
+                      a(() => ({ didRequest: true }));
                       const { data: i } = yield Jp.getLocal(e.storage, e.alert),
                         { sendAccountAction: n } = t(Se);
                       n({ type: "goOnline", auth: i.auth });
@@ -53860,14 +53860,14 @@ var bgOnly = false;
             },
           }),
           vm = v({
-            init: () => ({ didRequest: !1 }),
+            init: () => ({ didRequest: false }),
             loop({ state: e, props: t, getContext: a }) {
               var i;
               if (e.didRequest) {
                 const { online: n } = a(Se);
                 n &&
                   (null === (i = t.onConnect) || void 0 === i || i.call(t),
-                  (e.didRequest = !1));
+                  (e.didRequest = false));
               }
             },
             render({ device: e, getContext: t, state: a }) {
@@ -53879,7 +53879,7 @@ var bgOnly = false;
                     height: 40,
                     onPress: () =>
                       Im(this, void 0, void 0, function* () {
-                        a.didRequest = !0;
+                        a.didRequest = true;
                         const { data: i } = yield Jp.getLocal(
                             e.storage,
                             e.alert
@@ -53902,9 +53902,9 @@ var bgOnly = false;
                 selected: t,
                 width: a,
                 height: i,
-                disabled: s = !1,
-                darkText: l = !1,
-                darkBg: c = !1,
+                disabled: s = false,
+                darkText: l = false,
+                darkBg: c = false,
                 fontSize: d = 15,
                 onPress: u,
                 noPress: h,
@@ -54051,7 +54051,7 @@ var bgOnly = false;
               return {
                 initSettings: t,
                 headphonesSync: null,
-                didChangeHeadphoneSync: !1,
+                didChangeHeadphoneSync: false,
               };
             },
             loop({ state: e }) {
@@ -54210,7 +54210,7 @@ var bgOnly = false;
                             value: 0,
                             setValue: (e) => {
                               const { updateSettings: a } = t(Se);
-                              (i.didChangeHeadphoneSync = !0),
+                              (i.didChangeHeadphoneSync = true),
                                 a({
                                   headphonesDelay: Math.round(1e3 * e) / 1e3,
                                 });
@@ -54228,13 +54228,13 @@ var bgOnly = false;
                         Yo.Single(
                           {
                             text: "PLAY SOUND",
-                            noSfx: !0,
+                            noSfx: true,
                             onPress: () => {
-                              (i.didChangeHeadphoneSync = !0),
+                              (i.didChangeHeadphoneSync = true),
                                 (i.headphonesSync = 0),
                                 a
                                   .audio("audio/global/sync.wav")
-                                  .play({ overwrite: !0, fromPosition: 0 });
+                                  .play({ overwrite: true, fromPosition: 0 });
                             },
                             width: 120,
                             height: 40,
@@ -54265,7 +54265,7 @@ var bgOnly = false;
                         Rm.Single(
                           {
                             text: "PLAIN BACKGROUND",
-                            selected: !1,
+                            selected: false,
                             onPress: () => {
                               const { settings: e, updateSettings: a } = t(Se);
                               a({ plainBackground: !e.plainBackground });
@@ -54283,7 +54283,7 @@ var bgOnly = false;
                         Rm.Single(
                           {
                             text: "HIDE PLAYER TRAIL",
-                            selected: !1,
+                            selected: false,
                             onPress: () => {
                               const { settings: e, updateSettings: a } = t(Se);
                               a({ hidePlayerTrail: !e.hidePlayerTrail });
@@ -54301,7 +54301,7 @@ var bgOnly = false;
                         Rm.Single(
                           {
                             text: "HIDE BUTTONS",
-                            selected: !1,
+                            selected: false,
                             onPress: () => {
                               const { settings: e, updateSettings: a } = t(Se);
                               a({ hideUi: !e.hideUi });
@@ -54318,7 +54318,7 @@ var bgOnly = false;
                         Rm.Single(
                           {
                             text: "MUTE GAME SFX",
-                            selected: !1,
+                            selected: false,
                             onPress: () => {
                               const { settings: e, updateSettings: a } = t(Se);
                               a({ muteSfx: !e.muteSfx });
@@ -54335,8 +54335,8 @@ var bgOnly = false;
                         Rm.Single(
                           {
                             text: "MUTE JUMP SFX",
-                            selected: !1,
-                            disabled: !1,
+                            selected: false,
+                            disabled: false,
                             onPress: () => {
                               const { settings: e, updateSettings: a } = t(Se);
                               a({ muteJump: !e.muteJump });
@@ -54355,7 +54355,7 @@ var bgOnly = false;
                         Rm.Single(
                           {
                             text: "MUTE MENU MUSIC",
-                            selected: !1,
+                            selected: false,
                             onPress: () => {
                               var a;
                               const { settings: i, updateSettings: n } = t(Se);
@@ -54376,7 +54376,7 @@ var bgOnly = false;
                         Rm.Single(
                           {
                             text: "OVERLAP IN EDITOR",
-                            selected: !1,
+                            selected: false,
                             onPress: () => {
                               var a;
                               const { settings: i, updateSettings: n } = t(Se);
@@ -54416,10 +54416,10 @@ var bgOnly = false;
                             if (
                               (e.goBack(),
                               (function (e, t) {
-                                let a = !0;
+                                let a = true;
                                 return (
                                   Object.entries(e).forEach(([e, i]) => {
-                                    i !== t[e] && (a = !1);
+                                    i !== t[e] && (a = false);
                                   }),
                                   a
                                 );
@@ -54549,7 +54549,7 @@ var bgOnly = false;
           });
         };
         const km = v({
-            init: () => ({ boostersMenuOpen: !1 }),
+            init: () => ({ boostersMenuOpen: false }),
             loop({ props: e, getInputs: t }) {
               !e.paused && t().keysJustPressed.Escape && e.onPause();
             },
@@ -54578,7 +54578,7 @@ var bgOnly = false;
                         onPress: () => {
                           e.boosters.onOpen(),
                             e.onPause(),
-                            (t.boostersMenuOpen = !0);
+                            (t.boostersMenuOpen = true);
                         },
                         width: Pm,
                         height: Mm,
@@ -54618,10 +54618,10 @@ var bgOnly = false;
                             booster: e.boosters.booster,
                             pressedBooster: (a) => {
                               e.boosters.pressedBooster(a),
-                                (t.boostersMenuOpen = !1);
+                                (t.boostersMenuOpen = false);
                             },
                             closeMenu: () => {
-                              (t.boostersMenuOpen = !1), e.onResume();
+                              (t.boostersMenuOpen = false), e.onResume();
                             },
                             disableMissiles: e.boosters.disableMissiles,
                           },
@@ -54650,7 +54650,7 @@ var bgOnly = false;
                 e || t
                   ? Array.from({ length: 4 }).map((e, t) => 170 * (t - 1.5))
                   : Array.from({ length: 3 }).map((e, t) => 170 * (t - 1)),
-              showSettings: !1,
+              showSettings: false,
             }),
             render({ props: e, state: t, device: a }) {
               return [
@@ -54683,7 +54683,7 @@ var bgOnly = false;
                   () => [
                     Om.Single({
                       goBack: () => {
-                        t.showSettings = !1;
+                        t.showSettings = false;
                       },
                     }),
                   ],
@@ -54700,7 +54700,7 @@ var bgOnly = false;
                       width: 100,
                       height: 100,
                       onPress: () => {
-                        t.showSettings = !0;
+                        t.showSettings = true;
                       },
                       x: t.xPositions[1],
                     }),
@@ -54853,7 +54853,7 @@ var bgOnly = false;
                       o
                         ? bp
                             .useItem(o.backend, s)
-                            .then((e) => Jp.useBooster(a.now, e || s, !1))
+                            .then((e) => Jp.useBooster(a.now, e || s, false))
                             .then(() => {
                               e.pressedBooster(s.booster);
                             })
@@ -54863,7 +54863,7 @@ var bgOnly = false;
                                 e.closeMenu
                               );
                             })
-                        : Jp.useBooster(a.now, s, !0).then(() => {
+                        : Jp.useBooster(a.now, s, true).then(() => {
                             e.pressedBooster(s.booster);
                           });
                     };
@@ -55110,7 +55110,7 @@ var bgOnly = false;
                         }
                       );
                     }),
-                { items: "loading", showBuyBlocksModal: null, isPurchasing: !1 }
+                { items: "loading", showBuyBlocksModal: null, isPurchasing: false }
               );
             },
             render: ({ props: e, state: t, device: a, getContext: i }) => [
@@ -55166,7 +55166,7 @@ var bgOnly = false;
                         a.alert.ok(`Error buying item: ${e.message}`);
                       })
                       .finally(() => {
-                        t.isPurchasing = !1;
+                        t.isPurchasing = false;
                       });
                   };
                   return [
@@ -55267,7 +55267,7 @@ var bgOnly = false;
                                 height: 50,
                                 onPress: () => {
                                   const a = i(Se).online;
-                                  (t.isPurchasing = !0),
+                                  (t.isPurchasing = true),
                                     e.blocksPrice > a.blocksBalance
                                       ? (t.showBuyBlocksModal = {
                                           buyItemOnComplete: e,
@@ -55290,7 +55290,7 @@ var bgOnly = false;
                         Sm.Single({
                           onModalClose: () => {
                             (t.showBuyBlocksModal = null),
-                              (t.isPurchasing = !1);
+                              (t.isPurchasing = false);
                           },
                           onPurchaseComplete: (e) => {
                             const a = i(Se).online,
@@ -55563,9 +55563,9 @@ var bgOnly = false;
                 animationAssets: n,
                 animationRenderer: s,
                 fileNames: Qs.spineFiles.levelComplete,
-                loop: !1,
+                loop: false,
                 animationName: "animation",
-                paused: !1,
+                paused: false,
                 x: 0,
                 y: 0,
                 height: 0,
@@ -55592,7 +55592,7 @@ var bgOnly = false;
                             ? Sf.Single({
                                 attempts: e.attempts,
                                 score: e.score,
-                                isHighScore: !0,
+                                isHighScore: true,
                               })
                             : If.Single({
                                 attempts: e.attempts,
@@ -55603,7 +55603,7 @@ var bgOnly = false;
                           ? Sf.Single({
                               attempts: e.attempts,
                               score: e.score,
-                              isHighScore: !1,
+                              isHighScore: false,
                             })
                           : void 0 !== e.prevBestAttempts
                           ? bf.Single({
@@ -55879,7 +55879,7 @@ var bgOnly = false;
                       (1 / 60) * d.frame +
                       t.level.songStartSecs +
                       h.headphonesDelay,
-                    overwrite: !0,
+                    overwrite: true,
                   });
               const g = _r(t.level),
                 m = Ca.getInitFirstIndexes(),
@@ -55904,12 +55904,12 @@ var bgOnly = false;
                 ),
                 null === (o = t.didStart) ||
                   void 0 === o ||
-                  o.call(t, d.checkpoint.index, !1),
+                  o.call(t, d.checkpoint.index, false),
                 {
                   worker: Np(),
                   mutValues: {
                     levelState: d,
-                    blockJumpUntilReleased: !1,
+                    blockJumpUntilReleased: false,
                     landTimer: 0,
                     layoutFirstIndexes: m,
                     resetTimer: null,
@@ -55919,9 +55919,9 @@ var bgOnly = false;
                     inViewLayoutState: y,
                     fullLayoutStateIndexes: E,
                   },
-                  paused: !1,
+                  paused: false,
                   pausedMusicDelay: 0,
-                  playerInputIsDown: !1,
+                  playerInputIsDown: false,
                   hasStarted: !t.online,
                   tutorial: Qp(
                     (null === (r = t.world) || void 0 === r
@@ -55929,14 +55929,14 @@ var bgOnly = false;
                       : r.tutorialType) || null,
                     (null === (l = t.world) || void 0 === l
                       ? void 0
-                      : l.showBoostersPrompt) || !1
+                      : l.showBoostersPrompt) || false
                   ),
                   isAfkTimer: 600,
                   booster: null,
                   levelSpeeds: g,
                   df: 1,
                   powerupOut: null,
-                  didAlertStorageError: !1,
+                  didAlertStorageError: false,
                   isFlyingLevel:
                     "flying" ===
                     (null === (c = d.bossState) || void 0 === c
@@ -55952,14 +55952,14 @@ var bgOnly = false;
                       !n &&
                       (e
                         .audio(t.level.song.fileName)
-                        .play({ overwrite: !0, playbackRate: 1 }),
+                        .play({ overwrite: true, playbackRate: 1 }),
                       (l.booster = null),
                       (l.df = 1),
                       (l.mutValues.levelState.frame = Math.round(
                         l.mutValues.levelState.frame
                       ))),
                       e.timer.start(() => {
-                        Tf(t, l, e, i(Se).online, !1, n, o);
+                        Tf(t, l, e, i(Se).online, false, n, o);
                       }, 500),
                       mf(n),
                       null === (r = t.onReachedCheckpoint) ||
@@ -55971,7 +55971,7 @@ var bgOnly = false;
                     t.editor || e.audio(t.level.song.fileName).pause();
                     const o = a();
                     e.timer.start(() => {
-                      Tf(t, o, e, i(Se).online, !0, !1);
+                      Tf(t, o, e, i(Se).online, true, false);
                     }, 500),
                       null === (s = t.didCrash) ||
                         void 0 === s ||
@@ -56002,7 +56002,7 @@ var bgOnly = false;
                         (1 / 60) * n +
                         t.level.songStartSecs +
                         i(Se).settings.headphonesDelay,
-                      overwrite: !0,
+                      overwrite: true,
                       playbackRate: o.df,
                     }),
                       "autopilot" ===
@@ -56023,7 +56023,7 @@ var bgOnly = false;
                       n.mutValues.levelState.crashed ||
                         e
                           .audio(t.level.song.fileName)
-                          .play({ overwrite: !0, playbackRate: n.df }),
+                          .play({ overwrite: true, playbackRate: n.df }),
                       null === n.booster
                         ? (n.booster = {
                             booster: i,
@@ -56033,7 +56033,7 @@ var bgOnly = false;
                       (n.mutValues.levelState.frame = Math.round(
                         n.mutValues.levelState.frame
                       )),
-                      (n.paused = !1);
+                      (n.paused = false);
                   },
                 }
               );
@@ -56062,10 +56062,10 @@ var bgOnly = false;
                   !(null === (r = e.online) || void 0 === r ? void 0 : r.start)
                 )
                   return;
-                (t.hasStarted = !0),
+                (t.hasStarted = true),
                   a.audio(e.level.song.fileName).play({
                     fromPosition: e.level.songStartSecs + y.headphonesDelay,
-                    overwrite: !0,
+                    overwrite: true,
                   });
               }
               if (e.paused) return void a.audio(e.level.song.fileName).pause();
@@ -56215,7 +56215,7 @@ var bgOnly = false;
                   ? void 0
                   : d.eliminated) &&
                   !t.mutValues.levelState.crashed &&
-                  (t.mutValues.levelState.crashed = !0),
+                  (t.mutValues.levelState.crashed = true),
                 dl({
                   mutValues: t.mutValues,
                   bigMutValues: t.bigMutValues,
@@ -56233,7 +56233,7 @@ var bgOnly = false;
                             ? void 0
                             : u.mode) || void 0 === h
                         ? void 0
-                        : h.type) && !0 === e.online.checkpointPlayerReached,
+                        : h.type) && true === e.online.checkpointPlayerReached,
                   bottomLineTheme: E.layout.properties.theme.objects.bottom,
                   shouldResetOnCrash:
                     !b &&
@@ -56343,7 +56343,7 @@ var bgOnly = false;
                     finishedLevel: t.mutValues.levelState.finishedLevel,
                     isFlyingLevel: t.isFlyingLevel,
                     started:
-                      !1 !==
+                      false !==
                       (null === (o = e.online) || void 0 === o
                         ? void 0
                         : o.start),
@@ -56429,7 +56429,7 @@ var bgOnly = false;
                       (a.finishedLevel = t.mutValues.levelState.finishedLevel),
                       (a.isFlyingLevel = t.isFlyingLevel),
                       (a.started =
-                        !1 !==
+                        false !==
                         (null === (s = e.online) || void 0 === s
                           ? void 0
                           : s.start)),
@@ -56510,11 +56510,11 @@ var bgOnly = false;
                   () => [
                     km.Single(
                       {
-                        backToMenu: () => e.backToMenu(!1),
+                        backToMenu: () => e.backToMenu(false),
                         paused: t.paused,
                         onResume: () => {
                           if (
-                            ((t.paused = !1),
+                            ((t.paused = false),
                             (t.sfx = Rf(a, i(Se).settings, e.level, () => t)),
                             !e.online && !t.mutValues.levelState.crashed)
                           ) {
@@ -56523,7 +56523,7 @@ var bgOnly = false;
                               t.pausedMusicDelay;
                             0 !== n
                               ? a.audio(e.level.song.fileName).play({
-                                  overwrite: !0,
+                                  overwrite: true,
                                   playbackRate: t.df,
                                   fromPosition:
                                     a
@@ -56532,7 +56532,7 @@ var bgOnly = false;
                                 })
                               : a
                                   .audio(e.level.song.fileName)
-                                  .play({ overwrite: !0, playbackRate: t.df });
+                                  .play({ overwrite: true, playbackRate: t.df });
                           }
                         },
                         onPause: () => {
@@ -56540,7 +56540,7 @@ var bgOnly = false;
                             ((t.pausedMusicDelay =
                               i(Se).settings.headphonesDelay),
                             a.audio(e.level.song.fileName).pause()),
-                            (t.paused = !0);
+                            (t.paused = true);
                         },
                         onReset: () => {
                           var n, s;
@@ -56557,7 +56557,7 @@ var bgOnly = false;
                             fromPosition:
                               e.level.songStartSecs +
                               i(Se).settings.headphonesDelay,
-                            overwrite: !0,
+                            overwrite: true,
                           });
                           const l = _r(e.level);
                           Ca.setInViewLayoutAndState(
@@ -56577,19 +56577,19 @@ var bgOnly = false;
                           ),
                             null === (n = e.didStart) ||
                               void 0 === n ||
-                              n.call(e, 0, !1),
+                              n.call(e, 0, false),
                             (t.mutValues.levelState = r),
-                            (t.mutValues.blockJumpUntilReleased = !1),
-                            (t.paused = !1),
+                            (t.mutValues.blockJumpUntilReleased = false),
+                            (t.paused = false),
                             (t.mutValues.landTimer = 0),
-                            (t.playerInputIsDown = !1),
-                            (t.hasStarted = !0),
+                            (t.playerInputIsDown = false),
+                            (t.hasStarted = true),
                             (t.mutValues.resetTimer = null),
                             (t.tutorial = Qp(
                               null,
                               (null === (s = e.world) || void 0 === s
                                 ? void 0
-                                : s.showBoostersPrompt) || !1
+                                : s.showBoostersPrompt) || false
                             )),
                             (t.isAfkTimer = 600),
                             (t.booster = null),
@@ -56605,7 +56605,7 @@ var bgOnly = false;
                                 e.world.levelIndex,
                                 e.world.number,
                                 e.world.withCheckpoints,
-                                !1,
+                                false,
                                 1,
                                 a.alert,
                                 r.attempt,
@@ -56662,7 +56662,7 @@ var bgOnly = false;
                             ? e.editor.backToEditor()
                             : null === (t = e.backToMenu) ||
                               void 0 === t ||
-                              t.call(e, !0);
+                              t.call(e, true);
                         },
                         world: e.world,
                       }),
@@ -56695,7 +56695,7 @@ var bgOnly = false;
                       {
                         ok: () => {
                           t.didAlertStorageError ||
-                            ((t.didAlertStorageError = !0),
+                            ((t.didAlertStorageError = true),
                             a.alert.ok(
                               "Progress isn't being saved! Ensure you have enough storage space."
                             ));
@@ -56752,7 +56752,7 @@ var bgOnly = false;
               e.audio(t).pause();
             },
             enemyShoot: () => {
-              Ga("audio/levels/enemy/shoot.wav", e, t, { overwrite: !0 });
+              Ga("audio/levels/enemy/shoot.wav", e, t, { overwrite: true });
             },
             jump: (a) => {
               (!a && t.muteJump) ||
@@ -56846,7 +56846,7 @@ var bgOnly = false;
             },
           }),
           Of = I({
-            shouldRerender: () => !1,
+            shouldRerender: () => false,
             render: ({
               size: { width: e, height: t, widthMargin: a, heightMargin: i },
             }) =>
@@ -56959,7 +56959,7 @@ var bgOnly = false;
           var t, a, i, n;
         }
         const Nf = S({
-            init: () => ({ showSettings: !1, saved: !1, downloaded: !1 }),
+            init: () => ({ showSettings: false, saved: false, downloaded: false }),
             render({
               device: e,
               props: {
@@ -56997,7 +56997,7 @@ var bgOnly = false;
                       goBack: () => {
                         u((e) =>
                           Object.assign(Object.assign({}, e), {
-                            showSettings: !1,
+                            showSettings: false,
                           })
                         );
                       },
@@ -57011,8 +57011,8 @@ var bgOnly = false;
                       onChangeText: (e) => {
                         u((e) =>
                           Object.assign(Object.assign({}, e), {
-                            saved: !1,
-                            downloaded: !1,
+                            saved: false,
+                            downloaded: false,
                           })
                         ),
                           c(e);
@@ -57039,17 +57039,17 @@ var bgOnly = false;
                       width: 110,
                       height: 50,
                       strokeColor: Ye,
-                      disabled: !1 !== d.saved,
+                      disabled: false !== d.saved,
                       onPress: () => {
                         r().then(() => {
                           u((e) =>
-                            Object.assign(Object.assign({}, e), { saved: !0 })
+                            Object.assign(Object.assign({}, e), { saved: true })
                           );
                         }),
                           u((e) =>
                             Object.assign(Object.assign({}, e), {
                               saved: "loading",
-                              downloaded: !1,
+                              downloaded: false,
                             })
                           );
                       },
@@ -57066,7 +57066,7 @@ var bgOnly = false;
                       onPress: () => {
                         u((e) =>
                           Object.assign(Object.assign({}, e), {
-                            downloaded: !1,
+                            downloaded: false,
                           })
                         ),
                           i().then((e) => {
@@ -57074,7 +57074,7 @@ var bgOnly = false;
                               zu.supportsFiles() &&
                               u((e) =>
                                 Object.assign(Object.assign({}, e), {
-                                  downloaded: !0,
+                                  downloaded: true,
                                 })
                               );
                           });
@@ -57098,8 +57098,8 @@ var bgOnly = false;
                       onPress: () => {
                         u((e) =>
                           Object.assign(Object.assign({}, e), {
-                            showSettings: !0,
-                            downloaded: !1,
+                            showSettings: true,
+                            downloaded: false,
                           })
                         );
                       },
@@ -57346,7 +57346,7 @@ var bgOnly = false;
                 sortedLayoutStateOriginalIndexes: n.originalIndexes,
                 runHistory: o,
                 runHistoryIndex: r,
-                themeLoaded: !1,
+                themeLoaded: false,
                 initRunHistoryIndex: e.savedLevel.settings.runHistoryIndex,
                 waveformData: null,
                 inViewLayout: l,
@@ -57368,7 +57368,7 @@ var bgOnly = false;
                   theme: c,
                   onLoad: () => {
                     a((e) =>
-                      Object.assign(Object.assign({}, e), { themeLoaded: !0 })
+                      Object.assign(Object.assign({}, e), { themeLoaded: true })
                     );
                   },
                 });
@@ -57464,7 +57464,7 @@ var bgOnly = false;
                                 );
                               i.alert.ok("Level JSON copied to clipboard");
                             }),
-                            !0
+                            true
                           );
                         try {
                           return yield zu.saveFile(`${a.name}.json`, n);
@@ -57472,7 +57472,7 @@ var bgOnly = false;
                           return (
                             i.alert.ok(`Error saving file: ${e.message}`),
                             i.log(n),
-                            !1
+                            false
                           );
                         }
                       }),
@@ -57727,7 +57727,7 @@ var bgOnly = false;
                   type: "edit",
                   x: r / 2 - 50,
                   y: l / 2 - 50,
-                  disabled: !1,
+                  disabled: false,
                   onPress: () => {
                     i.audio(e.savedLevel.level.song.fileName).pause(),
                       a((e) =>
@@ -57745,7 +57745,7 @@ var bgOnly = false;
                 sprites: [
                   al.Single(
                     {
-                      hidden: !1,
+                      hidden: false,
                       onPress: e.onPress,
                       x: -t.size.fullWidth / 2 + 50,
                       y: t.size.fullHeight / 2 - 50,
@@ -57842,7 +57842,7 @@ var bgOnly = false;
                         t((e) =>
                           Object.assign(Object.assign({}, e), {
                             animationAssets: a,
-                            loaded: !0,
+                            loaded: true,
                           })
                         );
                     }))
@@ -57850,10 +57850,10 @@ var bgOnly = false;
                       var a;
                       null === (a = e.onLoad) || void 0 === a || a.call(e),
                         t((e) =>
-                          Object.assign(Object.assign({}, e), { loaded: !0 })
+                          Object.assign(Object.assign({}, e), { loaded: true })
                         );
                     }),
-                { loaded: !1, animationAssets: n }
+                { loaded: false, animationAssets: n }
               );
             },
             render: ({ props: e, state: t }) =>
@@ -58015,7 +58015,7 @@ var bgOnly = false;
           qf = 280,
           //*level previewer
           $f = S({
-            init: () => ({ checkpointsOn: !0 }),
+            init: () => ({ checkpointsOn: true }),
             render({
               props: {
                 worldLevel: {
@@ -58251,7 +58251,7 @@ var bgOnly = false;
                   height: 40,
                   x: -60,
                   y: -90 + offset,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: () => {
                     p((e) =>
                       Object.assign(Object.assign({}, e), {
@@ -58268,7 +58268,7 @@ var bgOnly = false;
                   height: 40,
                   x: 100,
                   y: -90 + offset,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: () => {
                     o(h);
                   },
@@ -58312,11 +58312,11 @@ var bgOnly = false;
                     Ro.Single({
                       id: `PreviewSong-${E}`,
                       fileName: E,
-                      loop: !1,
-                      paused: !1,
+                      loop: false,
+                      paused: false,
                       fromPosition: 0,
-                      overwrite: !0,
-                      isGameSfx: !1,
+                      overwrite: true,
+                      isGameSfx: false,
                     }),
                   ],
                 }),
@@ -58426,9 +58426,9 @@ var bgOnly = false;
                   s = t.find((e) => e.levelName === n.levelName);
                 return {
                   checkpointsComplete:
-                    (null == s ? void 0 : s.checkpoints.didFinish) || !1,
+                    (null == s ? void 0 : s.checkpoints.didFinish) || false,
                   noCheckpointsComplete:
-                    (null == s ? void 0 : s.noCheckpoints.didFinish) || !1,
+                    (null == s ? void 0 : s.noCheckpoints.didFinish) || false,
                 };
               });
               return [
@@ -58454,7 +58454,7 @@ var bgOnly = false;
                         null !== n &&
                         !s[n].checkpointsComplete &&
                         !s[n].noCheckpointsComplete &&
-                        !0;
+                        true;
                     return Qf({
                       id: `LevelButton-${e}`,
                       levelName: t,
@@ -58579,7 +58579,7 @@ var bgOnly = false;
                 {
                   passItem: "loading",
                   showBuyBlocksModal: null,
-                  isPurchasing: !1,
+                  isPurchasing: false,
                 }
               );
             },
@@ -58687,11 +58687,11 @@ var bgOnly = false;
                           Ro.Single({
                             id: `PreviewSong-${h}`,
                             fileName: h,
-                            loop: !1,
-                            paused: !1,
+                            loop: false,
+                            paused: false,
                             fromPosition: 0,
-                            overwrite: !0,
-                            isGameSfx: !1,
+                            overwrite: true,
+                            isGameSfx: false,
                           }),
                         ],
                       })
@@ -58720,7 +58720,7 @@ var bgOnly = false;
                     .finally(() => {
                       c((e) =>
                         Object.assign(Object.assign({}, e), {
-                          isPurchasing: !1,
+                          isPurchasing: false,
                         })
                       );
                     });
@@ -58785,7 +58785,7 @@ var bgOnly = false;
                         onPress: () => {
                           c((e) =>
                             Object.assign(Object.assign({}, e), {
-                              isPurchasing: !0,
+                              isPurchasing: true,
                             })
                           ),
                             s.blocksPrice > m
@@ -58814,7 +58814,7 @@ var bgOnly = false;
                       c((e) =>
                         Object.assign(Object.assign({}, e), {
                           showBuyBlocksModal: null,
-                          isPurchasing: !1,
+                          isPurchasing: false,
                         })
                       );
                     },
@@ -58842,7 +58842,7 @@ var bgOnly = false;
               ]).then(([t, i]) => {
                 i.data.hasVisitedSuperLevelPack ||
                   Jp.saveLocal(a.storage, a.alert, a.now, {
-                    hasVisitedSuperLevelPack: !0,
+                    hasVisitedSuperLevelPack: true,
                   }),
                   e((e) =>
                     Object.assign(Object.assign({}, e), { levelItems: t })
@@ -58980,11 +58980,11 @@ var bgOnly = false;
                             withCheckpoints: t,
                           });
                         },
-                        arrow: { y: 0, facingLeft: !1 },
+                        arrow: { y: 0, facingLeft: false },
                         showHighScore:
                           "cloud-9" === l.levelFileName ||
                           "nacreous-snowmelt" === l.levelFileName,
-                        showStartArrows: !1,
+                        showStartArrows: false,
                       })
                     : "cloud-9" === l.levelFileName
                     ? iy({ id: "LockedModal", x: 155, song: l.song })
@@ -59147,11 +59147,11 @@ var bgOnly = false;
                         Ro.Single({
                           id: `PreviewSong-${t}`,
                           fileName: t,
-                          loop: !1,
-                          paused: !1,
+                          loop: false,
+                          paused: false,
                           fromPosition: 0,
-                          overwrite: !0,
-                          isGameSfx: !1,
+                          overwrite: true,
+                          isGameSfx: false,
                         }),
                       ],
                     })
@@ -59212,7 +59212,7 @@ var bgOnly = false;
                 ]) => {
                   t((t) =>
                     Object.assign(Object.assign({}, t), {
-                      isLoading: !1,
+                      isLoading: false,
                       levelsProgress: e,
                       world: a,
                       hasVisitedSuperLevelPack: i.data.hasVisitedSuperLevelPack,
@@ -59221,10 +59221,10 @@ var bgOnly = false;
                 }
               ),
               {
-                isLoading: !0,
+                isLoading: true,
                 levelsProgress: [],
                 world: 1,
-                hasVisitedSuperLevelPack: !1,
+                hasVisitedSuperLevelPack: false,
               }
             ),
             loop({ getInputs: e, state: t }) {
@@ -59280,7 +59280,7 @@ var bgOnly = false;
               }
               const d = Hl.getWorlds(),
                 u = d.filter((e, a) => {
-                  if (0 === a) return !0;
+                  if (0 === a) return true;
                   const i = a,
                     n = d[a - 1].length;
                   return t.levelsProgress.some(
@@ -59430,7 +59430,7 @@ var bgOnly = false;
                   onPress: () => {
                     i((e) =>
                       Object.assign(Object.assign({}, e), {
-                        hasVisitedSuperLevelPack: !0,
+                        hasVisitedSuperLevelPack: true,
                       })
                     ),
                       e.updateView({
@@ -59601,7 +59601,7 @@ var bgOnly = false;
                 ),
                   i
                     .audio(e.song.fileName)
-                    .play({ fromPosition: 0, overwrite: !0 });
+                    .play({ fromPosition: 0, overwrite: true });
               }),
               { songLoaded: null, songDuration: 0 }
             ),
@@ -59621,7 +59621,7 @@ var bgOnly = false;
                 r &&
                   i
                     .audio(a.song.fileName)
-                    .play({ fromPosition: a.songStartSec, overwrite: !0 });
+                    .play({ fromPosition: a.songStartSec, overwrite: true });
               }
               return t;
             },
@@ -60074,7 +60074,7 @@ var bgOnly = false;
               view: {
                 type: "chooseSong",
                 selectedSong: null,
-                selectedSongLoading: !1,
+                selectedSongLoading: false,
               },
             }),
             render({ props: e, state: t, device: a, updateState: i }) {
@@ -60119,7 +60119,7 @@ var bgOnly = false;
                           view: {
                             type: "chooseSong",
                             selectedSong: a,
-                            selectedSongLoading: !0,
+                            selectedSongLoading: true,
                           },
                         })
                       );
@@ -60173,7 +60173,7 @@ var bgOnly = false;
                               fileName: "",
                               bpm: 120,
                               label: "",
-                              isBonusSong: !1,
+                              isBonusSong: false,
                               custom: 1,
                             };
 
@@ -60228,7 +60228,7 @@ var bgOnly = false;
                                       Object.assign({}, e.view),
                                       {
                                         selectedSong: a,
-                                        selectedSongLoading: !0,
+                                        selectedSongLoading: true,
                                       }
                                     ),
                                   })
@@ -60251,7 +60251,7 @@ var bgOnly = false;
                               ? Object.assign(Object.assign({}, e), {
                                   view: Object.assign(
                                     Object.assign({}, e.view),
-                                    { selectedSongLoading: !1 }
+                                    { selectedSongLoading: false }
                                   ),
                                 })
                               : e
@@ -60261,11 +60261,11 @@ var bgOnly = false;
                           Ro.Single({
                             id: `PreviewSong-${l}`,
                             fileName: l,
-                            loop: !1,
-                            paused: !1,
+                            loop: false,
+                            paused: false,
                             fromPosition: 0,
-                            overwrite: !0,
-                            isGameSfx: !1,
+                            overwrite: true,
+                            isGameSfx: false,
                           }),
                         ],
                       }),
@@ -60393,7 +60393,7 @@ var bgOnly = false;
             },
           }),
           my = S({
-            init: () => ({ error: "", loading: !1 }),
+            init: () => ({ error: "", loading: false }),
             render({ props: e, state: t, device: a, updateState: i }) {
               const s = a.size.width + 2 * a.size.widthMargin,
                 o = a.size.height + 2 * a.size.heightMargin,
@@ -60424,14 +60424,14 @@ var bgOnly = false;
                   onPress: () =>
                     uy(this, void 0, void 0, function* () {
                       i((e) =>
-                        Object.assign(Object.assign({}, e), { loading: !0 })
+                        Object.assign(Object.assign({}, e), { loading: true })
                       );
                       const t = (e) => {
                         a.audio("audio/menu/error.wav").play(0),
                           i((t) =>
                             Object.assign(Object.assign({}, t), {
                               error: e,
-                              loading: !1,
+                              loading: false,
                             })
                           );
                       };
@@ -60439,7 +60439,7 @@ var bgOnly = false;
                       try {
                         if (((n = yield zu.openFile()), null === n))
                           return void i((e) =>
-                            Object.assign(Object.assign({}, e), { loading: !1 })
+                            Object.assign(Object.assign({}, e), { loading: false })
                           );
                       } catch (e) {
                         return void t("Failed to open file");
@@ -60455,7 +60455,7 @@ var bgOnly = false;
                       }
                       e.importLevel(s),
                         i((e) =>
-                          Object.assign(Object.assign({}, e), { loading: !1 })
+                          Object.assign(Object.assign({}, e), { loading: false })
                         );
                     }),
                   x: -100,
@@ -60578,7 +60578,7 @@ var bgOnly = false;
                   y: -20,
                   width: 100,
                   height: 40,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: i,
                 }),
                 Fo({
@@ -60588,7 +60588,7 @@ var bgOnly = false;
                   height: 40,
                   x: 75,
                   y: -20,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: s,
                 }),
               ];
@@ -60601,8 +60601,8 @@ var bgOnly = false;
                   e.party.members.length !== t.party.members.length ||
                   e.party.id !== t.party.id
                 )
-                  return t.onNewMember(), !0;
-              } else if (e.party !== t.party) return !0;
+                  return t.onNewMember(), true;
+              } else if (e.party !== t.party) return true;
               return (
                 e.width !== t.width ||
                 e.height !== t.height ||
@@ -60990,8 +60990,8 @@ var bgOnly = false;
                       playerX: e.mockPlayerX,
                       playerY: 0,
                       playerDir: 1,
-                      crashed: !1,
-                      paused: !1,
+                      crashed: false,
+                      paused: false,
                       skin: e.skin,
                     },
                     (t) => {
@@ -61034,7 +61034,7 @@ var bgOnly = false;
                     text: localize("BACK"),
                     width: 80,
                     height: 40,
-                    darkBg: !0,
+                    darkBg: true,
                     onPress: () => {
                       e.fadeInMusic(),
                         a((e) =>
@@ -61050,7 +61050,7 @@ var bgOnly = false;
                     id: "CheckpointsCheckbox",
                     text: "CHECKPOINTS",
                     selected: r,
-                    darkBg: !0,
+                    darkBg: true,
                     width: 170,
                     height: 40,
                     y: -c / 2 + 30,
@@ -61071,7 +61071,7 @@ var bgOnly = false;
                     text: "START",
                     width: 80,
                     height: 40,
-                    darkBg: !0,
+                    darkBg: true,
                     disabled: null === i,
                     onPress: () => {
                       null !== i &&
@@ -61094,11 +61094,11 @@ var bgOnly = false;
                             Ro.Single({
                               id: `PreviewSong-${i.snippetFileName}`,
                               fileName: i.snippetFileName,
-                              loop: !1,
-                              paused: !1,
+                              loop: false,
+                              paused: false,
                               fromPosition: 0,
-                              overwrite: !0,
-                              isGameSfx: !1,
+                              overwrite: true,
+                              isGameSfx: false,
                             }),
                           ],
                         }),
@@ -61213,7 +61213,7 @@ var bgOnly = false;
                   x: -90,
                   y: 30,
                   height: 50,
-                  darkBg: !0,
+                  darkBg: true,
                   disabled: h,
                   onPress: () => s({ type: "royale" }),
                 }),
@@ -61239,7 +61239,7 @@ var bgOnly = false;
                   y: 30,
                   height: 50,
                   fontSize: 20,
-                  darkBg: !0,
+                  darkBg: true,
                   disabled: d || h,
                   onPress: () => {
                     a((e) =>
@@ -61247,7 +61247,7 @@ var bgOnly = false;
                         view: {
                           type: "pickFriendsMode",
                           availableLevels: "loading",
-                          withCheckpoints: !0,
+                          withCheckpoints: true,
                           selectedLevel: null,
                         },
                       })
@@ -61259,7 +61259,7 @@ var bgOnly = false;
                               view: {
                                 type: "pickFriendsMode",
                                 availableLevels: Wl(e),
-                                withCheckpoints: !0,
+                                withCheckpoints: true,
                                 selectedLevel: null,
                               },
                             })
@@ -61439,7 +61439,7 @@ var bgOnly = false;
                               x: e / 2 - 30,
                               y: n,
                               strokeColor: Be,
-                              darkBg: !0,
+                              darkBg: true,
                               noPress: t,
                               onPress: () => {
                                 E.alert.okCancel(
@@ -61479,7 +61479,7 @@ var bgOnly = false;
                   height: 40,
                   x: 105,
                   y: -t / 2 + 30,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: () => {
                     null !== g &&
                       (E.audio("audio/menu/send.wav").play(0),
@@ -61508,7 +61508,7 @@ var bgOnly = false;
                   height: 40,
                   x: -30,
                   y: -t / 2 + 30,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: () => {
                     y((e) =>
                       Object.assign(Object.assign({}, e), { view: "addFriend" })
@@ -61522,7 +61522,7 @@ var bgOnly = false;
                   height: 40,
                   x: -135,
                   y: -t / 2 + 30,
-                  darkBg: !0,
+                  darkBg: true,
                   disabled: 0 === i.length,
                   onPress: () => {
                     y((e) =>
@@ -61586,7 +61586,7 @@ var bgOnly = false;
                   text: "SEARCH",
                   width: 100,
                   height: 35,
-                  darkBg: !0,
+                  darkBg: true,
                   x: s / 2 - 60,
                   y: o / 2 - 40,
                   disabled: "" === d,
@@ -61605,7 +61605,7 @@ var bgOnly = false;
                         .then((e) => {
                           a((t) =>
                             Object.assign(Object.assign({}, t), {
-                              isLoading: !1,
+                              isLoading: false,
                               searchedUsers: e.filter(
                                 (e) => e.profileId !== c.profileId
                               ),
@@ -61615,7 +61615,7 @@ var bgOnly = false;
                         .catch((e) => {
                           a((t) =>
                             Object.assign(Object.assign({}, t), {
-                              isLoading: !1,
+                              isLoading: false,
                               searchedUsers: e,
                             })
                           );
@@ -61673,7 +61673,7 @@ var bgOnly = false;
                   text: localize("BACK"),
                   width: 100,
                   height: 40,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: r,
                   x: -85,
                   y: -o / 2 + 30,
@@ -61693,7 +61693,7 @@ var bgOnly = false;
                   height: 40,
                   x: 85,
                   y: -o / 2 + 30,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: () => {
                     const { online: e } = i(Se);
                     e &&
@@ -61767,7 +61767,7 @@ var bgOnly = false;
                           x: i / 2 - 70,
                           y: u,
                           strokeColor: Be,
-                          darkBg: !0,
+                          darkBg: true,
                           noPress: e,
                           onPress: () => {
                             return (
@@ -61830,7 +61830,7 @@ var bgOnly = false;
                           x: i / 2 - 30,
                           y: u,
                           strokeColor: Be,
-                          darkBg: !0,
+                          darkBg: true,
                           noPress: e,
                           onPress: () => {
                             l(d), 1 === o.length && s();
@@ -61844,7 +61844,7 @@ var bgOnly = false;
                   text: localize("BACK"),
                   width: 100,
                   height: 40,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: s,
                   x: -85,
                   y: -n / 2 + 30,
@@ -61911,7 +61911,7 @@ var bgOnly = false;
               {
                 allSkinItems: "loading",
                 selectedSkinItem: { skin: e.playerSkin, unlockText: null },
-                updatingSkin: !1,
+                updatingSkin: false,
               }
             ),
             render({
@@ -61952,7 +61952,7 @@ var bgOnly = false;
                   text: r ? "EQUIPPING" : "EQUIP",
                   width: 120,
                   height: 50,
-                  darkBg: !0,
+                  darkBg: true,
                   disabled:
                     (r ||
                       o.skin.fileName === a.fileName ||
@@ -61968,20 +61968,20 @@ var bgOnly = false;
                             t(o.skin),
                               c((e) =>
                                 Object.assign(Object.assign({}, e), {
-                                  updatingSkin: !1,
+                                  updatingSkin: false,
                                 })
                               );
                           })
                           .catch(() => {
                             c((e) =>
                               Object.assign(Object.assign({}, e), {
-                                updatingSkin: !1,
+                                updatingSkin: false,
                               })
                             );
                           }),
                         c((e) =>
                           Object.assign(Object.assign({}, e), {
-                            updatingSkin: !0,
+                            updatingSkin: true,
                           })
                         ))
                       : t(o.skin);
@@ -62413,7 +62413,7 @@ var bgOnly = false;
                   y: -130,
                   width: 100,
                   height: 40,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: i,
                 }),
               ];
@@ -62443,7 +62443,7 @@ var bgOnly = false;
                         !n.includes(e.from.profileId)
                       ) {
                         i.audio("audio/menu/party-invite.wav").play({
-                          overwrite: !0,
+                          overwrite: true,
                         });
                         const a = [...t.friendRequests, e.from];
                         return (
@@ -62452,7 +62452,7 @@ var bgOnly = false;
                             i.alert,
                             i.now,
                             a,
-                            !0
+                            true
                           ),
                           Object.assign(Object.assign({}, t), {
                             friendRequests: a,
@@ -62499,7 +62499,7 @@ var bgOnly = false;
                               i.alert,
                               i.now,
                               o,
-                              !1
+                              false
                             )))
                           : (r = (yield Jp.getAccount(i.storage, null, i.alert))
                               .data.friendRequests),
@@ -62579,7 +62579,7 @@ var bgOnly = false;
                     url: i,
                     passcode: a.passcode,
                     localLevelFileName: null,
-                    isLocalDev: !1,
+                    isLocalDev: false,
                   }),
                   e
                 );
@@ -62667,7 +62667,7 @@ var bgOnly = false;
                         url: `ws://${window.location.hostname}:9313`,
                         passcode: "",
                         localLevelFileName: t.levelFileName,
-                        isLocalDev: !0,
+                        isLocalDev: true,
                       });
                     const i =
                       (null == n
@@ -62730,7 +62730,7 @@ var bgOnly = false;
                     a((t) => {
                       const a = at(t.friendRequests, e);
                       return (
-                        Jp.addFriendRequests(i.storage, i.alert, i.now, a, !0),
+                        Jp.addFriendRequests(i.storage, i.alert, i.now, a, true),
                         Object.assign(Object.assign({}, t), {
                           friendRequests: a,
                         })
@@ -62848,7 +62848,7 @@ var bgOnly = false;
                     ? Object.assign(Object.assign({}, e), {
                         playState: {
                           type: "matchmaking",
-                          isFriends: !1,
+                          isFriends: false,
                           lobbyId: t,
                           numPlayers: a,
                           maxPlayers: i || e.playState.maxPlayers,
@@ -62858,7 +62858,7 @@ var bgOnly = false;
                     : Object.assign(Object.assign({}, e), {
                         playState: {
                           type: "matchmaking",
-                          isFriends: !1,
+                          isFriends: false,
                           lobbyId: t,
                           numPlayers: a,
                           maxPlayers: i,
@@ -62877,7 +62877,7 @@ var bgOnly = false;
                     ? Object.assign(Object.assign({}, e), {
                         playState: {
                           type: "matchmaking",
-                          isFriends: !0,
+                          isFriends: true,
                           lobbyId: t,
                           numPlayers: a,
                           maxPlayers: i || e.playState.maxPlayers,
@@ -62887,7 +62887,7 @@ var bgOnly = false;
                     : Object.assign(Object.assign({}, e), {
                         playState: {
                           type: "matchmaking",
-                          isFriends: !0,
+                          isFriends: true,
                           lobbyId: t,
                           numPlayers: a,
                           maxPlayers: i,
@@ -62903,7 +62903,7 @@ var bgOnly = false;
                     ? Object.assign(Object.assign({}, e), {
                         playState: {
                           type: "matchmaking",
-                          isFriends: !0,
+                          isFriends: true,
                           lobbyId: "",
                           numPlayers: 1,
                           server: n.server,
@@ -63006,7 +63006,7 @@ var bgOnly = false;
                   y: -80,
                   width: 80,
                   height: 40,
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: () => {
                     g ? zu.cancelGoogleSignIn() : s();
                   },
@@ -63018,7 +63018,7 @@ var bgOnly = false;
                         text: "DELETE ACCOUNT",
                         width: 180,
                         height: 40,
-                        darkBg: !0,
+                        darkBg: true,
                         textColor: Ve,
                         y: 80,
                         onPress: () => {
@@ -63035,7 +63035,7 @@ var bgOnly = false;
                         text: "DETACH ACCOUNT",
                         width: 180,
                         height: 40,
-                        darkBg: !0,
+                        darkBg: true,
                         onPress: () => {
                           r({ type: "detachAccount" });
                         },
@@ -63046,7 +63046,7 @@ var bgOnly = false;
                         text: "SIGN OUT",
                         width: 180,
                         height: 40,
-                        darkBg: !0,
+                        darkBg: true,
                         onPress: () => {
                           r({ type: "signOut" });
                         },
@@ -63114,7 +63114,7 @@ var bgOnly = false;
                 {
                   passItem: "loading",
                   showBuyBlocksModal: null,
-                  isPurchasing: !1,
+                  isPurchasing: false,
                 }
               );
             },
@@ -63153,7 +63153,7 @@ var bgOnly = false;
                     .finally(() => {
                       c((e) =>
                         Object.assign(Object.assign({}, e), {
-                          isPurchasing: !1,
+                          isPurchasing: false,
                         })
                       );
                     });
@@ -63326,7 +63326,7 @@ var bgOnly = false;
                         onPress: () => {
                           c((e) =>
                             Object.assign(Object.assign({}, e), {
-                              isPurchasing: !0,
+                              isPurchasing: true,
                             })
                           ),
                             s.blocksPrice > g
@@ -63354,7 +63354,7 @@ var bgOnly = false;
                       c((e) =>
                         Object.assign(Object.assign({}, e), {
                           showBuyBlocksModal: null,
-                          isPurchasing: !1,
+                          isPurchasing: false,
                         })
                       );
                     },
@@ -63450,10 +63450,10 @@ var bgOnly = false;
                   }),
                 {
                   achievements: "loading",
-                  showBuyPassModal: !1,
-                  hasPass: !1,
-                  hasSuperLevelPack: !1,
-                  hasPendingAchievements: !1,
+                  showBuyPassModal: false,
+                  hasPass: false,
+                  hasSuperLevelPack: false,
+                  hasPendingAchievements: false,
                 }
               );
             },
@@ -63528,7 +63528,7 @@ var bgOnly = false;
                               onPress: () => {
                                 i((e) =>
                                   Object.assign(Object.assign({}, e), {
-                                    showBuyPassModal: !0,
+                                    showBuyPassModal: true,
                                   })
                                 );
                               },
@@ -63559,7 +63559,7 @@ var bgOnly = false;
                         ]),
                     Do({
                       id: "AchievementsList",
-                      showScrollBar: !0,
+                      showScrollBar: true,
                       containerWidth: o - 18,
                       containerHeight: r - 130,
                       contentHeight: 100 * c.length,
@@ -63581,14 +63581,14 @@ var bgOnly = false;
                           closeMenu: () => {
                             i((e) =>
                               Object.assign(Object.assign({}, e), {
-                                showBuyPassModal: !1,
+                                showBuyPassModal: false,
                               })
                             );
                           },
                           didBuy: () => {
                             i((e) =>
                               Object.assign(Object.assign({}, e), {
-                                hasPass: !0,
+                                hasPass: true,
                               })
                             );
                           },
@@ -63775,7 +63775,7 @@ var bgOnly = false;
                           );
                           d((e) =>
                             Object.assign(Object.assign({}, e), {
-                              collected: !0,
+                              collected: true,
                             })
                           );
 
@@ -63799,14 +63799,14 @@ var bgOnly = false;
                                   .play(0),
                                   d((e) =>
                                     Object.assign(Object.assign({}, e), {
-                                      collected: !0,
+                                      collected: true,
                                     })
                                   );
                               })
                               .catch(() => {
                                 d((e) =>
                                   Object.assign(Object.assign({}, e), {
-                                    collected: !1,
+                                    collected: false,
                                   })
                                 );
                               }),
@@ -64192,7 +64192,7 @@ var bgOnly = false;
                   shadowDir: "right",
                   x: -e / 2 + 55,
                   y: t / 2 - 20,
-                  disabled: !0,
+                  disabled: true,
                   onPress: () => {},
                 }),
                 Fo({
@@ -64204,7 +64204,7 @@ var bgOnly = false;
                   shadowDir: "right",
                   x: -e / 2 + 180,
                   y: t / 2 - 20,
-                  disabled: !0,
+                  disabled: true,
                   onPress: () => {},
                 }),
                 We({
@@ -64276,7 +64276,7 @@ var bgOnly = false;
                         i.backToMainMenu();
                       });
                     }),
-                { items: "loading", isBuying: !1, showBuyBlocksModal: null }
+                { items: "loading", isBuying: false, showBuyBlocksModal: null }
               );
             },
             render({
@@ -64319,7 +64319,7 @@ var bgOnly = false;
                   }),
                 ];
               const m = (e) => {
-                i((e) => Object.assign(Object.assign({}, e), { isBuying: !0 })),
+                i((e) => Object.assign(Object.assign({}, e), { isBuying: true })),
                   bp
                     .buyItem(g, e)
                     .then(
@@ -64359,7 +64359,7 @@ var bgOnly = false;
                     })
                     .finally(() => {
                       i((e) =>
-                        Object.assign(Object.assign({}, e), { isBuying: !1 })
+                        Object.assign(Object.assign({}, e), { isBuying: false })
                       );
                     });
               };
@@ -64483,12 +64483,12 @@ var bgOnly = false;
                 }).then(() => {
                   const { settings: e } = n(Se);
                   (e.muteMenuMusic && !s) ||
-                    a.audio(o).play({ loop: !0, overwrite: !0 }),
+                    a.audio(o).play({ loop: true, overwrite: true }),
                     t((e) =>
-                      Object.assign(Object.assign({}, e), { loading: !1 })
+                      Object.assign(Object.assign({}, e), { loading: false })
                     );
                 }),
-                { loading: !0, frame: 0, modal: null, menuMusicFile: o }
+                { loading: true, frame: 0, modal: null, menuMusicFile: o }
               );
             },
             loop({ state: e }) {
@@ -64603,7 +64603,7 @@ var bgOnly = false;
                     text: localize("MORE"),
                     width: 170,
                     height: 40,
-                    darkText: !0,
+                    darkText: true,
                     onPress: () => {
                       r({ type: "more" });
                     },
@@ -64615,7 +64615,7 @@ var bgOnly = false;
                     text: localize("ACHIEVEMENTS"),
                     width: 170,
                     height: 40,
-                    darkText: !0,
+                    darkText: true,
                     onPress: () => {
                       r({ type: "achievements" });
                     },
@@ -64635,7 +64635,7 @@ var bgOnly = false;
                   //    text: a ? "..." : o ? "ACCOUNT" : "LOG IN",
                   //    width: 120,
                   //    height: 40,
-                  //    darkText: !0,
+                  //    darkText: true,
                   //  onPress: () => {
                   //      s((e) =>
                   //        Object.assign(Object.assign({}, e), { modal: "signIn" })
@@ -64899,7 +64899,7 @@ var bgOnly = false;
                           ? a.audio(t.menuMusicFile).pause()
                           : a
                               .audio(t.menuMusicFile)
-                              .play({ loop: !0, overwrite: !0 });
+                              .play({ loop: true, overwrite: true });
                       },
                     }),
                   ]
@@ -65103,22 +65103,22 @@ var bgOnly = false;
           }) {
             try {
               const r = new WebSocket(t),
-                l = { socket: r, isClosed: !1 };
+                l = { socket: r, isClosed: false };
               let c,
-                d = !1;
+                d = false;
               return (
                 (r.onopen = () => {
-                  (d = !0), a(l);
+                  (d = true), a(l);
                 }),
                 (r.onerror = () => {
-                  n(l, !0), r.close();
+                  n(l, true), r.close();
                 }),
                 (r.onclose = () => {
                   d &&
                     !l.isClosed &&
-                    (n(l, !0),
+                    (n(l, true),
                     (function a(r) {
-                      if (r >= 10) return void n(l, !1);
+                      if (r >= 10) return void n(l, false);
                       if (l.isClosed) return;
                       const d = e({
                         url: t,
@@ -65148,7 +65148,7 @@ var bgOnly = false;
             }
           },
           oE = function (e) {
-            (e.isClosed = !0), e.socket.close();
+            (e.isClosed = true), e.socket.close();
           },
           rE = function (e, t, a, i, n, s) {
             nE(e, {
@@ -65192,13 +65192,13 @@ var bgOnly = false;
               case "friends":
                 return {
                   type: "friendsRaceToFinish",
-                  useCheckpoints: !0,
+                  useCheckpoints: true,
                   leaderId: t,
                 };
               case "friends-no-cp":
                 return {
                   type: "friendsRaceToFinish",
-                  useCheckpoints: !1,
+                  useCheckpoints: false,
                   leaderId: t,
                 };
               default:
@@ -65214,14 +65214,14 @@ var bgOnly = false;
                 playerInput: "up",
                 mutValues: {
                   levelState: Zr(e.layout, null, null, null),
-                  blockJumpUntilReleased: !1,
+                  blockJumpUntilReleased: false,
                   landTimer: 0,
                   resetTimer: null,
                   layoutFirstIndexes: Ca.getInitFirstIndexes(),
                 },
                 frameOffset: st(-5, 5, Math.random),
-                atNextCheckpoint: !1,
-                eliminated: !1,
+                atNextCheckpoint: false,
+                eliminated: false,
               })),
             };
           },
@@ -65235,7 +65235,7 @@ var bgOnly = false;
                     if (r) return e;
                     const l = hf(o.levelState.frame, t.name),
                       c = hf(o.levelState.frame + s, t.name),
-                      d = c || (!1 === l ? l : c);
+                      d = c || (false === l ? l : c);
                     return (
                       null !== d
                         ? (i = d ? "justDown" : "up")
@@ -65250,10 +65250,10 @@ var bgOnly = false;
                         waitAtCheckpoint: n,
                         onCrash: () => null,
                         onReachedCheckpoint: () => {
-                          n = !0;
+                          n = true;
                         },
                         onReset: () => null,
-                        shouldResetOnCrash: !0,
+                        shouldResetOnCrash: true,
                         bottomLineTheme:
                           t.layout.properties.theme.objects.bottom,
                       }),
@@ -65265,7 +65265,7 @@ var bgOnly = false;
                           o.levelState.frame % 300 == 0
                             ? st(-10, 10, Math.random)
                             : s,
-                        eliminated: !1,
+                        eliminated: false,
                       }
                     );
                   }),
@@ -65386,7 +65386,7 @@ var bgOnly = false;
                   playerStates: l.map((e) =>
                     Object.assign(Object.assign({}, e), {
                       eliminated: !e.atNextCheckpoint,
-                      atNextCheckpoint: !1,
+                      atNextCheckpoint: false,
                       mutValues: Object.assign(Object.assign({}, e.mutValues), {
                         levelState: Object.assign(
                           Object.assign({}, e.mutValues.levelState),
@@ -65410,13 +65410,13 @@ var bgOnly = false;
                 (e.cameraY = hm(
                   t.viewingPlayer.state.mutValues.levelState.playerY,
                   e.cameraY,
-                  !1
+                  false
                 )),
                 (e.cameraScale = 2),
                 (e.cameraXOffset = pm(
                   e.cameraXOffset,
                   t.viewingPlayer.state.mutValues.levelState.playerDir,
-                  !1
+                  false
                 ));
             },
             render({ props: e, state: t }) {
@@ -65478,7 +65478,7 @@ var bgOnly = false;
                     playerBullets:
                       e.viewingPlayer.state.mutValues.levelState.playerBullets,
                     bossState: null,
-                    isFlyingLevel: !1,
+                    isFlyingLevel: false,
                     switchRotation:
                       e.viewingPlayer.state.mutValues.levelState.switchButtons
                         .rot,
@@ -65487,10 +65487,10 @@ var bgOnly = false;
                         .switchBlockSpikes,
                     layout: e.viewingPlayer.state.bigMutValues.inViewLayout,
                     crashed: e.viewingPlayer.state.mutValues.levelState.crashed,
-                    paused: !1,
+                    paused: false,
                     finishedLevel:
                       e.viewingPlayer.state.mutValues.levelState.finishedLevel,
-                    started: !0,
+                    started: true,
                     bottomLineObjects:
                       (null ===
                         (a =
@@ -65510,9 +65510,9 @@ var bgOnly = false;
                       t.cameraXOffset
                     ),
                     cameraY: t.cameraY,
-                    showAttempts: !0,
-                    hidePlayer: !1,
-                    fadeOutAttempts: !1,
+                    showAttempts: true,
+                    hidePlayer: false,
+                    fadeOutAttempts: false,
                     playerScale:
                       e.viewingPlayer.state.mutValues.levelState.playerScale,
                     bgColor: t.bgColor,
@@ -65622,7 +65622,7 @@ var bgOnly = false;
                     width: 30,
                     height: 40,
                     x: -140,
-                    darkBg: !0,
+                    darkBg: true,
                     strokeColor: Ae,
                     onPress: () => {
                       e.viewNextPlayer("backwards");
@@ -65633,7 +65633,7 @@ var bgOnly = false;
                     width: 30,
                     height: 40,
                     x: 140,
-                    darkBg: !0,
+                    darkBg: true,
                     strokeColor: Ae,
                     onPress: () => {
                       e.viewNextPlayer("forwards");
@@ -65754,7 +65754,7 @@ var bgOnly = false;
                   .sort((e, t) => e.rank - t.rank),
                 n = e.winnerPlayerIndexes.includes(e.playerIndex);
               t.audio(`audio/online/${n ? "win" : "game-over"}.wav`).play(),
-                t.audio("audio/online/xp.wav").play({ loop: !0 });
+                t.audio("audio/online/xp.wav").play({ loop: true });
               const s =
                 (null === (a = e.xp) || void 0 === a ? void 0 : a.prev) || 0;
               return {
@@ -65764,7 +65764,7 @@ var bgOnly = false;
                 didWin: n,
                 animateXp: s,
                 rankInfo: xu(s),
-                isPlaying: !0,
+                isPlaying: true,
               };
             },
             loop({ state: e, props: t, device: a }) {
@@ -65783,7 +65783,7 @@ var bgOnly = false;
                 return (e.animateXp = a), void (e.rankInfo = xu(a));
               }
               e.isPlaying &&
-                (a.audio("audio/online/xp.wav").pause(), (e.isPlaying = !1));
+                (a.audio("audio/online/xp.wav").pause(), (e.isPlaying = false));
             },
             render({ props: e, state: t }) {
               const a = [
@@ -66040,7 +66040,7 @@ var bgOnly = false;
                         o.chPlayers &&
                           (g.checkpoint = {
                             resumeTimer: null,
-                            playerReached: !1,
+                            playerReached: false,
                             reached: 0,
                             total: o.chPlayers,
                             timeoutTimer: null,
@@ -66085,7 +66085,7 @@ var bgOnly = false;
                         g.viewingPlayer)
                       ) {
                         o.eliminated.includes(g.viewingPlayer.playerIndex) &&
-                          ((g.viewingPlayer.eliminated = !0),
+                          ((g.viewingPlayer.eliminated = true),
                           a.audio(t.song.fileName).pause());
                         break;
                       }
@@ -66094,7 +66094,7 @@ var bgOnly = false;
                           a.timer.start(() => {
                             pE(s, e.profile.profileId, e.passcode, null);
                           }, 3e3),
-                          (g.eliminated = !0);
+                          (g.eliminated = true);
                         break;
                       }
                       const i = o.fromFrame - g.globalFrame,
@@ -66143,7 +66143,7 @@ var bgOnly = false;
                                           const a = e.find(
                                             (e) => e.id === t.achievement.id
                                           );
-                                          a && (a.unlocked = !0);
+                                          a && (a.unlocked = true);
                                         }
                                       }),
                                       Jp.saveLocalOfflineCache(
@@ -66174,7 +66174,7 @@ var bgOnly = false;
                                           const a = e.find(
                                             (e) => e.id === t.achievement.id
                                           );
-                                          a && (a.unlocked = !0);
+                                          a && (a.unlocked = true);
                                         }
                                       }),
                                       Jp.saveLocalOfflineCache(
@@ -66203,7 +66203,7 @@ var bgOnly = false;
                               resumeTimer: null,
                               timeoutTimer: null,
                             })),
-                          (g.isGameOver = !0);
+                          (g.isGameOver = true);
                       }
                       t().viewingPlayer ? a.timer.start(l, 1e3) : l();
                       break;
@@ -66308,14 +66308,14 @@ var bgOnly = false;
                             fromPosition:
                               (1 / 60) * o.info.mutValues.levelState.frame +
                               m.headphonesDelay,
-                            overwrite: !0,
+                            overwrite: true,
                           }),
                         (g.serverPlayerPos = o.info),
                         (g.globalFrame = o.f - 1),
                         (null === (d = g.checkpoint) || void 0 === d
                           ? void 0
                           : d.playerReached) &&
-                          (g.checkpoint.playerReached = !1);
+                          (g.checkpoint.playerReached = false);
                       break;
                     }
                     case "watchPlayerState": {
@@ -66326,13 +66326,13 @@ var bgOnly = false;
                           fromPosition:
                             (1 / 60) * o.info.mutValues.levelState.frame +
                             m.headphonesDelay,
-                          overwrite: !0,
+                          overwrite: true,
                         });
                       const t = Ca.getEmptyLayout(e.layout.properties),
                         i = xa.getInitState(t),
                         s = xa.getEmptyStateIndexes();
                       (g.viewingPlayer = {
-                        eliminated: !1,
+                        eliminated: false,
                         playerIndex: o.index,
                         futureInputs: [],
                         sfx: Rf(a, n(Se).settings, e, () => ({
@@ -66346,7 +66346,7 @@ var bgOnly = false;
                             fullLayoutStateIndexes: s,
                           },
                         }),
-                        loadingNewPlayer: !1,
+                        loadingNewPlayer: false,
                       }),
                         Ca.setInViewLayoutAndState(
                           e.layout,
@@ -66497,8 +66497,8 @@ var bgOnly = false;
                   skinsByPlayerIndex: [],
                   startingIn: null,
                   countdownDf: 1,
-                  eliminated: !1,
-                  finished: !1,
+                  eliminated: false,
+                  finished: false,
                   globalFrame: 0,
                   rankings: null,
                   connection: "connecting",
@@ -66506,9 +66506,9 @@ var bgOnly = false;
                   lastInfoFrame: 0,
                   viewingPlayer: null,
                   viewCount: 0,
-                  isGameOver: !1,
+                  isGameOver: false,
                   mockSocket: void 0,
-                  levelMenuOpen: !1,
+                  levelMenuOpen: false,
                 }
               );
             },
@@ -66571,7 +66571,7 @@ var bgOnly = false;
               }
               if (
                 (e.globalFrame++,
-                !0 ===
+                true ===
                   (null === (s = e.viewingPlayer) || void 0 === s
                     ? void 0
                     : s.loadingNewPlayer) || e.isGameOver)
@@ -66631,7 +66631,7 @@ var bgOnly = false;
                       levelSpeeds: h,
                       df: 1,
                       level: u,
-                      waitAtCheckpoint: !1,
+                      waitAtCheckpoint: false,
                       shouldResetOnCrash:
                         "royaleLastBlockStanding" !==
                         (null === (o = e.mode) || void 0 === o
@@ -66656,7 +66656,7 @@ var bgOnly = false;
                         const { settings: t } = i(Se);
                         a.audio(u.song.fileName).play({
                           fromPosition: (1 / 60) * e + t.headphonesDelay,
-                          overwrite: !0,
+                          overwrite: true,
                         });
                       },
                       bottomLineTheme: u.layout.properties.theme.objects.bottom,
@@ -66680,7 +66680,7 @@ var bgOnly = false;
                           0
                         ),
                         (e.resyncTimerDebounce = 120),
-                        (e.viewingPlayer.loadingNewPlayer = !0)),
+                        (e.viewingPlayer.loadingNewPlayer = true)),
                       void (e.viewingPlayer.futureInputs = d)
                     );
                   }
@@ -66693,11 +66693,11 @@ var bgOnly = false;
               ) {
                 const { settings: t } = i(Se);
                 a.audio(e.status.level.song.fileName).play({
-                  overwrite: !0,
+                  overwrite: true,
                   fromPosition: e.checkpoint.songPosition + t.headphonesDelay,
                 }),
                   (e.checkpoint.resumeTimer = null),
-                  (e.checkpoint.playerReached = !1);
+                  (e.checkpoint.playerReached = false);
               }
             },
             render: ({ props: e, state: t, device: a }) => [
@@ -66779,7 +66779,7 @@ var bgOnly = false;
                                           otherPlayersInfo: om(
                                             t.latestInfo.info,
                                             t.otherPlayersY,
-                                            !1,
+                                            false,
                                             0,
                                             t.viewingPlayer.state.mutValues
                                               .levelState.playerX,
@@ -66868,14 +66868,14 @@ var bgOnly = false;
                                           om(
                                             [],
                                             t.otherPlayersY,
-                                            !1,
+                                            false,
                                             0,
                                             0,
                                             0,
                                             a.size.fullWidth,
                                             a.size.fullHeight,
                                             t.playerIndex,
-                                            !1
+                                            false
                                           ),
                                         eliminated: t.eliminated,
                                         start: "started" === t.status.type,
@@ -66933,7 +66933,7 @@ var bgOnly = false;
                                                 null
                                               );
                                           }, 3e3),
-                                          (t.eliminated = !0));
+                                          (t.eliminated = true));
                                       },
                                       onReachedCheckpoint: (i) => {
                                         var n;
@@ -66965,12 +66965,12 @@ var bgOnly = false;
                                                 );
                                             }, 3e3),
                                           i
-                                            ? (t.finished = !0)
+                                            ? (t.finished = true)
                                             : t.checkpoint &&
                                               (t.checkpoint = Object.assign(
                                                 Object.assign({}, t.checkpoint),
                                                 {
-                                                  playerReached: !0,
+                                                  playerReached: true,
                                                   songPosition: s,
                                                 }
                                               ));
@@ -67112,7 +67112,7 @@ var bgOnly = false;
                                           username: n,
                                           viewNextPlayer: (a) => {
                                             (t.viewingPlayer.loadingNewPlayer =
-                                              !0),
+                                              true),
                                               pE(
                                                 t.status.realtime,
                                                 e.profile.profileId,
@@ -67243,8 +67243,8 @@ var bgOnly = false;
                                             fileNames:
                                               Qs.spineFiles.countdownResume,
                                             animationName: "animation",
-                                            loop: !1,
-                                            paused: !1,
+                                            loop: false,
+                                            paused: false,
                                             x: 0,
                                             y: 0,
                                             height: 0,
@@ -67447,8 +67447,8 @@ var bgOnly = false;
                                                       Qs.spineFiles
                                                         .countdownStart,
                                                     animationName: "animation",
-                                                    loop: !1,
-                                                    paused: !1,
+                                                    loop: false,
+                                                    paused: false,
                                                     x: 0,
                                                     y: 0,
                                                     height: 0,
@@ -67460,7 +67460,7 @@ var bgOnly = false;
                                                   }
                                                 ),
                                                 T(
-                                                  () => !1,
+                                                  () => false,
                                                   () => [
                                                     c({
                                                       text: "start",
@@ -67511,10 +67511,10 @@ var bgOnly = false;
                                             }
                                           : void 0,
                                       onResume: () => {
-                                        t.levelMenuOpen = !1;
+                                        t.levelMenuOpen = false;
                                       },
                                       onPause: () => {
-                                        t.levelMenuOpen = !0;
+                                        t.levelMenuOpen = true;
                                       },
                                     },
                                     (e) => {
@@ -67528,7 +67528,7 @@ var bgOnly = false;
                         }),
                         jo.Single(
                           {
-                            shouldShow: !1,
+                            shouldShow: false,
                             sprite: (e) => [
                               c(
                                 {
@@ -67724,7 +67724,7 @@ var bgOnly = false;
                             }
                             return a;
                           })(a, ["playerSkin"]),
-                          d = yield i(c, r, t, o, !1);
+                          d = yield i(c, r, t, o, false);
                         e(
                           {
                             type: "loggedIn",
@@ -67774,7 +67774,7 @@ var bgOnly = false;
                                     c.newProfile.playerSkin,
                                     o,
                                     l,
-                                    !0
+                                    true
                                   )),
                                 e(
                                   {
@@ -67788,7 +67788,7 @@ var bgOnly = false;
                                   l
                                 ));
                           }).catch(y("Failed to sign in with Apple", o));
-                        })(f.profile, !1, m.backend),
+                        })(f.profile, false, m.backend),
                         { type: "requestingAuth", auth: "apple" }
                       );
                     case "signInWithGoogle":
@@ -67816,7 +67816,7 @@ var bgOnly = false;
                                     l.newProfile.playerSkin,
                                     n,
                                     r,
-                                    !0
+                                    true
                                   )),
                                 e(
                                   {
@@ -67838,7 +67838,7 @@ var bgOnly = false;
                         ("google" === m.auth ? r() : Promise.resolve())
                           .then(() => c(m.backend))
                           .then((e) =>
-                            i(e, Wt.default, m.backend, { type: "anon" }, !0)
+                            i(e, Wt.default, m.backend, { type: "anon" }, true)
                           )
                           .then((t) => {
                             e(
@@ -67888,7 +67888,7 @@ var bgOnly = false;
                       return (
                         d(m.backend)
                           .then((e) =>
-                            i(e, Wt.default, m.backend, { type: "anon" }, !0)
+                            i(e, Wt.default, m.backend, { type: "anon" }, true)
                           )
                           .then((t) => {
                             e(
@@ -68005,18 +68005,18 @@ var bgOnly = false;
                   t.audio("audio/achievement/achievement-unlocked.wav").play(0),
                     i((t) =>
                       Object.assign(Object.assign({}, t), {
-                        loading: !1,
+                        loading: false,
                         hasSuperLevelPack: true,
                       })
                     );
                 }),
                 {
-                  loading: !0,
+                  loading: true,
                   showModal: "none",
                   arrowX: 0,
                   collected: e.achievement.rewards.collected,
                   rewards: n,
-                  hasSuperLevelPack: !1,
+                  hasSuperLevelPack: false,
                 }
               );
             },
@@ -68154,14 +68154,14 @@ var bgOnly = false;
                                         .play(0),
                                         a((e) =>
                                           Object.assign(Object.assign({}, e), {
-                                            collected: !0,
+                                            collected: true,
                                           })
                                         );
                                     })
                                     .catch(() => {
                                       a((e) =>
                                         Object.assign(Object.assign({}, e), {
-                                          collected: !1,
+                                          collected: false,
                                         })
                                       );
                                     }),
@@ -68260,8 +68260,8 @@ var bgOnly = false;
                   width: 180,
                   height: 40,
                   text: "TERMS OF SERVICE",
-                  darkBg: !0,
-                  darkText: !0,
+                  darkBg: true,
+                  darkText: true,
                   onPress: () => {
                     zu.openLink("./terms-of-service.html");
                   },
@@ -68272,8 +68272,8 @@ var bgOnly = false;
                   width: 180,
                   height: 40,
                   text: "PRIVACY POLICY",
-                  darkBg: !0,
-                  darkText: !0,
+                  darkBg: true,
+                  darkText: true,
                   onPress: () => {
                     zu.openLink("./privacy-policy.html");
                   },
@@ -68284,7 +68284,7 @@ var bgOnly = false;
                   width: 120,
                   height: 60,
                   text: "ACCEPT",
-                  darkBg: !0,
+                  darkBg: true,
                   onPress: t,
                   y: -100,
                 }),
@@ -68334,7 +68334,7 @@ var bgOnly = false;
                     e.data.hasAskedForReview ||
                       (zu.requestReview(),
                       Jp.saveLocal(i.storage, i.alert, i.now, {
-                        hasAskedForReview: !0,
+                        hasAskedForReview: true,
                       }));
                   }),
                   e && a.world.isEndOfGame
@@ -68443,7 +68443,7 @@ var bgOnly = false;
               spineContext: Xf(
                 a.level,
                 a.playerSkin,
-                !1,
+                false,
                 t,
                 i.timer.start,
                 a.animationContext
@@ -68648,7 +68648,7 @@ var bgOnly = false;
                                       (i) => (
                                         HE(e, t),
                                         Object.assign(Object.assign({}, i), {
-                                          hasAchievementPass: !0,
+                                          hasAchievementPass: true,
                                           achievementModalQueue: [
                                             ...i.achievementModalQueue,
                                             n,
@@ -68856,10 +68856,10 @@ var bgOnly = false;
               view: { type: "loading" },
               accountState: { type: "init" },
               settings: null,
-              attributes: { notifySuperLevelPack: !1 },
+              attributes: { notifySuperLevelPack: false },
               accountStateMachine: n,
               onPressQueue: [],
-              hasAchievementPass: !0,
+              hasAchievementPass: true,
               achievementModalQueue: [],
               animationContext: o,
               animationRenderer: s,
@@ -68867,7 +68867,7 @@ var bgOnly = false;
               updateView: (t) => {
                 e((e) => Object.assign(Object.assign({}, e), { view: t }));
               },
-              isFirstTimePlaying: !1,
+              isFirstTimePlaying: false,
               playerSkin: Wt.default,
             };
           },
@@ -68952,7 +68952,7 @@ var bgOnly = false;
                                   }
                                 ),
                                 view: { type: "loading" },
-                                isFirstTimePlaying: !0,
+                                isFirstTimePlaying: true,
                               })
                             )
                           );
@@ -68970,8 +68970,8 @@ var bgOnly = false;
                           ? void 0
                           : i.id) || ""
                       }`,
-                      initShow: !1,
-                      shouldShow: !0,
+                      initShow: false,
+                      shouldShow: true,
                       sprite: (i) => [
                         LE({
                           id: "Modal",
@@ -68982,7 +68982,7 @@ var bgOnly = false;
                               (e) => (
                                 HE(a, t),
                                 Object.assign(Object.assign({}, e), {
-                                  hasAchievementPass: !0,
+                                  hasAchievementPass: true,
                                 })
                               )
                             );
@@ -69085,14 +69085,14 @@ var bgOnly = false;
                         a((t) =>
                           Object.assign(Object.assign({}, t), {
                             view: { type: "levelEditorLevel", level: e },
-                            isFirstTimePlaying: !1,
+                            isFirstTimePlaying: false,
                           })
                         );
                       },
                       playWorldLevel: (e, i) =>
                         YE(this, void 0, void 0, function* () {
                           let n = null,
-                            s = !1;
+                            s = false;
                           const { data: o } = yield Jp.getAccount(
                               t.storage,
                               null,
@@ -69110,7 +69110,7 @@ var bgOnly = false;
                                     ? "init"
                                     : null),
                                 (s = r.checkpoints.furthestFrame < 2e3))
-                              : ((n = "init"), (s = !0))),
+                              : ((n = "init"), (s = true))),
                             e.levelName === Hl.skateboardLevelName &&
                               (n = r
                                 ? r.noCheckpoints.furthestFrame < 400 &&
@@ -69154,7 +69154,7 @@ var bgOnly = false;
                                       isEndOfGame: d,
                                     }),
                                   },
-                                  isFirstTimePlaying: !1,
+                                  isFirstTimePlaying: false,
                                 })
                               )
                             );
@@ -69185,7 +69185,7 @@ var bgOnly = false;
                                 ],
                               },
                             },
-                            isFirstTimePlaying: !1,
+                            isFirstTimePlaying: false,
                           })
                         );
                       },
@@ -69216,7 +69216,7 @@ var bgOnly = false;
                                   Object.assign({}, o.accountState),
                                   { party: null }
                                 ),
-                            isFirstTimePlaying: !1,
+                            isFirstTimePlaying: false,
                           });
                         });
                       },
@@ -69321,7 +69321,7 @@ var bgOnly = false;
                 Vf({
                   id: "LoadTestCase",
                   level: i.level,
-                  removeCheckpoints: !1,
+                  removeCheckpoints: false,
                   globalContext: e.globalContextVal,
                   animationContext: e.animationContext,
                   animationRenderer: e.animationRenderer,
@@ -69492,7 +69492,7 @@ var bgOnly = false;
                       HE(e, t),
                         e((e) =>
                           Object.assign(Object.assign({}, e), {
-                            hasAchievementPass: !0,
+                            hasAchievementPass: true,
                             achievementModalQueue: [
                               ...e.achievementModalQueue,
                               a,
@@ -69772,8 +69772,8 @@ var bgOnly = false;
                   (s.prototype.clear = s.prototype.clear =
                     function () {
                       return (
-                        (this.aInB = !0),
-                        (this.bInA = !0),
+                        (this.aInB = true),
+                        (this.bInA = true),
                         (this.overlap = Number.MAX_VALUE),
                         this
                       );
@@ -69809,20 +69809,20 @@ var bgOnly = false;
                     (c[1] += h),
                     r[0] > c[1] || c[0] > r[1])
                   )
-                    return o.push(d), l.push(r), l.push(c), !0;
+                    return o.push(d), l.push(r), l.push(c), true;
                   if (s) {
                     var p,
                       g,
                       m = 0;
                     r[0] < c[0]
-                      ? ((s.aInB = !1),
+                      ? ((s.aInB = false),
                         r[1] < c[1]
-                          ? ((m = r[1] - c[0]), (s.bInA = !1))
+                          ? ((m = r[1] - c[0]), (s.bInA = false))
                           : (m =
                               (p = r[1] - c[0]) < (g = c[1] - r[0]) ? p : -g))
-                      : ((s.bInA = !1),
+                      : ((s.bInA = false),
                         r[1] > c[1]
-                          ? ((m = r[0] - c[1]), (s.aInB = !1))
+                          ? ((m = r[0] - c[1]), (s.aInB = false))
                           : (m =
                               (p = r[1] - c[0]) < (g = c[1] - r[0]) ? p : -g));
                     var f = Math.abs(m);
@@ -69831,7 +69831,7 @@ var bgOnly = false;
                       s.overlapN.copy(n),
                       m < 0 && s.overlapN.reverse());
                   }
-                  return o.push(d), l.push(r), l.push(c), !1;
+                  return o.push(d), l.push(r), l.push(c), false;
                 }
                 function p(e, t) {
                   var a = e.len2(),
@@ -69861,15 +69861,15 @@ var bgOnly = false;
                       E = null;
                     c.copy(e.edges[u]),
                       d.copy(i).sub(r[u]),
-                      a && d.len2() > s && (a.aInB = !1);
+                      a && d.len2() > s && (a.aInB = false);
                     var b = p(c, d);
                     if (b === g) {
                       c.copy(e.edges[m]);
                       var S = o.pop().copy(i).sub(r[m]);
                       if ((b = p(c, S)) === f) {
                         if ((_ = d.len()) > n)
-                          return o.push(i), o.push(c), o.push(d), o.push(S), !1;
-                        a && ((a.bInA = !1), (E = d.normalize()), (y = n - _));
+                          return o.push(i), o.push(c), o.push(d), o.push(S), false;
+                        a && ((a.bInA = false), (E = d.normalize()), (y = n - _));
                       }
                       o.push(S);
                     } else if (b === f) {
@@ -69879,19 +69879,19 @@ var bgOnly = false;
                         (b = p(c, d)) === g)
                       ) {
                         if ((_ = d.len()) > n)
-                          return o.push(i), o.push(c), o.push(d), !1;
-                        a && ((a.bInA = !1), (E = d.normalize()), (y = n - _));
+                          return o.push(i), o.push(c), o.push(d), false;
+                        a && ((a.bInA = false), (E = d.normalize()), (y = n - _));
                       }
                     } else {
                       var I = c.perp().normalize(),
                         _ = d.dot(I),
                         v = Math.abs(_);
                       if (_ > 0 && v > n)
-                        return o.push(i), o.push(I), o.push(d), !1;
+                        return o.push(i), o.push(I), o.push(d), false;
                       a &&
                         ((E = I),
                         (y = n - _),
-                        (_ >= 0 || y < 2 * n) && (a.bInA = !1));
+                        (_ >= 0 || y < 2 * n) && (a.bInA = false));
                     }
                     E &&
                       a &&
@@ -69906,7 +69906,7 @@ var bgOnly = false;
                     o.push(i),
                     o.push(c),
                     o.push(d),
-                    !0
+                    true
                   );
                 }
                 function E(e, t, a) {
@@ -69919,15 +69919,15 @@ var bgOnly = false;
                     r < n;
                     r++
                   )
-                    if (h(e.pos, t.pos, i, s, e.normals[r], a)) return !1;
+                    if (h(e.pos, t.pos, i, s, e.normals[r], a)) return false;
                   for (r = 0; r < o; r++)
-                    if (h(e.pos, t.pos, i, s, t.normals[r], a)) return !1;
+                    if (h(e.pos, t.pos, i, s, t.normals[r], a)) return false;
                   return (
                     a &&
                       ((a.a = e),
                       (a.b = t),
                       a.overlapV.copy(a.overlapN).scale(a.overlap)),
-                    !0
+                    true
                   );
                 }
                 return (
@@ -69952,7 +69952,7 @@ var bgOnly = false;
                       n = e.r + t.r,
                       s = n * n,
                       r = i.len2();
-                    if (r > s) return o.push(i), !1;
+                    if (r > s) return o.push(i), false;
                     if (a) {
                       var l = Math.sqrt(r);
                       (a.a = e),
@@ -69963,7 +69963,7 @@ var bgOnly = false;
                         (a.aInB = e.r <= t.r && l <= t.r - e.r),
                         (a.bInA = t.r <= e.r && l <= e.r - t.r);
                     }
-                    return o.push(i), !0;
+                    return o.push(i), true;
                   }),
                   (e.testPolygonCircle = y),
                   (e.testCirclePolygon = function (e, t, a) {
@@ -70008,7 +70008,7 @@ var bgOnly = false;
       for (var i in t)
         a.o(t, i) &&
           !a.o(e, i) &&
-          Object.defineProperty(e, i, { enumerable: !0, get: t[i] });
+          Object.defineProperty(e, i, { enumerable: true, get: t[i] });
     }),
     (a.u = (e) => e + ".game.js"),
     (a.g = (function () {
@@ -70024,7 +70024,7 @@ var bgOnly = false;
       "undefined" != typeof Symbol &&
         Symbol.toStringTag &&
         Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }),
-        Object.defineProperty(e, "__esModule", { value: !0 });
+        Object.defineProperty(e, "__esModule", { value: true });
     }),
     (() => {
       var e;
