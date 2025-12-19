@@ -41062,6 +41062,18 @@ var bgOnly = false;
               difficulty: 5,
             },
             {
+              levelName: "Rum n' Bass",
+              levelFileName: "rum-and-bass",
+              author: "d016",
+              song: hl.songs.rummy,
+              unlockedByIndex: null,
+              x: 0,
+              y: 0,
+              pathToLevel: [],
+              maxFrames: 8836,
+              difficulty: 5,
+            },
+            {
               levelName: "Cool Friends",
               levelFileName: "cool-friends",
               song: hl.songs.coolFriends,
