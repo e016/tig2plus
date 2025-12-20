@@ -51606,15 +51606,15 @@ var bgOnly = false;
           },
           Hg = v({
             render({ props: e, device: t }) {
-              function darker(col, amt) {
+              const darker = (col, amt) => {
                 var num = parseInt(col.substring(1), 16);
                 var r = (num >> 16) / amt;
                 var b = ((num >> 8) & 0x00ff) / amt;
                 var g = (num & 0x0000ff) / amt;
                 var newColor = g | (b << 8) | (r << 16);
                 return "#" + newColor.toString(16);
-              }
-              var clr =
+              };
+              var bgColor =
                 e.bgColor == "#40a5de" || e.bgColor == "#a20e05"
                   ? undefined
                   : e.bgColor;
@@ -51651,7 +51651,7 @@ var bgOnly = false;
               const a = {
                 type: "linearVert",
                 height: t.size.fullHeight,
-                colors: calcColors(clr),
+                colors: calcColors(bgColor),
               };
               return [
                 p(
@@ -51664,8 +51664,11 @@ var bgOnly = false;
                   (e) => {
                     (e.width = t.size.fullWidth),
                       (e.height = t.size.fullHeight),
-                      (e.gradient.colors = calcColors(clr)),
-                      (e.gradient.height = t.size.fullHeight);
+                      (e.gradient = {
+                type: "linearVert",
+                height: t.size.fullHeight,
+                colors: calcColors(bgColor),
+              }); // this might be a bad idea...
                   }
                 ),
                 y({
