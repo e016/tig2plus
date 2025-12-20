@@ -1453,25 +1453,23 @@ var renderCanvas;
       },
       Z = { r: 0, g: 0, b: 0, a: 1 };
     function calculateRGB(e, t) {
-      e.startsWith("#") || (e = presetColors[e] || presetColors.black);
+      e.startsWith("#") || e.startsWith('rgb') || (e = presetColors[e] || presetColors.black);
       var rgb = Number.parseInt(e.slice(1), 16),
         r,
         g,
         b,
         a = 1;
 
-      if (e.startsWith("rgba")) {
-        var values = e.split("rgba(")[1].split(",");
+      if (e.startsWith("rgb")) {
+        var values = (e.split(e.includes('rgba') ? 'rgba(' : 'rgb('))[1].split(",");
         (r = values[0] / 255),
           (g = values[1] / 255),
-          (b = values[2] / 255),
-          (a = values[3]);
-        Z = {
-          r: r * (t || 1),
-          g: g * (t || 1),
-          b: b * (t || 1),
-          a: a * (t || 1),
-        };
+          (b = +String(values[2]).replace(")", "") / 255),
+          (a = +String(values[3]).replace(")", ""));
+          Z.r = r * (t || 1),
+          Z.g = g * (t || 1),
+          Z.b = b * (t || 1),
+          Z.a = a * (t || 1);
         return Z;
       } else {
         (r = rgb >> 16), (g = (rgb >> 8) & 255), (b = 255 & rgb);
@@ -1520,7 +1518,7 @@ var renderCanvas;
               let a = trueA;
               if (e.opacities) {
                 const t = e.opacities[i];
-                void 0 !== t && (a = (0 * (1 - a)) + (t * (a)));
+                void 0 !== t && (a = (t * (a)));
               }
               const l = 4 * i;
               (t[l] = 255 * r),
@@ -1556,7 +1554,7 @@ var renderCanvas;
           const opacity = t.opacities[e];
           if (void 0 !== opacity) {
             const { r: e, g: t, b: i, a: alpha } = calculateRGB(n);
-            n = `rgba(${255 * e}, ${255 * t}, ${255 * i}, ${0 * (1 - alpha) + (alpha * opacity)})`;
+            n = `rgba(${255 * e}, ${255 * t}, ${255 * i}, ${(alpha * opacity)})`;
           }
         }
         const i = e / (t.colors.length - 1);
@@ -1748,7 +1746,7 @@ var renderCanvas;
             const m = c.multiplyPooled(o, c.getScaleMatrixPooled(d, p));
             c.toUniform3fvMut(m, u), e.uniformMatrix3fv(a, !1, u);
             const { r: h, g, b: v, a: alpha} = calculateRGB(l, f);
-            e.uniform4f(s, h, g, v, (0 * (1 - alpha)) + f * alpha), e.drawArrays(e.TRIANGLES, 0, 6);
+            e.uniform4f(s, h, g, v, f * alpha), e.drawArrays(e.TRIANGLES, 0, 6);
           };
         })(e, r, h),
         A = (function (e, t, r, n) {
@@ -1813,7 +1811,7 @@ var renderCanvas;
                     const c = i.show ? r * i.opacity : 0,
                       { r: u, g: d, b: p, a: alpha } = calculateRGB(i.color, c),
                       f = 4 * e;
-                    (s[f] = u), (s[f + 1] = d), (s[f + 2] = p), (s[f + 3] = (0 * (1 - alpha)) + c * alpha);
+                    (s[f] = u), (s[f + 1] = d), (s[f + 2] = p), (s[f + 3] = c * alpha);
                   }
                 })(s, a, l, c),
                 e.bindBuffer(e.ARRAY_BUFFER, d),
@@ -1955,13 +1953,13 @@ var renderCanvas;
                 v)
               ) {
                 const { r, g: n, b: i, a: alpha } = calculateRGB(v, x);
-                e.uniform4f(p, r, n, i, (0 * (1 - alpha)) + x * alpha),
+                e.uniform4f(p, r, n, i, x * alpha),
                   t.bindVertexArrayOES(o),
                   e.drawArrays(e.TRIANGLE_FAN, 0, l.length);
               }
               if (g) {
                 const { r, g: n, b: o, a: alpha } = calculateRGB(g, x);
-                e.uniform4f(p, r, n, o, (0 * (1 - alpha)) + x * alpha),
+                e.uniform4f(p, r, n, o, x * alpha),
                   t.bindVertexArrayOES(i),
                   e.drawArrays(e.TRIANGLE_STRIP, 0, 4 * l.length),
                   "round" === y
@@ -2087,7 +2085,7 @@ var renderCanvas;
               c.toUniform3fvMut(o, f),
               e.uniformMatrix3fv(u, !1, f);
             const { r: T, g: R, b: P, a: alpha } = calculateRGB(h, _);
-            e.uniform4f(d, T, R, P, (0 * (1 - alpha)) + _ * alpha),
+            e.uniform4f(d, T, R, P, _ * alpha),
               e.uniform1f(a, w),
               e.uniform1f(s, g),
               e.uniform1f(l, A ? 0.5 : 1),

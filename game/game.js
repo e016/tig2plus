@@ -49690,7 +49690,7 @@ var bgOnly = false;
             };
           },
           //arrows
-          vg = v({
+          arrrowTheme = v({
             init({ device: e }) {
               const t = [],
                 a = be.rectTouchesRect({
@@ -50769,7 +50769,7 @@ var bgOnly = false;
                           ];
                         case "arrows":
                           return [
-                            vg.Single(
+                            arrrowTheme.Single(
                               { paused: false, bgColor: e.bgColor },
                               (t) => {
                                 t.paused = e.paused;
