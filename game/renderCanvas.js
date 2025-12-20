@@ -1556,7 +1556,7 @@ var renderCanvas;
           const opacity = t.opacities[e];
           if (void 0 !== opacity) {
             const { r: e, g: t, b: i, a: alpha } = calculateRGB(n);
-            n = `rgba(${255 * e}, ${255 * t}, ${255 * i}, ${opacity})}`;
+            n = `rgba(${255 * e}, ${255 * t}, ${255 * i}, ${0 * (1 - alpha) + (alpha * opacity)})`;
           }
         }
         const i = e / (t.colors.length - 1);
