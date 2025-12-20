@@ -49690,7 +49690,7 @@ var bgOnly = false;
             };
           },
           //arrows
-          arrrowTheme = v({
+          arrowTheme = v({
             init({ device: e }) {
               const t = [],
                 a = be.rectTouchesRect({
@@ -49713,7 +49713,7 @@ var bgOnly = false;
                           t.push({
                             x: o,
                             y: r,
-                            fade: a ? 0 : 0.6,
+                            fade: a ? 0 : 1,
                             fadeIn: a,
                             timeout: Math.round(600 * e.random()),
                             colour: n > 6 ? Rg[12 - n] : Rg[n],
@@ -49721,12 +49721,7 @@ var bgOnly = false;
                           null
                         );
                       }
-                      return {
-                        x: o,
-                        y: r,
-                        colour: n > 6 ? Rg[12 - n] : Rg[n],
-                        fade: 0.6,
-                      };
+                      return { x: o, y: r, colour: n > 6 ? Rg[12 - n] : Rg[n] };
                     })
                     .filter(nt)
                 ),
@@ -49739,29 +49734,27 @@ var bgOnly = false;
                   e.timeout > 0
                     ? e.timeout--
                     : e.fadeIn
-                    ? e.fade < 0.7
+                    ? e.fade < 1
                       ? (e.fade += 0.01)
-                      : ((e.fade = 0.7),
-                        (e.fadeIn = false),
+                      : ((e.fade = 1),
+                        (e.fadeIn = !1),
                         (e.timeout = Math.round(600 * t.random())))
                     : e.fade > 0
                     ? (e.fade -= 0.01)
                     : ((e.fade = 0),
-                      (e.fadeIn = true),
+                      (e.fadeIn = !0),
                       (e.timeout = Math.round(600 * t.random())));
                 });
             },
-            render: ({ device: d, state: t, props: a }) => [
+            render: ({ device: e, state: t }) => [
               p(
                 {
                   color: arrowsBGTable()[a.bgColor] || "#1254FF",
-                  width: d.size.fullWidth,
-                  height: d.size.fullHeight,
+                  width: e.size.fullWidth,
+                  height: e.size.fullHeight,
                 },
-                (j) => {
-                  (j.width = d.size.fullWidth),
-                    (j.height = d.size.fullHeight),
-                    (j.color = arrowsBGTable()[a.bgColor] || "#1254FF");
+                (t) => {
+                  (t.width = e.size.fullWidth), (t.height = e.size.fullHeight), (t.color = arrowsBGTable()[a.bgColor] || "#1254FF");
                 }
               ),
               g({
@@ -49789,6 +49782,7 @@ var bgOnly = false;
               }),
             ],
           }),
+          
           Tg = [
             [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1],
             [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0],
@@ -49805,14 +49799,14 @@ var bgOnly = false;
             [0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1],
           ],
           Rg = [
-            //rgba(18, 84, 255, 1)
-            "rgba(0, 0, 0, 0.1)", //"rgba(11, 45, 165, 1)",
-            "rgba(0, 0, 0, 0.09)", //"rgba(11, 45, 165, 1)"
-            "rgba(0, 0, 0, 0.08)", //"rgba(11, 46, 166, 1)"
-            "rgba(0, 0, 0, 0.07)", //"rgba(12, 48, 172, 1)",
-            "rgba(0, 0, 0, 0.06)", //"rgba(14, 50, 184, 1)"
-            "rgba(0, 0, 0, 0.05)", //"rgba(16, 54, 197, 1)"
-            "rgba(0, 0, 0, 0.04)", //"rgba(18, 57, 207, 1)",
+            //hsla(223, 100%, 54%, 1.00)
+            "rgba(0, 0, 0, 0.45)", //"rgba(11, 45, 168, 1)",
+            "rgba(0, 0, 0, 0.38)", //"rgba(11, 45, 168, 1)"
+            "rgba(0, 0, 0, 0.36)", //"rgba(11, 47, 168, 1)"
+            "rgba(0, 0, 0, 0.34)", //"hsla(227, 87%, 36%, 1.00)",
+            "rgba(0, 0, 0, 0.35)", //"hsla(227, 86%, 39%, 1.00)"
+            "rgba(0, 0, 0, 0.31)", //"hsla(227, 85%, 42%, 1.00)"
+            "rgba(0, 0, 0, 0.29)", //"hsla(228, 84%, 44%, 1.00)",
           ];
         function Og(e, t, a) {
           const i = e.createShader(t);
@@ -50769,7 +50763,7 @@ var bgOnly = false;
                           ];
                         case "arrows":
                           return [
-                            arrrowTheme.Single(
+                            arrowTheme.Single(
                               { paused: false, bgColor: e.bgColor },
                               (t) => {
                                 t.paused = e.paused;
