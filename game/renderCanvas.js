@@ -1433,7 +1433,7 @@ var renderCanvas;
         return n;
       throw Error(e.getShaderInfoLog(n) || "");
     }
-    const Q = {
+    const presetColors = {
         black: "#000000",
         silver: "#c0c0c0",
         gray: "#808080",
@@ -1452,28 +1452,31 @@ var renderCanvas;
         aqua: "#00ffff",
       },
       Z = { r: 0, g: 0, b: 0, a: 1 };
-    function ee(e, t) {
-      e.startsWith("#") || (e = Q[e] || Q.black);
+    function calculateRGB(e, t) {
+      e.startsWith("#") || (e = presetColors[e] || presetColors.black);
       var rgb = Number.parseInt(e.slice(1), 16),
         r,
         g,
         b,
         a = 1;
-        
+
       if (e.startsWith("rgba")) {
-        var values = e.split('rgba(')[1].split(',');
-        (r = values[0] / 255), (g = values[1] / 255), (b = values[2] / 255), (a = values[3]);
+        var values = e.split("rgba(")[1].split(",");
+        (r = values[0] / 255),
+          (g = values[1] / 255),
+          (b = values[2] / 255),
+          (a = values[3]);
         Z = {
           r: r * (t || 1),
           g: g * (t || 1),
           b: b * (t || 1),
-          a: a * (t || 1)
+          a: a * (t || 1),
         };
-        return Z
+        return Z;
       } else {
         (r = rgb >> 16), (g = (rgb >> 8) & 255), (b = 255 & rgb);
       }
-      Z.a = 1
+      Z.a = 1;
       return (
         void 0 !== t
           ? ((Z.r = t * (r / 255)),
@@ -1511,19 +1514,19 @@ var renderCanvas;
           e.UNSIGNED_BYTE,
           (function (e) {
             const t = Array.from({ length: 4 * e.colors.length });
-            for (let r = 0; r < e.colors.length; r++) {
-              const n = e.colors[r],
-                { r: i, g: o, b: a } = ee(n);
-              let s = 1;
+            for (let i = 0; i < e.colors.length; i++) {
+              const n = e.colors[i],
+                { r: r, g: g, b: b, a: trueA } = calculateRGB(n);
+              let a = trueA;
               if (e.opacities) {
-                const t = e.opacities[r];
-                void 0 !== t && (s = t);
+                const t = e.opacities[i];
+                void 0 !== t && (a = (0 * (1 - a)) + (t * (a)));
               }
-              const l = 4 * r;
-              (t[l] = 255 * i),
-                (t[l + 1] = 255 * o),
-                (t[l + 2] = 255 * a),
-                (t[l + 3] = 255 * s);
+              const l = 4 * i;
+              (t[l] = 255 * r),
+                (t[l + 1] = 255 * g),
+                (t[l + 2] = 255 * b),
+                (t[l + 3] = 255 * a);
             }
             return new Uint8Array(t);
           })(t)
@@ -1550,10 +1553,10 @@ var renderCanvas;
       for (let e = 0; e < t.colors.length; e++) {
         let n = t.colors[e];
         if (t.opacities) {
-          const r = t.opacities[e];
-          if (void 0 !== r) {
-            const { r: e, g: t, b: i, a: alpha } = ee(n);
-            n = `rgba(${255 * e}, ${255 * t}, ${255 * i}, ${r + (1 - r) * alpha})}`;
+          const opacity = t.opacities[e];
+          if (void 0 !== opacity) {
+            const { r: e, g: t, b: i, a: alpha } = calculateRGB(n);
+            n = `rgba(${255 * e}, ${255 * t}, ${255 * i}, ${opacity})}`;
           }
         }
         const i = e / (t.colors.length - 1);
@@ -1695,14 +1698,15 @@ var renderCanvas;
                   for (let e = 0; e < t.length; e++) {
                     const i = t[e],
                       a = y(r, i, i.width, i.height),
-                      l = 6 * e;
-                    (o[l] = a[0]),
+                      l = 6 * e,
+                    calcO = (i.opacity * n);
+                    ((o[l] = a[0])),
                       (o[l + 1] = a[1]),
                       (o[l + 2] = a[2]),
                       (o[l + 3] = a[3]),
                       (o[l + 4] = a[4]),
                       (o[l + 5] = a[5]),
-                      (s[e] = i.show ? i.opacity * n : 0);
+                      (s[e] = i.show ? calcO : 0);
                   }
                 })(s, u, l, c),
                 e.bindBuffer(e.ARRAY_BUFFER, f),
@@ -1743,8 +1747,8 @@ var renderCanvas;
               (e.useProgram(n), (r.program = n), t.bindVertexArrayOES(i));
             const m = c.multiplyPooled(o, c.getScaleMatrixPooled(d, p));
             c.toUniform3fvMut(m, u), e.uniformMatrix3fv(a, !1, u);
-            const { r: h, g, b: v } = ee(l, f);
-            e.uniform4f(s, h, g, v, f), e.drawArrays(e.TRIANGLES, 0, 6);
+            const { r: h, g, b: v, a: alpha} = calculateRGB(l, f);
+            e.uniform4f(s, h, g, v, (0 * (1 - alpha)) + f * alpha), e.drawArrays(e.TRIANGLES, 0, 6);
           };
         })(e, r, h),
         A = (function (e, t, r, n) {
@@ -1807,9 +1811,9 @@ var renderCanvas;
                       (o[l + 4] = a[4]),
                       (o[l + 5] = a[5]);
                     const c = i.show ? r * i.opacity : 0,
-                      { r: u, g: d, b: p } = ee(i.color, c),
+                      { r: u, g: d, b: p, a: alpha } = calculateRGB(i.color, c),
                       f = 4 * e;
-                    (s[f] = u), (s[f + 1] = d), (s[f + 2] = p), (s[f + 3] = c);
+                    (s[f] = u), (s[f + 1] = d), (s[f + 2] = p), (s[f + 3] = (0 * (1 - alpha)) + c * alpha);
                   }
                 })(s, a, l, c),
                 e.bindBuffer(e.ARRAY_BUFFER, d),
@@ -1950,13 +1954,13 @@ var renderCanvas;
                 e.uniform1f(d, h / 2),
                 v)
               ) {
-                const { r, g: n, b: i } = ee(v, x);
+                const { r, g: n, b: i } = calculateRGB(v, x);
                 e.uniform4f(p, r, n, i, x),
                   t.bindVertexArrayOES(o),
                   e.drawArrays(e.TRIANGLE_FAN, 0, l.length);
               }
               if (g) {
-                const { r, g: n, b: o } = ee(g, x);
+                const { r, g: n, b: o } = calculateRGB(g, x);
                 e.uniform4f(p, r, n, o, x),
                   t.bindVertexArrayOES(i),
                   e.drawArrays(e.TRIANGLE_STRIP, 0, 4 * l.length),
@@ -2082,7 +2086,7 @@ var renderCanvas;
               e.bufferData(e.ARRAY_BUFFER, m.points, e.DYNAMIC_DRAW),
               c.toUniform3fvMut(o, f),
               e.uniformMatrix3fv(u, !1, f);
-            const { r: T, g: R, b: P } = ee(h, _);
+            const { r: T, g: R, b: P } = calculateRGB(h, _);
             e.uniform4f(d, T, R, P, _),
               e.uniform1f(a, w),
               e.uniform1f(s, g),
@@ -2187,7 +2191,7 @@ var renderCanvas;
       const F = {},
         I = new Set(),
         k = [0, 0, 0, 0, 0, 0],
-        { r: L, g: M, b: C } = ee(l);
+        { r: L, g: M, b: C } = calculateRGB(l);
       function U(t, r, n) {
         const a = t.fillGradient;
         if (a) {
