@@ -1,0 +1,14 @@
+{
+  "name": "The Impossible Game 2+",
+  "short_name": "TIG2+",
+  "icons": [{
+      "src": "favicon.ico",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }],
+  "lang": "en-US",
+  "start_url": "./snap.html",
+  "display": "standalone",
+  "background_color": "white",
+  "theme_color": "white"
+}
