@@ -18443,7 +18443,8 @@ var bgOnly = false;
           const l = s[e][t];
           i[r][l] = a;
         }
-        var overlapObjects = false;
+        var overlapObjects = false,
+        mirrorMenuButton = false;
         const xa = {
           getInitState: function (e, t, i) {
             return {
@@ -54089,7 +54090,7 @@ var bgOnly = false;
                     {
                       containerHeight: a.size.fullHeight - 70 + 50,
                       containerWidth: a.size.fullWidth,
-                      contentHeight: 500,
+                      contentHeight: 550,
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
@@ -54405,6 +54406,27 @@ var bgOnly = false;
                               (e.noPress = o.ref);
                           }
                         ),
+                        /*Rm.Single(
+                          {
+                            text: "MIRROR MENU BUTTON",
+                            selected: false,
+                            onPress: () => {
+                              var a;
+                              const { settings: i, updateSettings: n } = t(Se);
+                              n({ mirrorMenuButton: !i.mirrorMenuButton });
+                              mirrorMenuButton = i.mirrorMenuButton;
+                            },
+                            width: 250,
+                            height: 40,
+                            y: -550,
+                          },
+                          (e) => {
+                            const { settings: a } = t(Se);
+                            mirrorMenuButton = a.mirrorMenuButton;
+                            (e.selected = a.mirrorMenuButton),
+                              (e.noPress = o.ref);
+                          }
+                        ),*/
                       ],
                     },
                     (e) => {
@@ -64563,7 +64585,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.1",
+                    text: "v1.1.2",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
