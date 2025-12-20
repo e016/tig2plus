@@ -49746,15 +49746,17 @@ var bgOnly = false;
                       (e.timeout = Math.round(600 * t.random())));
                 });
             },
-            render: ({ device: e, state: t }) => [
+            render: ({ device: d, state: t, props: a }) => [
               p(
                 {
                   color: arrowsBGTable()[a.bgColor] || "#1254FF",
-                  width: e.size.fullWidth,
-                  height: e.size.fullHeight,
+                  width: d.size.fullWidth,
+                  height: d.size.fullHeight,
                 },
-                (t) => {
-                  (t.width = e.size.fullWidth), (t.height = e.size.fullHeight), (t.color = arrowsBGTable()[a.bgColor] || "#1254FF");
+                (j) => {
+                  (j.width = d.size.fullWidth),
+                    (j.height = d.size.fullHeight),
+                    (j.color = arrowsBGTable()[a.bgColor] || "#1254FF");
                 }
               ),
               g({
