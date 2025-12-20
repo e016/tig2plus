@@ -1954,14 +1954,14 @@ var renderCanvas;
                 e.uniform1f(d, h / 2),
                 v)
               ) {
-                const { r, g: n, b: i } = calculateRGB(v, x);
-                e.uniform4f(p, r, n, i, x),
+                const { r, g: n, b: i, a: alpha } = calculateRGB(v, x);
+                e.uniform4f(p, r, n, i, (0 * (1 - alpha)) + x * alpha),
                   t.bindVertexArrayOES(o),
                   e.drawArrays(e.TRIANGLE_FAN, 0, l.length);
               }
               if (g) {
-                const { r, g: n, b: o } = calculateRGB(g, x);
-                e.uniform4f(p, r, n, o, x),
+                const { r, g: n, b: o, a: alpha } = calculateRGB(g, x);
+                e.uniform4f(p, r, n, o, (0 * (1 - alpha)) + x * alpha),
                   t.bindVertexArrayOES(i),
                   e.drawArrays(e.TRIANGLE_STRIP, 0, 4 * l.length),
                   "round" === y
@@ -2086,8 +2086,8 @@ var renderCanvas;
               e.bufferData(e.ARRAY_BUFFER, m.points, e.DYNAMIC_DRAW),
               c.toUniform3fvMut(o, f),
               e.uniformMatrix3fv(u, !1, f);
-            const { r: T, g: R, b: P } = calculateRGB(h, _);
-            e.uniform4f(d, T, R, P, _),
+            const { r: T, g: R, b: P, a: alpha } = calculateRGB(h, _);
+            e.uniform4f(d, T, R, P, (0 * (1 - alpha)) + _ * alpha),
               e.uniform1f(a, w),
               e.uniform1f(s, g),
               e.uniform1f(l, A ? 0.5 : 1),
