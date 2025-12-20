@@ -39437,7 +39437,7 @@ var bgOnly = false;
                 name: "Super Ultra",
                 author: "MDK",
                 fileName: "audio/tracks/mdk-super-ultra.mp3",
-                bpm: 201,
+                bpm: 172,
                 isBonusSong: false,
               },
               rummy: {
