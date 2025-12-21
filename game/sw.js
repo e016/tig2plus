@@ -36,15 +36,38 @@ var version = "1.1.2",
     "global/purchase-item",
     "global/sync",
     // levels
-        [// boss 1
+        ...[
+          // boss 1
         "boss1/death.mp3",
         // boss 2
         "boss2/death",
+        "boss2/bullethell_large",
+        "boss2/bullethell_small",
+        "boss2/damage",
+        "boss2/death",
+        "boss2/doublemissile",
+        "boss2/gun-appear",
+        "boss2/gun-retract",
+        "boss2/laser",
+        "boss2/machinegun",
         // boss 3
         "boss3/death",
         "boss3/rotate",
         "boss3/shoot.mp3",
         // boss 4
+        "boss4/block_explosion.mp3",
+        "boss4/claw_attack.mp3",
+        "boss4/death.mp3",
+        "boss4/fireball.mp3",
+        "boss4/footstep1",
+        "boss4/footstep2",
+        "boss4/footstep3",
+        "boss4/laser.mp3",
+        "boss4/laugh.mp3",
+        "boss4/minion.mp3",
+        "boss4/tail_attack.mp3",
+
+    
         // double jump
         "doubleJump/jump",
         "doubleJump/pickup",
@@ -63,8 +86,41 @@ var version = "1.1.2",
         "punch/pickup",
         "punch/use",
         // skateboard
+        "skateboard/score/1",
+        "skateboard/score/2",
+        "skateboard/score/3",
+        "skateboard/score/4",
+        "skateboard/score/5",
+        "skateboard/score/6",
+        "skateboard/score/7",
+        "skateboard/score/8",
+        "skateboard/score/9",
+        "skateboard/score/10",
+        "skateboard/score/add",
+        "skateboard/grind",
+        "skateboard/move",
+        "skateboard/ollie",
+
         // speedChange
+        "speedchange/down1",
+        "speedchange/down2",
+        "speedchange/down3",
+        "speedchange/down4",
+        "speedchange/down5",
+        "speedchange/up1",
+        "speedchange/up2",
+        "speedchange/up3", 
+        "speedchange/up4",
+        "speedchange/up5",
         // stack
+        "stack/1",
+        "stack/2",
+        "stack/3",
+        "stack/4",
+        "stack/5",
+        "stack/6",
+        "stack/7",
+
         ].map((file)=>("levels/" + file)),
     "levels/coin-collect",
     "levels/direction-change",
@@ -81,8 +137,37 @@ var version = "1.1.2",
     "levels/spring",
     "levels/switch-button.mp3",
     // menu
+    "menu/accept",
+    "menu/error",
+    "menu/party-invite",
+    "menu/send",
     // online
-  ];
+    "online/countdown-123",
+    "online/countdown-go",
+    "online/countdown-start",
+    "online/game-over",
+    "online/round-finish",
+    "online/timer-tick",
+    "online/win",
+    "online/xp",
+
+  ],
+  imageFiles = [
+    "achievement/buy-pass-marks",
+    "achievement/rewards-hidden",
+    "achievement/skater-screenshot",
+    "achievement/rewards/autopilot",
+    "achievement/rewards/blocks",
+    "achievement/rewards/bonus",
+    "achievement/rewards/editor",
+    "achievement/rewards/missiles",
+    "achievement/rewards/slowmo",
+    "achievement/rewards/theme",
+    
+  ],
+  levels = [],
+  spineFiles = [],
+  waveforms = [];
 
 var filesToCache = [
   ...basicFiles,
