@@ -7,6 +7,9 @@
     <title>The Impossible Game 2+</title>
     <link rel="stylesheet" href="fonts/font-face.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-title" content="TIG2+">
     <style>
     html,
     body {
@@ -82,6 +85,10 @@
         alert("Sorry, your device is missing features required to run the game. Try updating your device's software and browser versions and try again.");
       }
     });
+
+    /*if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('sw.js');
+    }*/
 </script>
 
 </body>
