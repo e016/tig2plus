@@ -29369,6 +29369,7 @@ var bgOnly = false;
               "images/themes/world2/enemy-shooting.png",
               "images/themes/world3/switch-button.png",
               "images/editor/editorOnly/size-button.png",
+              "images/editor/editorOnly/color-button.png",
               "images/themes/skater/rail.png",
               "images/themes/skater/skateboard.png",
               "images/themes/world3/switch-platform.png",
@@ -29488,6 +29489,7 @@ var bgOnly = false;
               "images/themes/blank/block.png",
               "images/editor/editorOnly/block-switch-button.png",
               "images/editor/editorOnly/size-button.png",
+              "images/editor/editorOnly/color-button.png",
               "images/editor/objects/miniblock.png",
               "images/editor/objects/block.png",
               "images/editor/objects/platform.png",
@@ -32063,7 +32065,7 @@ var bgOnly = false;
                           y(
                             {
                               fileName:
-                                "images/editor/editorOnly/size-button.png",
+                                "images/editor/editorOnly/color-button.png",
                               width: e.switchButton.width,
                               height: e.switchButton.height,
                             },
