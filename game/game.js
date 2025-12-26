@@ -64587,7 +64587,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.1.2",
+                    text: "v1.1.5",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
