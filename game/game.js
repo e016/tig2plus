@@ -19296,7 +19296,7 @@ var bgOnly = false;
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = i.y * gravity);
+                          (a.y = i.y);
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -64587,7 +64587,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.1.5",
+                    text: "v1.1.6",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
