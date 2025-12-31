@@ -17798,18 +17798,18 @@ var bgOnly = false;
               }
 
               var a = e;
-              var i = a.trueY;
+              var trueY = a.trueY;
               if ("init" in a) {
                 if (e?.pastTrigger == trig) {
                   e.inSwitch = false;
                   if (trig == 0) {
-                    i = a.init == "blue" ? Infinity : a.midY;
+                    trueY = a.init == "blue" ? NaN : a.midY;
                   } else {
-                    i = a.init == "blue" ? a.midY : Infinity;
+                    trueY = a.init == "blue" ? a.midY : NaN;
                   }
                 } else {
                   if (e.inSwitch == false) {
-                    i = i == Infinity ? a.midY : Infinity;
+                    trueY = isNaN(trueY) ? a.midY : NaN;
                     e.inSwitch = true;
                   }
                 }
@@ -17818,19 +17818,19 @@ var bgOnly = false;
               if (e?.pastTrigger != trig) {
                 e.pastTrigger = trig;
               }
-              e.trueY = i;
-              return d && !ua(a.x, i, n, s)
+              e.trueY = trueY;
+              return d && !ua(a.x, trueY, n, s)
                 ? null
                 : "block" === (null == t ? void 0 : t.type)
                 ? ((t.x = a.x),
-                  (t.y = i),
+                  (t.y = trueY),
                   (t.midY = a.midY),
                   (t.width = a.width),
                   (t.height = a.height),
                   (t.movement = a.movement),
                   (t.trigger = a.trigger),
                   t)
-                : Object.assign(Object.assign({}, a), { y: i });
+                : Object.assign(Object.assign({}, a), { y: trueY });
             }
             case "saw": {
               const a = e;
@@ -19340,7 +19340,7 @@ var bgOnly = false;
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = i?.midY);
+                          (a.y = i?.y || i?.midY);
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -19430,7 +19430,7 @@ var bgOnly = false;
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = i.y);
+                          (a.y = i?.y);
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -64587,7 +64587,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.1.5",
+                    text: "v1.1.6",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
