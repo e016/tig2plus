@@ -18036,7 +18036,7 @@ var bgOnly = false;
             for (let a = 0; a < e.length; a++) {
               const s = e[a],
                 o = { object: s, index: a };
-              if (t.blocks[a]?.destroyed) continue;
+              if (t.blocks[a]?.destroyed || t.blocks[a]?.off) continue;
               const r = i[s.y];
               r && 0 !== r.length
                 ? r[r.length - 1].object.x + s.width === s.x
@@ -18518,7 +18518,7 @@ var bgOnly = false;
                     return Na(c, d, h, n, a, s, o), void i.splice(r, 1);
                   }
 
-                  if (!h.destroyed && l(u))
+                  if (!h.destroyed && !h.off && l(u))
                     return (
                       Na(
                         c,
@@ -18550,7 +18550,7 @@ var bgOnly = false;
                 if (d?.steel && c(s)) {
                   Na(i, n, d, o, a, r, l);
                 } else {
-                  !d.destroyed &&
+                  !d.destroyed && !d.off &&
                     c(s) &&
                     Na(
                       i,
@@ -18572,7 +18572,7 @@ var bgOnly = false;
                 const d = t[l][c],
                   u = a[l][c];
                 ("skipMissiles" in d && false !== d.skipMissiles) ||
-                  u.destroyed ||
+                  u.destroyed || u.off ||
                   !be.pointInBox({ x: i, y: n, width: 840, height: 240 })(d) ||
                   Na(
                     l,
@@ -19292,7 +19292,7 @@ var bgOnly = false;
                             : "init" in (e.inGame ? r : i)) &&
                           !(e.inGame ? r?.isVoid : i?.isVoid) &&
                           !(e.inGame ? r?.isBoss : i?.isBoss) &&
-                          !(null == r ? void 0 : r.destroyed)),
+                          !(null == r ? void 0 : r.destroyed) && !(r?.off)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
@@ -19336,7 +19336,7 @@ var bgOnly = false;
                             : o[n];
                         (a.show =
                           (e.inGame ? r?.init == "red" : i?.init == "red") &&
-                          !(null == r ? void 0 : r.destroyed)),
+                          !(null == r ? void 0 : r.destroyed) && !(r?.off)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
@@ -19426,7 +19426,7 @@ var bgOnly = false;
                             : o[n];
                         (a.show =
                           (e.inGame ? r?.init == "red" : i?.init == "red") &&
-                          !(null == r ? void 0 : r.destroyed)),
+                          !(null == r ? void 0 : r.destroyed)  && !(r?.off)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
@@ -19473,7 +19473,7 @@ var bgOnly = false;
                               ? true
                               : r?.init == "red"
                             : i?.init == "red" || i?.init == undefined) &&
-                          !(null == r ? void 0 : r.destroyed)),
+                          !(null == r ? void 0 : r.destroyed) && !(r?.off)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
