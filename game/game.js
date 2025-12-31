@@ -19296,7 +19296,7 @@ var bgOnly = false;
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = i.y * gravity);
+                          (a.y = i.y);
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
