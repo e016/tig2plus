@@ -39451,6 +39451,20 @@ var bgOnly = false;
                 bpm: 132,
                 isBonusSong: true,
               },
+              daydreamer: {
+                name: "Daydreamer",
+                author: "Meganeko",
+                fileName: "audio/tracks/meganeko-daydreamer.mp3",
+                bpm: 136,
+                isBonusSong: false,
+              },
+              orientalSwing: {
+                name: "Oriental Swing",
+                author: "Xe & cYsmix",
+                fileName: "audio/tracks/xe-cysmix-oriental-swing.mp3",
+                bpm: 125,
+                isBonusSong: false,
+              },
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -42749,6 +42763,8 @@ var bgOnly = false;
             e[(e.FinalTheory = 37)] = "FinalTheory";
             e[(e.SuperUltra = 38)] = "SuperUltra";
             e[(e.Rummy = 39)] = "Rummy";
+            e[(e.Daydreamer = 40)] = "Daydreamer";
+            e[(e.OrientalSwing = 41)] = "OrientalSwing";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -42840,6 +42856,8 @@ var bgOnly = false;
             e[(e.FinalTheory = 37)] = "FinalTheory";
             e[(e.SuperUltra = 38)] = "SuperUltra";
             e[(e.Rummy = 39)] = "Rummy";
+            e[(e.Daydreamer = 40)] = "Daydreamer";
+            e[(e.OrientalSwing = 41)] = "OrientalSwing";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -43535,6 +43553,8 @@ var bgOnly = false;
             [Nd.FinalTheory]: hl.songs.finalTheory,
             [Nd.SuperUltra]: hl.songs.superUltra,
             [Nd.Rummy]: hl.songs.rummy,
+            [Nd.Daydreamer]: hl.songs.daydreamer,
+            [Nd.OrientalSwing]: hl.songs.orientalSwing,
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -64588,7 +64608,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.1.6",
+                    text: "v1.2.0",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
