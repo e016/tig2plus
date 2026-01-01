@@ -39455,7 +39455,7 @@ var bgOnly = false;
                 name: "Daydreamer",
                 author: "Meganeko",
                 fileName: "audio/tracks/meganeko-daydreamer.mp3",
-                bpm: 130,
+                bpm: 135,
                 isBonusSong: false,
               },
               orientalSwing: {
@@ -64608,7 +64608,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.2.0",
+                    text: "v1.2.1",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
