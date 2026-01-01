@@ -18123,7 +18123,7 @@ var bgOnly = false;
               layoutFirstIndexes,
               inViewLayout,
               isViewLayoutState,
-              fullLayoutStateIndexes // optional?
+              fullLayoutStateIndexes, // optional?
             ) {
               const p = layoutFirstIndexes;
               for (const l in layout) {
@@ -18160,6 +18160,7 @@ var bgOnly = false;
                   ((fullLayoutStateIndexes[g].length = b), (inViewLayout[g].length = b), (isViewLayoutState[g].length = b)),
                   (p[g] = null != E ? E : y);
               }
+              // !
               if (switchBlockSpikes) {
                 const { blocks: e, spikes: t } = inViewLayout,
                   { blocks: a, spikes: i } = isViewLayoutState,
