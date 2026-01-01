@@ -17772,7 +17772,7 @@ var bgOnly = false;
             world4Red: na,
           };
         const da = 660;
-        function ua(x, y, a, i) {
+        function willApplyMovement(x, y, a, i) {
           return (
             x < a + da &&
             x > a - da &&
@@ -17783,173 +17783,172 @@ var bgOnly = false;
         function ha(e, t) {
           return e.x < t + da && e.x > t - da;
         }
-        function pa(e, t, a, i, n, s, o, r, l, c, d) {
-          switch (e.type) {
+        function pa(obj, updated, enemies, i, playerX, playerY, o, r, switchTrig, jump, doNotApply) {
+          switch (obj.type) {
             case "block": {
-              var trig = e.trigger == "jump" ? c : l / 90;
-              if (!("midY" in e)) {
-                e.midY = e.y;
+              var trig = obj.trigger == "jump" ? jump : switchTrig / 90;
+              if (!("midY" in obj)) {
+                obj.midY = obj.y;
               }
-              if (!("trueY" in e)) {
-                e.trueY = e.y;
+              if (!("trueY" in obj)) {
+                obj.trueY = obj.y;
               }
-              if (!("inSwitch" in e)) {
-                e.inSwitch = false;
+              if (!("inSwitch" in obj)) {
+                obj.inSwitch = false;
               }
-
-              var a = e;
-              var trueY = a.trueY;
-              if ("init" in a) {
-                if (e?.pastTrigger == trig) {
-                  e.inSwitch = false;
+              var trueY = obj.trueY;
+              if ("init" in obj) {
+                if (obj?.pastTrigger == trig) {
+                  obj.inSwitch = false;
                   if (trig == 0) {
-                    trueY = a.init == "blue" ? NaN : a.midY;
+                    trueY = obj.init == "blue" ? NaN : obj.midY;
                   } else {
-                    trueY = a.init == "blue" ? a.midY : NaN;
+                    trueY = obj.init == "blue" ? obj.midY : NaN;
                   }
                 } else {
-                  if (e.inSwitch == false) {
-                    trueY = isNaN(trueY) ? a.midY : NaN;
-                    e.inSwitch = true;
+                  if (obj.inSwitch == false) {
+                    trueY = isNaN(trueY) ? obj.midY : NaN;
+                    obj.inSwitch = true;
                   }
                 }
                 //i = e.init == "red" ? i : (i == Infinity ? e.midY : Infinity)
               }
-              if (e?.pastTrigger != trig) {
-                e.pastTrigger = trig;
+              if (obj?.pastTrigger != trig) {
+                obj.pastTrigger = trig;
               }
-              e.trueY = trueY;
-              return d && !ua(a.x, trueY, n, s)
+              obj.trueY = trueY;
+              return doNotApply && !willApplyMovement(obj.x, trueY, playerX, playerY)
                 ? null
-                : "block" === (null == t ? void 0 : t.type)
-                ? ((t.x = a.x),
-                  (t.y = trueY),
-                  (t.midY = a.midY),
-                  (t.width = a.width),
-                  (t.height = a.height),
-                  (t.movement = a.movement),
-                  (t.trigger = a.trigger),
-                  t)
-                : Object.assign(Object.assign({}, a), { y: trueY });
+                : "block" === (null == updated ? void 0 : updated.type)
+                ? ((updated.x = obj.x),
+                  (updated.y = trueY),
+                  (updated.midY = obj.midY),
+                  (updated.width = obj.width),
+                  (updated.height = obj.height),
+                  (updated.movement = obj.movement),
+                  (updated.trigger = obj.trigger),
+                  updated)
+                : Object.assign(Object.assign({}, obj), { y: trueY });
             }
             case "saw": {
-              const a = e;
+              const a = obj;
               if ("static" === a.movement || "rail" === a.movement)
-                return d && !ua(a.x, a.y, n, s) ? null : a;
+                return doNotApply && !willApplyMovement(a.x, a.y, playerX, playerY) ? null : a;
 
               const i =
                 "falling" === a.movement
-                  ? a.y - (n - a.x) * (a?.multiplier || 1)
+                  ? a.y - (playerX - a.x) * (a?.multiplier || 1)
                   : "beat" === a.movementTrigger
                   ? _a(a.midY, a.movement, $.sawMove, o, r)
                   : "jump" === a.movementTrigger
-                  ? Ia(a.midY, a.movement, $.sawMove, c)
-                  : Ia(a.midY, a.movement, $.sawMove, l / 90);
-              return d && !ua(a.x, i, n, s)
+                  ? Ia(a.midY, a.movement, $.sawMove, jump)
+                  : Ia(a.midY, a.movement, $.sawMove, switchTrig / 90);
+              return doNotApply && !willApplyMovement(a.x, i, playerX, playerY)
                 ? null
-                : "saw" === (null == t ? void 0 : t.type)
-                ? ((t.x = a.x),
-                  (t.y = i),
-                  (t.midY = a.midY),
-                  (t.width = a.width),
-                  (t.height = a.height),
-                  (t.movement = a.movement),
-                  (t.movementTrigger = a.movementTrigger),
-                  t)
+                : "saw" === (null == updated ? void 0 : updated.type)
+                ? ((updated.x = a.x),
+                  (updated.y = i),
+                  (updated.midY = a.midY),
+                  (updated.width = a.width),
+                  (updated.height = a.height),
+                  (updated.movement = a.movement),
+                  (updated.movementTrigger = a.movementTrigger),
+                  updated)
                 : Object.assign(Object.assign({}, a), { y: i });
             }
             case "switchPlatform": {
-              const a = e;
-              if (d && !ua(a.x, a.y, n, s)) return null;
-              const i = "switch" === a.movementTrigger ? l : 90 * c,
+              const a = obj;
+              if (doNotApply && !willApplyMovement(a.x, a.y, playerX, playerY)) return null;
+              const i = "switch" === a.movementTrigger ? switchTrig : 90 * jump,
                 o = "up" === a.initPosition ? -90 + i : 0 - i;
-              return "switchPlatform" === (null == t ? void 0 : t.type)
-                ? ((t.x = a.x),
-                  (t.y = a.y),
-                  (t.width = a.width),
-                  (t.height = a.height),
-                  (t.initPosition = a.initPosition),
-                  (t.movementTrigger = a.movementTrigger),
-                  (t.rotation = o + a.direction),
-                  t)
+              return "switchPlatform" === (null == updated ? void 0 : updated.type)
+                ? ((updated.x = a.x),
+                  (updated.y = a.y),
+                  (updated.width = a.width),
+                  (updated.height = a.height),
+                  (updated.initPosition = a.initPosition),
+                  (updated.movementTrigger = a.movementTrigger),
+                  (updated.rotation = o + a.direction),
+                  updated)
                 : Object.assign(Object.assign({}, a), { rotation: o });
             }
             case "platform": {
-              const a = e;
+              const a = obj;
               if ("static" === a.movement || "rail" === a.movement)
-                return d && !ua(a.x, a.y, n, s) ? null : a;
+                return doNotApply && !willApplyMovement(a.x, a.y, playerX, playerY) ? null : a;
               let i;
               return (
                 (i =
                   "falling" === a.movement
                     ? a.y -
-                      (n - a.x) *
+                      (playerX - a.x) *
                         (a?.multiplier == undefined ? 1 : a?.multiplier) //a.y - (n - a.x)
                     : "jump" === a.movementTrigger
-                    ? Ia(a.midY, a.movement, $.platformMove, c)
+                    ? Ia(a.midY, a.movement, $.platformMove, jump)
                     : "switch" === a.movementTrigger
-                    ? Ia(a.midY, a.movement, $.platformMove, l / 90)
+                    ? Ia(a.midY, a.movement, $.platformMove, switchTrig / 90)
                     : _a(a.midY, a.movement, $.platformMove, o, r)),
-                d && !ua(a.x, i, n, s)
+                doNotApply && !willApplyMovement(a.x, i, playerX, playerY)
                   ? null
-                  : "platform" === (null == t ? void 0 : t.type) &&
-                    "static" !== t.movement &&
-                    "rail" !== t.movement
-                  ? ((t.x = a.x),
-                    (t.y = i),
-                    (t.midY = a.midY),
-                    (t.width = a.width),
-                    (t.height = a.height),
-                    (t.movement = a.movement),
-                    (t.movementTrigger = a.movementTrigger),
-                    t)
+                  : "platform" === (null == updated ? void 0 : updated.type) &&
+                    "static" !== updated.movement &&
+                    "rail" !== updated.movement
+                  ? ((updated.x = a.x),
+                    (updated.y = i),
+                    (updated.midY = a.midY),
+                    (updated.width = a.width),
+                    (updated.height = a.height),
+                    (updated.movement = a.movement),
+                    (updated.movementTrigger = a.movementTrigger),
+                    updated)
                   : Object.assign(Object.assign({}, a), { y: i })
               );
             }
             case "enemy": {
-              const o = e,
-                r = o.x + a[i].offsetX,
-                l = o.y + a[i].offsetY;
-              return d && !ua(r, l, n, s)
+              const o = obj,
+                r = o.x + enemies[i].offsetX,
+                l = o.y + enemies[i].offsetY;
+              return doNotApply && !willApplyMovement(r, l, playerX, playerY)
                 ? null
-                : "enemy" === (null == t ? void 0 : t.type)
-                ? ((t.x = r),
-                  (t.y = l),
-                  (t.width = o.width),
-                  (t.height = o.height),
-                  (t.kind = o.kind),
-                  (t.skipMissiles = o.skipMissiles),
-                  (t.giant = o.giant),
-                  t)
+                : "enemy" === (null == updated ? void 0 : updated.type)
+                ? ((updated.x = r),
+                  (updated.y = l),
+                  (updated.width = o.width),
+                  (updated.height = o.height),
+                  (updated.kind = o.kind),
+                  (updated.skipMissiles = o.skipMissiles),
+                  (updated.giant = o.giant),
+                  updated)
                 : Object.assign(Object.assign({}, o), { x: r, y: l });
             }
             default:
-              return d && !ua(e.x, e.y, n, s) ? null : e;
+              return doNotApply && !willApplyMovement(obj.x, obj.y, playerX, playerY) ? null : obj;
           }
         }
-        const ga = (e, t) => e.x - t.x || e.y - t.y;
+        // sort by position
+        const sBP = (e, t) => e.x - t.x || e.y - t.y;
         function ma(e) {
           return {
             properties: e.properties,
-            blocks: [...e.blocks].sort(ga),
-            spikes: [...e.spikes].sort(ga),
-            platforms: [...e.platforms].sort(ga),
-            directionChanges: [...e.directionChanges].sort(ga),
-            speedChanges: [...e.speedChanges].sort(ga),
-            saws: [...e.saws].sort(ga),
-            flags: [...e.flags].sort(ga),
-            powerups: [...e.powerups].sort(ga),
-            enemies: [...e.enemies].sort(ga),
-            switchButtons: [...e.switchButtons].sort(ga),
-            switchPlatforms: [...e.switchPlatforms].sort(ga),
-            springs: [...e.springs].sort(ga),
-            portals: [...e.portals].sort(ga),
-            collectibles: [...e.collectibles].sort(ga),
+            blocks: [...e.blocks].sort(sBP),
+            spikes: [...e.spikes].sort(sBP),
+            platforms: [...e.platforms].sort(sBP),
+            directionChanges: [...e.directionChanges].sort(sBP),
+            speedChanges: [...e.speedChanges].sort(sBP),
+            saws: [...e.saws].sort(sBP),
+            flags: [...e.flags].sort(sBP),
+            powerups: [...e.powerups].sort(sBP),
+            enemies: [...e.enemies].sort(sBP),
+            switchButtons: [...e.switchButtons].sort(sBP),
+            switchPlatforms: [...e.switchPlatforms].sort(sBP),
+            springs: [...e.springs].sort(sBP),
+            portals: [...e.portals].sort(sBP),
+            collectibles: [...e.collectibles].sort(sBP),
           };
         }
-        function fa(e) {
+        function getMinY(e) {
           var t;
-          const a = Sa(e).sort(ga);
+          const a = Sa(e).sort(sBP);
           if (0 === a.length) return { minYsByXDiv1000: [], minX: 0, minY: 0 };
           const i = a[0].x - 2e3,
             n = a[a.length - 1].x + 2e3,
@@ -18005,7 +18004,7 @@ var bgOnly = false;
                         ? void 0
                         : t.minY) && void 0 !== a
                     ? a
-                    : fa(s),
+                    : getMinY(s),
                 theme:
                   null !==
                     (n =
@@ -18112,34 +18111,34 @@ var bgOnly = false;
             fillInPartial: ya,
             sortLayout: ma,
             setInViewLayoutAndState: function (
-              e,
-              t,
+              layout,
+              frame,
               a,
-              i,
-              n,
-              s,
-              o,
-              r,
-              l,
-              c,
-              d,
-              u,
-              h
+              playerX,
+              playerY,
+              layoutState,
+              switchRot,
+              jumpSwitchRatio,
+              switchBlockSpikes,
+              layoutFirstIndexes,
+              inViewLayout,
+              isViewLayoutState,
+              fullLayoutStateIndexes // optional?
             ) {
-              const p = c;
-              for (const l in e) {
+              const p = layoutFirstIndexes;
+              for (const l in layout) {
                 if ("properties" === l) continue;
                 const g = l,
-                  m = e[g],
-                  f = "enemies" === g;
-                let y = c[g];
+                  m = layout[g],
+                  isEnemies = "enemies" === g;
+                let y = layoutFirstIndexes[g];
                 if (y > 0)
-                  if (f) y = 0;
+                  if (isEnemies) y = 0;
                   else {
                     const e = m[y],
                       t = y >= m.length - 1 ? void 0 : m[y + 1];
-                    if (ha(e, i) || (t && ha(t, i)))
-                      for (; y > 0 && ha(m[y - 1], i); ) y--;
+                    if (ha(e, playerX) || (t && ha(t, playerX)))
+                      for (; y > 0 && ha(m[y - 1], playerX); ) y--;
                     else y = 0;
                   }
                 let E = null,
@@ -18147,30 +18146,30 @@ var bgOnly = false;
                   S = y;
                 for (; S < m.length; ) {
                   const e = m[S],
-                    l = pa(e, d[g][b], s.enemies, S, i, n, t, a, o, r, true);
+                    l = pa(e, inViewLayout[g][b], layoutState.enemies, S, playerX, playerY, frame, a, switchRot, jumpSwitchRatio, true);
                   if (null !== l)
                     null === E && (E = S),
-                      (h[g][b] = S),
-                      (d[g][b] = l),
-                      (u[g][b] = s[g][S]),
+                      (fullLayoutStateIndexes[g][b] = S),
+                      (inViewLayout[g][b] = l),
+                      (isViewLayoutState[g][b] = layoutState[g][S]),
                       b++;
-                  else if (!f && e.x > i && !ha(e, i)) break;
+                  else if (!isEnemies && e.x > playerX && !ha(e, playerX)) break;
                   S++;
                 }
-                b < h[g].length &&
-                  ((h[g].length = b), (d[g].length = b), (u[g].length = b)),
+                b < fullLayoutStateIndexes[g].length &&
+                  ((fullLayoutStateIndexes[g].length = b), (inViewLayout[g].length = b), (isViewLayoutState[g].length = b)),
                   (p[g] = null != E ? E : y);
               }
-              if (l) {
-                const { blocks: e, spikes: t } = d,
-                  { blocks: a, spikes: i } = u,
-                  { blocks: n, spikes: s } = h;
+              if (switchBlockSpikes) {
+                const { blocks: e, spikes: t } = inViewLayout,
+                  { blocks: a, spikes: i } = isViewLayoutState,
+                  { blocks: n, spikes: s } = fullLayoutStateIndexes;
                 (d.blocks = t),
                   (d.spikes = e),
-                  (u.blocks = i),
-                  (u.spikes = a),
-                  (h.blocks = s),
-                  (h.spikes = n);
+                  (isViewLayoutState.blocks = i),
+                  (isViewLayoutState.spikes = a),
+                  (fullLayoutStateIndexes.blocks = s),
+                  (fullLayoutStateIndexes.spikes = n);
               }
             },
             getEmptyLayout: function (e) {
@@ -18257,7 +18256,7 @@ var bgOnly = false;
             blocksFlat: Ta,
             blocksFlatJumpDistance: Ra,
             blocksUpJumpDistance: Oa,
-            getMinY: fa,
+            getMinY: getMinY,
             getMinYFromX: function (
               e,
               { minX: t, minY: a, minYsByXDiv1000: i }
@@ -18287,7 +18286,7 @@ var bgOnly = false;
                 })(e, ["properties"]);
               return Object.assign(Object.assign({}, e), {
                 properties: Object.assign(Object.assign({}, e.properties), {
-                  minY: fa(a),
+                  minY: getMinY(a),
                 }),
               });
             },
@@ -44287,7 +44286,7 @@ var bgOnly = false;
           Pu = () => ({ type: "autopilot", playerInput: "up" }),
           Mu = () => ({ type: "missiles" }),
           Lu = () => ({ type: "slowmo" }),
-          Du = function (e) {
+          canUseMissiles = function (e) {
             return (
               null !== e.boss ||
               !!e.layout.switchButtons.some((e) => "blockSpike" === e.affects)
@@ -56664,7 +56663,7 @@ var bgOnly = false;
                                 showPrompt: "show" === t.tutorial.boosterPrompt,
                                 onOpen: t.onOpenBooster,
                                 pressedBooster: t.pressedBooster,
-                                disableMissiles: Du(e.level),
+                                disableMissiles: canUseMissiles(e.level),
                               })
                           : (a.boosters = void 0),
                           (a.paused = t.paused);
