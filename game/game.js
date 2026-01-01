@@ -19638,7 +19638,7 @@ var bgOnly = false;
                       props: () => ({}),
                       update: (a, i, n) => {
                         const s = e.inGame.blockStates[n];
-                        if (!s.destroyed && s.hitFrame) {
+                        if (!s?.destroyed && s?.hitFrame) {
                           const n = B.zeroTo1(
                             1 - (e.inGame.frame - s.hitFrame) / 20
                           );
@@ -31312,7 +31312,7 @@ var bgOnly = false;
                       t.y = e.onSkateboard ? $.skateboardHeight : 0;
                     }
                   ),
-                  T(
+                    T(
                     () => Boolean(e.landTimer),
                     () => [
                       y(
