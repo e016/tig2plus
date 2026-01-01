@@ -18392,6 +18392,7 @@ var bgOnly = false;
               if (t == undefined ? undefined : t.blocks[i.index]?.init) {
                 Object.assign(block, {
                   init: t == undefined ? undefined : t.blocks[i.index]?.init,
+                  off: t == undefined ? false : t.blocks[i.index]?.off,
                 });
               }
               return block;
