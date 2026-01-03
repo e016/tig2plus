@@ -13,7 +13,7 @@ There are a few rules to follow when creating a new issue asking the devs to add
 * Put the song name and the song artist, remixer or label (if applicable) somewhere in your issue
 * Lower the volume of the audio by around -2db:
 
-![example of audio level](docs/exampleOfAmplitude.png)
+![example of audio level](./exampleOfAmplitude.png)
 
 * Write the BPM of the song in your issue. And don't just guess. **USE A BPM TAPPER** or really *anything* to get the *true* BPM. Also, TIG2's engine cannot handle songs that change their tempo.
 * It is fine to "cut" songs in order to shorten the length of the song. However, one must **not** cut the song 
