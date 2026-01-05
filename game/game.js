@@ -39465,6 +39465,13 @@ var bgOnly = false;
                 bpm: 125,
                 isBonusSong: false,
               },
+              redShift: {
+                name: "Red Shift",
+                author: "Cubed",
+                fileName: "audio/tracks/cubed-red-shift.mp3",
+                bpm: 150,
+                isBonusSong: true,
+              },
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -42765,6 +42772,7 @@ var bgOnly = false;
             e[(e.Rummy = 39)] = "Rummy";
             e[(e.Daydreamer = 40)] = "Daydreamer";
             e[(e.OrientalSwing = 41)] = "OrientalSwing";
+            e[(e.RedShift = 42)] = "RedShift";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -42858,6 +42866,7 @@ var bgOnly = false;
             e[(e.Rummy = 39)] = "Rummy";
             e[(e.Daydreamer = 40)] = "Daydreamer";
             e[(e.OrientalSwing = 41)] = "OrientalSwing";
+            e[(e.RedShift = 42)] = "RedShift";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -43555,6 +43564,7 @@ var bgOnly = false;
             [Nd.Rummy]: hl.songs.rummy,
             [Nd.Daydreamer]: hl.songs.daydreamer,
             [Nd.OrientalSwing]: hl.songs.orientalSwing,
+            [Nd.RedShift]: hl.songs.redShift
           },
           Hd = {
             [ld.Rot0]: 0,
