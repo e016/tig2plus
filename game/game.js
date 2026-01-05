@@ -18165,8 +18165,8 @@ var bgOnly = false;
                 const { blocks: e, spikes: t } = inViewLayout,
                   { blocks: a, spikes: i } = isViewLayoutState,
                   { blocks: n, spikes: s } = fullLayoutStateIndexes;
-                (d.blocks = t),
-                  (d.spikes = e),
+                (inViewLayout.blocks = t),
+                  (inViewLayout.spikes = e),
                   (isViewLayoutState.blocks = i),
                   (isViewLayoutState.spikes = a),
                   (fullLayoutStateIndexes.blocks = s),
@@ -19676,7 +19676,7 @@ var bgOnly = false;
                       },
                       array: () => e.blocks,
                       filter: (t, a) =>
-                        void 0 !== e.inGame.blockStates[a].destroyed,
+                        void 0 !== e.inGame.blockStates[a]?.destroyed,
                       key: (t, a) => e.inGame.indexes[a],
                       update: (t) => {
                         var a, i;
@@ -44292,7 +44292,7 @@ var bgOnly = false;
             '[{"itemId":"4970130c-e2e6-4645-b0fc-4e9f725cef6a","defId":"slowmo1","quantity":1,"usesLeft":2,"version":1},{"itemId":"5bf96b70-cd18-41c4-8323-c64623da8517","defId":"autopilot1","quantity":1,"usesLeft":2,"version":1},{"itemId":"d74933fe-9d90-4e26-96ec-2578764a8437","defId":"missiles1","quantity":1,"usesLeft":2,"version":1}]'
           );
         var Au = a(8465);
-        const ku = "1.2.6";
+        const ku = "1.2.7";
         function Nu(e) {
           return 20 * Math.pow(e - 1, 1.3);
         }
