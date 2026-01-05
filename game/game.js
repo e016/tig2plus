@@ -17832,11 +17832,10 @@ var bgOnly = false;
             }
             case "saw": {
               const a = obj;
-              if ("static" === a.movement || "rail" === a.movement)
-                return doNotApply && !willApplyMovement(a.x, a.y, playerX, playerY) ? null : a;
 
               const i =
-                "falling" === a.movement
+                "static" === a.movement ? a.y
+                : "falling" === a.movement
                   ? a.y - (playerX - a.x) * (a?.multiplier || 1)
                   : "beat" === a.movementTrigger
                   ? _a(a.midY, a.movement, $.sawMove, o, r)
@@ -44302,7 +44301,7 @@ var bgOnly = false;
             '[{"itemId":"4970130c-e2e6-4645-b0fc-4e9f725cef6a","defId":"slowmo1","quantity":1,"usesLeft":2,"version":1},{"itemId":"5bf96b70-cd18-41c4-8323-c64623da8517","defId":"autopilot1","quantity":1,"usesLeft":2,"version":1},{"itemId":"d74933fe-9d90-4e26-96ec-2578764a8437","defId":"missiles1","quantity":1,"usesLeft":2,"version":1}]'
           );
         var Au = a(8465);
-        const ku = "1.2.7";
+        const ku = "1.2.6";
         function Nu(e) {
           return 20 * Math.pow(e - 1, 1.3);
         }
@@ -64618,7 +64617,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.2.2",
+                    text: "v1.2.4",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
