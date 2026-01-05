@@ -18165,8 +18165,8 @@ var bgOnly = false;
                 const { blocks: e, spikes: t } = inViewLayout,
                   { blocks: a, spikes: i } = isViewLayoutState,
                   { blocks: n, spikes: s } = fullLayoutStateIndexes;
-                (d.blocks = t),
-                  (d.spikes = e),
+                (inViewLayout.blocks = t),
+                  (inViewLayout.spikes = e),
                   (isViewLayoutState.blocks = i),
                   (isViewLayoutState.spikes = a),
                   (fullLayoutStateIndexes.blocks = s),
@@ -19676,7 +19676,7 @@ var bgOnly = false;
                       },
                       array: () => e.blocks,
                       filter: (t, a) =>
-                        void 0 !== e.inGame.blockStates[a].destroyed,
+                        void 0 !== e.inGame.blockStates[a]?.destroyed,
                       key: (t, a) => e.inGame.indexes[a],
                       update: (t) => {
                         var a, i;
@@ -64618,7 +64618,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.2.1",
+                    text: "v1.2.2",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
