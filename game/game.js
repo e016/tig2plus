@@ -17752,7 +17752,7 @@ var bgOnly = false;
                 spike: "classic",
                 platform: "classic",
                 dirChange: "world2",
-                flag: "world1",
+                flag: "world2",
                 saw: "classic",
                 bottom: "world3",
               },
@@ -64617,7 +64617,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.2.4",
+                    text: "v1.2.5",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
