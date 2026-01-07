@@ -35972,9 +35972,12 @@ var bgOnly = false;
               },
             }) {
               const o = objPropsMenu(t, e[0], i, a),
-                l = 130,
-                c = Zo(e[0].type),
-                d = 40 + 9 * c.length;
+                l = 130;
+                var c = Zo(e[0].type);
+                if (c == "BLOCK" && e[0]?.init) {
+                  c = "SWITCH BLOCK"
+                }
+                const d = 40 + 9 * localize(c).length;
               return [
                 Ie({
                   id: "LevelObjectMenuClickable",
@@ -36019,7 +36022,7 @@ var bgOnly = false;
                       ],
                     }),
                     n({
-                      text: c,
+                      text: localize(c),
                       color: Be,
                       font: { align: "left", size: 13 },
                       x: -75,
@@ -64617,7 +64620,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.2.5",
+                    text: "v1.2.6",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
