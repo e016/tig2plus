@@ -17752,7 +17752,7 @@ var bgOnly = false;
                 spike: "classic",
                 platform: "classic",
                 dirChange: "world2",
-                flag: "world1",
+                flag: "world2",
                 saw: "classic",
                 bottom: "world3",
               },
@@ -17832,11 +17832,10 @@ var bgOnly = false;
             }
             case "saw": {
               const a = obj;
-              if ("static" === a.movement || "rail" === a.movement)
-                return doNotApply && !willApplyMovement(a.x, a.y, playerX, playerY) ? null : a;
 
               const i =
-                "falling" === a.movement
+                "static" === a.movement ? a.y
+                : "falling" === a.movement
                   ? a.y - (playerX - a.x) * (a?.multiplier || 1)
                   : "beat" === a.movementTrigger
                   ? _a(a.midY, a.movement, $.sawMove, o, r)
@@ -35973,9 +35972,12 @@ var bgOnly = false;
               },
             }) {
               const o = objPropsMenu(t, e[0], i, a),
-                l = 130,
-                c = Zo(e[0].type),
-                d = 40 + 9 * c.length;
+                l = 130;
+                var c = Zo(e[0].type);
+                if (c == "BLOCK" && e[0]?.init) {
+                  c = "SWITCH BLOCK"
+                }
+                const d = 40 + 9 * localize(c).length;
               return [
                 Ie({
                   id: "LevelObjectMenuClickable",
@@ -36020,7 +36022,7 @@ var bgOnly = false;
                       ],
                     }),
                     n({
-                      text: c,
+                      text: localize(c),
                       color: Be,
                       font: { align: "left", size: 13 },
                       x: -75,
@@ -39465,6 +39467,13 @@ var bgOnly = false;
                 bpm: 125,
                 isBonusSong: false,
               },
+              redShift: {
+                name: "Red Shift",
+                author: "Cubed",
+                fileName: "audio/tracks/cubed-red-shift.mp3",
+                bpm: 150,
+                isBonusSong: true,
+              },
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -42765,6 +42774,7 @@ var bgOnly = false;
             e[(e.Rummy = 39)] = "Rummy";
             e[(e.Daydreamer = 40)] = "Daydreamer";
             e[(e.OrientalSwing = 41)] = "OrientalSwing";
+            e[(e.RedShift = 42)] = "RedShift";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -42858,6 +42868,7 @@ var bgOnly = false;
             e[(e.Rummy = 39)] = "Rummy";
             e[(e.Daydreamer = 40)] = "Daydreamer";
             e[(e.OrientalSwing = 41)] = "OrientalSwing";
+            e[(e.RedShift = 42)] = "RedShift";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -43555,6 +43566,7 @@ var bgOnly = false;
             [Nd.Rummy]: hl.songs.rummy,
             [Nd.Daydreamer]: hl.songs.daydreamer,
             [Nd.OrientalSwing]: hl.songs.orientalSwing,
+            [Nd.RedShift]: hl.songs.redShift
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -64608,7 +64620,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.2.2",
+                    text: "v1.2.6",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
