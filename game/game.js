@@ -44289,7 +44289,7 @@ var bgOnly = false;
             })(e, Ou);
           },
           wu = JSON.parse(
-            '[{"itemId":"4970130c-e2e6-4645-b0fc-4e9f725cef6a","defId":"slowmo1","quantity":1,"usesLeft":2,"version":1},{"itemId":"5bf96b70-cd18-41c4-8323-c64623da8517","defId":"autopilot1","quantity":1,"usesLeft":2,"version":1},{"itemId":"d74933fe-9d90-4e26-96ec-2578764a8437","defId":"missiles1","quantity":1,"usesLeft":2,"version":1}]'
+            '[{"itemId":"4970130c-e2e6-4645-b0fc-4e9f725cef6a","defId":"slowmo1","quantity":1,"usesLeft":3,"version":1},{"itemId":"5bf96b70-cd18-41c4-8323-c64623da8517","defId":"autopilot1","quantity":1,"usesLeft":3,"version":1},{"itemId":"d74933fe-9d90-4e26-96ec-2578764a8437","defId":"missiles1","quantity":1,"usesLeft":3,"version":1}]'
           );
         var Au = a(8465);
         const ku = "1.2.6";
