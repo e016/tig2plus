@@ -32108,7 +32108,7 @@ var bgOnly = false;
                       (t) => {
                         (t.x = e.powerup.x),
                           (t.y = e.powerup.y),
-                          (t.rotation = e.playerRot),
+                          (t.rotation = e.playerRot * (e.playerDir || 0)),
                           (t.df = e.df);
                       }
                     ),
@@ -53188,6 +53188,7 @@ var bgOnly = false;
                             scaleX: e.playerDir,
                             powerup: e.playerPowerupOut,
                             playerRot: e.playerRot,
+                            playerDir: e.playerDir,
                             df: e.df,
                           },
                           (t) => {
@@ -53196,6 +53197,7 @@ var bgOnly = false;
                               (t.scaleX = e.playerDir),
                               (t.powerup = e.playerPowerupOut),
                               (t.playerRot = e.playerRot),
+                              (t.playerDir = e.playerDir),
                               (t.df = e.df);
                           }
                         ),
@@ -64745,7 +64747,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.3.0",
+                    text: "v1.3.1",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
