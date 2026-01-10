@@ -32079,7 +32079,7 @@ var bgOnly = false;
                       (t) => {
                         (t.x = e.powerup.x),
                           (t.y = e.powerup.y),
-                          (t.rotation = e.playerRot),
+                          (t.rotation = e.playerRot * e.playerDir),
                           (t.df = e.df);
                       }
                     ),
@@ -53418,6 +53418,7 @@ var bgOnly = false;
                                     scaleX: e.playerDir,
                                     powerup: e.playerPowerupOut,
                                     playerRot: e.playerRot,
+                                    playerDir: e.playerDir,
                                     paused: e.paused,
                                     df: e.df,
                                   },
@@ -53427,6 +53428,7 @@ var bgOnly = false;
                                       (t.scaleX = e.playerDir),
                                       (t.powerup = e.playerPowerupOut),
                                       (t.playerRot = e.playerRot),
+                                      (t.playerDir = e.playerDir),
                                       (t.paused = e.paused),
                                       (t.df = e.df);
                                   }
