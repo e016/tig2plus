@@ -71,7 +71,7 @@ var bgOnly = false;
               (e._fileUploadUrl = e._serverUrl + "/uploader");
           }
           (e._appVersion = ""),
-            (e._debugEnabled = true),
+            (e._debugEnabled = false),
             (e._requestInProgress = false),
             (e._bundleDelayActive = false),
             (e._statusCodeCache = 403),
