@@ -82,6 +82,7 @@
     <script type="text/javascript" src="renderCanvas.js"></script>
     <script type="text/javascript">
       window.onerror = (e, _, line, col) => {
+        window.alert(`${e.message || e}. Line: ${line} col: ${col}`);
         console.error(
           `__crash_game__${e.message || e}. Line: ${line} col: ${col}`
         );

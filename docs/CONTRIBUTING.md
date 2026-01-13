@@ -7,10 +7,11 @@ last updated 1/1/2026
 # Asking for Custom Songs
 ## PLEASE READ before creating a new song issue!
 
-There are a few rules to follow when creating a new issue asking the devs to add a new song:
+There are a few rules to follow when creating a new issue asking the developers to add a new song:
 
-* Supply two audio files, preferably .mp3 ones; one for the main song; and then a snippet of the song.
-* Put the song name and the song artist, remixer or label (if applicable) somewhere in your issue
+* Supply two audio files; preferably .mp3 ones, one for the main song, and then a snippet of the song.
+* The audio file name format is traditionally "artist-song-name.mp3"
+* Put the song name and the song artist, remix-er or label (if applicable) somewhere in your issue
 * Lower the volume of the audio by around -2db:
 
 ![example of audio level](./exampleOfAmplitude.png)

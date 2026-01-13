@@ -71,7 +71,7 @@ var bgOnly = false;
               (e._fileUploadUrl = e._serverUrl + "/uploader");
           }
           (e._appVersion = ""),
-            (e._debugEnabled = true),
+            (e._debugEnabled = false),
             (e._requestInProgress = false),
             (e._bundleDelayActive = false),
             (e._statusCodeCache = 403),
@@ -185,6 +185,8 @@ var bgOnly = false;
               (e._isAuthenticated = true), e.startHeartBeat();
             }),
             (e.debugLog = function (t, a) {
+              true === e._debugEnabled &&
+                (a ? console.error(t) : console.log(t));
               true === e._debugEnabled &&
                 (a ? console.error(t) : console.log(t));
             }),
@@ -32079,7 +32081,7 @@ var bgOnly = false;
                       (t) => {
                         (t.x = e.powerup.x),
                           (t.y = e.powerup.y),
-                          (t.rotation = e.playerRot),
+                          (t.rotation = e.playerRot * e.playerDir),
                           (t.df = e.df);
                       }
                     ),
@@ -32108,7 +32110,7 @@ var bgOnly = false;
                       (t) => {
                         (t.x = e.powerup.x),
                           (t.y = e.powerup.y),
-                          (t.rotation = e.playerRot),
+                          (t.rotation = e.playerRot * (e.playerDir || 0)),
                           (t.df = e.df);
                       }
                     ),
@@ -39565,6 +39567,12 @@ var bgOnly = false;
                 bpm: 150,
                 isBonusSong: true,
               },
+              raceAroundTheWorld: {
+                name: "Race Around The World",
+                author: "Waterflame",
+                fileName: "audio/tracks/waterflame-race-around-the-world.mp3",
+                bpm: 180,
+              },
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -42866,6 +42874,7 @@ var bgOnly = false;
             e[(e.Daydreamer = 40)] = "Daydreamer";
             e[(e.OrientalSwing = 41)] = "OrientalSwing";
             e[(e.RedShift = 42)] = "RedShift";
+            e[(e.RaceAroundTheWorld = 43)] = "RaceAroundTheWorld";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -42960,6 +42969,7 @@ var bgOnly = false;
             e[(e.Daydreamer = 40)] = "Daydreamer";
             e[(e.OrientalSwing = 41)] = "OrientalSwing";
             e[(e.RedShift = 42)] = "RedShift";
+            e[(e.RaceAroundTheWorld = 43)] = "RaceAroundTheWorld";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -43658,6 +43668,7 @@ var bgOnly = false;
             [Nd.Daydreamer]: hl.songs.daydreamer,
             [Nd.OrientalSwing]: hl.songs.orientalSwing,
             [Nd.RedShift]: hl.songs.redShift,
+            [Nd.RaceAroundTheWorld]: hl.songs.raceAroundTheWorld,
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -44399,7 +44410,7 @@ var bgOnly = false;
             })(e, Ou);
           },
           wu = JSON.parse(
-            '[{"itemId":"4970130c-e2e6-4645-b0fc-4e9f725cef6a","defId":"slowmo1","quantity":1,"usesLeft":2,"version":1},{"itemId":"5bf96b70-cd18-41c4-8323-c64623da8517","defId":"autopilot1","quantity":1,"usesLeft":2,"version":1},{"itemId":"d74933fe-9d90-4e26-96ec-2578764a8437","defId":"missiles1","quantity":1,"usesLeft":2,"version":1}]'
+            '[{"itemId":"4970130c-e2e6-4645-b0fc-4e9f725cef6a","defId":"slowmo1","quantity":1,"usesLeft":3,"version":1},{"itemId":"5bf96b70-cd18-41c4-8323-c64623da8517","defId":"autopilot1","quantity":1,"usesLeft":3,"version":1},{"itemId":"d74933fe-9d90-4e26-96ec-2578764a8437","defId":"missiles1","quantity":1,"usesLeft":3,"version":1}]'
           );
         var Au = a(8465);
         const ku = "1.2.6";
@@ -53183,6 +53194,7 @@ var bgOnly = false;
                             scaleX: e.playerDir,
                             powerup: e.playerPowerupOut,
                             playerRot: e.playerRot,
+                            playerDir: e.playerDir,
                             df: e.df,
                           },
                           (t) => {
@@ -53191,6 +53203,7 @@ var bgOnly = false;
                               (t.scaleX = e.playerDir),
                               (t.powerup = e.playerPowerupOut),
                               (t.playerRot = e.playerRot),
+                              (t.playerDir = e.playerDir),
                               (t.df = e.df);
                           }
                         ),
@@ -53411,6 +53424,7 @@ var bgOnly = false;
                                     scaleX: e.playerDir,
                                     powerup: e.playerPowerupOut,
                                     playerRot: e.playerRot,
+                                    playerDir: e.playerDir,
                                     paused: e.paused,
                                     df: e.df,
                                   },
@@ -53420,6 +53434,7 @@ var bgOnly = false;
                                       (t.scaleX = e.playerDir),
                                       (t.powerup = e.playerPowerupOut),
                                       (t.playerRot = e.playerRot),
+                                      (t.playerDir = e.playerDir),
                                       (t.paused = e.paused),
                                       (t.df = e.df);
                                   }
@@ -64740,7 +64755,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.3.0",
+                    text: "v1.3.2",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
