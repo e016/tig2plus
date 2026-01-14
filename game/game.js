@@ -54178,7 +54178,7 @@ var bgOnly = false;
                             ),
                             c({
                               font: { size: e.fontSize || 15 },
-                              text: e.text,
+                              text: localize(e.text),
                               color: a,
                               x: 10,
                               y: t,
