@@ -62269,7 +62269,7 @@ var bgOnly = false;
                             })
                           );
                         },
-                        noPress: false,//e,
+                        noPress: e,
                         skinItem: t,
                         selected: s,
                       });
@@ -62296,7 +62296,7 @@ var bgOnly = false;
                 onPress: () => {
                   s.audio("audio/global/button.wav").play(0), a();
                 },
-                disabled: i || n,
+                disabled: (i || n),
                 sprites: (a) => {
                   const i = null === t;
                   return [
