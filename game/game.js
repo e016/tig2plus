@@ -16142,7 +16142,7 @@ var bgOnly = false;
                     ? s
                     : 30,
                 item: o,
-                direction: e ? 0 : j ? 1 : 0,
+                compatible: e ? e.compatible : true
               };
             },
             newSwitchButton: (e) => {
@@ -16207,7 +16207,7 @@ var bgOnly = false;
                     ? o
                     : "switch",
                 rotation: "up" === r ? -90 + e.direction : 0 + e.direction,
-                direction: e.direction || 0,
+                direction: e?.direction || 0,
               };
             },
             newSpring: (e) => {
@@ -33396,6 +33396,7 @@ var bgOnly = false;
                     : e.includes("punch")
                     ? "punch"
                     : void 0,
+                    compatible: false,
                 }),
                 h = $.newSaw(),
                 p = $.newEnemy({
@@ -33415,7 +33416,7 @@ var bgOnly = false;
                     ? "blockSpike"
                     : void 0,
                 }),
-                m = $.newSwitchPlatform({ initPosition: "right" }),
+                m = $.newSwitchPlatform({ initPosition: "right", direction: 0 }),
                 f = $.newCollectible({
                   form: e.includes("collectible")
                     ? "coin"
@@ -35735,8 +35736,8 @@ var bgOnly = false;
                       }),
                     "playerStack" == t.item &&
                       l.push({
-                        name: "Up",
-                        selected: 1 === t.direction,
+                        name: "On",
+                        selected: t.compatible,
                         onPress: () => {
                           i.map((j) => {
                             e({
@@ -35745,7 +35746,7 @@ var bgOnly = false;
                               index: j,
                               set: (e) =>
                                 Object.assign(Object.assign({}, e), {
-                                  direction: 1,
+                                  compatible: true,
                                 }),
                             });
                           });
@@ -35753,8 +35754,8 @@ var bgOnly = false;
                       }),
                     "playerStack" == t.item &&
                       l.push({
-                        name: "Down",
-                        selected: 0 === t.direction,
+                        name: "Off",
+                        selected: !t.compatible,
                         onPress: () => {
                           i.map((j) => {
                             e({
@@ -35763,15 +35764,17 @@ var bgOnly = false;
                               index: j,
                               set: (e) =>
                                 Object.assign(Object.assign({}, e), {
-                                  direction: 0,
+                                  compatible: false,
                                 }),
                             });
                           });
                         },
                       }),
-                    [
+                    l.length > 0 ? [
                       { name: "Item", options: n },
-                      //{ name: "Direction", options: l },
+                      { name: "Compatible? (EXPERIMENTAL)", options: l },
+                    ] : [
+                      { name: "Item", options: n },
                     ]
                   );
                 })(e, t, a, i);
@@ -37667,6 +37670,7 @@ var bgOnly = false;
                   playerDir: 1,
                   playerSpeedMultiplier: 1,
                   playerPowerup: null,
+                  isCompatible: true,
                   playerBullets: [],
                   playerJetpackFuel: 0,
                   playerUsingPowerup: false,
@@ -37725,6 +37729,7 @@ var bgOnly = false;
               playerDir: e.playerDir,
               playerSpeedMultiplier: e.playerSpeedMultiplier,
               playerPowerup: e.playerPowerup,
+              isCompatible: e.isCompatible,
               playerBullets: [...e.playerBullets],
               playerJetpackFuel: e.playerJetpackFuel,
               playerUsingPowerup: e.playerUsingPowerup,
@@ -38412,12 +38417,21 @@ var bgOnly = false;
                 X,
                 K
               ),
+              stackCollide = (stack)=>(be.hitObject(
+                U.playerX,
+                stack.y,
+                1,
+                1,
+                0,
+                X,
+                K
+              )),
               ee = null;
             var ttt;
             for (let e = 0; e < z.directionChanges.length; e++) {
               const t = z.directionChanges[e],
                 a = t.x - U.playerX;
-              Z(t) &&
+              (Z(t) || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(t, U.playerX, U.playerStacks))) &&
                 ((1 === U.playerDir && "left" === t.direction && a <= 0) ||
                   (-1 === U.playerDir && "right" === t.direction && a >= 0)) &&
                 (W.directionChanges[e].wasHit
@@ -38445,7 +38459,7 @@ var bgOnly = false;
               const t = z.speedChanges[e],
                 a = U.playerX - t.x;
               if (
-                Z(t) &&
+                (Z(t) || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(t, U.playerX, U.playerStacks))) &&
                 ((1 === U.playerDir && a >= 0) ||
                   (-1 === U.playerDir && a <= 0))
               ) {
@@ -38466,7 +38480,7 @@ var bgOnly = false;
             const ae = z.flags.findIndex((e) => {
               const t = e.x - U.playerX;
               return (
-                Z(e) &&
+                (Z(e)  || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(e, U.playerX, U.playerStacks))) &&
                 ((1 === U.playerDir && t <= 15) ||
                   (-1 === U.playerDir && t >= -15))
               );
@@ -38646,22 +38660,33 @@ var bgOnly = false;
                 ),
                 U.collectibles++,
                 null == v || v.hitCollectible()));
-            const se = z.springs.findIndex((e) => Z(e));
-            if (-1 !== se) {
-              const e = z.springs[se];
-              (U.jumping = true),
-                (U.playerGradY =
-                  (e.direction > 0
-                    ? Math.max(1.5 * G.initGrad(V), Math.abs(U.playerGradY))
-                    : -Math.min(1 * G.initGrad(V), -U.playerGradY)) *
-                  e.direction),
-                (U.playerY =
-                  e.y + (e.height / 2) * e.direction + 15 * e.direction),
-                (L.landTimer = et.landTimerLimit),
-                (U.skateboardJumpCharge = 0),
-                (U.justHitObject = { array: "springs", index: se }),
-                null == v || v.hitSpring();
-            }
+            const touchedSpring = z.springs.findIndex((e) => Z(e));
+            const checkSprings = (idx, stack) => {
+              if (stack) {
+                idx = z.springs.findIndex((e) => stackCollide(stack)(e));
+              };
+              var setY = (y)=>(stack ? (stack.y = y) :(U.playerY = y));
+              var setGradY = (y)=>(stack ? (stack.gradY = y) : (U.playerGradY = y));
+              var gradY = stack ? stack.gradY : U.playerGradY;
+              if (-1 !== idx) {
+                const spring = z.springs[idx];
+                (stack || (U.jumping = true)),
+                  (setGradY((spring.direction > 0
+                      ? Math.max(1.5 * G.initGrad(V), Math.abs(gradY))
+                      : -Math.min(1 * G.initGrad(V), -gradY)) *
+                    spring.direction)),
+                  (setY(spring.y + (spring.height / 2) * spring.direction + 15 * spring.direction)),
+                  (stack || (L.landTimer = et.landTimerLimit)),
+                  (stack || (U.skateboardJumpCharge = 0)),
+                  (U.justHitObject = { array: "springs", index: idx }),
+                  null == v || v.hitSpring();
+                  if (stack) {
+                    console.warn(gradY - stack.gradY);
+                  }
+              }
+              
+            };
+            checkSprings(touchedSpring);
             const oe = nl(
               z.portals, //e
               _.layout.portals, //t
@@ -38725,7 +38750,7 @@ var bgOnly = false;
                   (U.playerRot =
                     B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir);
               //playerStack code
-              else if ("playerStack" === e.item && U.playerStacks.length < 8) {
+              else if ("playerStack" === e.item && U.playerStacks.length < (8)) {
                 const stacks = [
                     U.playerY,
                     ...U.playerStacks.map(({ y: e }) => e),
@@ -38753,6 +38778,8 @@ var bgOnly = false;
                 }
                 //console.log(U.playerStackIndex)
               } else "skateboard" === e.item && (U.playerRot = 0);
+              // set powerup
+              U.isCompatible = e.compatible
               U.playerPowerup = Object.assign(Object.assign({}, e), {
                 x: 0,
                 y: 0,
@@ -38777,7 +38804,7 @@ var bgOnly = false;
               );
             (U.crashed = ce.crashed), (Q = ce.onGroundY);
             const de = ce.hitObject;
-            if ((null !== Q && !J) || U.crashed || -1 !== se) {
+            if ((null !== Q && !J) || U.crashed || -1 !== touchedSpring) {
               const e = be.pointInBox({
                 x: U.playerX,
                 y: U.playerY - 15,
@@ -39083,6 +39110,8 @@ var bgOnly = false;
                       false,
                       u
                     );
+                    checkSprings(undefined, c);
+                    // stack collision
                     null !== g.onGroundY
                       ? (stacks[l] = {
                           y: g.onGroundY,
@@ -43346,7 +43375,7 @@ var bgOnly = false;
                         x: e,
                         y: t,
                         item: Qd[a],
-                        direction: n > 0 ? 1 : 0,
+                        compatible: n != 1
                       })
                     ),
                     //******
@@ -43527,7 +43556,7 @@ var bgOnly = false;
                           ]
                         : [e.x, e.y, ru(e.role, Kd), ru(e.switchesOn, ou)]
                     ),
-                    i.powerups.map((e) => [e.x, e.y, ru(e.item, Qd)]),
+                    i.powerups.map((e) => e.compatible ? [e.x, e.y, ru(e.item, Qd)] : [e.x, e.y, ru(e.item, Qd), 1]),
                     i.enemies.map((e) =>
                       e.enemyDir > 0
                         ? [
@@ -43993,6 +44022,10 @@ var bgOnly = false;
                 Object.assign(Object.assign({}, e), {
                   gravity: 1,
                 }),
+              (e) =>
+                Object.assign(Object.assign({}, e), {
+                  isCompatible: true
+                }),
             ],
             finalSchema: kc({
               frame: fc,
@@ -44010,6 +44043,7 @@ var bgOnly = false;
               playerDir: Bc([_c(1), _c(-1)]),
               playerSpeedMultiplier: fc,
               playerPowerup: Bc([hc, cu]),
+              isCompatible: yc,
               playerJetpackFuel: fc,
               playerUsingPowerup: yc,
               playerBullets: Oc(du),
@@ -52450,7 +52484,7 @@ var bgOnly = false;
               didCrash: false,
             }),
             loop({ props: e, state: t }) {
-              console.warn(e.frame);
+              // console.warn(e.frame);
               if (!e.crashed)
                 return 0 !== t.fade
                   ? ((t.fade = 0), (t.show = false), void (t.didCrash = false))
@@ -52567,6 +52601,7 @@ var bgOnly = false;
                   playerScaleY: t.playerScaleY,
 
                   playerPowerup: t.playerPowerup,
+                  isCompatible: t.isCompatible,
                   playerPowerupOut: t.playerPowerupOut,
                   playerBullets: t.playerBullets,
                   playerJetpackFuel: t.playerJetpackFuel,
@@ -52617,6 +52652,7 @@ var bgOnly = false;
                     (e.playerScaleY = t.playerScaleY),
                     (e.playerScale = t.playerScale),
                     (e.playerPowerup = t.playerPowerup),
+                    (e.isCompatible = t.isCompatible),
                     (e.playerPowerupOut = t.playerPowerupOut),
                     (e.playerBullets = t.playerBullets),
                     (e.playerJetpackFuel = t.playerJetpackFuel),
@@ -56492,6 +56528,7 @@ var bgOnly = false;
                     playerScaleY: t.mutValues.levelState.playerScaleY,
 
                     playerPowerup: t.mutValues.levelState.playerPowerup,
+                    isCompatible: t.mutValues.levelState.isCompatible,
                     playerPowerupOut:
                       (null === (n = t.powerupOut) || void 0 === n
                         ? void 0
@@ -56572,6 +56609,7 @@ var bgOnly = false;
                       (a.playerScaleY = t.mutValues.levelState.playerScaleY),
                       (a.playerScale = t.mutValues.levelState.playerScale),
                       (a.playerPowerup = t.mutValues.levelState.playerPowerup),
+                      (a.isCompatible = t.mutValues.levelState.isCompatible),
                       (a.playerPowerupOut =
                         (null === (i = t.powerupOut) || void 0 === i
                           ? void 0
@@ -64755,7 +64793,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.3.2",
+                    text: "v1.4.0",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
@@ -65646,6 +65684,8 @@ var bgOnly = false;
 
                     playerPowerup:
                       e.viewingPlayer.state.mutValues.levelState.playerPowerup,
+                    isCompatible:
+                      e.viewingPlayer.state.mutValues.levelState.isCompatible,
                     playerPowerupOut: null,
                     playerStacks:
                       e.viewingPlayer.state.mutValues.levelState.playerStacks,
@@ -65753,6 +65793,7 @@ var bgOnly = false;
                       (a.playerScaleY = r.playerScaleY),
                       (a.playerScale = r.playerScale),
                       (a.playerPowerup = r.playerPowerup),
+                      (a.isCompatible = r.isCompatible),
                       (a.playerStacks = r.playerStacks),
                       (a.playerStackIndex = r.playerStackIndex),
                       (a.playerSkin = h),
