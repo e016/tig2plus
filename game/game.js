@@ -38420,8 +38420,8 @@ var bgOnly = false;
               stackCollide = (stack)=>(be.hitObject(
                 U.playerX,
                 stack.y,
-                U.playerScale,
-                U.playerScale,
+                U.isCompatible ? 1 : U.playerScale,
+                U.isCompatible ? 1 : U.playerScale,
                 0,
                 X,
                 K
@@ -39089,9 +39089,10 @@ var bgOnly = false;
                   for (let l = 0; l < stacks.length; l++) {
                     const stack = stacks[l];
                     let { y: d, gradY: h } = G.stepY(stack.y, stack.gradY, t, a);
+                    var scale = U.isCompatible ? 1 : U.playerScale
                     //console.log(l)
                     const p = 0 === l ? n : stacks[l - 1].y;
-                    d < p + (U.isCompatible ? M : M * U.playerScale) + 1 && ((d = p + (U.isCompatible ? M : M * U.playerScale)), (h = 0));
+                    d < p + (M * scale) + 1 && ((d = p + (M * scale)), (h = 0));
                     const g = rl(
                       o,
                       r,
@@ -39099,8 +39100,8 @@ var bgOnly = false;
                       d,
                       h,
                       false,
-                      U.playerScale,
-                      U.playerScale,
+                      scale,
+                      scale,
                       0,
                       s,
                       false,
@@ -52057,13 +52058,13 @@ var bgOnly = false;
                   skin: e.skin,
                   landTimer: e.landTimer,
                   onSkateboard: e.onSkateboard,
-                  playerScale: e.playerScale,
+                  playerScale: e.isCompatible ? 1 : e.playerScale,
                 },
                 (t) => {
                   (t.playerRot = e.playerRot),
                     (t.playerScaleX = e.playerScaleX),
                     (t.playerScaleY = e.playerScaleY),
-                    (t.playerScale = e.playerScale),
+                    (t.playerScale = e.isCompatible ? 1 : e.playerScale),
                     (t.playerDir = e.playerDir),
                     (t.skin = e.skin),
                     (t.landTimer = e.landTimer),
@@ -52082,7 +52083,7 @@ var bgOnly = false;
                   skin: e.skin,
                   landTimer: e.landTimer,
                   onSkateboard: e.onSkateboard,
-                  playerScale: e.playerScale,
+                  playerScale: e.isCompatible ? 1 : e.playerScale,
                 },
                 (a) => {
                   (a.x = t.player2X),
@@ -52090,7 +52091,7 @@ var bgOnly = false;
                     (a.playerRot = e.playerRot),
                     (a.playerScaleX = e.playerScaleX),
                     (a.playerScaleY = e.playerScaleY),
-                    (a.playerScale = e.playerScale),
+                    (a.playerScale = e.isCompatible ? 1 : e.playerScale),
                     (a.playerDir = e.playerDir),
                     (a.skin = e.skin),
                     (a.landTimer = e.landTimer),
@@ -53398,8 +53399,8 @@ var bgOnly = false;
                                   update: (t, { y: a }) => {
                                     (t.x = e.playerX),
                                       (t.y = a),
-                                      (t.scaleX = e.playerDir * e.playerScale);
-                                      (t.scaleY = e.playerScale);
+                                      (t.scaleX = e.playerDir * (e.isCompatible ? 1 : e.playerScale)),
+                                      (t.scaleY = e.isCompatible ? 1 : e.playerScale);
                                   },
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
@@ -64840,7 +64841,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.4.1",
+                    text: "v1.4.2",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
