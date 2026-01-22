@@ -38666,7 +38666,7 @@ var bgOnly = false;
                 idx = z.springs.findIndex((e) => stackCollide(stack)(e));
               };
               var setY = (y)=>(stack ? (stack.y = y) :(U.playerY = y));
-              var setGradY = (y)=>(stack ? (stack.gradY = y) : (U.playerGradY = y));
+              var setGradY = (y)=>((stack ? (stack.gradY = y) : (U.playerGradY = y)));
               var gradY = stack ? stack.gradY : U.playerGradY;
               if (-1 !== idx) {
                 const spring = z.springs[idx];
@@ -38680,9 +38680,7 @@ var bgOnly = false;
                   (stack || (U.skateboardJumpCharge = 0)),
                   (U.justHitObject = { array: "springs", index: idx }),
                   null == v || v.hitSpring();
-                  if (stack) {
-                    console.warn(gradY - stack.gradY);
-                  }
+                  return true
               }
               
             };
@@ -39089,11 +39087,11 @@ var bgOnly = false;
                 U.playerStacks.length > 0 &&
                 ((function (stacks, t, a, i, n, s, o, r, l, c, d, u) {
                   for (let l = 0; l < stacks.length; l++) {
-                    const c = stacks[l];
-                    let { y: d, gradY: h } = G.stepY(c.y, c.gradY, t, a);
+                    const stack = stacks[l];
+                    let { y: d, gradY: h } = G.stepY(stack.y, stack.gradY, t, a);
                     //console.log(l)
                     const p = 0 === l ? n : stacks[l - 1].y;
-                    d < p + M + 1 && ((d = p + M), (h = 0));
+                    d < p + (U.isCompatible ? M : M * U.playerScale) + 1 && ((d = p + (U.isCompatible ? M : M * U.playerScale)), (h = 0));
                     const g = rl(
                       o,
                       r,
@@ -39101,8 +39099,8 @@ var bgOnly = false;
                       d,
                       h,
                       false,
-                      1,
-                      1,
+                      U.playerScale,
+                      U.playerScale,
                       0,
                       s,
                       false,
@@ -39110,15 +39108,17 @@ var bgOnly = false;
                       false,
                       u
                     );
-                    checkSprings(undefined, c);
+                    const touchedSpring = U.isCompatible ? false : (checkSprings(undefined, stack));
+                    console.warn(touchedSpring);
                     // stack collision
-                    null !== g.onGroundY
+                    ((null !== g.onGroundY) && !touchedSpring)
                       ? (stacks[l] = {
                           y: g.onGroundY,
                           gradY: 0,
+                          scale: 1,
                           stackCrash: g.crashed,
                         })
-                      : (stacks[l] = { y: d, gradY: h, stackCrash: g.crashed });
+                      : (stacks[l] = { y: d, gradY: h, scale: 1, stackCrash: g.crashed });
                   }
                   lt(stacks, (e) => {
                     let t = false;
@@ -44047,7 +44047,7 @@ var bgOnly = false;
               playerJetpackFuel: fc,
               playerUsingPowerup: yc,
               playerBullets: Oc(du),
-              playerStacks: Oc(kc({ y: fc, gradY: fc })),
+              playerStacks: Oc(kc({ y: fc, gradY: fc})),
               playerStackIndex: fc,
               explosions: Oc(kc({ x: fc, y: fc, framesLeft: fc })),
               touchingPortals: Bc([hc, Gc([uu, uu])]),
@@ -53399,7 +53399,8 @@ var bgOnly = false;
                                   update: (t, { y: a }) => {
                                     (t.x = e.playerX),
                                       (t.y = a),
-                                      (t.scaleX = e.playerDir);
+                                      (t.scaleX = e.playerDir * e.playerScale);
+                                      (t.scaleY = e.playerScale);
                                   },
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
@@ -59674,6 +59675,9 @@ var bgOnly = false;
                 ...(t.hasVisitedSuperLevelPack
                   ? []
                   : [
+                    // const o = a.size.width + 2 * a.size.widthMargin,
+                // l = a.size.height + 2 * a.size.heightMargin;
+                    //
                       s({
                         color: Ve,
                         radius: 12,
@@ -62265,7 +62269,7 @@ var bgOnly = false;
                             })
                           );
                         },
-                        noPress: e,
+                        noPress: false,//e,
                         skinItem: t,
                         selected: s,
                       });
@@ -64793,7 +64797,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.4.0",
+                    text: "v1.4.1",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
