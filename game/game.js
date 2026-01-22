@@ -38420,8 +38420,8 @@ var bgOnly = false;
               stackCollide = (stack)=>(be.hitObject(
                 U.playerX,
                 stack.y,
-                1,
-                1,
+                U.playerScale,
+                U.playerScale,
                 0,
                 X,
                 K
