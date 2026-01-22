@@ -39109,7 +39109,6 @@ var bgOnly = false;
                       u
                     );
                     const touchedSpring = U.isCompatible ? false : (checkSprings(undefined, stack));
-                    console.warn(touchedSpring);
                     // stack collision
                     ((null !== g.onGroundY) && !touchedSpring)
                       ? (stacks[l] = {
@@ -64295,6 +64294,49 @@ var bgOnly = false;
                 });
               }),
           }),
+          news = S({
+            render({ props: { updateView: e, backToMainMenu: t, newsID: id }, device: a }) {
+              const i = a.size.width + 2 * a.size.widthMargin,
+                nn = a.size.height + 2 * a.size.heightMargin,
+                s = nn / 2 - 40;
+              localStorage.setItem("news", id);
+              return [Uf({
+                  id: "Title",
+                  text: localize("NEWS"),
+                  width: 200,
+                  height: 35,
+                  x: -i / 2 + 120,
+                  y: s,
+                }),
+              Fo({
+                  id: "BackButton",
+                  text: localize("BACK"),
+                  width: 80,
+                  height: 40,
+                  onPress: t,
+                  x: -i / 2 + 60,
+                  y: -nn / 2 + 40,
+                }),
+                n({
+                        font: {size: 15},
+                        text: localize("Player Stacks have a few new features in v1.4.0"), // screw it
+                        color: "white",
+                        y: 15,
+                }),
+                n({
+                        font: {size: 15},
+                        text: localize("More specifically, they can react to Direction changes,"), // screw it
+                        color: "white",
+                        y: 0,
+                }),
+                n({
+                        font: {size: 15},
+                        text: localize("Speed Changes, Flags, and Size buttons. All your old levels will still work!"), // screw it
+                        color: "white",
+                        y: -15,
+                }),
+              ];
+          }}),
           Jy = S({
             render({ props: { updateView: e, backToMainMenu: t }, device: a }) {
               const i = a.size.width + 2 * a.size.widthMargin,
@@ -64748,8 +64790,9 @@ var bgOnly = false;
               state: t,
               device: a,
               getContext: i,
-              updateState: s,
+              updateState: updateState,
             }) {
+              const newsID = 1; // change this when there's new news
               const {
                   view: o,
                   updateView: r,
@@ -64852,9 +64895,34 @@ var bgOnly = false;
                     onPress: () => {
                       r({ type: "more" });
                     },
-                    x: 0, //100,
+                    x: -100,
                     y: h,
                   }),
+                  Fo({
+                    id: "NewsButton",
+                    text: localize("NEWS"),
+                    width: 170,
+                    height: 40,
+                    darkText: true,
+                    onPress: () => {
+                      r({ type: "news" });
+                    },
+                    x: 100,
+                    y: h,
+                  }),
+                  ...(localStorage.getItem("news") == newsID ? [] : [s({
+                    radius: 13,
+                    color: Ve,
+                    x: 185,
+                    y: h + 20,
+                    opacity: 0.9,
+                  }),
+                  s({
+                    radius: 2,
+                    color: ve,
+                    x: 185,
+                    y: h + 20,
+                  })]),
                   /*Fo({
                     id: "AchievementsButton",
                     text: localize("ACHIEVEMENTS"),
@@ -64907,7 +64975,7 @@ var bgOnly = false;
                             width: 30,
                             height: 30,
                             onPress: () => {
-                              s((e) =>
+                              updateState((e) =>
                                 Object.assign(Object.assign({}, e), {
                                   modal: "blocks",
                                 })
@@ -64935,7 +65003,7 @@ var bgOnly = false;
                         id: "PlatformSignInModal",
                         accountState: d,
                         closeModal: () => {
-                          s((e) =>
+                          updateState((e) =>
                             Object.assign(Object.assign({}, e), { modal: null })
                           );
                         },
@@ -64944,14 +65012,14 @@ var bgOnly = false;
                     ? bm({
                         id: "BuyBlocksModal",
                         onModalClose: () => {
-                          s((e) =>
+                          updateState((e) =>
                             Object.assign(Object.assign({}, e), { modal: null })
                           );
                         },
                         onPurchaseComplete: (e) => {
                           c &&
                             (c.updateBlocksBalance(e),
-                            s((e) =>
+                            updateState((e) =>
                               Object.assign(Object.assign({}, e), {
                                 modal: null,
                               })
@@ -65121,6 +65189,8 @@ var bgOnly = false;
               }
               if ("more" === o.type)
                 return [Jy({ id: "More", updateView: r, backToMainMenu: h })];
+              if ("news" === o.type)
+                return [news({ id: "News", updateView: r, backToMainMenu: h, newsID: newsID })];
               const S = () => {
                 r({ type: "more" });
               };
