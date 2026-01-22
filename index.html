@@ -74,20 +74,11 @@
         width: 200px;
         position: absolute;
         bottom: 0px;
-        left: 50%;
+        left: 0%;
         margin: 0px;
 
         /* octagon shape */
-        clip-path: polygon(
-    10px 0, /* Top-left bevel start */
-    calc(100% - 10px) 0, /* Top-right bevel start */
-    100% 10px, /* Top-right bevel end */
-    100% calc(100% - 10px), /* Bottom-right bevel start */
-    calc(100% - 10px) 100%, /* Bottom-right bevel end */
-    10px 100%, /* Bottom-left bevel start */
-    0 calc(100% - 10px), /* Bottom-left bevel end */
-    0 10px /* Top-left bevel end */
-  )
+        corner-shape: bevel;
       }
       button:active {
         background: var(--cyan);
@@ -127,7 +118,7 @@
     <header >
       <h1><img src="logo.png" /></h1>
       
-      <a href="./game" style="display: block; height: 68px !important; width: 200px; position: relative; left: 30%;"><button>PLAY NOW!</button></a>
+      <a href="./game" style="display: block; height: 68px !important; width: 200px; position: relative; left: calc(50% - 100px);"><button>PLAY NOW!</button></a>
     </header>
     <main>
       <div><p>NEW FEATURES!</p></div>
