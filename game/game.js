@@ -38759,7 +38759,7 @@ var bgOnly = false;
                   a = {
                     y:
                       (-1 === t ? stacks[stacks.length - 1] : stacks[t]) +
-                      (e.direction ? -M : M),
+                      (e.direction ? -M : M) * (U.isCompatible ? 1 : U.playerScale),
                     gradY: 0,
                   };
                 -1 !== t
