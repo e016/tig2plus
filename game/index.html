@@ -74,6 +74,10 @@
         },
         { passive: false }
       );
+
+      // NEWS!!!!~~
+      var _NEWS;
+      fetch('./news.json').then(response => response.json()).then(data => _NEWS = data);
     </script>
     <script type="text/javascript" src="./locale/localize.js"></script>
     <script type="text/javascript" src="./jokes.js"></script>

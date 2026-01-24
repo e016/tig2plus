@@ -64296,11 +64296,23 @@ var bgOnly = false;
               }),
           }),
           news = S({
-            render({ props: { updateView: e, backToMainMenu: t, newsID: id }, device: a }) {
+            render({ props: { updateView: e, backToMainMenu: t, newsID: id, message: message }, device: a }) {
               const i = a.size.width + 2 * a.size.widthMargin,
                 nn = a.size.height + 2 * a.size.heightMargin,
                 s = nn / 2 - 40;
               localStorage.setItem("news", id);
+              function createNewsText(m) {
+                const length = m.split("\n").length,
+                start = (length + 1) / 2 - 1,
+                size = 15;
+
+                return m.split("\n").map((message, i)=>(n({
+                        font: {size: size},
+                        text: localize(message),
+                        color: "white",
+                        y: (start * size)-((i) * size),
+                })),)
+              };
               return [Uf({
                   id: "Title",
                   text: localize("NEWS"),
@@ -64318,24 +64330,7 @@ var bgOnly = false;
                   x: -i / 2 + 60,
                   y: -nn / 2 + 40,
                 }),
-                n({
-                        font: {size: 15},
-                        text: localize("Player Stacks have a few new features in v1.4.0"), // screw it
-                        color: "white",
-                        y: 15,
-                }),
-                n({
-                        font: {size: 15},
-                        text: localize("More specifically, they can react to Direction changes,"), // screw it
-                        color: "white",
-                        y: 0,
-                }),
-                n({
-                        font: {size: 15},
-                        text: localize("Speed Changes, Flags, and Size buttons. All your old levels will still work!"), // screw it
-                        color: "white",
-                        y: -15,
-                }),
+                ...(createNewsText(message)),
               ];
           }}),
           Jy = S({
@@ -64793,7 +64788,7 @@ var bgOnly = false;
               getContext: i,
               updateState: updateState,
             }) {
-              const newsID = 1; // change this when there's new news
+              const {news: newsMessage, id: newsID} = _NEWS;
               const {
                   view: o,
                   updateView: r,
@@ -65191,7 +65186,7 @@ var bgOnly = false;
               if ("more" === o.type)
                 return [Jy({ id: "More", updateView: r, backToMainMenu: h })];
               if ("news" === o.type)
-                return [news({ id: "News", updateView: r, backToMainMenu: h, newsID: newsID })];
+                return [news({ id: "News", updateView: r, backToMainMenu: h, newsID: newsID, message: newsMessage })];
               const S = () => {
                 r({ type: "more" });
               };
