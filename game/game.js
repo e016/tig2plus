@@ -16742,7 +16742,7 @@ var bgOnly = false;
           },
           fe = [],
           ye = [];
-        function Ee(obj, t, a) {
+        function getObjectTopY(obj, t, a) {
           if ("switchPlatform" === obj.type && 0 !== obj.rotation) {
             const i = obj.height / 2;
             if (-90 === obj.rotation) return obj.y + obj.width - i;
@@ -16759,6 +16759,24 @@ var bgOnly = false;
             );
           }
           return obj.y + obj.height / 2;
+        }
+        function getObjectBottomY(obj, t, a) {
+          if ("switchPlatform" === obj.type && 0 !== obj.rotation) {
+            const i = obj.height / 2;
+            if (-90 === obj.rotation) return obj.y - obj.width - i;
+            if (180 === obj.rotation) return obj.y - 7.5;
+            if (90 === obj.rotation) return obj.y + i + 15;
+            const n = -B.toRad(obj.rotation),
+              s = obj.x - obj.width / 2 + i;
+            const o = B.clamp2(0, obj.width - i, Math.hypot(t - s, a - obj.y));
+            return (
+              obj.y -
+              o * Math.sin(n) +
+              (obj.height / (obj.rotation < -90 || obj.rotation > 0 ? -2 : 2)) *
+                Math.cos(n)
+            );
+          }
+          return obj.y - obj.height / 2;
         }
         const be = {
             pointInBox: he,
@@ -16806,7 +16824,7 @@ var bgOnly = false;
                           de.pointInSomething(t.x, t.y, e)
                       )(de.getObjectPolygon(r, c, 0))
                     : he(r),
-                u = Ee(r, e, t);
+                u = getObjectTopY(r, e, t);
               if (a <= 0 && t - a >= u + 7.5 * globalPlayerScale) {
                 const k = pe(e, t, i, n, s),
                   l = k[Math.floor(k.length / 2)],
@@ -16868,7 +16886,7 @@ var bgOnly = false;
             getSecondBottomPlayerLine: me,
             handlePlayerHitBottomEdge: (e, t, a, i, n, s, o, r, l, c, d) => {
               var u, h;
-              const p = Ee(l, e, t) + 15 * globalPlayerScale,
+              const p = getObjectTopY(l, e, t) + 15 * globalPlayerScale,
                 g = 1 === r ? e < l.x : e > l.x;
               if ((t < p && (g || t - s > p)) || o) return p;
               const m = n,
@@ -16914,7 +16932,7 @@ var bgOnly = false;
               }
               return t;
             },
-            getObjectTopY: Ee,
+            getObjectTopY: getObjectTopY,
             hitStack: function (e, t, a, i = 30) {
               return a.some((a) =>
                 be.rectTouchesRect({ x: t, y: a.y, width: i, height: M })(e)
@@ -18501,7 +18519,8 @@ var bgOnly = false;
           i[r][l] = a;
         }
         var overlapObjects = false,
-          mirrorMenuButton = false;
+          mirrorMenuButton = false,
+          alternativeMenuMusic = localStorage.getItem("tig1-music") == "true";
         const xa = {
           getInitState: function (e, t, i) {
             return {
@@ -54590,6 +54609,23 @@ var bgOnly = false;
                               (e.noPress = o.ref);
                           }
                         ),
+                        Rm.Single(
+                          {
+                            text: "TIG1 MENU MUSIC",
+                            selected: false,
+                            onPress: () => {
+                              alternativeMenuMusic = !alternativeMenuMusic;
+                              localStorage.setItem("tig1-music", alternativeMenuMusic);
+                            },
+                            width: 250,
+                            height: 40,
+                            y: -550,
+                          },
+                          (e) => {
+                            (e.selected = alternativeMenuMusic),
+                              (e.noPress = o.ref);
+                          }
+                        ),
                         /*Rm.Single(
                           {
                             text: "MIRROR MENU BUTTON",
@@ -64744,7 +64780,7 @@ var bgOnly = false;
               ];
             },
           });
-        const eE = G.getJumpFrames(114),
+        const eE = ()=>(G.getJumpFrames(alternativeMenuMusic ? 150 : 114)),
           tE = S({
             init({
               preloadFiles: e,
@@ -64756,7 +64792,7 @@ var bgOnly = false;
               const s =
                   localStorage.getItem("endOfGame") ||
                   ("credits" === i.view.type && i.view.endOfGame),
-                o = `audio/tracks/monstaz-popcorn-funk${
+                o = `audio/tracks/${alternativeMenuMusic && !s ? 'rustic-runes' : 'monstaz-popcorn-funk'}${
                   s ? "-credits" : ""
                 }.mp3`;
               return (
@@ -64778,7 +64814,7 @@ var bgOnly = false;
               if (e.loading) return e;
               const t = e.frame + 1;
               return Object.assign(Object.assign({}, e), {
-                frame: t >= eE ? t - eE : t,
+                frame: t >= eE() ? t - eE() : t,
               });
             },
             render({
@@ -64826,7 +64862,7 @@ var bgOnly = false;
                     color: ve,
                   }),
                 ];
-              const E = t.frame / eE,
+              const E = t.frame / eE(),
                 b = E > 0.9 ? 10 * (E - 0.9) : E < 0.2 ? 5 * (0.2 - E) : 0;
               if ("main" === o.type) {
                 const a = "requestingAuth" === d.type || "signingIn" === d.type,
@@ -64836,7 +64872,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.4.2",
+                    text: "v1.4.3",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
