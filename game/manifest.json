@@ -13,7 +13,6 @@
 },
     "version": "v1.3.2",
   "lang": "en-US",
-  "start_url": "./snap.html",
   "display": "standalone",
   "background_color": "white",
   "theme_color": "white"

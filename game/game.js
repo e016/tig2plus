@@ -52934,7 +52934,7 @@ var bgOnly = false;
                       df: e.df,
                       playerX: e.playerX,
                       playerY: e.playerY,
-                      cameraY: e.cameraY * e.gravity,
+                      cameraY: e.cameraY,
                       gravity: e.gravity,
                     },
                   },
@@ -52948,7 +52948,7 @@ var bgOnly = false;
                       (t.inGame.df = e.df),
                       (t.inGame.playerX = e.playerX),
                       (t.inGame.playerY = e.playerY),
-                      (t.inGame.cameraY = e.cameraY * e.gravity),
+                      (t.inGame.cameraY = e.cameraY),
                       (t.inGame.gravity = e.gravity);
                   }
                 ),
@@ -53205,7 +53205,7 @@ var bgOnly = false;
                     Ao.Single(
                       {
                         x: e.playerX,
-                        y: e.playerY * e.gravity,
+                        y: e.playerY,
                         scaleX: e.playerDir * e.playerScale,
                         scaleY: e.playerScale,
                         powerup: e.playerPowerup,
@@ -53312,7 +53312,7 @@ var bgOnly = false;
                         qa.Single(
                           {
                             x: e.playerX,
-                            y: e.playerY * e.gravity,
+                            y: e.playerY,
                             justDestroyed: true,
                             paused: e.paused,
                             trail: e.playerSkin.trail,
@@ -53331,7 +53331,7 @@ var bgOnly = false;
                             Kg.Single(
                               {
                                 x: e.playerX,
-                                y: e.playerY * e.gravity,
+                                y: e.playerY,
                                 playerX: e.playerX,
                                 playerY: e.playerY,
                                 landTimer: e.landTimer,
@@ -53453,7 +53453,7 @@ var bgOnly = false;
                                   {
                                     powerup: e.playerPowerup,
                                     x: e.playerX,
-                                    y: e.playerY * e.gravity,
+                                    y: e.playerY,
                                     scaleX: e.playerDir * e.playerScale,
                                     scaleY: e.playerScale,
                                     isUsing: e.playerUsingPowerup,
