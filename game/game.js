@@ -16040,6 +16040,7 @@ var bgOnly = false;
             },
             newSaw: (e) => {
               var t, a, i, n, s, o, r, l;
+              var diameter = (e?.shape == "large" ? 90 : e?.shape == "small" ? 60 : 30);
               return {
                 type: "saw",
                 array: "saws",
@@ -16061,14 +16062,15 @@ var bgOnly = false;
                         : e.y) && void 0 !== n
                     ? n
                     : 0,
+                shape: e?.shape || "rail",
                 width:
                   null !== (s = null == e ? void 0 : e.width) && void 0 !== s
                     ? s
-                    : 30,
+                    : diameter,
                 height:
                   null !== (o = null == e ? void 0 : e.height) && void 0 !== o
                     ? o
-                    : 30,
+                    : diameter,
                 movement:
                   null !== (r = null == e ? void 0 : e.movement) && void 0 !== r
                     ? r
@@ -18473,7 +18475,11 @@ var bgOnly = false;
             case "spikes":
               return { type: "blockSpikeState" };
             case "saws":
-              return { type: "sawState", inverse: Math.random() > 0.5 };
+              if (i?.atIndex) {
+                i = { ...i };
+                i.index = i.atIndex;
+              }
+              return { type: "sawState", inverse: Math.random() > 0.5, shape: t?.saws?.[i.index]?.shape || "rail" };
             case "directionChanges":
               return { type: "directionChangeState", wasHit: false };
             case "speedChanges":
@@ -18533,7 +18539,12 @@ var bgOnly = false;
                 })
               ),
               spikes: e.spikes.map((j) => wa(j.array)),
-              saws: e.saws.map((j) => wa(j.array)),
+              saws: e.saws.map((j) => wa(j.array, e, {
+                  array: j.array,
+                  x: j.x,
+                  y: j.y,
+                  index: e.saws.indexOf(j),
+                })),
               directionChanges: e.directionChanges.map((j) => wa(j.array)),
               speedChanges: e.speedChanges.map((j) => wa(j.array)),
               flags: e.flags.map((j) => wa(j.array)),
@@ -18892,7 +18903,7 @@ var bgOnly = false;
                   n = n.map((t) => {
                     const i = xa.getInitStateForArray(
                       obj.array,
-                      { blocks: e.objects, enemies: e.objects },
+                      { blocks: e.objects, enemies: e.objects, saws: e.saws },
                       obj.levelObject
                     );
                     let n = it(t.layoutState[obj.array], i, obj.atIndex);
@@ -29449,6 +29460,7 @@ var bgOnly = false;
               `images/themes/${e.objects.saw}/saw.png`,
               `images/themes/${e.objects.saw}/saw-rail.png`,
               `images/themes/${e.objects.spike}/spike.png`,
+              'images/themes/world1/saw-big.png',
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
               "images/themes/world1/red-outline.png",
@@ -29959,7 +29971,34 @@ var bgOnly = false;
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = !(null == r ? void 0 : r.destroyed)),
+                      (t.show = r?.shape == "rail" && !(null == r ? void 0 : r.destroyed)),
+                        (t.width = a.width),
+                        (t.height = a.height),
+                        (t.x = a.x),
+                        (t.y = a.y);
+                      const l =
+                        (null === (o = e.inGame) || void 0 === o
+                          ? void 0
+                          : o.frame) || 0;
+                      t.rotation = ((r?.inverse ? -3 : 3) * l) % 360;
+                    },
+                    array: () => e.saws,
+                    testId: (e, t) => `Saw-${t}`,
+                  }),
+                  E({
+                    fileName: `images/themes/world1/saw-big.png`,
+                    props: () => ({}),
+                    update: (t, a, i) => {
+                      var n, s, o;
+                      const r =
+                        null ===
+                          (s =
+                            null === (n = e.inGame) || void 0 === n
+                              ? void 0
+                              : n.sawStates) || void 0 === s
+                          ? void 0
+                          : s[i];
+                      (t.show = r?.shape != "rail" && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.width),
                         (t.height = a.height),
                         (t.x = a.x),
@@ -30118,7 +30157,24 @@ var bgOnly = false;
                                 ? 0
                                 : "upDown" === t.movement
                                 ? 0
-                                : 1);
+                                : t.shape == "rail" ? 1 : 0);
+                        },
+                        array: () => e.saws,
+                        testId: (e, t) => `Saw-${t}`,
+                      }),
+                      E({
+                        fileName: `images/themes/${e.theme}/saw-big.png`,
+                        props: () => ({}),
+                        update: (e, t) => {
+                          (e.width = t.width),
+                            (e.height = t.height),
+                            (e.x = t.x),
+                            (e.y = t.midY),
+                            (e.opacity = "downUp" === t.movement
+                                ? 0
+                                : "upDown" === t.movement
+                                ? 0
+                                : t.shape == "rail" ? 0 : 1);
                         },
                         array: () => e.saws,
                         testId: (e, t) => `Saw-${t}`,
@@ -30141,7 +30197,7 @@ var bgOnly = false;
                               opacity: 0.5,
                             }),
                             update: (t, a, i) => {
-                              (t.x = e.saws[i].x), (t.y = a);
+                              (t.x = e.saws[i].x), (t.y = a), (t.radius = e.saws[i].width / 2);
                             },
                             array: () => e.editor.previewYs,
                           }),
@@ -35269,6 +35325,66 @@ var bgOnly = false;
                           },
                         },
                       ]),
+                      false && //t.movement == "static" &&
+                      (n = [
+                        {
+                          name: "Large",
+                          selected: t?.shape == "large",
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    shape: "large",
+                                    width: 90,
+                                    height: 90,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Small",
+                          selected: t?.shape == "small",
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    shape: "small",
+                                    width: 60,
+                                    height: 60,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Default",
+                          selected: t.shape == "rail",
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    shape: "rail",
+                                    width: 30,
+                                    height: 30,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                      ]),
                     [
                       {
                         name: "Movement",
@@ -35343,7 +35459,7 @@ var bgOnly = false;
                           },
                         ],
                       },
-                      { name: "Trigger", options: n },
+                      { name: t.movement == "falling" ? "Multiplier" : t.movement == "static" ? "Shape" : "Trigger", options: n },
                     ]
                   );
                 })(e, t, a, i);
@@ -43086,6 +43202,22 @@ var bgOnly = false;
                   ])
                 ),
                 Oc(
+                  Bc([
+                  Gc([
+                    fc,
+                    fc,
+                    Bc([_c(-1), _c(0), _c(1), _c(2)]),
+                    Bc([
+                      _c(-2),
+                      _c(-1),
+                      _c(-0.5),
+                      _c(0),
+                      _c(0.5),
+                      _c(1),
+                      _c(2),
+                    ]),
+                    nd.enum3,
+                  ]),
                   Gc([
                     fc,
                     fc,
@@ -43100,6 +43232,7 @@ var bgOnly = false;
                       _c(2),
                     ]),
                   ])
+                ])
                 ),
                 Oc(
                   Bc([
@@ -43172,6 +43305,22 @@ var bgOnly = false;
                   Bc([Gc([fc, fc, nd.enum2, nd.enum2]), Gc([fc, fc, nd.enum2])])
                 ),
                 Oc(
+                  Bc([
+                  Gc([
+                    fc,
+                    fc,
+                    Bc([_c(-1), _c(0), _c(1), _c(2)]),
+                    Bc([
+                      _c(-2),
+                      _c(-1),
+                      _c(-0.5),
+                      _c(0),
+                      _c(0.5),
+                      _c(1),
+                      _c(2),
+                    ]),
+                    nd.enum3,
+                  ]),
                   Gc([
                     fc,
                     fc,
@@ -43186,6 +43335,7 @@ var bgOnly = false;
                       _c(2),
                     ]),
                   ])
+                ])
                 ),
                 Oc(
                   Bc([
@@ -43372,13 +43522,14 @@ var bgOnly = false;
                         fixSync: 1 == n,
                       })
                     ),
-                    saws: u.map(([e, t, a, i]) =>
+                    saws: u.map(([e, t, a, i, n]) =>
                       $.newSaw({
                         x: e,
                         y: t,
                         movement: $d[a],
                         movementTrigger: Jd[i],
                         multiplier: i,
+                        shape: n == 2 ? "large" : n == 1 ? "small" : "rail"
                       })
                     ),
                     flags: h.map(([e, t, a, i, b]) =>
@@ -43557,7 +43708,15 @@ var bgOnly = false;
 
                       return j;
                     }),
-                    i.saws.map((e) => [
+                    i.saws.map((e) => e.shape != "rail" ? [
+                      e.x,
+                      e.y,
+                      ru(e.movement, $d),
+                      e.movement == "falling"
+                        ? e.multiplier
+                        : ru(e.movementTrigger, Jd),
+                      e.shape == "large" ? 2 : 1
+                    ] : [
                       e.x,
                       e.y,
                       ru(e.movement, $d),
@@ -43748,6 +43907,7 @@ var bgOnly = false;
             [hd.Falling]: "falling",
           },
           Jd = { [pd.Beat]: "beat", [pd.Jump]: "jump", [pd.Switch]: "switch" },
+          shapes = {0: "rail", 1: "small", 2: "large"},
           Kd = { [gd.Checkpoint]: "checkpoint", [gd.EndOfLevel]: "endOfLevel" },
           Qd = {
             [Cd.Gun]: "gun",
@@ -64883,7 +65043,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.4.4",
+                    text: "v1.4.5",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
