@@ -18612,12 +18612,12 @@ var bgOnly = false;
                 }
             }
           },
-          updateHitPunchState: function (e, t, a, i, n, s, o, r, l) {
+          updateHitPunchState: function (e, t, a, i, n, s, o, r, l, scale) {
             const c = be.rectTouchesRect({
-              x: i + s * ($.punchWidth / 2),
-              y: n + 10,
-              width: $.punchWidth,
-              height: 40,
+              x: i + s * ($.punchWidth / 2) * scale,
+              y: n + 10 * scale,
+              width: $.punchWidth * scale,
+              height: 40 * scale,
             });
             for (const i of Aa)
               for (let n = 0; n < t[i].length; n++) {
@@ -35753,7 +35753,7 @@ var bgOnly = false;
                           });
                         },
                       }),
-                    "playerStack" == t.item &&
+                    (["playerStack", "punch"]).includes(t.item) &&
                       l.push({
                         name: "On",
                         selected: t.compatible,
@@ -35771,7 +35771,7 @@ var bgOnly = false;
                           });
                         },
                       }),
-                    "playerStack" == t.item &&
+                    (["playerStack", "punch"]).includes(t.item) &&
                       l.push({
                         name: "Off",
                         selected: !t.compatible,
@@ -38284,7 +38284,8 @@ var bgOnly = false;
                       U.playerDir,
                       U.layoutState,
                       q,
-                      K
+                      K,
+                      U.isCompatible ? 1 : U.playerScale
                     );
                 else if (
                   e &&
@@ -53205,7 +53206,8 @@ var bgOnly = false;
                       {
                         x: e.playerX,
                         y: e.playerY * e.gravity,
-                        scaleX: e.playerDir,
+                        scaleX: e.playerDir * e.playerScale,
+                        scaleY: e.playerScale,
                         powerup: e.playerPowerup,
                         isUsing: e.playerUsingPowerup,
                         playerRot: e.playerRot * e.playerDir,
@@ -53222,7 +53224,8 @@ var bgOnly = false;
                       (t) => {
                         (t.x = e.playerX),
                           (t.y = e.playerY),
-                          (t.scaleX = e.playerDir),
+                          (t.scaleX = e.playerDir * e.playerScale),
+                          (t.scaleY = e.playerScale),
                           (t.powerup = e.playerPowerup),
                           (t.isUsing = e.playerUsingPowerup),
                           (t.playerRot = e.playerRot * e.playerDir),
@@ -53245,8 +53248,9 @@ var bgOnly = false;
                         No.Single(
                           {
                             x: e.playerX,
-                            y: e.playerY * e.gravity,
-                            scaleX: e.playerDir,
+                            y: e.playerY,
+                            scaleX: e.playerDir * e.playerScale,
+                            scaleY: e.playerScale,
                             powerup: e.playerPowerupOut,
                             playerRot: e.playerRot,
                             playerDir: e.playerDir,
@@ -53255,7 +53259,8 @@ var bgOnly = false;
                           (t) => {
                             (t.x = e.playerX),
                               (t.y = e.playerY),
-                              (t.scaleX = e.playerDir),
+                              (t.scaleX = e.playerDir * e.playerScale),
+                              (t.scaleY = e.playerScale),
                               (t.powerup = e.playerPowerupOut),
                               (t.playerRot = e.playerRot),
                               (t.playerDir = e.playerDir),
@@ -53449,7 +53454,8 @@ var bgOnly = false;
                                     powerup: e.playerPowerup,
                                     x: e.playerX,
                                     y: e.playerY * e.gravity,
-                                    scaleX: e.playerDir,
+                                    scaleX: e.playerDir * e.playerScale,
+                                    scaleY: e.playerScale,
                                     isUsing: e.playerUsingPowerup,
                                     playerRot: e.playerRot * e.playerDir,
                                     paused: e.paused,
@@ -53459,7 +53465,8 @@ var bgOnly = false;
                                     (t.powerup = e.playerPowerup),
                                       (t.x = e.playerX),
                                       (t.y = e.playerY),
-                                      (t.scaleX = e.playerDir),
+                                      (t.scaleX = e.playerDir * e.playerScale),
+                                      (t.scaleY = e.playerScale),
                                       (t.isUsing = e.playerUsingPowerup),
                                       (t.playerRot = e.playerRot * e.playerDir),
                                       (t.paused = e.paused),
@@ -53476,21 +53483,25 @@ var bgOnly = false;
                                 ko.Single(
                                   {
                                     x: e.playerX,
-                                    y: e.playerY * e.gravity,
-                                    scaleX: e.playerDir,
+                                    y: e.playerY,
+                                    scaleX: e.playerDir * e.playerScale,
+                                    scaleY: e.playerScale,
                                     powerup: e.playerPowerupOut,
                                     playerRot: e.playerRot,
                                     playerDir: e.playerDir,
+                                    playerScale: e.playerScale,
                                     paused: e.paused,
                                     df: e.df,
                                   },
                                   (t) => {
                                     (t.x = e.playerX),
                                       (t.y = e.playerY),
-                                      (t.scaleX = e.playerDir),
+                                      (t.scaleX = e.playerDir * e.playerScale),
+                                      (t.scaleY = e.playerScale),
                                       (t.powerup = e.playerPowerupOut),
                                       (t.playerRot = e.playerRot),
                                       (t.playerDir = e.playerDir),
+                                      (t.playerScale = e.playerScale),
                                       (t.paused = e.paused),
                                       (t.df = e.df);
                                   }
@@ -64872,7 +64883,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.4.3",
+                    text: "v1.4.4",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
