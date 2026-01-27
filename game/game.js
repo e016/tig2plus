@@ -29971,7 +29971,7 @@ var bgOnly = false;
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = r?.shape == "rail" && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (r?.shape == undefined ? true : r?.shape == "rail") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.width),
                         (t.height = a.height),
                         (t.x = a.x),
@@ -29998,7 +29998,7 @@ var bgOnly = false;
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = r?.shape != "rail" && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (r?.shape == undefined ? false : r?.shape != "rail") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.width),
                         (t.height = a.height),
                         (t.x = a.x),
