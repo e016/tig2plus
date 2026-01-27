@@ -30163,7 +30163,7 @@ var bgOnly = false;
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       E({
-                        fileName: `images/themes/${e.theme}/saw-big.png`,
+                        fileName: `images/themes/world1/saw-big.png`,
                         props: () => ({}),
                         update: (e, t) => {
                           (e.width = t.width),
