@@ -15583,10 +15583,11 @@ var bgOnly = false;
               return { a: t, b: -t * e };
             },
             initGrad: (e) => e * (globalPlayerScale === 1 ? 1 : 0.75),
-            stepY: (e, t, a, i) => {
-              let n = Math.max(t + (U(a) * i) / 2, -30);
+            stepY: (e, t, a, i, g) => {
+              g = g || 1;
+              let n = Math.max(((t * g) + (U(a) * i) / 2), -30) * g;
               const s = e + n * i;
-              return (n += (U(a) * i) / 2), (j.y = s), (j.gradY = n), j;
+              return (n += ((U(a) * i) / 2) * g), (j.y = s), (j.gradY = n), j;
             },
             getOvershootPercent: (e, t, a) => {
               const i = t - U(a) / 2;
@@ -16812,7 +16813,7 @@ var bgOnly = false;
               return s < l && r > o && c > h && u < d;
             },
             hitLandableObject: (...params) => {
-              var [e, t, a, i, n, s, o, r, l, c] = params;
+              var [e, t, a, i, n, s, o, r, l, c, gravity] = params;
               const checkDist = "switchPlatform" === r.type ? 120 : 30;
               if (
                 r.x > e + r.width + checkDist ||
@@ -16826,8 +16827,8 @@ var bgOnly = false;
                           de.pointInSomething(t.x, t.y, e)
                       )(de.getObjectPolygon(r, c, 0))
                     : he(r),
-                u = getObjectTopY(r, e, t);
-              if (a <= 0 && t - a >= u + 7.5 * globalPlayerScale) {
+                u = gravity > 0 ? getObjectTopY(r, e, t) : getObjectBottomY(r, e, t);
+              if (a <= 0 && (gravity > 0 ? (t - a >= u + 7.5 * globalPlayerScale) : (t - a <= u + -7.5 * globalPlayerScale))) {
                 const k = pe(e, t, i, n, s),
                   l = k[Math.floor(k.length / 2)],
                   c = (function (e, t, a) {
@@ -16835,8 +16836,8 @@ var bgOnly = false;
                     for (let i = 0; i < a; i++) {
                       let j = i;
                       ye[i]
-                        ? ((ye[i].x = e), (ye[i].y = t + j))
-                        : (ye[i] = { x: e, y: t + j });
+                        ? ((ye[i].x = e), (ye[i].y = t + j * gravity))
+                        : (ye[i] = { x: e, y: t + j * gravity });
                     }
                     return ye;
                   })(l.x, l.y, Math.min(Math.ceil(Math.abs(a)), M));
@@ -16886,9 +16887,9 @@ var bgOnly = false;
             },
             getBottomPlayerLine: pe,
             getSecondBottomPlayerLine: me,
-            handlePlayerHitBottomEdge: (e, t, a, i, n, s, o, r, l, c, d) => {
+            handlePlayerHitBottomEdge: (e, t, a, i, n, s, o, r, l, c, d, gravity) => {
               var u, h;
-              const p = getObjectTopY(l, e, t) + 15 * globalPlayerScale,
+              const p = (gravity > 0 ? getObjectTopY(l, e, t) : getObjectBottomY(l,e,t)) + 15 * globalPlayerScale * gravity,
                 g = 1 === r ? e < l.x : e > l.x;
               if ((t < p && (g || t - s > p)) || o) return p;
               const m = n,
@@ -16900,7 +16901,7 @@ var bgOnly = false;
                 0 !== n &&
                 "hitBottomEdges" ===
                   (null ===
-                    (u = be.hitLandableObject(e, t, s, a, i, n, r, l, c, d)) ||
+                    (u = be.hitLandableObject(e, t, s, a, i, n, r, l, c, d, gravity)) ||
                   void 0 === u
                     ? void 0
                     : u.type);
@@ -16935,6 +16936,7 @@ var bgOnly = false;
               return t;
             },
             getObjectTopY: getObjectTopY,
+            getObjectBottomY: getObjectBottomY,
             hitStack: function (e, t, a, i = 30) {
               return a.some((a) =>
                 be.rectTouchesRect({ x: t, y: a.y, width: i, height: M })(e)
@@ -36487,7 +36489,7 @@ var bgOnly = false;
                 r = 0,
                 l = 0;
               for (let i = 0; i < 1.5 * t; i++)
-                ({ y: r, gradY: o } = G.stepY(r, o, a, 1)),
+                ({ y: r, gradY: o } = G.stepY(r, o, a, 1, 1)),
                   (l += e),
                   n.push({ x: l, y: r });
               return n.map(({ x: e, y: t }) =>
@@ -37957,7 +37959,7 @@ var bgOnly = false;
             ],
           }),
           il = {},
-          nl = function (e, t, a, i, n, s, o, r, l, c, d) {
+          nl = function (e, t, a, i, n, grad, o, r, l, c, d, gravity) {
             // n is player dir
             //console.warn(n);
             (il.touchingPortals = void 0),
@@ -37993,39 +37995,39 @@ var bgOnly = false;
               case "right-up":
                 (a = p.x),
                   (i = p.y),
-                  (s = G.initGrad(r)),
-                  (s += G.incGrad(o) * (1 - d));
+                  (grad = G.initGrad(r)),
+                  (grad += G.incGrad(o) * (1 - d));
                 break;
               case "left-down":
               case "right-down":
-                (a = p.x), (i = p.y), (s = 0);
+                (a = p.x), (i = p.y), (grad = 0);
                 break;
               case "up-left":
               case "down-left":
-                (i = p.y + (a - h.x)), (a = p.x), (n = -1), (s = 0);
+                (i = p.y + (a - h.x)), (a = p.x), (n = -1), (grad = gravity > 0 ? 0 : -(G.initGrad(r) + G.incGrad(o) * (1 - d)));
                 break;
               case "up-right":
               case "down-right":
-                (i = p.y + (a - h.x)), (a = p.x), (n = 1), (s = 0);
+                (i = p.y + (a - h.x)), (a = p.x), (n = 1), (grad = 0);
                 break;
               case "up-up":
               case "down-up":
-                (s += G.incGrad(o) * (1 - d)),
+                (grad += G.incGrad(o) * (1 - d)),
                   (a = p.x + (a - h.x)),
                   (i = p.y),
-                  (s = Math.max(Math.abs(s), G.initGrad(r)));
+                  (grad = Math.max(Math.abs(grad), G.initGrad(r)));
                 break;
               case "up-down":
               case "down-down":
-                (s += G.incGrad(o) * (1 - d)),
+                (grad += G.incGrad(o) * (1 - d)),
                   (a = p.x + (a - h.x)),
                   (i = p.y),
-                  (s = Math.min(-Math.abs(s), -r / 5));
+                  (grad = Math.min(-Math.abs(grad), -r / 5));
             }
             return (
               (il.touchingPortals = [g[1], g[0]]),
               (il.teleport = {
-                playerGradY: s,
+                playerGradY: grad,
                 playerX: a,
                 playerY: i,
                 playerDir: n,
@@ -38035,14 +38037,14 @@ var bgOnly = false;
           },
           sl = M,
           ol = [];
-        function rl(e, t, a, i, n, s, o, r, l, c, d, u, h, p) {
-          let g = d,
-            m = u;
+        function rl(e, t, a, i, n, s, o, r, l, c, d, u, h, p, gravity) {
+          let crashed = d,
+            onGroundY = u;
           const f = de.getPlayerPoly(a, i, o, r, l, h, de.pooledPlayerPoly3);
           let y = 0;
           for (let s = 0; s < e.length; s++) {
             const { object: d, index: u } = e[s],
-              h = be.hitLandableObject(a, i, n, o, r, l, c, d, f, p);
+              h = be.hitLandableObject(a, i, n, o, r, l, c, d, f, p, gravity);
             if (null !== h) {
               let e = d.array;
               p &&
@@ -38070,19 +38072,9 @@ var bgOnly = false;
                 ? i.y - t.y
                 : n[a.type] - n[e.type];
             });
-          const E = ol[0];
-          if (E) {
-            const e = (l > 45 && l < 135) || (l > 225 && l < 315) ? o : r,
-              t = be.getObjectTopY(E.object, a, i) + 15 * e;
-            switch (E.result.type) {
-              case "crashed":
-                g = true;
-                break;
-              case "hitMidLine":
-                m = t;
-                break;
-              case "hitBottomEdges":
-                const e = be.handlePlayerHitBottomEdge(
+          const hitObject = ol[0];
+          const hitBottomEdge = () => {
+            const e = be.handlePlayerHitBottomEdge(
                   a,
                   i,
                   o,
@@ -38091,14 +38083,33 @@ var bgOnly = false;
                   n,
                   s,
                   c,
-                  E.object,
+                  hitObject.object,
                   f,
-                  p
+                  p,
+                  gravity
                 );
-                "crashed" === e ? (g = true) : (m = e);
+                if (gravity > 0) {
+                  ("crashed" === e) ? (crashed = true) : (onGroundY = e)
+                } else {
+                  ("crashed" === e) ? (onGroundY = e) : (crashed = true)
+                };
+                console.log(crashed, e, gravity > 0)
+          };
+          if (hitObject) {
+            const e = (l > 45 && l < 135) || (l > 225 && l < 315) ? o : r,
+              t = be[gravity > 0 ? 'getObjectTopY' : 'getObjectBottomY'](hitObject.object, a, i) + 15 * e * gravity;
+              switch (hitObject.result.type) {
+                case "crashed":
+                gravity > 0 ? (crashed = true) : hitBottomEdge();
+                break;
+              case "hitMidLine":
+                onGroundY = t;
+                break;
+              case "hitBottomEdges":
+                gravity > 0 ? hitBottomEdge() : (crashed = true);
             }
           }
-          return (ll.crashed = g), (ll.onGroundY = m), (ll.hitObject = E), ll;
+          return (ll.crashed = crashed), (ll.onGroundY = onGroundY), (ll.hitObject = hitObject), ll;
         }
         const ll = {};
         function cl(e, t, a, i, n, s, o, r, l, c, d, u) {
@@ -38520,11 +38531,11 @@ var bgOnly = false;
                 } else U.playerRot = 0;
               else
                 J ||
-                  ((U.playerRot += (90 * U.playerDir * k) / C),
+                  ((U.playerRot += (90 * U.playerDir * k) / C * U.gravity),
                   U.playerRot < 0
                     ? (U.playerRot += 360)
                     : U.playerRot > 360 && (U.playerRot -= 360));
-              const e = G.stepY(U.playerY, U.playerGradY, j, k);
+              const e = G.stepY(U.playerY, U.playerGradY, j, k, U.gravity);
               (U.playerY = e.y), (U.playerGradY = e.gradY);
             }
             if (
@@ -38735,7 +38746,7 @@ var bgOnly = false;
                   ? ((U.playerScale = U.playerScale === 1 ? 0.5 : 1),
                     ((U.playerScaleX = U.playerScale),
                     (U.playerScaleY = U.playerScale)))
-                  : "blockSpike"
+                  : "blockSpike" === e.affects
                   ? (U.switchBlockSpikes = !U.switchBlockSpikes)
                   : (U.gravity = -U.gravity),
                 null == v || v.hitSwitch(),
@@ -38834,10 +38845,11 @@ var bgOnly = false;
                 ? void 0
                 : h[0]) || null, //l
               Z, //c
-              k //d
+              k, //d
+              U.gravity
             );
             (U.touchingPortals = oe.touchingPortals || null),
-              (U.crashed = oe.crashed || U.crashed),
+              (U.crashed = (oe.crashed) || U.crashed),
               oe.teleport &&
                 ((U.cameraXOffset += U.playerX - oe.teleport.playerX),
                 (U.playerX = oe.teleport.playerX),
@@ -38934,16 +38946,17 @@ var bgOnly = false;
                 U.crashed,
                 Q,
                 X,
-                U.switchBlockSpikes
+                U.switchBlockSpikes,
+                U.gravity
               );
             (U.crashed = ce.crashed), (Q = ce.onGroundY);
             const de = ce.hitObject;
             if ((null !== Q && !J) || U.crashed || -1 !== touchedSpring) {
               const e = be.pointInBox({
                 x: U.playerX,
-                y: U.playerY - 15,
-                width: 90,
-                height: 120,
+                y: U.playerY - (15 * U.playerScale),
+                width: 90 * U.playerScale,
+                height: 120 * U.playerScale,
               });
               for (let t = 0; t < z.blocks.length; t++) {
                 const a = z.blocks[t];
@@ -39015,7 +39028,8 @@ var bgOnly = false;
                   U.playerY,
                   G.initGrad(V),
                   j,
-                  e
+                  e,
+                  1
                 );
                 (U.playerY = t),
                   (U.playerGradY = a),
@@ -39224,7 +39238,7 @@ var bgOnly = false;
                 ((function (stacks, t, a, i, n, s, o, r, l, c, d, u) {
                   for (let l = 0; l < stacks.length; l++) {
                     const stack = stacks[l];
-                    let { y: d, gradY: h } = G.stepY(stack.y, stack.gradY, t, a);
+                    let { y: d, gradY: h } = G.stepY(stack.y, stack.gradY, t, a, 1);
                     var scale = U.isCompatible ? 1 : U.playerScale
                     //console.log(l)
                     const p = 0 === l ? n : stacks[l - 1].y;
@@ -39243,7 +39257,8 @@ var bgOnly = false;
                       false,
                       null,
                       false,
-                      u
+                      u,
+                      1
                     );
                     const touchedSpring = U.isCompatible ? false : (checkSprings(undefined, stack));
                     // stack collision
@@ -42988,6 +43003,7 @@ var bgOnly = false;
               (e[(e.BlockSpike = 1)] = "BlockSpike");
             e[(e.Size = 2)] = "Size";
             e[(e.Color = 3)] = "Color";
+            e[(e.Gravity = 4)] = "Gravity";
           })(_d || (_d = {})),
           (function (e) {
             (e[(e.Coin = 0)] = "Coin"), (e[(e.Arrows = 1)] = "Arrows");
@@ -43073,6 +43089,7 @@ var bgOnly = false;
               (e[(e.BlockSpike = 1)] = "BlockSpike");
             e[(e.Size = 2)] = "Size";
             e[(e.Color = 3)] = "Color";
+            e[(e.Gravity = 4)] = "Gravity";
           })(wd || (wd = {})),
           (function (e) {
             (e[(e.Red = 0)] = "Red"), (e[(e.Yellow = 1)] = "Yellow");
@@ -43356,7 +43373,7 @@ var bgOnly = false;
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum4]), Gc([fc, fc, nd.enum4, nd.enum9])])
+                  Bc([Gc([fc, fc, nd.enum5]), Gc([fc, fc, nd.enum5, nd.enum9])])
                 ),
                 Oc(
                   Bc([
@@ -43927,6 +43944,7 @@ var bgOnly = false;
             [wd.BlockSpike]: "blockSpike",
             [wd.Size]: "size",
             [wd.Color]: "color",
+            [wd.Gravity]: "gravity",
           },
           clrs = {
             [clrs2.Red]: "red",
