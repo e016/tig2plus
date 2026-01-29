@@ -37592,7 +37592,7 @@ var bgOnly = false;
                     x: t.playerX,
                     y: t.playerY,
                     rotation: t.playerRot,
-                    scaleX: t.playerScaleX,
+                    scaleX: t.playerScaleX * t.playerDir,
                     scaleY: t.playerScaleY,
                   })),
                 }),
@@ -38962,7 +38962,7 @@ var bgOnly = false;
                 const a = z.blocks[t];
                 if (e(a)) {
                   const e = W.blocks[t];
-                  (!e.hitFrame || e.hitFrame < U.frame - 60) &&
+                  (!e?.hitFrame || e?.hitFrame < U.frame - 60) &&
                     xa.updateLayoutStateField(
                       "blocks",
                       t,
