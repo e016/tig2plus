@@ -37636,7 +37636,7 @@ version = "v2-dev";
                     x: t.playerX,
                     y: t.playerY,
                     rotation: t.playerRot,
-                    scaleX: t.playerScaleX * t.playerDir,
+                    scaleX: t.playerScaleX,
                     scaleY: t.playerScaleY,
                   })),
                 }),
@@ -39008,7 +39008,7 @@ version = "v2-dev";
                 const a = z.blocks[t];
                 if (e(a)) {
                   const e = W.blocks[t];
-                  (!e?.hitFrame || e?.hitFrame < U.frame - 60) &&
+                  (!e.hitFrame || e.hitFrame < U.frame - 60) &&
                     xa.updateLayoutStateField(
                       "blocks",
                       t,
