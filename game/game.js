@@ -1,6 +1,7 @@
 /*! For license information please see game.js.LICENSE.txt */
-var game;
-var bgOnly = false;
+var game,
+bgOnly = false,
+version = "v2-dev";
 
 (() => {
   var e = {
@@ -17592,6 +17593,8 @@ var bgOnly = false;
               flag: "world2",
               saw: "world2",
               bottom: "world2",
+              speedChange: "pixel",
+              switch: "world2",
             },
             isBonusTheme: false,
           },
@@ -17615,6 +17618,7 @@ var bgOnly = false;
               flag: "world1",
               saw: "world1",
               bottom: "world1",
+              switch: "world3",
             },
             isBonusTheme: false,
           },
@@ -17647,6 +17651,7 @@ var bgOnly = false;
               flag: "world1",
               saw: "world1",
               bottom: "world3",
+              switch: "world3",
             },
             isBonusTheme: false,
           },
@@ -17676,6 +17681,7 @@ var bgOnly = false;
               flag: "world1",
               saw: "world1",
               bottom: "world4",
+              switch: "world3",
             },
             isBonusTheme: false,
           },
@@ -17689,6 +17695,7 @@ var bgOnly = false;
             name: "World 4 Red",
             colour: "#5F1A09",
             background: "world4Red",
+            
           }),
           sa = {
             id: "skater",
@@ -17704,6 +17711,7 @@ var bgOnly = false;
               flag: "world1",
               saw: "skater",
               bottom: "world1",
+              switch: "world3",
             },
             isBonusTheme: true,
           },
@@ -17721,6 +17729,7 @@ var bgOnly = false;
               flag: "world1",
               saw: "world1",
               bottom: "world3",
+              switch: "world3",
             },
             isBonusTheme: true,
           },
@@ -17738,6 +17747,7 @@ var bgOnly = false;
               flag: "world1",
               saw: "world1",
               bottom: "world1",
+              switch: "world3",
             },
             isBonusTheme: true,
           },
@@ -17765,6 +17775,7 @@ var bgOnly = false;
                 flag: "world1",
                 saw: "world1",
                 bottom: "world3",
+                switch: "world3",
               },
               isBonusTheme: true,
             },
@@ -17785,6 +17796,8 @@ var bgOnly = false;
                 flag: "world2",
                 saw: "classic",
                 bottom: "world3",
+                speedChange: "pixel",
+                switch: "world2"
               },
               isBonusTheme: true,
             },
@@ -29440,6 +29453,11 @@ var bgOnly = false;
               atlas: "speed_boost_animation.atlas",
               json: "speed_boost_animation.json",
             },
+            speedChangePixel: {
+              folder: "spine/speedBoostPixel",
+              atlas: "speed_boost_animation.atlas",
+              json: "speed_boost_animation.json",
+            },
             blockSwitchButton: {
               folder: "spine/blockSwitchButton",
               atlas: "Switch_button.atlas",
@@ -29462,6 +29480,8 @@ var bgOnly = false;
               `images/themes/${e.objects.saw}/saw.png`,
               `images/themes/${e.objects.saw}/saw-rail.png`,
               `images/themes/${e.objects.spike}/spike.png`,
+              `images/themes/${e.objects.switch || 'world3'}/switch-platform.png`,
+              `images/themes/${'world3'}/switch-button.png`,
               'images/themes/world1/saw-big.png',
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
@@ -29484,16 +29504,15 @@ var bgOnly = false;
               "images/themes/world2/jetpack/ground.png",
               "images/themes/world2/enemy-shooter.png",
               "images/themes/world2/enemy-shooting.png",
-              "images/themes/world3/switch-button.png",
               "images/editor/editorOnly/size-button.png",
               "images/editor/editorOnly/color-button.png",
               "images/themes/skater/rail.png",
               "images/themes/skater/skateboard.png",
-              "images/themes/world3/switch-platform.png",
               "images/themes/world4/portal-green.png",
               "images/themes/world4/portal-yellow.png",
               "images/themes/world4/portal-red.png",
               "images/themes/world4/portal-blue.png",
+              "images/themes/world2/collectible-solid.png",
               "images/themes/synthwave/collectible.png",
               "images/themes/synthwave/collectible-pickup.png",
               "images/themes/arrows/arrow.png",
@@ -29739,6 +29758,7 @@ var bgOnly = false;
                 Ks.portal,
                 Ks.skateboard,
                 Ks.speedChange,
+                Ks.speedChangePixel,
                 Ks.arrow,
                 Ks.blockSwitchButton,
                 Ks.sizeButton,
@@ -29746,6 +29766,8 @@ var bgOnly = false;
               switch (e.id) {
                 case "world2":
                 case "world2Red":
+                case "fighter":
+                case "classic":
                   return t;
                 default:
                   return [
@@ -32396,7 +32418,7 @@ var bgOnly = false;
           Po = v({
             render: ({ props: e }) => [
               E({
-                fileName: "images/themes/world3/switch-platform.png",
+                fileName: `images/themes/${e.theme || "world3"}/switch-platform.png`,
                 props: (e) => ({ width: e.width, height: e.height }),
                 update: (e, t) => {
                   const a = -t.width / 2 + t.height / 2;
@@ -32417,7 +32439,7 @@ var bgOnly = false;
                 () => void 0 !== e.editor,
                 () => [
                   E({
-                    fileName: "images/themes/world3/switch-platform.png",
+                    fileName: `images/themes/${e.theme || "world3"}/switch-platform.png`,
                     props: (e) => ({
                       width: e.width,
                       height: e.height,
@@ -33107,6 +33129,22 @@ var bgOnly = false;
                               ),
                             ],
                             () => [
+                              R(
+                            () => true,
+                            () => [
+                              y(
+                                  {
+                                    fileName: "images/themes/world2/collectible-solid.png",
+                                    width: Vo,
+                                    height: Vo,
+                                  },
+                                  (t) => {
+                                    (t.x = e.collectible.x),
+                                      (t.y = e.collectible.y);
+                                  }
+                                ),
+                            ],
+                            () => [
                               Ya.Single(
                                 {
                                   fileName:
@@ -33128,6 +33166,8 @@ var bgOnly = false;
                                     (t.frame = e.spinFrame || 0);
                                 }
                               ),
+                            ]
+                          ),
                             ]
                           ),
                         ];
@@ -33282,7 +33322,7 @@ var bgOnly = false;
               e.justHit && t.hitCount++;
             },
             render({ props: e, state: t, getContext: a }) {
-              if (bgOnly || e.isEditor)
+              if (bgOnly || (e.isEditor))
                 return [
                   y(
                     {
@@ -33311,7 +33351,7 @@ var bgOnly = false;
                         animationAssets: i,
                         animationRenderer: n,
                         animationName: "animation",
-                        fileNames: Qs.spineFiles.speedChange,
+                        fileNames: Qs.spineFiles[e.theme == "pixel" ? 'speedChangePixel' : 'speedChange'],
                         loop: false,
                         df: 0 === t.hitCount ? 0 : e.df || 1.5,
                         startFromFrame: 2,
@@ -33626,6 +33666,7 @@ var bgOnly = false;
                     sprite: Po.Single({
                       id: "SwitchPlatform",
                       switchPlatforms: [m],
+                      theme: e.switch,
                     }),
                     unlocked:
                       e.includes("moveOnJump") || e.includes("switchButton"),
@@ -33696,6 +33737,7 @@ var bgOnly = false;
                       speedChange: c,
                       isEditor: true,
                       justHit: false,
+                      theme: e.speedChange
                     }),
                     unlocked: e.includes("speedChange"),
                   },
@@ -37471,6 +37513,7 @@ var bgOnly = false;
                     speedChange: e,
                     isEditor: true,
                     justHit: false,
+                    theme: v.speedChange
                   })
                 ),
                 ...h.flags.map((e, t) =>
@@ -37508,11 +37551,12 @@ var bgOnly = false;
                   })
                 ),
                 Po.Single({
-                  id: "SwitchPlatforms",
                   switchPlatforms: h.switchPlatforms,
+                  id: "SwitchPlatforms",
                   editor: {
                     previewRots: p.switchPlatforms.map((e) => e.rotation),
                   },
+                  theme: v.switch,
                 }),
                 ...h.springs.map((e, t) =>
                   $o.Single({
@@ -37656,6 +37700,7 @@ var bgOnly = false;
                     speedChange: e,
                     isEditor: true,
                     justHit: false,
+                    theme: n.speedChange
                   });
                 case "saw":
                   return eo.Single({
@@ -37693,6 +37738,7 @@ var bgOnly = false;
                     id: `PlacingSwitchPlatform-${a}`,
                     switchPlatforms: [e],
                     editor: {},
+                    theme: n.switch
                   });
                 case "collectible":
                   return qo.Single({
@@ -53168,10 +53214,12 @@ var bgOnly = false;
                   {
                     switchPlatforms: e.layout.switchPlatforms,
                     indexes: e.layoutStateIndex.switchPlatforms,
+                    theme: e.layout.properties.theme.objects.switch,
                   },
                   (t) => {
                     (t.switchPlatforms = e.layout.switchPlatforms),
                       (t.indexes = e.layoutStateIndex.switchPlatforms);
+                      (t.theme = e.layout.properties.theme.objects.switch)
                   }
                 ),
                 $o.Array({
@@ -53225,6 +53273,7 @@ var bgOnly = false;
                     justHit: false,
                     df: e.df,
                     paused: e.paused,
+                    theme: e.layout.properties.theme.objects.speedChange
                   }),
                   update: (t, a, i) => {
                     (t.speedChange = a),
@@ -64449,6 +64498,19 @@ var bgOnly = false;
               const e = [
                 ["CREATED BY", ["ED BENTLEY"]],
                 ["MODDED BY", ["d016"]],
+                ["WITH THE HELP FROM", ["GatosoNegroso", "Outline/Alfredo Gamer"]],
+                ["MENU MUSIC", ["MONSTAZ. - POPCORN FUNK"]],
+                [
+                  "LEVEL MUSIC BY",
+                  [
+                    ...new Set(
+                      Object.values(hl.songs)
+                        .map((e) => e.author.toLocaleUpperCase())
+                        .sort()
+                    ),
+                  ], // it was really funny to have four GEOXORs in there :D
+                ],
+                void 0,
                 ["GAME ARTIST", ["ŁUKASZ WIŚNIEWSKI"]],
                 ["UI ARTIST", ["SYLWIA GAWEL"]],
                 ["PIXEL ARTIST", ["NICO NOWAK"]],
@@ -64461,17 +64523,7 @@ var bgOnly = false;
                   ["JAMES MCGREGOR", "ELLIOT BENTLEY", "ANASTASIYA LEE"],
                 ],
                 void 0,
-                ["MENU MUSIC", ["MONSTAZ. - POPCORN FUNK"]],
-                [
-                  "LEVEL MUSIC BY",
-                  [
-                    ...new Set(
-                      Object.values(hl.songs)
-                        .map((e) => e.author.toLocaleUpperCase())
-                        .sort()
-                    ),
-                  ], // it was really funny to have four GEOXORs in there :D
-                ],
+                
                 void 0,
                 [
                   "PLAYTESTERS",
@@ -65061,7 +65113,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.4.5",
+                    text: version,
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
