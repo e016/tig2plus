@@ -19734,7 +19734,7 @@ var bgOnly = false;
                         const s = e.inGame.blockStates[n];
                         if (!s?.destroyed && s?.hitFrame) {
                           const n = B.zeroTo1(
-                            1 - (e.inGame.frame - s.hitFrame) / 20
+                            1 - (e.inGame.frame - s?.hitFrame) / 20
                           );
                           if (n > 0)
                             return (
@@ -38962,7 +38962,7 @@ var bgOnly = false;
                 const a = z.blocks[t];
                 if (e(a)) {
                   const e = W.blocks[t];
-                  (!e.hitFrame || e.hitFrame < U.frame - 60) &&
+                  (!e?.hitFrame || e?.hitFrame < U.frame - 60) &&
                     xa.updateLayoutStateField(
                       "blocks",
                       t,
