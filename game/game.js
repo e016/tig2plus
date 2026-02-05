@@ -42726,6 +42726,18 @@ var bgOnly = false;
               _c(7),
               _c(8),
             ]),
+            enum10: Bc([
+              _c(0),
+              _c(1),
+              _c(2),
+              _c(3),
+              _c(4),
+              _c(5),
+              _c(6),
+              _c(7),
+              _c(8),
+              _c(9)
+            ]),
           };
         var sd,
           od,
@@ -43106,7 +43118,7 @@ var bgOnly = false;
             e[(e.Pink = 6)] = "Pink";
             e[(e.Black = 7)] = "Black";
             e[(e.White = 8)] = "White";
-            e[(e.Flash = 8)] = "Flash";
+            e[(e.Flash = 9)] = "Flash";
           })(clrs2 || (clrs2 = {})),
           (function (e) {
             (e[(e.Coin = 0)] = "Coin"), (e[(e.Arrows = 1)] = "Arrows");
@@ -43278,7 +43290,7 @@ var bgOnly = false;
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum5, nd.enum9]), Gc([fc, fc, nd.enum5])])
+                  Bc([Gc([fc, fc, nd.enum5, nd.enum10]), Gc([fc, fc, nd.enum5])])
                 ),
                 Oc(
                   Bc([
@@ -43381,7 +43393,7 @@ var bgOnly = false;
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum5]), Gc([fc, fc, nd.enum5, nd.enum9])])
+                  Gc([fc, fc, nd.enum5, nd.enum10]), Bc([Gc([fc, fc, nd.enum5])])
                 ),
                 Oc(
                   Bc([
