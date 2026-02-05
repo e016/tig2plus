@@ -39753,6 +39753,12 @@ var bgOnly = false;
                 fileName: "audio/tracks/waterflame-race-around-the-world.mp3",
                 bpm: 180,
               },
+              machina: {
+                name: "Machina",
+                author: "Dex Arson",
+                fileName: "audio/tracks/dex-arson-machina.mp3",
+                bpm: 125
+              }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -43056,6 +43062,7 @@ var bgOnly = false;
             e[(e.OrientalSwing = 41)] = "OrientalSwing";
             e[(e.RedShift = 42)] = "RedShift";
             e[(e.RaceAroundTheWorld = 43)] = "RaceAroundTheWorld";
+            e[(e.Machina = 44)] = "Machina";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -43152,6 +43159,7 @@ var bgOnly = false;
             e[(e.OrientalSwing = 41)] = "OrientalSwing";
             e[(e.RedShift = 42)] = "RedShift";
             e[(e.RaceAroundTheWorld = 43)] = "RaceAroundTheWorld";
+            e[(e.Machina = 44)] = "Machina";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -43894,6 +43902,7 @@ var bgOnly = false;
             [Nd.OrientalSwing]: hl.songs.orientalSwing,
             [Nd.RedShift]: hl.songs.redShift,
             [Nd.RaceAroundTheWorld]: hl.songs.raceAroundTheWorld,
+            [Nd.Machina]: hl.songs.machina,
           },
           Hd = {
             [ld.Rot0]: 0,
