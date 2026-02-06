@@ -76,7 +76,7 @@
       );
 
       // NEWS!!!!~~
-      var _NEWS;
+      var _NEWS = {version: localStorage.getItem('news') || 0, news: "You are offline!"};
       fetch('https://e016.github.io/tig2plus/game/news.json').then(response => response.json()).then(data => _NEWS = data);
     </script>
     <script type="text/javascript" src="./locale/localize.js"></script>
