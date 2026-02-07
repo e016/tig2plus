@@ -39757,7 +39757,13 @@ var bgOnly = false;
                 name: "Machina",
                 author: "Dex Arson",
                 fileName: "audio/tracks/dex-arson-machina.mp3",
-                bpm: 125
+                bpm: 125,
+              },
+              clutterfunk: {
+                name: "Clutterfunk",
+                author: "Waterflame",
+                fileName: "audio/tracks/waterflame-clutterfunk.mp3",
+                bpm: 140,
               }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -43075,6 +43081,7 @@ var bgOnly = false;
             e[(e.RedShift = 42)] = "RedShift";
             e[(e.RaceAroundTheWorld = 43)] = "RaceAroundTheWorld";
             e[(e.Machina = 44)] = "Machina";
+            e[(e.Clutterfunk = 45)] = "Clutterfunk";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -43172,6 +43179,7 @@ var bgOnly = false;
             e[(e.RedShift = 42)] = "RedShift";
             e[(e.RaceAroundTheWorld = 43)] = "RaceAroundTheWorld";
             e[(e.Machina = 44)] = "Machina";
+            e[(e.Clutterfunk = 45)] = "Clutterfunk";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -43915,6 +43923,7 @@ var bgOnly = false;
             [Nd.RedShift]: hl.songs.redShift,
             [Nd.RaceAroundTheWorld]: hl.songs.raceAroundTheWorld,
             [Nd.Machina]: hl.songs.machina,
+            [Nd.Clutterfunk]: hl.songs.clutterfunk
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -65082,7 +65091,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.4.5",
+                    text: "v1.4.6",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
