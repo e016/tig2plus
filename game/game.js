@@ -29463,6 +29463,7 @@ var bgOnly = false;
               `images/themes/${e.objects.saw}/saw-rail.png`,
               `images/themes/${e.objects.spike}/spike.png`,
               'images/themes/world1/saw-big.png',
+              "images/themes/world1/saw-medium.png",
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
               "images/themes/world1/red-outline.png",
@@ -30000,7 +30001,67 @@ var bgOnly = false;
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = (r?.shape == undefined ? false : r?.shape != "rail") && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (r?.shape == undefined ? false : r?.shape == "large") && !(null == r ? void 0 : r.destroyed)),
+                        (t.width = a.width),
+                        (t.height = a.height),
+                        (t.x = a.x),
+                        (t.y = a.y);
+                      const l =
+                        (null === (o = e.inGame) || void 0 === o
+                          ? void 0
+                          : o.frame) || 0;
+                      t.rotation = ((r?.inverse ? -3 : 3) * l) % 360;
+                    },
+                    array: () => e.saws,
+                    testId: (e, t) => `Saw-${t}`,
+                  }),
+                  to.Array({
+                    props: (t, a) => {
+                      const i = e.inGame.sawStates[a];
+                      return {
+                        justDestroyed:
+                          !!i.destroyed &&
+                          $a(i.destroyed.frame, e.inGame.frame),
+                        paused: e.inGame.paused,
+                        df: e.inGame.df,
+                        x: t.x,
+                        y: t.y,
+                      };
+                    },
+                    array: () => e.saws,
+                    filter: (t, a) => {
+                      const i = e.inGame.sawStates[a];
+                      return (
+                        void 0 !== i.destroyed && "missile" !== i.destroyed.by
+                      );
+                    },
+                    key: (t, a) => e.inGame.indexes[a],
+                    update: (t) => {
+                      var a, i;
+                      (t.paused =
+                        (null === (a = e.inGame) || void 0 === a
+                          ? void 0
+                          : a.paused) || false),
+                        (t.df =
+                          (null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.df) || 1);
+                    },
+                  }),
+                  E({
+                    fileName: `images/themes/world1/saw-medium.png`,
+                    props: () => ({}),
+                    update: (t, a, i) => {
+                      var n, s, o;
+                      const r =
+                        null ===
+                          (s =
+                            null === (n = e.inGame) || void 0 === n
+                              ? void 0
+                              : n.sawStates) || void 0 === s
+                          ? void 0
+                          : s[i];
+                      (t.show = (r?.shape == undefined ? false : r?.shape == "small") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.width),
                         (t.height = a.height),
                         (t.x = a.x),
@@ -30165,6 +30226,23 @@ var bgOnly = false;
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       E({
+                        fileName: `images/themes/world1/saw-medium.png`,
+                        props: () => ({}),
+                        update: (e, t) => {
+                          (e.width = t.width),
+                            (e.height = t.height),
+                            (e.x = t.x),
+                            (e.y = t.midY),
+                            (e.opacity = "downUp" === t.movement
+                                ? 0
+                                : "upDown" === t.movement
+                                ? 0
+                                : t.shape == "small" ? 1 : 0);
+                        },
+                        array: () => e.saws,
+                        testId: (e, t) => `Saw-${t}`,
+                      }),
+                      E({
                         fileName: `images/themes/world1/saw-big.png`,
                         props: () => ({}),
                         update: (e, t) => {
@@ -30176,7 +30254,7 @@ var bgOnly = false;
                                 ? 0
                                 : "upDown" === t.movement
                                 ? 0
-                                : t.shape == "rail" ? 0 : 1);
+                                : t.shape == "large" ? 1 : 0);
                         },
                         array: () => e.saws,
                         testId: (e, t) => `Saw-${t}`,
@@ -35197,6 +35275,9 @@ var bgOnly = false;
                             set: (e) =>
                               Object.assign(Object.assign({}, e), {
                                 movementTrigger: "beat",
+                                shape: "rail",
+                                    width: 30,
+                                    height: 30,
                               }),
                           });
                         });
@@ -35327,7 +35408,7 @@ var bgOnly = false;
                           },
                         },
                       ]),
-                      false && //t.movement == "static" &&
+                      t.movement == "static" &&
                       (n = [
                         {
                           name: "Large",
@@ -35420,6 +35501,9 @@ var bgOnly = false;
                                   set: (e) =>
                                     Object.assign(Object.assign({}, e), {
                                       movement: "upDown",
+                                      shape: "rail",
+                                    width: 30,
+                                    height: 30,
                                     }),
                                 });
                               });
@@ -35437,6 +35521,9 @@ var bgOnly = false;
                                   set: (e) =>
                                     Object.assign(Object.assign({}, e), {
                                       movement: "downUp",
+                                      shape: "rail",
+                                    width: 30,
+                                    height: 30,
                                     }),
                                 });
                               });
@@ -35454,6 +35541,9 @@ var bgOnly = false;
                                   set: (e) =>
                                     Object.assign(Object.assign({}, e), {
                                       movement: "falling",
+                                      shape: "rail",
+                                    width: 30,
+                                    height: 30,
                                     }),
                                 });
                               });
@@ -65082,7 +65172,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.4.5",
+                    text: "v1.5.0",
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
