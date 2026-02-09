@@ -16387,6 +16387,7 @@ var bgOnly = false;
             skateboardHeight: 7,
             explosionTime: 90,
             punchWidth: 90,
+            drillWidth: 90,
           },
           J = new F.Vector(),
           K = (e, t) => ((J.x = e), (J.y = t), J),
@@ -17820,8 +17821,8 @@ var bgOnly = false;
           i,
           playerX,
           playerY,
-          o,
-          r,
+          frame,
+          maxBeat,
           switchTrig,
           jump,
           doNotApply
@@ -17838,8 +17839,20 @@ var bgOnly = false;
               if (!("inSwitch" in obj)) {
                 obj.inSwitch = false;
               }
-              var trueY = obj.trueY;
+              var trueY = obj.trueY,
+              toggleOn = (on) => {
+                var stateOn = obj.init == "red" ? obj.midY : NaN;
+                var stateOff = obj.init == "red" ? NaN : obj.midY;
+                if (on) {
+                  trueY = stateOn
+                } else {
+                  trueY = stateOff
+                }
+              };
               if ("init" in obj) {
+                if (obj.trigger == "beat") {
+                  toggleOn((frame / maxBeat) % 2 < 1)
+                } else {
                 if (obj?.pastTrigger == trig) {
                   obj.inSwitch = false;
                   if (trig == 0) {
@@ -17853,6 +17866,7 @@ var bgOnly = false;
                     obj.inSwitch = true;
                   }
                 }
+              }
                 //i = e.init == "red" ? i : (i == Infinity ? e.midY : Infinity)
               }
               if (obj?.pastTrigger != trig) {
@@ -17870,6 +17884,10 @@ var bgOnly = false;
                   (updated.height = obj.height),
                   (updated.movement = obj.movement),
                   (updated.trigger = obj.trigger),
+                  (updated.isSteel = obj.isSteel),
+                  (updated.isVoid = obj.isVoid),
+                  (updated.isBoss = obj.isBoss),
+                  (updated.trigger = obj.trigger),
                   updated)
                 : Object.assign(Object.assign({}, obj), { y: trueY });
             }
@@ -17882,7 +17900,7 @@ var bgOnly = false;
                   : "falling" === a.movement
                   ? a.y - (playerX - a.x) * (a?.multiplier || 1)
                   : "beat" === a.movementTrigger
-                  ? _a(a.midY, a.movement, $.sawMove, o, r)
+                  ? _a(a.midY, a.movement, $.sawMove, frame, maxBeat)
                   : "jump" === a.movementTrigger
                   ? Ia(a.midY, a.movement, $.sawMove, jump)
                   : Ia(a.midY, a.movement, $.sawMove, switchTrig / 90);
@@ -17935,7 +17953,7 @@ var bgOnly = false;
                     ? Ia(a.midY, a.movement, $.platformMove, jump)
                     : "switch" === a.movementTrigger
                     ? Ia(a.midY, a.movement, $.platformMove, switchTrig / 90)
-                    : _a(a.midY, a.movement, $.platformMove, o, r)),
+                    : _a(a.midY, a.movement, $.platformMove, frame, maxBeat)),
                 doNotApply && !willApplyMovement(a.x, i, playerX, playerY)
                   ? null
                   : "platform" === (null == updated ? void 0 : updated.type) &&
@@ -18655,6 +18673,39 @@ var bgOnly = false;
                     );
                 }
               }
+          },
+          updateHitDrillState: function (frame, t, a, playerX, playerY, dir, layoutState, r, l, scale) {
+            var blocksKilled = 0;
+            const c = be.rectTouchesRect({
+              x: playerX + (-$.drillWidth / 4) * scale,
+              y: playerY + (-$.punchWidth / 2) * scale,
+              width: $.drillWidth * scale,
+              height: $.punchWidth * scale,
+            });
+            for (const i of Aa)
+              for (let n = 0; n < t[i].length; n++) {
+                const s = t[i][n],
+                  d = a[i][n];
+                if (d?.steel && c(s)) {
+                  Na(i, n, d, layoutState, a, r, l);
+                } else {
+                  !d.destroyed &&
+                    !d.off &&
+                    c(s) && (blocksKilled++) &&
+                    Na(
+                      i,
+                      n,
+                      Object.assign(Object.assign({}, d), {
+                        destroyed: { frame: frame, x: s.x, y: s.y, by: "gun" },
+                      }),
+                      layoutState,
+                      a,
+                      r,
+                      l
+                    );
+                }
+              };
+            return blocksKilled;
           },
           useMissiles: function (e, t, a, i, n, s, o, r) {
             for (const l of ka)
@@ -29536,6 +29587,7 @@ var bgOnly = false;
                   ]),
             ],
             getThemeImagesPixel: (e) => [
+              "images/themes/world2/drill/ground.png",
               "images/themes/punch/ground.png",
               "images/themes/punch/idle.png",
               "images/themes/punch/punch.png",
@@ -30728,7 +30780,7 @@ var bgOnly = false;
           ro = 3 * G.jumpDistance,
           lo = { ref: false },
           co = { ref: 0 };
-        function uo(e, t, a, i, n, s, o, r, l, c) {
+        function uo(e, t, a, i, n, s, o, r, l, c, bottom) {
           const d = be.rectTouchesRect(t),
             u = c * (l / 5),
             h = c * l,
@@ -30795,8 +30847,8 @@ var bgOnly = false;
               offsetY: null === m ? a.offsetY - h : m - E,
               direction: f,
             });
-          for (const { object: i } of s)
-            if ("enemy" !== i.type && d(i))
+          for (const { object: i } of [...s, ...((bottom || []).map(x=>({index: 0, object: x})))])
+            if ("enemy" !== i?.type && d(i))
               return Object.assign(Object.assign({}, a), {
                 destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
               });
@@ -30884,7 +30936,8 @@ var bgOnly = false;
               f,
               y,
               E,
-              b
+              b,
+              bottom
             ) {
               (lo.ref = d), (co.ref = 0);
               const S = [
@@ -30906,7 +30959,7 @@ var bgOnly = false;
                   v =
                     "shooter" === I.kind
                       ? po(e, I, _, r, l, c, d, u, h, p, g, m, f, co, lo)
-                      : uo(e, I, _, t, S, a, s, o, u, p);
+                      : uo(e, I, _, t, S, a, s, o, u, p, bottom);
                 xa.updateLayoutStateField("enemies", t, v, y, E, b, false);
               }
               return lo.ref;
@@ -31850,6 +31903,25 @@ var bgOnly = false;
                           }
                         ),
                       ];
+                    case "drill":
+                      return [
+                        Ya.Single(
+                          {
+                            fileName: "images/themes/world2/drill/ground.png",
+                            columns: 4,
+                            rows: 2,
+                            frameRate: 6,
+                            width: 35,
+                            height: 35,
+                            frame: e.frame || 0,
+                          },
+                          (t) => {
+                            (t.x = e.powerup.x),
+                              (t.y = e.powerup.y),
+                              (t.frame = e.frame || 0);
+                          }
+                        ),
+                      ];
                     case "gun":
                       return [
                         Ya.Single(
@@ -31947,6 +32019,19 @@ var bgOnly = false;
                         ),
                       ];
                     }
+                    case "drill":
+                      return [
+                        y(
+                          {
+                            fileName: "images/themes/punch/idle.png",
+                            width: 80,
+                            height: 80,
+                          },
+                          (t) => {
+                            (t.x = e.powerup.x), (t.y = e.powerup.y);
+                          }
+                        ),
+                      ];
                     case "punch":
                       return [
                         y(
@@ -32186,6 +32271,24 @@ var bgOnly = false;
                     ),
                   ];
                 case "punch":
+                  return [
+                    Ua.Single(
+                      {
+                        fileName: "images/themes/punch/punch.png",
+                        columns: 2,
+                        rows: 3,
+                        frameRate: 3,
+                        width: 170,
+                        height: 97,
+                        df: e.df,
+                        hideOnEnd: true,
+                      },
+                      (t) => {
+                        (t.x = e.powerup.x), (t.y = e.powerup.y), (t.df = e.df);
+                      }
+                    ),
+                  ];
+                case "drill":
                   return [
                     Ua.Single(
                       {
@@ -34683,6 +34786,23 @@ var bgOnly = false;
                         name: "Trigger",
                         options: [
                           {
+                            name: "Beat",
+                            selected: t.trigger == "beat",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "blocks",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      trigger: "beat",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
                             name: "Jump",
                             selected: t.trigger == "jump",
                             onPress: () => {
@@ -35961,6 +36081,23 @@ var bgOnly = false;
                           });
                         },
                       }),
+                      /*n.push({
+                        name: "Drill",
+                        selected: "drill" === t.item,
+                        onPress: () => {
+                          i.map((j) => {
+                            e({
+                              type: "setProperty",
+                              array: "powerups",
+                              index: j,
+                              set: (e) =>
+                                Object.assign(Object.assign({}, e), {
+                                  item: "drill",
+                                }),
+                            });
+                          });
+                        },
+                      }),*/
                     (["playerStack", "punch"]).includes(t.item) &&
                       l.push({
                         name: "On",
@@ -37531,9 +37668,9 @@ var bgOnly = false;
               const b = a ? t : e.map((e) => g[e.array][e.index]),
                 S = (m && g[m.array][m.index]) || null,
                 I =
-                  1 === e.length && "enemies" === e[0].array
-                    ? h.enemies.indexOf(g.enemies[e[0].index])
-                    : null,
+                  e.some(x=>x.array == "enemies")
+                    ? (e.map(x=>x.index))
+                    : [],
                 _ = $.getBorderDimensions(b),
                 { objects: v, player: T } = g.properties.theme,
                 R = "default" === E.fileName ? T : E;
@@ -37584,7 +37721,7 @@ var bgOnly = false;
                   yo.Single({
                     id: `Enemy-${t}`,
                     enemy: e,
-                    showArea: !a && I === t,
+                    showArea: !a && I.includes(t),
                   })
                 ),
                 ...h.switchButtons.map((e, t) =>
@@ -38183,7 +38320,6 @@ var bgOnly = false;
                 } else {
                   ("crashed" === e) ? (onGroundY = e) : (crashed = true)
                 };
-                console.log(crashed, e, gravity > 0)
           };
           if (hitObject) {
             const e = (l > 45 && l < 135) || (l > 225 && l < 315) ? o : r,
@@ -38202,7 +38338,7 @@ var bgOnly = false;
           return (ll.crashed = crashed), (ll.onGroundY = onGroundY), (ll.hitObject = hitObject), ll;
         }
         const ll = {};
-        function cl(e, t, a, i, n, s, o, r, l, c, d, u) {
+        function cl(e, t, a, i, n, s, o, r, l, c, d, u, bottom) {
           if (e.playerBullets) {
             for (let a = 0; a < e.playerBullets.length; a++) {
               const i = e.playerBullets[a];
@@ -38262,7 +38398,8 @@ var bgOnly = false;
               null == u ? void 0 : u.enemyShoot,
               e.layoutState,
               o,
-              r
+              r,
+              bottom
             ));
         }
         const dl = function (e) {
@@ -38343,7 +38480,8 @@ var bgOnly = false;
                   Ca.getAllLandableObjects(z, W, X),
                   Ca.getAllDeadlyObjects(z, W),
                   () => false,
-                  v
+                  v,
+                  U.bottomLine?.objects || []
                 ),
                 0 === L.resetTimer && N)
               ) {
@@ -38506,6 +38644,31 @@ var bgOnly = false;
                     );
                 else if (
                   e &&
+                  "drill" ===
+                    (null === (i = U.playerPowerup) || void 0 === i
+                      ? void 0
+                      : i.item)
+                )
+                  null == v || v.useUpPowerup("punch"),
+                    (L.blockJumpUntilReleased = true),
+                    (H = false),
+                    (U.justDownInputTimer = 0),
+                    (U.playerPowerup = null),
+                    xa.updateHitDrillState(
+                      U.frame,
+                      z,
+                      W,
+                      U.playerX,
+                      U.playerY,
+                      U.playerDir,
+                      U.layoutState,
+                      q,
+                      K,
+                      U.playerScale
+                    ) > 0 ? (U.playerGradY = G.initGrad(V) * -1) : void 0;
+                
+                else if (
+                  e &&
                   "gun" ===
                     (null === (n = U.playerPowerup) || void 0 === n
                       ? void 0
@@ -38654,7 +38817,14 @@ var bgOnly = false;
                 X,
                 K
               ),
-              stackCollide = (stack)=>(be.hitObject(
+              stackCollide = (stack, enemy)=>(enemy ? be.hitRectangle(
+              stack.x || U.playerX,
+              stack.y,
+              1,
+              1,
+              0,
+              X
+            ) : be.hitObject(
                 U.playerX,
                 stack.y,
                 U.isCompatible ? 1 : U.playerScale,
@@ -38917,7 +39087,9 @@ var bgOnly = false;
                   (stack || (U.skateboardJumpCharge = 0)),
                   (U.justHitObject = { array: "springs", index: idx }),
                   null == v || v.hitSpring();
-                  return true
+                  if (stack) {
+                    return {y: stack.y, gradY: stack.gradY};
+                  }
               }
               
             };
@@ -39325,7 +39497,7 @@ var bgOnly = false;
                   ? void 0
                   : E.item) &&
                 U.playerStacks.length > 0 &&
-                ((function (stacks, t, a, i, n, s, o, r, l, c, d, u) {
+                ((function (stacks, t, a, i, n, s, o, r, l, enemies, d, u) {
                   for (let l = 0; l < stacks.length; l++) {
                     const stack = stacks[l];
                     let { y: d, gradY: h } = G.stepY(stack.y, stack.gradY, t, a, 1);
@@ -39351,8 +39523,12 @@ var bgOnly = false;
                       1
                     );
                     const touchedSpring = U.isCompatible ? false : (checkSprings(undefined, stack));
+                    if (touchedSpring) {
+                      d = touchedSpring.y + 0.01;
+                      h = touchedSpring.gradY;
+                    }
                     // stack collision
-                    ((null !== g.onGroundY) && !touchedSpring)
+                    (!touchedSpring && (null !== g.onGroundY))
                       ? (stacks[l] = {
                           y: g.onGroundY,
                           gradY: 0,
@@ -39361,29 +39537,84 @@ var bgOnly = false;
                         })
                       : (stacks[l] = { y: d, gradY: h, scale: 1, stackCrash: g.crashed });
                   }
-                  lt(stacks, (e) => {
-                    let t = false;
-                    if (e.stackCrash) t = true;
+                  lt(stacks, (stack) => {
+                    let crashed = false;
+                    if (stack.stackCrash) crashed = true;
                     else {
                       const a = be.rectTouchesRect({
                         x: i,
-                        y: e.y,
+                        y: stack.y,
                         width: 25,
                         height: 25,
                       });
+                      // deadly objects (and enemies)
                       for (let e = 0; e < l.length; e++) {
-                        const { object: i } = l[e];
-                        a(i) && (t = true);
+                        const { object: i, index } = l[e];
+                        if (!U.isCompatible && "enemy" === i.type && "walker" === i.kind) {
+                const j = mo.didLandOnHead(
+                  U.frame,
+                  i,
+                  enemies[index],
+                  stack.y,
+                  stack.gradY,
+                  V,
+                  stackCollide(stack, true)
+                );
+                if (j) {
+                  (stack.gradY = j.playerGradY),
+                    xa.updateLayoutStateField(
+                      "enemies",
+                      index,
+                      j.enemyState,
+                      U.layoutState,
+                      W,
+                      q,
+                      K
+                    ),
+                    j.playerCrashed && (crashed = true);
+                  continue;
+                }
+              }
+                        a(i) && (crashed = true);
                       }
-                      for (let e = 0; e < c.length; e++) {
-                        const i = c[e].bullet;
-                        i && a(i) && (t = true);
+                      // bullets
+                      for (let e = 0; e < enemies.length; e++) {
+                        const i = enemies[e].bullet;
+                        i && a(i) && (crashed = true);
                       }
+                      // portals
+                      
+                      const p = nl(
+              z.portals, //e
+              _.layout.portals, //t
+              U.playerX, //a
+              stack.y, //i
+              1, //n
+              stack.gradY, //s
+              j, //o
+              V, //r
+              (null === (h = U.touchingPortals) || void 0 === h
+                ? void 0
+                : h[0]) || null, //l
+              stackCollide(stack), //c
+              k, //d
+              U.gravity
+            );
+            // (U.touchingPortals = p.touchingPortals || null),
+              ((crashed = (p.crashed) || crashed),
+              p.teleport &&
+                (// (stack.x = p.teleport.playerX),
+                (stack.y = p.teleport.playerY),
+                (stack.gradY = p.teleport.playerGradY),
+                (stack.dir = p.teleport.playerDir),
+                null == v || v.hitPortal()));
+                 
                     }
+
                     return (
-                      t &&
-                        d.push({ x: i, y: e.y, framesLeft: $.explosionTime }),
-                      !t
+                      crashed &&
+                        d.push({ x: i, y: stack.y, framesLeft: $.explosionTime }),
+                      !crashed
                     );
                   });
                 })(
@@ -39426,7 +39657,7 @@ var bgOnly = false;
                     0
                   )),
               U.jumpSwitch.timeout > 0 && (U.jumpSwitch.timeout -= k),
-              cl(U, k, w, C, _, z, W, q, le, ue, he, v),
+              cl(U, k, w, C, _, z, W, q, le, ue, he, v, U.bottomLine?.objects || []),
               U.playerBullets &&
                 xa.updateHitBulletState(
                   U.frame,
@@ -43111,6 +43342,7 @@ var bgOnly = false;
               (e[(e.PlayerStack = 3)] = "PlayerStack"),
               (e[(e.Skateboard = 4)] = "Skateboard"),
               (e[(e.Punch = 5)] = "Punch");
+              (e[(e.Drill = 6)] = "Drill");
           })(Id || (Id = {})),
           (function (e) {
             (e[(e.Movement = 0)] = "Movement"),
@@ -43199,6 +43431,7 @@ var bgOnly = false;
               (e[(e.PlayerStack = 3)] = "PlayerStack"),
               (e[(e.Skateboard = 4)] = "Skateboard"),
               (e[(e.Punch = 5)] = "Punch");
+              (e[(e.Drill = 6)] = "Drill");
           })(Cd || (Cd = {})),
           (function (e) {
             (e[(e.Movement = 0)] = "Movement"),
@@ -43376,7 +43609,7 @@ var bgOnly = false;
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum6, nd.enum2]), Gc([fc, fc, nd.enum6])])
+                  Bc([Gc([fc, fc, nd.enum7, nd.enum2]), Gc([fc, fc, nd.enum7])])
                 ),
                 Oc(
                   Bc([
@@ -43482,7 +43715,7 @@ var bgOnly = false;
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum6, nd.enum2]), Gc([fc, fc, nd.enum6])])
+                  Bc([Gc([fc, fc, nd.enum7, nd.enum2]), Gc([fc, fc, nd.enum7])])
                 ),
                 Oc(
                   Bc([
@@ -43619,7 +43852,7 @@ var bgOnly = false;
                                 x: x,
                                 y: Y,
                                 init: ini == 0 ? "blue" : "red",
-                                trigger: tr == 1 ? "jump" : "switch",
+                                trigger: zd[tr],
                               });
                             })
                           : []
@@ -43927,7 +44160,7 @@ var bgOnly = false;
                         e.x,
                         e.y,
                         ru(e.init == "blue", ou),
-                        ru(e.trigger, zd),
+                        (ru(e.trigger, zd)),
                       ]),
                   ],
                   B.roundTo(2)(s),
@@ -44053,6 +44286,7 @@ var bgOnly = false;
             [Cd.PlayerStack]: "playerStack",
             [Cd.Skateboard]: "skateboard",
             [Cd.Punch]: "punch",
+            [Cd.Drill]: "drill",
           },
           Zd = {
             [fd.Shooter]: "shooter",
@@ -44103,6 +44337,7 @@ var bgOnly = false;
                 _c("playerStack"),
                 _c("skateboard"),
                 _c("punch"),
+                _c("drill")
               ]),
             }),
             xc({ snapSize: lu }),
