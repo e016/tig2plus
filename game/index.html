@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -6,8 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
     />
-    <title>The Impossible Game 2+</title>
-    <link rel="stylesheet" href="fonts/font-face.css" />
+    <title>The Impossible Game 2+</title>=
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="manifest" href="manifest.json" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -29,6 +28,47 @@
         -webkit-user-select: none;
         user-select: none;
       }
+      @font-face {
+      font-family: "Montserrat";
+      src: url("./Montserrat-Black.ttf");
+      font-weight: 900;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: "Montserrat";
+      src: url("./Montserrat-BlackItalic.ttf");
+      font-weight: 900;
+      font-style: italic;
+    }
+
+    @font-face {
+      font-family: "Montserrat";
+      src: url("./Montserrat-ExtraBold.ttf");
+      font-weight: 800;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: "Montserrat";
+      src: url("./Montserrat-SemiBold.ttf");
+      font-weight: 600;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: "Montserrat";
+      src: url("./Montserrat-Medium.ttf");
+      font-weight: 500;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: "Montserrat";
+      src: url("./Montserrat-MediumItalic.ttf");
+      font-weight: 500;
+      font-style: italic;
+    }
     </style>
   </head>
 
@@ -63,7 +103,7 @@
             event.stopPropagation();
           }
         },
-        false
+        false,
       );
       document.addEventListener(
         "wheel",
@@ -72,12 +112,20 @@
             e.preventDefault();
           }
         },
-        { passive: false }
+        { passive: false },
       );
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js");
+      }
 
       // NEWS!!!!~~
-      var _NEWS = {version: localStorage.getItem('news') || 0, news: "You are offline!"};
-      fetch('https://e016.github.io/tig2plus/game/news.json').then(response => response.json()).then(data => _NEWS = data);
+      var _NEWS = {
+        version: localStorage.getItem("news") || 0,
+        news: "You are offline!",
+      };
+      fetch("https://e016.github.io/tig2plus/game/news.json")
+        .then((response) => response.json())
+        .then((data) => (_NEWS = data));
     </script>
     <script type="text/javascript" src="./locale/localize.js"></script>
     <script type="text/javascript" src="./jokes.js"></script>
@@ -86,9 +134,11 @@
     <script type="text/javascript" src="renderCanvas.js"></script>
     <script type="text/javascript">
       window.onerror = (e, _, line, col) => {
-        window.alert(`${e.message || e}. Line: ${line} col: ${col}, please report to www.github.com/e016/tig2plus/issues`);
+        window.alert(
+          `${e.message || e}. Line: ${line} col: ${col}, please report to www.github.com/e016/tig2plus/issues`,
+        );
         console.error(
-          `__crash_game__${e.message || e}. Line: ${line} col: ${col}`
+          `__crash_game__${e.message || e}. Line: ${line} col: ${col}`,
         );
       };
       window.onunhandledrejection = (event) => {
@@ -109,9 +159,9 @@
         names.map((name) =>
           new FontFace(
             "Montserrat",
-            `url("./fonts/Montserrat-${name}.ttf")`
-          ).load()
-        )
+            `url("./fonts/Montserrat-${name}.ttf")`,
+          ).load(),
+        ),
       ).then(() => {
         const result =
           typeof renderCanvas === "undefined"
@@ -120,7 +170,7 @@
 
         if (result instanceof Error) {
           alert(
-            "Sorry, your device is missing features required to run the game. Try updating your device's software and browser versions and try again."
+            "Sorry, your device is missing features required to run the game. Try updating your device's software and browser versions and try again.",
           );
         }
       });

@@ -2,15 +2,21 @@
 var version = "1.1.2",
   cacheName = `tig2plus-pwa-${version}`,
   basicFiles = [
-    "index.html",
+    "./index.html",
+    "./",
 
     // program
     "game.js",
     "renderCanvas.js",
+    "jokes.js",
+    "714.game.js",
 
     // translations
     "locale/localize.js",
     "locale/es.js",
+    "manifest.json",
+    "news.json",
+    "sw.js",
 
     // fonts
     "fonts/akashi.ttf", // unused
@@ -40,7 +46,6 @@ var version = "1.1.2",
       // boss 1
       "boss1/death.mp3",
       // boss 2
-      "boss2/death",
       "boss2/bullethell_large",
       "boss2/bullethell_small",
       "boss2/damage",
@@ -213,7 +218,6 @@ var version = "1.1.2",
     "images/editor/objects/collectible.png",
     "images/themes/world1/flag.png",
     "images/themes/world1/flagEnd.png",
-    "images/themes/blank/block.png",
     // achievement
     "images/achievement/rewards/autopilot.png",
     "images/achievement/rewards/missiles.png",
@@ -393,7 +397,6 @@ var version = "1.1.2",
     "images/themes/world2/enemy-shooter.png",
     "images/themes/world2/enemy-shooting.png",
     "images/themes/world3/switch-button.png",
-    "images/editor/editorOnly/size-button.png",
     "images/themes/skater/rail.png",
     "images/themes/skater/skateboard.png",
     "images/themes/world3/switch-platform.png",
@@ -415,7 +418,6 @@ var version = "1.1.2",
 
     "images/themes/world3/bottom/laser-line.png",
     "images/themes/world3/bottom/block.png",
-    "images/themes/world1/bottom/block.png",
     `images/themes/classic/bottom/block.png`,
 
     `images/themes/world1/bottom/block-small-spike.png`,
@@ -470,8 +472,6 @@ var version = "1.1.2",
     `images/themes/world4/block-light.png`,
     `images/themes/world4/spike.png`,
     `images/themes/world4/boss.png`,
-
-    
   ],
   skins = [
     "alien",
@@ -487,7 +487,6 @@ var version = "1.1.2",
     "chicken",
     "classic",
     "default",
-    "dev - Copy",
     "dev",
     "dino",
     "dog",
@@ -519,20 +518,74 @@ var version = "1.1.2",
     "worm",
     "yak",
   ],
-  songs = [],
+  songs = [
+    "3b-coincidence.mp3",
+    "aaro-indestructable.mp3",
+    "adhesive-wombat-8-bit-adventure.mp3",
+    "aika-blythe.mp3",
+    "amidst-awake.mp3",
+    "avenza-solace.mp3",
+    "boomkitty-rum-and-bass.mp3",
+    "bossfight-pirate-manners.mp3",
+    "camellia-nacreous-snowmelt.mp3",
+    "chroma-dark-sheep.mp3",
+    "colbreakz-for-you.mp3",
+    "creo-aura.mp3",
+    "cubed-red-shift.mp3",
+    "dex-arson-machina.mp3",
+    "dj-nate-final-theory.mp3",
+    "dj-nate-theory-of-everything-3.mp3",
+    "doctor-vox-frontier.mp3",
+    "env-heaven.mp3",
+    "evilwave-mutant.mp3",
+    "exilelord-mechanical-machine.mp3",
+    "far-out-overdrive.mp3",
+    "geoxor-hellscape.mp3",
+    "geoxor-silverdust.mp3",
+    "geoxor-stardust.mp3",
+    "geoxor-true-colors.mp3",
+    "geoxor-virtual.mp3",
+    "getsix-sky-fracture.mp3",
+    "ghost-n-ghost-lighthouse.mp3",
+    "inova-8-bit-shuffle.mp3",
+    "inova-octane.mp3",
+    "kid2will-fire-aura.mp3",
+    "lchvasse-solar-abyss.mp3",
+    "mdk-critical-hit.mp3",
+    "mdk-super-ultra.mp3",
+    "meganeko-breathe.mp3",
+    "meganeko-daydreamer.mp3",
+    "miami-nights-1984-accelerated.mp3",
+
+    "nitro-fun-dragonfly.mp3",
+    "panda-eyes-think-different.mp3",
+    "paragonx9-chaoz-fantasy.mp3",
+    "silva-hound-cool-friends.mp3",
+    "the-brig-polymorph.mp3",
+    "tobycreed-phazd.mp3",
+    "valesco-cloud-9.mp3",
+    "waterflame-clutterfunk.mp3",
+    "waterflame-race-around-the-world.mp3",
+    "xe-cysmix-oriental-swing.mp3",
+  ],
   levels = [],
   spineFiles = [];
 
 var filesToCache = [
   ...basicFiles,
   ...audioFiles.map(
-    (file) => "audio/" + file + (file.endsWith(".mp3") ? "" : ".wav")
+    (file) => "audio/" + file + (file.endsWith(".mp3") ? "" : ".wav"),
   ),
   ...imageFiles,
   ...skins.map((name) => "images/player/skins/" + name + ".png"),
   ...skins.map((name) => "images/player/skins/dark/" + name + ".png"),
   ...levels,
   ...spineFiles,
+  "audio/tracks/monstaz-popcorn-funk-credits.mp3",
+  "audio/tracks/monstaz-popcorn-funk.mp3",
+  "audio/tracks/rustic-runes.mp3",
+  ...songs.map((name) => `audio/tracks/${name}`),
+  ...songs.map((name) => `audio/snippets/${name}`),
 ];
 
 console.log("service worker executed", version);
@@ -541,7 +594,7 @@ self.addEventListener("install", function (e) {
   e.waitUntil(
     caches.open(cacheName).then(function (cache) {
       return cache.addAll(filesToCache);
-    })
+    }),
   );
 });
 
@@ -554,9 +607,9 @@ self.addEventListener("activate", (evt) => {
           if (key !== cacheName) {
             return caches.delete(key);
           }
-        })
+        }),
       );
-    })
+    }),
   );
   self.clients.claim();
 });
@@ -570,6 +623,6 @@ self.addEventListener("fetch", function (event) {
           .match(event.request, { ignoreSearch: true })
           .then((response) => response);
       });
-    })
+    }),
   );
 });
