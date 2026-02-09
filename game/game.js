@@ -17598,6 +17598,7 @@ var version = "v1.5.1";
               flag: "world2",
               saw: "world2",
               bottom: "world2",
+              switch: "world2",
             },
             isBonusTheme: false,
           },
@@ -17621,6 +17622,7 @@ var version = "v1.5.1";
               flag: "world1",
               saw: "world1",
               bottom: "world1",
+              switch: "world3",
             },
             isBonusTheme: false,
           },
@@ -17653,6 +17655,7 @@ var version = "v1.5.1";
               flag: "world1",
               saw: "world1",
               bottom: "world3",
+              switch: "world3",
             },
             isBonusTheme: false,
           },
@@ -17682,6 +17685,7 @@ var version = "v1.5.1";
               flag: "world1",
               saw: "world1",
               bottom: "world4",
+              switch: "world3",
             },
             isBonusTheme: false,
           },
@@ -17710,6 +17714,7 @@ var version = "v1.5.1";
               flag: "world1",
               saw: "skater",
               bottom: "world1",
+              switch: "world3",
             },
             isBonusTheme: true,
           },
@@ -17727,6 +17732,7 @@ var version = "v1.5.1";
               flag: "world1",
               saw: "world1",
               bottom: "world3",
+              switch: "world3",
             },
             isBonusTheme: true,
           },
@@ -17744,6 +17750,7 @@ var version = "v1.5.1";
               flag: "world1",
               saw: "world1",
               bottom: "world1",
+              switch: "world3",
             },
             isBonusTheme: true,
           },
@@ -17771,6 +17778,7 @@ var version = "v1.5.1";
                 flag: "world1",
                 saw: "world1",
                 bottom: "world3",
+                switch: "world3",
               },
               isBonusTheme: true,
             },
@@ -17791,6 +17799,7 @@ var version = "v1.5.1";
                 flag: "world2",
                 saw: "classic",
                 bottom: "world3",
+                switch: "world2",
               },
               isBonusTheme: true,
             },
@@ -17893,6 +17902,7 @@ var version = "v1.5.1";
                   (updated.isVoid = obj.isVoid),
                   (updated.isBoss = obj.isBoss),
                   (updated.trigger = obj.trigger),
+                  ("init" in obj ? (updated.init = obj.init) : void 0),
                   updated)
                 : Object.assign(Object.assign({}, obj), { y: trueY });
             }
@@ -19561,7 +19571,7 @@ var version = "v1.5.1";
                   const t = "world3" === e.theme ? 1 : 1;
                   return [
                     E({
-                      fileName: `images/themes/world1/red.png`,
+                      fileName: `images/themes/${e.theme == "world2" ? "world2" : "world1"}/red.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -19605,7 +19615,7 @@ var version = "v1.5.1";
                   const t = "world3" === e.theme ? 1 : 1;
                   return [
                     E({
-                      fileName: `images/themes/world1/blue.png`,
+                      fileName: `images/themes/${e.theme == "world2" ? "world2" : "world1"}/blue.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -29456,6 +29466,11 @@ var version = "v1.5.1";
               atlas: "Portal2.atlas",
               json: "Portal2.json",
             },
+            pixelPortal: {
+              folder: "spine/pixelPortal",
+              atlas: "Portal2.atlas",
+              json: "Portal2.json",
+            },
             skateboard: {
               folder: "spine/skateboard",
               atlas: "skateboard.atlas",
@@ -29518,10 +29533,15 @@ var version = "v1.5.1";
               `images/themes/${e.objects.saw}/saw.png`,
               `images/themes/${e.objects.saw}/saw-rail.png`,
               `images/themes/${e.objects.spike}/spike.png`,
+              `images/themes/${e.objects.switch}/switch-platform.png`,
+              `images/themes/${e.objects.switch}/switch-button.png`,
+              "images/themes/world2/double-jump.png",
               'images/themes/world1/saw-big.png',
               "images/themes/world1/saw-medium.png",
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
+              "images/themes/world2/red.png",
+              "images/themes/world2/blue.png",
               "images/themes/world1/red-outline.png",
               "images/themes/world1/blue-outline.png",
               "images/themes/world2/block-explosion.png",
@@ -29541,12 +29561,10 @@ var version = "v1.5.1";
               "images/themes/world2/jetpack/ground.png",
               "images/themes/world2/enemy-shooter.png",
               "images/themes/world2/enemy-shooting.png",
-              "images/themes/world3/switch-button.png",
               "images/editor/editorOnly/size-button.png",
               "images/editor/editorOnly/color-button.png",
               "images/themes/skater/rail.png",
               "images/themes/skater/skateboard.png",
-              "images/themes/world3/switch-platform.png",
               "images/themes/world4/portal-green.png",
               "images/themes/world4/portal-yellow.png",
               "images/themes/world4/portal-red.png",
@@ -29795,6 +29813,7 @@ var version = "v1.5.1";
                 Ks.doubleJumpOnPlayer,
                 Ks.spring,
                 Ks.portal,
+                Ks.pixelPortal,
                 Ks.skateboard,
                 Ks.speedChange,
                 Ks.arrow,
@@ -31844,7 +31863,29 @@ var version = "v1.5.1";
                   switch (e.powerup.item) {
                     case "doubleJump":
                       return [
-                        R(
+                        R (
+                        ()=> e.theme == "world2", 
+                        ()=>[
+                          Ya.Single(
+                          {
+                            fileName: "images/themes/world2/double-jump.png",
+                            columns: 4,
+                            rows: 2,
+                            frameRate: 6,
+                            width: 30,
+                            height: 30,
+                            frame: e.frame || 0,
+                          },
+                          (t) => {
+                            (t.x = e.powerup.x),
+                              (t.y = e.powerup.y),
+                              (t.frame = e.frame || 0);
+                          }
+                        ),
+                        ],
+                      
+                        ()=>[
+                          R(
                           () => void 0 !== e.isEditor,
                           () => [
                             y(
@@ -31892,6 +31933,7 @@ var version = "v1.5.1";
                               ),
                             ];
                           }
+                        )]
                         ),
                       ];
                     case "punch":
@@ -32402,7 +32444,7 @@ var version = "v1.5.1";
                           y(
                             {
                               fileName:
-                                "images/themes/world3/switch-button.png",
+                                `images/themes/${e.theme}/switch-button.png`,
                               width: e.switchButton.width,
                               height: e.switchButton.height,
                             },
@@ -32502,7 +32544,7 @@ var version = "v1.5.1";
                       return [
                         y(
                           {
-                            fileName: "images/themes/world3/switch-button.png",
+                            fileName: `images/themes/${e.theme}/switch-button.png`,
                             width: 32,
                             height: 32,
                           },
@@ -32587,7 +32629,7 @@ var version = "v1.5.1";
           Po = v({
             render: ({ props: e }) => [
               E({
-                fileName: "images/themes/world3/switch-platform.png",
+                fileName: `images/themes/${e.theme}/switch-platform.png`,
                 props: (e) => ({ width: e.width, height: e.height }),
                 update: (e, t) => {
                   const a = -t.width / 2 + t.height / 2;
@@ -32608,7 +32650,7 @@ var version = "v1.5.1";
                 () => void 0 !== e.editor,
                 () => [
                   E({
-                    fileName: "images/themes/world3/switch-platform.png",
+                    fileName: `images/themes/${e.theme}/switch-platform.png`,
                     props: (e) => ({
                       width: e.width,
                       height: e.height,
@@ -33427,7 +33469,7 @@ var version = "v1.5.1";
                     animationAssets: i,
                     animationRenderer: n,
                     animationName: `${d}_${s}`,
-                    fileNames: Qs.spineFiles.portal,
+                    fileNames: e.theme == "world2" ? Qs.spineFiles.pixelPortal : Qs.spineFiles.portal,
                     loop: true,
                     paused: e.paused || false,
                     df: null !== (a = e.df) && void 0 !== a ? a : 1,
@@ -33791,6 +33833,7 @@ var version = "v1.5.1";
                       powerup: u,
                       skin: a,
                       isEditor: true,
+                      theme: t.switch,
                     }),
                     unlocked:
                       e.includes("gun") ||
@@ -33817,6 +33860,7 @@ var version = "v1.5.1";
                     sprite: Po.Single({
                       id: "SwitchPlatform",
                       switchPlatforms: [m],
+                      theme: t.switch,
                     }),
                     unlocked:
                       e.includes("moveOnJump") || e.includes("switchButton"),
@@ -33838,6 +33882,7 @@ var version = "v1.5.1";
                       switchBlockSpikes: false,
                       isEditor: true,
                       justHit: false,
+                      theme: t.switch,
                     }),
                     unlocked:
                       e.includes("switchButton") ||
@@ -33875,6 +33920,7 @@ var version = "v1.5.1";
                       id: "Portal",
                       portal: E,
                       isEditor: true,
+                      theme: t.switch,
                     }),
                     unlocked: e.includes("portals"),
                   },
@@ -37669,7 +37715,7 @@ var version = "v1.5.1";
                 return [
                   Xr.Single({ id: "GridLines", parentOffset: o }),
                   n({
-                    text: `LOADING...`,
+                    text: `${localize('LOADING')}...`,
                     font: { size: 15 },
                     color: ve,
                     scaleX: 1 / o.scale,
@@ -37722,6 +37768,7 @@ var version = "v1.5.1";
                     powerup: e,
                     skin: R,
                     isEditor: true,
+                    theme: v.switch,
                   })
                 ),
                 eo.Single({
@@ -37745,6 +37792,7 @@ var version = "v1.5.1";
                     switchBlockSpikes: false,
                     isEditor: true,
                     justHit: false,
+                    theme: v.switch,
                   })
                 ),
                 Po.Single({
@@ -37753,6 +37801,7 @@ var version = "v1.5.1";
                   editor: {
                     previewRots: p.switchPlatforms.map((e) => e.rotation),
                   },
+                  theme: v.switch
                 }),
                 ...h.springs.map((e, t) =>
                   $o.Single({
@@ -37763,7 +37812,7 @@ var version = "v1.5.1";
                   })
                 ),
                 ...h.portals.map((e, t) =>
-                  Jo.Single({ id: `Portal-${t}`, portal: e, isEditor: true })
+                  Jo.Single({ id: `Portal-${t}`, portal: e, isEditor: true, theme: v.switch })
                 ),
                 ...h.collectibles.map((e, t) =>
                   qo.Single({
@@ -37832,7 +37881,7 @@ var version = "v1.5.1";
                     x: t.playerX,
                     y: t.playerY,
                     rotation: t.playerRot,
-                    scaleX: t.playerScaleX,
+                    scaleX: t.playerScaleX * t.playerDir,
                     scaleY: t.playerScaleY,
                   })),
                 }),
@@ -37916,6 +37965,7 @@ var version = "v1.5.1";
                     powerup: e,
                     skin: s,
                     isEditor: true,
+                    switch: n.switch
                   });
                 case "enemy":
                   return yo.Single({ id: `PlacingEnemy-${a}`, enemy: e });
@@ -37927,12 +37977,14 @@ var version = "v1.5.1";
                     switchBlockSpikes: false,
                     isEditor: true,
                     justHit: false,
+                    theme: n.switch,
                   });
                 case "switchPlatform":
                   return Po.Single({
                     id: `PlacingSwitchPlatform-${a}`,
                     switchPlatforms: [e],
                     editor: {},
+                    theme: n.switch
                   });
                 case "collectible":
                   return qo.Single({
@@ -37953,6 +38005,7 @@ var version = "v1.5.1";
                     id: `PlacingPortal-${a}`,
                     portal: e,
                     isEditor: true,
+                    theme: n.switch
                   });
               }
             })(),
@@ -53455,6 +53508,7 @@ var version = "v1.5.1";
                       cameraY: e.cameraY,
                       gravity: e.gravity,
                     },
+                    indexes: e.layoutStateIndex.blocks,
                   },
                   (t) => {
                     (t.blocks = e.layout.blocks),
@@ -53466,6 +53520,7 @@ var version = "v1.5.1";
                       (t.inGame.df = e.df),
                       (t.inGame.cameraY = e.cameraY),
                       (t.inGame.gravity = e.gravity);
+                      (t.indexes = e.layoutStateIndex.blocks);
                   }
                 ),
                 Za.Single(
@@ -53518,6 +53573,7 @@ var version = "v1.5.1";
                     paused: e.paused,
                     df: e.df,
                     justHit: false,
+                    theme: e.layout.properties.theme.objects.switch,
                   }),
                   update: (t, a) => {
                     (t.switchButton = a),
@@ -53525,6 +53581,7 @@ var version = "v1.5.1";
                       (t.switchBlockSpikes = e.switchBlockSpikes),
                       (t.paused = e.paused),
                       (t.df = e.df),
+                      (t.theme = e.layout.properties.theme.objects.switch),
                       (t.justHit =
                         null !== e.justHitObject &&
                         "switchButtons" === e.justHitObject.array);
@@ -53536,10 +53593,12 @@ var version = "v1.5.1";
                   {
                     switchPlatforms: e.layout.switchPlatforms,
                     indexes: e.layoutStateIndex.switchPlatforms,
+                    theme: e.layout.properties.theme.objects.switch,
                   },
                   (t) => {
                     (t.switchPlatforms = e.layout.switchPlatforms),
                       (t.indexes = e.layoutStateIndex.switchPlatforms);
+                      (t.theme = e.layout.properties.theme.objects.switch);
                   }
                 ),
                 $o.Array({
@@ -53562,9 +53621,9 @@ var version = "v1.5.1";
                   key: (t, a) => e.layoutStateIndex.springs[a],
                 }),
                 Jo.Array({
-                  props: (t) => ({ portal: t, paused: e.paused, df: e.df }),
+                  props: (t) => ({ portal: t, paused: e.paused, df: e.df, theme: e.layout.properties.theme.objects.switch }),
                   update: (t, a) => {
-                    (t.portal = a), (t.df = e.df), (t.paused = e.paused);
+                    (t.portal = a), (t.df = e.df), (t.paused = e.paused), (t.theme = e.layout.properties.theme.objects.switch);
                   },
                   key: (t, a) => e.layoutStateIndex.portals[a],
                   array: () => e.layout.portals,
@@ -53664,6 +53723,7 @@ var version = "v1.5.1";
                     frame: e.frame,
                     paused: e.paused,
                     df: e.df,
+                    theme: e.layout.properties.theme.objects.switch
                   }),
                   filter: (t, a) => !e.layoutState.powerups[a].wasPickedUp,
                   update: (t, a) => {
@@ -53671,6 +53731,7 @@ var version = "v1.5.1";
                       (t.frame = e.frame),
                       (t.paused = e.paused && !e.finishedLevel),
                       (t.df = e.df),
+                      (t.theme = e.layout.properties.theme.objects.switch),
                       (t.skin = e.playerSkin);
                   },
                   key: (t, a) => e.layoutStateIndex.powerups[a],
