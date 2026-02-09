@@ -34691,7 +34691,7 @@ var version = "v1.5.2";
                           },
                         },
                         {
-                          name: "Cyan",
+                          name: "Default",
                           selected: "cyan" === t.color,
                           onPress: () => {
                             i.map((j) => {
@@ -50718,6 +50718,27 @@ var version = "v1.5.2";
             "\nprecision mediump float;\n\nattribute vec4 a_position;\n\nvoid main() {\n  gl_Position = a_position;\n}\n",
           Ng =
             "\nprecision mediump float;\n\nuniform vec2 u_resolution;\nuniform float u_time;\nuniform float u_ct;\nuniform float u_xboost;\nuniform float u_yboost;\n\nuniform vec3 u_col0;\nuniform vec3 u_col1;\nuniform vec3 u_col2;\n\n#define RADIANS 0.017453292519943295\n\nconst int zoom = 3;\nconst float brightness = 0.975;\nfloat fScale = 1.25;\n\nfloat cosRange(float degrees, float range, float minimum) {\n  return (((1.0 + cos(degrees * RADIANS)) * 0.5) * range) + minimum;\n}\n\nvoid main() {\n  vec2 uv = fract(gl_FragCoord.xy / u_resolution);\n\n  vec2 p = (2.0 * gl_FragCoord.xy - u_resolution.xy) / max(u_resolution.x, u_resolution.y);\n\n  fScale = cosRange(u_time * 15.5, 1.25, 0.5);\n\n  for(int i = 1; i < zoom; i++) {\n    float _i = float(i);\n    vec2 newp = p;\n    newp.x += 0.25/ _i * sin(_i * p.y + u_time * cos(u_ct) * 0.5 / 20.0 + 0.005 * _i) * fScale + u_xboost;\n    newp.y += 0.25/ _i * sin(_i * p.x + u_time * u_ct * 0.3 / 40.0 + 0.03 * float(i+15)) * fScale + u_yboost;\n    p = newp;\n  }\n\n  vec3 col = vec3(0.5 * sin(3.0 * p.x) + 0.5, 0.5 * sin(3.0 * p.y) + 0.5, sin(p.x + p.y));\n  col *= brightness;\n\n  vec3 finalColor = (col.r + col.b) * u_col1 + col.g * u_col2;\n\n  gl_FragColor = vec4(\n    clamp(finalColor.r, u_col0.r, u_col2.r),\n    clamp(finalColor.g, u_col0.g, u_col2.g),\n    clamp(finalColor.b, u_col0.b, u_col2.b),\n  1.0);\n}\n",
+          basicBGcover = (e, t)=>(p(
+                                  {
+                                    color: e.bgColor || "#050229",
+                                    width: t.size.fullWidth,
+                                    height: t.size.fullHeight,
+                                    opacity:
+                                      e.bgColor == "#00FFFF"
+                                        ? 0
+                                        : 0.4,
+                                  },
+                                  (j) => {
+                                    (j.width = t.size.fullWidth),
+                                      (j.height = t.size.fullHeight),
+                                      (j.color =
+                                        e.bgColor);
+                                    j.opacity =
+                                      e.bgColor == "#00FFFF"
+                                        ? 0
+                                        : j.color == "#000000" ? 0.8 : 0.4;
+                                  }
+                            )),
           xg = v({
             render({ props: e, device: t }) {
               const a = (() => {
@@ -51044,27 +51065,8 @@ var version = "v1.5.2";
                                   (t.playerY = 0.35 * e.cameraY);
                               }
                             ),
-                            p(
-                                  {
-                                    color: e.bgColor || "#050229",
-                                    width: t.size.fullWidth,
-                                    height: t.size.fullHeight,
-                                    opacity:
-                                      e.bgColor == "#00FFFF"
-                                        ? 0
-                                        : 0.4,
-                                  },
-                                  (j) => {
-                                    (j.width = t.size.fullWidth),
-                                      (j.height = t.size.fullHeight),
-                                      (j.color =
-                                        e.bgColor);
-                                    j.opacity =
-                                      e.bgColor == "#00FFFF"
-                                        ? 0
-                                        : j.color == "#000000" ? 0.8 : 0.4;
-                                  }
-                            ),
+                            basicBGcover(e, t)
+                            
                           ];
                         case "world2Red":
                           return [
@@ -51204,27 +51206,7 @@ var version = "v1.5.2";
                                   (t.playerY = 0.35 * e.cameraY);
                               }
                             ),
-                            p(
-                                  {
-                                    color: world3BgTable()[e?.bgColor] || "#050229",
-                                    width: t.size.fullWidth,
-                                    height: t.size.fullHeight,
-                                    opacity:
-                                      world3BgTable()[e?.bgColor] == undefined
-                                        ? 0
-                                        : 0.4,
-                                  },
-                                  (j) => {
-                                    (j.width = t.size.fullWidth),
-                                      (j.height = t.size.fullHeight),
-                                      (j.color =
-                                        world3BgTable()[e?.bgColor] || "#050229");
-                                    j.opacity =
-                                      world3BgTable()[e?.bgColor] == undefined
-                                        ? 0
-                                        : j.color == "#000000" ? 0.6 : 0.4;
-                                  }
-                            ),
+                            basicBGcover(e, t)
                           ];
                         case "world3":
                         case "virtual":
@@ -51351,6 +51333,7 @@ var version = "v1.5.2";
                               anchorY: 191,
                               y: 337,
                             }),
+                            basicBGcover(e, t),
                             dg.Single(
                               {
                                 fileName:
@@ -51415,7 +51398,7 @@ var version = "v1.5.2";
                             dg.Single(
                               {
                                 fileName:
-                                  "images/themes/world4/background/front-mountain2.png",
+                                "images/themes/world4/background/front-mountain2.png",
                                 playerX: 0.04 * e.cameraX,
                                 playerY: 0.04 * e.cameraY,
                                 height: 233,
@@ -51440,6 +51423,7 @@ var version = "v1.5.2";
                                   (t.playerY = 0.1 * e.cameraY);
                               }
                             ),
+                            basicBGcover(e, t),
                           ];
                         case "world4Boss":
                         case "world4Red": {
@@ -51501,6 +51485,7 @@ var version = "v1.5.2";
                                   (t.playerY = 0.1 * e.cameraY);
                               }
                             ),
+                            basicBGcover(e, t),
                           ];
                         }
                         case "skater":
@@ -51599,6 +51584,7 @@ var version = "v1.5.2";
                                   (t.playerY = 0.1 * e.cameraY);
                               }
                             ),
+                            basicBGcover(e, t)
                           ];
                         case "arrows":
                           return [
