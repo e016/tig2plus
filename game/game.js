@@ -33947,10 +33947,13 @@ var version = "v1.5.1";
                   })
                 : e,
             render({ props: e, state: t, updateState: a }) {
-              const i = ar - 20,
+              var i = ar - 20,
                 s = nr - 5,
                 r = (e.locked ? "LOCKED" : e.name).split(" "),
                 c = r.length > 1;
+                if (r.length == 3) {
+                  r = [`${r[0]} ${r[1]}`, r[2]]
+                }
               return [
                 Ie({
                   id: "Clickable",
