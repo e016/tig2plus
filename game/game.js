@@ -2,7 +2,7 @@
 var game;
 var bgOnly = false;
 
-var version = "v1.5.1";
+var version = "v1.5.2";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -30806,9 +30806,7 @@ var version = "v1.5.1";
           co = { ref: 0 };
         function uo(e, t, a, i, n, s, o, r, l, c, bottom) {
           if (a.destroyed) {
-            return Object.assign(Object.assign({}, a), {
-                destroyed: { frame: e, x: a.x, y: a.y, by: a.destroyed.by },
-            })
+            return a;
           }
           const d = be.rectTouchesRect(t),
             u = c * (l / 5),
@@ -37965,7 +37963,7 @@ var version = "v1.5.1";
                     powerup: e,
                     skin: s,
                     isEditor: true,
-                    switch: n.switch
+                    theme: n.switch
                   });
                 case "enemy":
                   return yo.Single({ id: `PlacingEnemy-${a}`, enemy: e });
@@ -51046,6 +51044,27 @@ var version = "v1.5.1";
                                   (t.playerY = 0.35 * e.cameraY);
                               }
                             ),
+                            p(
+                                  {
+                                    color: e.bgColor || "#050229",
+                                    width: t.size.fullWidth,
+                                    height: t.size.fullHeight,
+                                    opacity:
+                                      e.bgColor == "#00FFFF"
+                                        ? 0
+                                        : 0.4,
+                                  },
+                                  (j) => {
+                                    (j.width = t.size.fullWidth),
+                                      (j.height = t.size.fullHeight),
+                                      (j.color =
+                                        e.bgColor);
+                                    j.opacity =
+                                      e.bgColor == "#00FFFF"
+                                        ? 0
+                                        : j.color == "#000000" ? 0.8 : 0.4;
+                                  }
+                            ),
                           ];
                         case "world2Red":
                           return [
@@ -51184,6 +51203,27 @@ var version = "v1.5.1";
                                 (t.playerX = 0.35 * e.cameraX),
                                   (t.playerY = 0.35 * e.cameraY);
                               }
+                            ),
+                            p(
+                                  {
+                                    color: world3BgTable()[e?.bgColor] || "#050229",
+                                    width: t.size.fullWidth,
+                                    height: t.size.fullHeight,
+                                    opacity:
+                                      world3BgTable()[e?.bgColor] == undefined
+                                        ? 0
+                                        : 0.4,
+                                  },
+                                  (j) => {
+                                    (j.width = t.size.fullWidth),
+                                      (j.height = t.size.fullHeight),
+                                      (j.color =
+                                        world3BgTable()[e?.bgColor] || "#050229");
+                                    j.opacity =
+                                      world3BgTable()[e?.bgColor] == undefined
+                                        ? 0
+                                        : j.color == "#000000" ? 0.6 : 0.4;
+                                  }
                             ),
                           ];
                         case "world3":
@@ -52485,10 +52525,7 @@ var version = "v1.5.1";
                 ...Array.from({ length: 15 }).flatMap((e, n) => {
                   const s = 2 * Math.pow(n, 1.8);
                   return [
-                    O(
-                      () => [t.size.fullWidth, e?.bgColor || a],
-                      () => [
-                        m(
+                    m(
                           {
                             color: e?.bgColor || a,
                             opacity: i,
@@ -52518,8 +52555,7 @@ var version = "v1.5.1";
                             t.color = e?.bgColor || a;
                           }
                         ),
-                      ]
-                    ),
+                      
                   ];
                 }),
               ];
