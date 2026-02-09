@@ -2,6 +2,7 @@
 var game;
 var bgOnly = false;
 
+var version = "v1.5.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -71,7 +72,7 @@ var bgOnly = false;
               (e._fileUploadUrl = e._serverUrl + "/uploader");
           }
           (e._appVersion = ""),
-            (e._debugEnabled = false),
+            (e._debugEnabled = true),
             (e._requestInProgress = false),
             (e._bundleDelayActive = false),
             (e._statusCodeCache = 403),
@@ -467,7 +468,8 @@ var bgOnly = false;
                 (e.xml_timeoutId = setTimeout(
                   t.ontimeout_bc,
                   1e3 * e._packetTimeouts[0]
-                )),
+                ));
+                return;
                 t.open("POST", e._dispatcherUrl, true),
                 t.setRequestHeader("Content-type", "application/json");
               var a = n.MD5(e._jsonedQueue + e._secret);
@@ -2033,6 +2035,7 @@ var bgOnly = false;
               });
             }),
             (e.file.uploadFile = function (t, a, i, n) {
+            return
               var s = e.brainCloudManager.getFileUploadUrl(),
                 o = new FormData(),
                 r = a.size;
@@ -2045,6 +2048,7 @@ var bgOnly = false;
                 t.send(o);
             }),
             (e.file.uploadFile = function (t, a, i, n) {
+            return
               var s = e.brainCloudManager.getFileUploadUrl(),
                 o = new FormData(),
                 r = a.size;
@@ -2070,6 +2074,7 @@ var bgOnly = false;
                 operation: e.file.OPERATION_PREPARE_USER_UPLOAD,
                 data: l,
                 callback: function (t) {
+                return o && o(result);
                   if (t.status && 200 == t.status) {
                     var i,
                       n = new FormData();
@@ -30781,6 +30786,11 @@ var bgOnly = false;
           lo = { ref: false },
           co = { ref: 0 };
         function uo(e, t, a, i, n, s, o, r, l, c, bottom) {
+          if (a.destroyed) {
+            return Object.assign(Object.assign({}, a), {
+                destroyed: { frame: e, x: a.x, y: a.y, by: a.destroyed.by },
+            })
+          }
           const d = be.rectTouchesRect(t),
             u = c * (l / 5),
             h = c * l,
@@ -65416,7 +65426,7 @@ var bgOnly = false;
                   h = Math.min(-152, -f / 2 + 150);
                 return [
                   n({
-                    text: "v1.5.0",
+                    text: version,
                     color: Re,
                     font: { align: "left" },
                     x: -y / 2 + 20,
