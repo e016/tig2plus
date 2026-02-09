@@ -51921,11 +51921,12 @@ var version = "v1.5.1";
                 "arrows" === e.theme.id
                   ? Ho.Single(
                       {
-                        x: et.initialPosition.x,
+                        x: et.initialPosition.x * e.playerDir,
                         y: et.initialPosition.y - e.cameraY,
                         playerYRelative: e.playerY - et.initialPosition.y,
                       },
                       (t) => {
+                        (t.x = et.initialPosition.x * e.playerDir),
                         (t.y = et.initialPosition.y - e.cameraY),
                           (t.playerYRelative =
                             e.playerY - et.initialPosition.y);
@@ -53314,13 +53315,19 @@ var version = "v1.5.1";
                   cameraX: t.cameraX,
                   cameraY: t.cameraY,
                   playerY: t.playerY,
+                  playerX: t.playerX,
+                  cameraXOffset: t.cameraXOffset,
+                  playerDir: t.playerDir,
                   paused: t.paused,
                   plain: a(Se).settings.plainBackground,
                 },
                 (e) => {
                   (e.cameraX = t.cameraX),
                     (e.cameraY = t.cameraY),
+                    (e.playerX = t.playerX),
                     (e.playerY = t.playerY),
+                    (e.playerDir = t.playerDir),
+                    (e.cameraXOffset = t.cameraXOffset),
                     (e.paused = t.paused),
                     (e.plain = a(Se).settings.plainBackground);
                 }
