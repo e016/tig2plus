@@ -2,7 +2,7 @@
 var game;
 var bgOnly = false;
 
-var version = "v1.5.2";
+var version = "v1.5.3";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -16945,6 +16945,11 @@ var version = "v1.5.2";
             getObjectBottomY: getObjectBottomY,
             hitStack: function (e, t, a, i = 30) {
               return a.some((a) =>
+                be.rectTouchesRect({ x: t, y: a.y, width: i, height: M })(e)
+              );
+            },
+            hitStackWhich: function (e, t, a, i = 30) {
+              return a.findIndex((a) =>
                 be.rectTouchesRect({ x: t, y: a.y, width: i, height: M })(e)
               );
             },
@@ -39193,18 +39198,14 @@ var version = "v1.5.2";
                 )),
                 null == v || v.hitPortal());
             const re = z.powerups.findIndex((e) => {
-              var t;
               return (
                 Z(e) ||
-                ("playerStack" ===
-                  (null === (t = U.playerPowerup) || void 0 === t
-                    ? void 0
-                    : t.item) &&
+                ("playerStack" === (U.playerPowerup?.item)) &&
                   be.hitStack(e, U.playerX, U.playerStacks))
-              );
             });
             if (-1 !== re && !W.powerups[re].wasPickedUp) {
               const e = z.powerups[re];
+              U.isCompatible = e.compatible;
               if (
                 (xa.updateLayoutStateField(
                   "powerups",
@@ -39223,20 +39224,13 @@ var version = "v1.5.2";
                     B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir);
               //playerStack code
               else if ("playerStack" === e.item && U.playerStacks.length < (8)) {
-                const stacks = [
-                    U.playerY,
-                    ...U.playerStacks.map(({ y: e }) => e),
-                  ],
-                  t = stacks.findIndex(
-                    (y, i) => i !== stacks.length - 1 && stacks[i + 1] > y + M
-                  ),
-                  a = {
-                    y:
-                      (-1 === t ? stacks[stacks.length - 1] : stacks[t]) +
-                      (e.direction ? -M : M) * (U.isCompatible ? 1 : U.playerScale),
-                    gradY: 0,
-                  };
-                -1 !== t
+                // be.hitStackWhich(e, U.playerX, U.playerStacks)
+                const stacksY = [U.playerY, ...U.playerStacks.map(({ y: e }) => e)],
+                  t = U.isCompatible ? stacksY.findIndex(
+                    (t, a) => a !== stacksY.length - 1 && stacksY[a + 1] > t + M
+                  ) : be.hitStackWhich(e, U.playerX, U.playerStacks) + 1,
+                  a = { y: ((-1 === t ? stacksY[stacksY.length - 1] : stacksY[t])) + M, gradY: 0 };
+                -1 !== t && U.isCompatible
                   ? U.playerStacks.splice(t, 0, a)
                   : U.playerStacks.push(a);
                 if (false) {
@@ -39251,7 +39245,6 @@ var version = "v1.5.2";
                 //console.log(U.playerStackIndex)
               } else "skateboard" === e.item && (U.playerRot = 0);
               // set powerup
-              U.isCompatible = e.compatible
               U.playerPowerup = Object.assign(Object.assign({}, e), {
                 x: 0,
                 y: 0,
@@ -39588,7 +39581,7 @@ var version = "v1.5.2";
                     );
                     const touchedSpring = U.isCompatible ? false : (checkSprings(undefined, stack));
                     if (touchedSpring) {
-                      d = touchedSpring.y + 0.01;
+                      d = touchedSpring.y + 0.01 * Math.sign(touchedSpring.gradY);
                       h = touchedSpring.gradY;
                     }
                     // stack collision

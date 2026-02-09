@@ -10,6 +10,7 @@ var version = "1.1.2",
     "renderCanvas.js",
     "jokes.js",
     "714.game.js",
+    "116.game.js",
 
     // translations
     "locale/localize.js",
