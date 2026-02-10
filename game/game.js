@@ -39560,8 +39560,9 @@ var version = "v1.5.3";
                     let { y: d, gradY: h } = G.stepY(stack.y, stack.gradY, t, a, 1);
                     var scale = U.isCompatible ? 1 : U.playerScale
                     //console.log(l)
-                    const p = 0 === l ? n : stacks[l - 1].y;
-                    d < p + (M * scale) + 1 && ((d = p + (M * scale)), (h = 0));
+                    const lastStackY = 0 === l ? n : stacks[l - 1].y,
+                    checkStackY = (stackY)=>(d < stackY + (M * scale) + 1 && ((d = stackY + (M * scale)), (h = 0)));
+                    checkStackY(lastStackY);
                     const g = rl(
                       o,
                       r,
@@ -39581,8 +39582,15 @@ var version = "v1.5.3";
                     );
                     const touchedSpring = U.isCompatible ? false : (checkSprings(undefined, stack));
                     if (touchedSpring) {
-                      d = touchedSpring.y + 0.01 * Math.sign(touchedSpring.gradY);
+                      var offset = 1 * Math.sign(touchedSpring.gradY);
+                      d = touchedSpring.y + offset;
                       h = touchedSpring.gradY;
+                      if (d < lastStackY + M * scale + 1) {
+                        var setStackFromIndex = (i)=>(
+                        0 === i ? (U.playerY = d - M * scale - 1) : (stacks[i - 1].y = d - M * scale - 1),
+                        0 === i ? (U.playerGradY = h) : (stacks[i - 1].gradY = h)
+                        )
+                      }
                     }
                     // stack collision
                     (!touchedSpring && (null !== g.onGroundY))
