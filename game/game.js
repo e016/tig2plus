@@ -32456,7 +32456,7 @@ var version = "v2-dev";
                             (t) => {
                               (t.x = e.switchButton.x),
                                 (t.y = e.switchButton.y),
-                                (t.rotation = e.switchButton.gravity > 0 ? 180 : 0);
+                                (t.rotation = e.switchButton.gravity == 0 ? 90 : e.switchButton.gravity > 0 ? 180 : 0);
                             }
                           ),
                         ];
@@ -34624,7 +34624,7 @@ var version = "v2-dev";
                           },
                         ]
                       : [];
-                  t.affects == "color" &&
+                  t.affects == "gravity" &&
                   j.push({
                     name: "Color",
                     options: [
@@ -38198,6 +38198,7 @@ var version = "v2-dev";
                   bgColor: "#00FFFF",
                   flash: 0,
                   gravity: 1,
+                  dashing: false,
                 };
           },
           el = function (e, t) {
@@ -38275,6 +38276,7 @@ var version = "v2-dev";
               bgColor: e.bgColor,
               flash: e.flash,
               gravity: e.gravity,
+              dashing: e.dashing,
             };
           },
           al = v({
@@ -38707,12 +38709,12 @@ var version = "v2-dev";
                     toggleGravity = z.switchButtons.findIndex((button)=>(button.affects == "gravity" && be.hitObject(
                 U.playerX,
                 U.playerY,
-                U.playerScaleX,
-                U.playerScaleY,
-                U.playerRot,
+                U.playerScaleX * 0.99,
+                U.playerScaleY * 0.99,
+                U.dashing ? 0 : U.playerRot,
                 X,
                 K
-              )(e)))
+              )(button)))
                 if (a)
                   (L.blockJumpUntilReleased = true),
                     (H = false),
@@ -38762,10 +38764,13 @@ var version = "v2-dev";
                             ));
                     });
                 else if (e && toggleGravity > -1) {
-                  (U.gravity = z.switchButtons[toggleGravity].gravity || 1),
-                  (U.playerGradY = G.initGrad(V) * -2),
+                  var g = z.switchButtons[toggleGravity].gravity;
+                  (U.dashing = false),
+                  (g == 0 ? (U.dashing = true) : (U.gravity = g)),
+                  (U.playerGradY = G.initGrad(V) * -2 * U.gravity),
                   (L.blockJumpUntilReleased = true),
-                  (H = false);
+                  (H = false),
+                  (U.justDownInputTimer = 0);
                 }
                 else if (
                   e &&
@@ -38870,10 +38875,14 @@ var version = "v2-dev";
                       ((U.playerPowerup = null),
                       null == v || v.useUpPowerup("jetpack"));
                 } else if (U.gravity < 0) {
-                  if (U.gravityHitObject && e) {
+                  if ((U.gravityHitObject || U.dashing) && e) {
+                    U.dashing = false;
                   U.gravity = 1;
                   U.jumping = true;
                   U.playerGradY = -1;
+                  (L.blockJumpUntilReleased = true),
+                  (H = false),
+                  (U.justDownInputTimer = 0);
                   }
                 } else {
                   U.jumping ||
@@ -38900,7 +38909,7 @@ var version = "v2-dev";
                   (U.justDownInputTimer = 0),
                   (U.skateboardJumpCharge = 0),
                   null == v || v.jump(true));
-              if (((J = 0 === U.playerGradY), X))
+              if (((J = 0 === U.playerGradY && !U.dashing), X))
                 if (
                   ((U.playerScaleX = 1 * globalPlayerScale),
                   U.skateboardJumpCharge > 0)
@@ -38939,12 +38948,12 @@ var version = "v2-dev";
                   }
                 } else U.playerRot = 0;
               else
-                J ||
+                (J && !U.dashing) ||
                   ((U.playerRot += (90 * U.playerDir * k) / C * U.gravity),
                   U.playerRot < 0
                     ? (U.playerRot += 360)
                     : U.playerRot > 360 && (U.playerRot -= 360));
-              const e = G.stepY(U.playerY, U.playerGradY, j, k, U.gravity);
+              const e = U.dashing ? {y: U.playerY, gradY: 0} : G.stepY(U.playerY, U.playerGradY, j, k, U.gravity);
               (U.playerY = e.y), (U.playerGradY = e.gradY);
             }
             if (
@@ -38969,7 +38978,7 @@ var version = "v2-dev";
                 U.playerY,
                 U.playerScaleX,
                 U.playerScaleY,
-                U.playerRot,
+                U.dashing ? 0 : U.playerRot,
                 X,
                 K
               ),
@@ -39255,7 +39264,7 @@ var version = "v2-dev";
               _.layout.portals, //t
               U.playerX, //a
               U.playerY, //i
-              U.playerDir, //n
+              U.dashing ? 0 : U.playerDir, //n
               U.playerGradY, //s
               j, //o
               V, //r
@@ -39279,7 +39288,7 @@ var version = "v2-dev";
                   U.playerY,
                   U.playerScaleX,
                   U.playerScaleY,
-                  U.playerRot,
+                  U.dashing ? 0 : U.playerRot,
                   X,
                   K
                 )),
@@ -39348,7 +39357,7 @@ var version = "v2-dev";
                 U.playerScaleX,
                 U.playerScaleY,
                 U.playerRot,
-                U.playerDir,
+                U.dashing ? 0 : U.playerDir,
                 U.crashed,
                 Q,
                 X,
@@ -39370,7 +39379,7 @@ var version = "v2-dev";
                 U.playerScaleX,
                 U.playerScaleY,
                 U.playerRot,
-                U.playerDir,
+                U.dashing ? 0 : U.playerDir,
                 U.crashed,
                 Q,
                 X,
@@ -39387,7 +39396,7 @@ var version = "v2-dev";
                 U.playerScaleX,
                 U.playerScaleY,
                 U.playerRot,
-                U.playerDir,
+                U.dashing ? 0 : U.playerDir,
                 U.crashed,
                 Q,
                 X,
@@ -39464,7 +39473,7 @@ var version = "v2-dev";
                   U.playerY,
                   U.playerScaleX,
                   U.playerScaleY,
-                  U.playerRot,
+                  U.dashing ? 0 : U.playerRot,
                   X,
                   K
                 );
@@ -39494,7 +39503,7 @@ var version = "v2-dev";
               U.playerY,
               U.playerScaleX,
               U.playerScaleY,
-              U.playerRot,
+              U.dashing ? 0 : U.playerRot,
               X,
               K
             );
@@ -39503,7 +39512,7 @@ var version = "v2-dev";
               U.playerY,
               U.playerScaleX,
               U.playerScaleY,
-              U.playerRot,
+              U.dashing ? 0 : U.playerRot,
               X
             );
             for (let e = 0; e < ue.length; e++) {
@@ -44140,7 +44149,7 @@ var version = "v2-dev";
                           y: t,
                           affects: eu[a],
                           color: clrs[n] || 0,
-                          gravity: n > 0 ? -1 : 1
+                          gravity: n > 1 ? 0 : n > 0 ? -1 : 1
                         });
                       } //color: clrs[n] }))
                     ),
@@ -44316,7 +44325,7 @@ var version = "v2-dev";
                     ),
                     i.switchButtons.map((e) =>
                       //console.log(clrs, e.color),
-                      e.affects == "gravity" ? [e.x, e.y, ru(e.affects, eu), e.gravity > 0 ? 0 : 1] : e.affects == "color"
+                      e.affects == "gravity" ? [e.x, e.y, ru(e.affects, eu), e.gravity == 0 ? 2 : e.gravity > 0 ? 0 : 1] : e.affects == "color"
                         ? [e.x, e.y, ru(e.affects, eu), ru(e.color, clrs)]
                         : [e.x, e.y, ru(e.affects, eu)]
                     ),
@@ -44775,6 +44784,9 @@ var version = "v2-dev";
                 Object.assign(Object.assign({}, e), {
                   isCompatible: true
                 }),
+              (e) => Object.assign(Object.assign({}, e), {
+                  dashing: false,
+                }),
             ],
             finalSchema: kc({
               frame: fc,
@@ -44839,6 +44851,7 @@ var version = "v2-dev";
               bgColor: mc,
               flash: fc,
               gravity: fc,
+              dashing: yc,
             }),
             uncompress: (e) => e,
             compress: (e) =>
@@ -53336,8 +53349,10 @@ var version = "v2-dev";
                   playerDir: t.playerDir,
                   crashed: t.crashed,
                   gravity: t.gravity,
+                  dashing: t.dashing
                 },
                 (e) => {
+                  (e.dashing = t.dashing),
                   (e.cameraX = t.cameraX),
                     (e.cameraY = t.cameraY),
                     (e.paused = t.paused),
@@ -53412,8 +53427,10 @@ var version = "v2-dev";
                   bgColor: t.bgColor,
                   flash: t?.flash,
                   gravity: t.gravity,
+                  dashing: t.dashing,
                 },
                 (e) => {
+                  (e.dashing = t.dashing),
                   (e.frame = t.frame),
                     (e.df = t.df),
                     (e.attempt = t.attempt),
@@ -57407,12 +57424,14 @@ var version = "v2-dev";
                     ),
                     fadeOutAttempts: Ml(t.mutValues.levelState.bossState),
                     playerScale: t.mutValues.levelState.playerScale,
-                    bgColor: "#00FFFF",
+                    bgColor: t.mutValues.levelState.bgColor,
                     flash: t?.flash,
                     gravity: t.gravity,
+                    dashing: t.dashing,
                   },
                   (a) => {
                     var i, n, s, o, r;
+                    (a.dashing = t.mutValues.levelState.dashing),
                     (a.frame = t.mutValues.levelState.frame),
                       (a.df = t.df),
                       (a.attempt = t.mutValues.levelState.attempt),
@@ -66646,6 +66665,7 @@ var version = "v2-dev";
                     bgColor: t.bgColor,
                     flash: t?.flash,
                     gravity: t.gravity,
+                    dashing: t.dashing,
                   },
                   (a) => {
                     var i;
@@ -66666,6 +66686,7 @@ var version = "v2-dev";
                       },
                       otherPlayersInfo: p,
                     } = e;
+                    (a.dashing = r.dashing),
                     (a.playerName = o),
                       (a.frame = r.frame),
                       (a.attempt = r.attempt),
