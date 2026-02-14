@@ -2,7 +2,7 @@
 var game;
 var bgOnly = false;
 
-var version = "v1.5.3";
+var version = "v2-dev";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -16833,8 +16833,8 @@ var version = "v1.5.3";
                           de.pointInSomething(t.x, t.y, e)
                       )(de.getObjectPolygon(r, c, 0))
                     : he(r),
-                u = gravity > 0 ? getObjectTopY(r, e, t) : getObjectBottomY(r, e, t);
-              if (a <= 0 && (gravity > 0 ? (t - a >= u + 7.5 * globalPlayerScale) : (t - a <= u + -7.5 * globalPlayerScale))) {
+                edge = gravity > 0 ? getObjectTopY(r, e, t) : getObjectBottomY(r, e, t);
+              if (a <= 0 && (gravity > 0 ? (t - a >= edge + 7.5 * globalPlayerScale) : (t - a <= edge + -7.5 * globalPlayerScale))) {
                 const k = pe(e, t, i, n, s),
                   l = k[Math.floor(k.length / 2)],
                   c = (function (e, t, a) {
@@ -16895,11 +16895,11 @@ var version = "v1.5.3";
             getSecondBottomPlayerLine: me,
             handlePlayerHitBottomEdge: (e, t, a, i, n, s, o, r, l, c, d, gravity) => {
               var u, h;
-              const p = (gravity > 0 ? getObjectTopY(l, e, t) : getObjectBottomY(l,e,t)) + 15 * globalPlayerScale * gravity,
+              const edge = (gravity > 0 ? getObjectTopY(l, e, t) : getObjectBottomY(l,e,t)) + 15 * globalPlayerScale * gravity,
                 g = 1 === r ? e < l.x : e > l.x;
-              if ((t < p && (g || t - s > p)) || o) return p;
+              if (((gravity > 0 ? (t < edge) : (t > edge)) && (g || (gravity > 0 ? (t - s > edge) : (t - s < edge)))) || o) return {y: edge};
               const m = n,
-                f = r * (n % 90 < 45 ? -1 : 1);
+                f = r * gravity * (n % 90 < 45 ? -1 : 1);
               let y = 45;
               for (
                 ;
@@ -16917,7 +16917,7 @@ var version = "v1.5.3";
               if (0 === y || 0 === n) {
                 for (
                   n = m, y = 15;
-                  t < p &&
+                  t < edge &&
                   "hitBottomEdges" ===
                     (null ===
                       (h = be.hitLandableObject(
@@ -16930,16 +16930,17 @@ var version = "v1.5.3";
                         r,
                         l,
                         c,
-                        d
+                        d,
+                        gravity
                       )) || void 0 === h
                       ? void 0
                       : h.type);
 
                 )
-                  t++, (n += 0 === n ? 0 : f), (s *= 0.9), y--;
-                if (0 === y) return "crashed";
+                  t += gravity, (n += 0 === n ? 0 : f), (s *= 0.9), y--;
+                if (0 === y) return {crashed: true, y: t};
               }
-              return t;
+              return {y: t};
             },
             getObjectTopY: getObjectTopY,
             getObjectBottomY: getObjectBottomY,
@@ -29540,6 +29541,7 @@ var version = "v1.5.3";
               `images/themes/${e.objects.spike}/spike.png`,
               `images/themes/${e.objects.switch}/switch-platform.png`,
               `images/themes/${e.objects.switch}/switch-button.png`,
+              "images/themes/world1/arrow.png",
               "images/themes/world2/double-jump.png",
               'images/themes/world1/saw-big.png',
               "images/themes/world1/saw-medium.png",
@@ -32442,23 +32444,21 @@ var version = "v1.5.3";
                 () => {
                   switch (e.switchButton.affects) {
                     case "gravity":
-                      if (e.isEditor) {
                         return [
                           y(
                             {
                               fileName:
-                                `images/themes/${e.theme}/switch-button.png`,
+                                `images/themes/world1/arrow.png`,
                               width: e.switchButton.width,
                               height: e.switchButton.height,
                             },
                             (t) => {
                               (t.x = e.switchButton.x),
-                                (t.y = e.switchButton.y);
+                                (t.y = e.switchButton.y),
+                                (t.rotation = e.switchButton.gravity > 0 ? 180 : 0);
                             }
                           ),
                         ];
-                      }
-                      return [];
                     case "color":
                       if (e.isEditor) {
                         return [
@@ -34602,7 +34602,7 @@ var version = "v1.5.3";
                                   });
                                 },
                               },
-                              /*{
+                              {
                                 name: "Gravity",
                                 selected: "gravity" === t.affects,
                                 onPress: () => {
@@ -34618,7 +34618,7 @@ var version = "v1.5.3";
                                     });
                                   });
                                 },
-                              },*/
+                              },
                             ],
                           },
                         ]
@@ -38333,9 +38333,15 @@ var version = "v1.5.3";
           },
           sl = M,
           ol = [];
-        function rl(e, t, a, i, n, s, o, r, l, c, d, u, h, p, gravity) {
+        function rl(e, t, a, i, n, s, o, r, l, c, d, u, h, p, gravity, hObj) {
           let crashed = d,
             onGroundY = u;
+            if (gravity < 0 && hObj) {
+              const e = (l > 45 && l < 135) || (l > 225 && l < 315) ? o : r,
+              t = be[gravity > 0 ? 'getObjectTopY' : 'getObjectBottomY'](hObj, a, i) + 15 * e * gravity;
+              
+              return {crashed: false, onGroundY: t, hitObject: hObj}
+            }
           const f = de.getPlayerPoly(a, i, o, r, l, h, de.pooledPlayerPoly3);
           let y = 0;
           for (let s = 0; s < e.length; s++) {
@@ -38385,9 +38391,9 @@ var version = "v1.5.3";
                   gravity
                 );
                 if (gravity > 0) {
-                  ("crashed" === e) ? (crashed = true) : (onGroundY = e)
+                  (e.crashed) ? (crashed = true) : (onGroundY = e.y)
                 } else {
-                  ("crashed" === e) ? (onGroundY = e) : (crashed = true)
+                  (e.crashed) ? (crashed = true) : (onGroundY = e.y)
                 };
           };
           if (hitObject) {
@@ -39250,7 +39256,7 @@ var version = "v1.5.3";
                 y: 0,
               });
             }
-            const le = Ca.getAllLandableObjects(z, W, X),
+            let le = Ca.getAllLandableObjects(z, W, X),
               ce = rl(
                 le,
                 q,
@@ -39266,10 +39272,32 @@ var version = "v1.5.3";
                 Q,
                 X,
                 U.switchBlockSpikes,
-                U.gravity
+                U.gravity,
+                U.gravityHitObject
               );
             (U.crashed = ce.crashed), (Q = ce.onGroundY);
-            const de = ce.hitObject;
+            var de = ce.hitObject || U.gravityHitObject;
+            if (false){//U.gravity < 0 && U.gravityHitObject) {
+              
+              (U.crashed = U.crashed || rl(
+                le,
+                q,
+                U.playerX,
+                U.playerY,
+                U.playerGradY,
+                J,
+                U.playerScaleX,
+                U.playerScaleY,
+                U.playerRot,
+                U.playerDir,
+                U.crashed,
+                Q,
+                X,
+                U.switchBlockSpikes,
+                1
+              ).crashed)
+            }
+            U.gravityHitObject = U.gravity > 0 ? (null) : ce.hitObject;
             if ((null !== Q && !J) || U.crashed || -1 !== touchedSpring) {
               const e = be.pointInBox({
                 x: U.playerX,
@@ -39578,7 +39606,7 @@ var version = "v1.5.3";
                       null,
                       false,
                       u,
-                      1
+                      U.gravity
                     );
                     const touchedSpring = U.isCompatible ? false : (checkSprings(undefined, stack));
                     if (touchedSpring) {
