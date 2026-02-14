@@ -16178,7 +16178,8 @@ var version = "v2-dev";
                   null !== (s = null == e ? void 0 : e.affects) && void 0 !== s
                     ? s
                     : "movement",
-                color: e == undefined ? undefined : e?.color || 0,
+                color: e == undefined ? "flash" : e?.color || 0,
+                gravity: e?.gravity || -1
               };
             },
             newSwitchPlatform: (e) => {
@@ -16819,7 +16820,7 @@ var version = "v2-dev";
               return s < l && r > o && c > h && u < d;
             },
             hitLandableObject: (...params) => {
-              var [e, t, a, i, n, s, o, r, l, c, gravity] = params;
+              var [e, t, a, i, n, s, o, r, l, c, gravity, force] = params;
               const checkDist = "switchPlatform" === r.type ? 120 : 30;
               if (
                 r.x > e + r.width + checkDist ||
@@ -16834,7 +16835,7 @@ var version = "v2-dev";
                       )(de.getObjectPolygon(r, c, 0))
                     : he(r),
                 edge = gravity > 0 ? getObjectTopY(r, e, t) : getObjectBottomY(r, e, t);
-              if (a <= 0 && (gravity > 0 ? (t - a >= edge + 7.5 * globalPlayerScale) : (t - a <= edge + -7.5 * globalPlayerScale))) {
+              if (a <= 0 && (gravity > 0 ? (t - a >= edge + (force ? 0 : 7.5) * globalPlayerScale) : (t - a <= edge + (force ? 0 : -7.5) * globalPlayerScale))) {
                 const k = pe(e, t, i, n, s),
                   l = k[Math.floor(k.length / 2)],
                   c = (function (e, t, a) {
@@ -34624,6 +34625,63 @@ var version = "v2-dev";
                         ]
                       : [];
                   t.affects == "color" &&
+                  j.push({
+                    name: "Color",
+                    options: [
+                      {
+                          name: "Up",
+                          selected: t.gravity < 0,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "switchButtons",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    gravity: -1
+                                  }),
+                              });
+                            });
+                          },
+                      },
+                      {
+                          name: "Dash",
+                          selected: t.gravity == 0,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "switchButtons",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    gravity: 0
+                                  }),
+                              });
+                            });
+                          },
+                      },
+                      {
+                          name: "Down",
+                          selected: t.gravity > 0,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "switchButtons",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    gravity: 1
+                                  }),
+                              });
+                            });
+                          },
+                      },
+                    ]
+                  }),
+                  t.affects == "color" &&
                     j.push({
                       name: "Color",
                       options: [
@@ -38333,20 +38391,20 @@ var version = "v2-dev";
           },
           sl = M,
           ol = [];
-        function rl(e, t, a, i, n, s, o, r, l, c, d, u, h, p, gravity, hObj) {
+        function rl(e, t, a, i, n, s, o, r, l, c, d, u, h, p, gravity, hObj, forceCheck) {
           let crashed = d,
             onGroundY = u;
-            if (gravity < 0 && hObj) {
+            if (gravity < 0 && hObj?.object) {
+              console.log(hObj);
               const e = (l > 45 && l < 135) || (l > 225 && l < 315) ? o : r,
-              t = be[gravity > 0 ? 'getObjectTopY' : 'getObjectBottomY'](hObj, a, i) + 15 * e * gravity;
-              
+              t = be[gravity > 0 ? 'getObjectTopY' : 'getObjectBottomY'](hObj.object, a, i) + 15 * e * gravity;
               return {crashed: false, onGroundY: t, hitObject: hObj}
             }
           const f = de.getPlayerPoly(a, i, o, r, l, h, de.pooledPlayerPoly3);
           let y = 0;
           for (let s = 0; s < e.length; s++) {
             const { object: d, index: u } = e[s],
-              h = be.hitLandableObject(a, i, n, o, r, l, c, d, f, p, gravity);
+              h = be.hitLandableObject(a, i, n, o, r, l, c, d, f, p, gravity, forceCheck);
             if (null !== h) {
               let e = d.array;
               p &&
@@ -38388,7 +38446,8 @@ var version = "v2-dev";
                   hitObject.object,
                   f,
                   p,
-                  gravity
+                  gravity,
+                  forceCheck
                 );
                 if (gravity > 0) {
                   (e.crashed) ? (crashed = true) : (onGroundY = e.y)
@@ -38644,7 +38703,16 @@ var version = "v2-dev";
                                   U.playerStacks,
                                   70
                                 ));
-                    });
+                    }),
+                    toggleGravity = z.switchButtons.findIndex((button)=>(button.affects == "gravity" && be.hitObject(
+                U.playerX,
+                U.playerY,
+                U.playerScaleX,
+                U.playerScaleY,
+                U.playerRot,
+                X,
+                K
+              )(e)))
                 if (a)
                   (L.blockJumpUntilReleased = true),
                     (H = false),
@@ -38693,6 +38761,12 @@ var version = "v2-dev";
                               K
                             ));
                     });
+                else if (e && toggleGravity > -1) {
+                  (U.gravity = z.switchButtons[toggleGravity].gravity || 1),
+                  (U.playerGradY = G.initGrad(V) * -2),
+                  (L.blockJumpUntilReleased = true),
+                  (H = false);
+                }
                 else if (
                   e &&
                   "punch" ===
@@ -38795,7 +38869,13 @@ var version = "v2-dev";
                     U.playerJetpackFuel <= 0 &&
                       ((U.playerPowerup = null),
                       null == v || v.useUpPowerup("jetpack"));
-                } else
+                } else if (U.gravity < 0) {
+                  if (U.gravityHitObject && e) {
+                  U.gravity = 1;
+                  U.jumping = true;
+                  U.playerGradY = -1;
+                  }
+                } else {
                   U.jumping ||
                     0 !== U.playerGradY ||
                     (X
@@ -38806,6 +38886,7 @@ var version = "v2-dev";
                         (U.jumpSwitch.delay = 2),
                         (U.justDownInputTimer = 0),
                         null == v || v.jump(false)));
+                    }
               } else
                 U.skateboardJumpCharge > 0 &&
                   !U.jumping &&
@@ -39048,7 +39129,7 @@ var version = "v2-dev";
                   be.hitStack(e, U.playerX, U.playerStacks))
               );
             });
-            if (-1 !== ie && W.switchButtons[ie].isPressedCounter <= 0) {
+            if (-1 !== ie && z.switchButtons[ie].affects != "gravity" && W.switchButtons[ie].isPressedCounter <= 0) {
               const e = z.switchButtons[ie],
                 colors = {
                   red: "#FF0000",
@@ -39276,8 +39357,8 @@ var version = "v2-dev";
                 U.gravityHitObject
               );
             (U.crashed = ce.crashed), (Q = ce.onGroundY);
-            var de = ce.hitObject || U.gravityHitObject;
-            if (false){//U.gravity < 0 && U.gravityHitObject) {
+            var de = U.gravityHitObject || ce.hitObject;
+            if (U.gravity < 0 && Math.abs(U.playerGradY) < 2) {
               
               (U.crashed = U.crashed || rl(
                 le,
@@ -39296,6 +39377,27 @@ var version = "v2-dev";
                 U.switchBlockSpikes,
                 1
               ).crashed)
+              if (!rl(
+                le,
+                q,
+                U.playerX,
+                U.playerY + 7.5,
+                U.playerGradY,
+                J,
+                U.playerScaleX,
+                U.playerScaleY,
+                U.playerRot,
+                U.playerDir,
+                U.crashed,
+                Q,
+                X,
+                U.switchBlockSpikes,
+                1,
+                null,
+                true
+              ).crashed) {
+                U.gravity = 1;
+              }
             }
             U.gravityHitObject = U.gravity > 0 ? (null) : ce.hitObject;
             if ((null !== Q && !J) || U.crashed || -1 !== touchedSpring) {
@@ -39348,7 +39450,7 @@ var version = "v2-dev";
               if (
                 (Math.abs(U.playerGradY) > w &&
                   (L.landTimer = et.landTimerLimit),
-                (U.jumping = H && !X),
+                (U.jumping = U.gravity > 0 ? (H && !X) : false),
                 (U.playerY = Q),
                 (U.playerGradY = 0),
                 U.jumping &&
@@ -44038,6 +44140,7 @@ var version = "v2-dev";
                           y: t,
                           affects: eu[a],
                           color: clrs[n] || 0,
+                          gravity: n > 0 ? -1 : 1
                         });
                       } //color: clrs[n] }))
                     ),
@@ -44213,7 +44316,7 @@ var version = "v2-dev";
                     ),
                     i.switchButtons.map((e) =>
                       //console.log(clrs, e.color),
-                      e.affects == "color"
+                      e.affects == "gravity" ? [e.x, e.y, ru(e.affects, eu), e.gravity > 0 ? 0 : 1] : e.affects == "color"
                         ? [e.x, e.y, ru(e.affects, eu), ru(e.color, clrs)]
                         : [e.x, e.y, ru(e.affects, eu)]
                     ),
