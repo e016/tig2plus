@@ -40303,7 +40303,7 @@ var version = "v2-dev";
                 author: "Waterflame",
                 fileName: "audio/tracks/waterflame-clutterfunk.mp3",
                 bpm: 140,
-              }
+              },
               soulless4: {
               name: "Soulless 4",
                 author: "Exilelord",
