@@ -60741,6 +60741,24 @@ var version = "v2-dev";
                     font: { size: 15 },
                     color: ve,
                   }),
+                  Fo({
+                  id: "NextButton",
+                  width: 100,
+                  height: 40,
+                  text: localize("NEXT"),
+                  onPress: i,
+                  x: l.size.fullWidth / 2 - 70,
+                  y: -l.size.fullHeight / 2 + 40,
+                }),
+                Fo({
+                  id: "BackButton",
+                  text: localize("BACK"),
+                  width: 80,
+                  height: 40,
+                  onPress: s,
+                  x: -l.size.fullWidth / 2 + 60,
+                  y: -l.size.fullHeight / 2 + 40,
+                }),
                 ];
               const c = a / r.songDuration;
               const d = 700 * c - 350,
@@ -61209,7 +61227,7 @@ var version = "v2-dev";
                       );
                     },
                     onNext: () => {
-                      e.selectSong(a, o);
+                      e.selectSong(a, o || 0);
                     },
                     onBack: () => {
                       i((e) =>
