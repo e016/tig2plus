@@ -29542,6 +29542,7 @@ var version = "v2-dev";
               `images/themes/${e.objects.spike}/spike.png`,
               `images/themes/${e.objects.switch}/switch-platform.png`,
               `images/themes/${e.objects.switch}/switch-button.png`,
+              "images/themes/world2/speed-change.png",
               "images/themes/world1/arrow.png",
               "images/themes/world2/double-jump.png",
               'images/themes/world1/saw-big.png',
@@ -33519,6 +33520,41 @@ var version = "v2-dev";
               e.justHit && t.hitCount++;
             },
             render({ props: e, state: t, getContext: a }) {
+              if (e.theme == "world2") {
+                return [
+                  
+                  O(
+                  () => t.hitCount,
+                  () => [
+                          Ua.Single(
+                            {
+                              id: "Hit",
+                              fileName:
+                                "images/themes/world2/speed-change.png",
+                              columns: 4,
+                              rows: 2,
+                              maxIndex: t.hitCount ? 8 : 1,
+                              frameRate: 3,
+                              width: e.speedChange.width,
+                              height: e.speedChange.height,
+                              startFrame: 0,
+                              df: 0 === t.hitCount ? 0 : e.df || 0,
+                            },
+                            (t) => {
+                              var a;
+                              (t.paused = e.paused || false),
+                              (t.x = e.speedChange.x),
+                                (t.y = e.speedChange.y),
+                                (t.scaleX = "right" === e.speedChange.direction ? 1 : -1),
+                                (t.width = e.speedChange.width),
+                                (t.height = e.speedChange.height),
+                                (t.df =
+                                  0 === t.hitCount ? 0 : e.df || 0);
+                            }
+                          ),
+                        ])
+                ]
+              }
               if (bgOnly || e.isEditor)
                 return [
                   y(
@@ -33937,6 +33973,7 @@ var version = "v2-dev";
                       speedChange: c,
                       isEditor: true,
                       justHit: false,
+                      theme: t.switch
                     }),
                     unlocked: e.includes("speedChange"),
                   },
@@ -37818,6 +37855,7 @@ var version = "v2-dev";
                     speedChange: e,
                     isEditor: true,
                     justHit: false,
+                    theme: v.switch,
                   })
                 ),
                 ...h.flags.map((e, t) =>
@@ -38006,6 +38044,7 @@ var version = "v2-dev";
                     speedChange: e,
                     isEditor: true,
                     justHit: false,
+                    theme: n.switch
                   });
                 case "saw":
                   return eo.Single({
@@ -53859,6 +53898,7 @@ var version = "v2-dev";
                     justHit: false,
                     df: e.df,
                     paused: e.paused,
+                    theme: e.layout.properties.theme.objects.switch
                   }),
                   update: (t, a, i) => {
                     (t.speedChange = a),
@@ -65074,7 +65114,7 @@ var version = "v2-dev";
                   : [
                       Uf({
                         id: "Title",
-                        text: "CREDITS",
+                        text: localize("CREDITS"),
                         width: 200,
                         height: 35,
                         x: -n / 2 + 120,
@@ -65107,6 +65147,7 @@ var version = "v2-dev";
               const e = [
                 ["CREATED BY", ["ED BENTLEY"]],
                 ["MODDED BY", ["d016"]],
+                ["SPECIAL THANKS TO", ["Alfredo/Outline Gamer", "GatoNegro", "mikhael", "Jfour Robs", "WaterFire"]],
                 ["GAME ARTIST", ["ŁUKASZ WIŚNIEWSKI"]],
                 ["UI ARTIST", ["SYLWIA GAWEL"]],
                 ["PIXEL ARTIST", ["NICO NOWAK"]],
