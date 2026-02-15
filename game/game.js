@@ -40304,6 +40304,12 @@ var version = "v2-dev";
                 fileName: "audio/tracks/waterflame-clutterfunk.mp3",
                 bpm: 140,
               }
+              soulless4: {
+              name: "Soulless 4",
+                author: "Exilelord",
+                fileName: "audio/tracks/exilelord-soulless-4.mp3",
+                bpm: 127,
+              }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -43622,6 +43628,7 @@ var version = "v2-dev";
             e[(e.RaceAroundTheWorld = 43)] = "RaceAroundTheWorld";
             e[(e.Machina = 44)] = "Machina";
             e[(e.Clutterfunk = 45)] = "Clutterfunk";
+            e[(e.Soulless4 = 46)] = "Soulless4";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -43721,6 +43728,7 @@ var version = "v2-dev";
             e[(e.RaceAroundTheWorld = 43)] = "RaceAroundTheWorld";
             e[(e.Machina = 44)] = "Machina";
             e[(e.Clutterfunk = 45)] = "Clutterfunk";
+            e[(e.Soulless4 = 46)] = "Soulless4";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -44465,7 +44473,8 @@ var version = "v2-dev";
             [Nd.RedShift]: hl.songs.redShift,
             [Nd.RaceAroundTheWorld]: hl.songs.raceAroundTheWorld,
             [Nd.Machina]: hl.songs.machina,
-            [Nd.Clutterfunk]: hl.songs.clutterfunk
+            [Nd.Clutterfunk]: hl.songs.clutterfunk,
+            [Nd.Soulless4]: hl.songs.soulless4
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -44867,7 +44876,7 @@ var version = "v2-dev";
               flash: fc,
               gravity: fc,
               dashing: yc,
-              isGravity: yc
+              isGravity: Bc([Hc, yc, hc])
             }),
             uncompress: (e) => e,
             compress: (e) =>
