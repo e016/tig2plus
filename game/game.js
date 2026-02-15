@@ -16179,7 +16179,7 @@ var version = "v2-dev";
                     ? s
                     : "movement",
                 color: e == undefined ? "flash" : e?.color || 0,
-                gravity: e?.gravity || -1
+                gravity: e == undefined ? 1 : e?.gravity
               };
             },
             newSwitchPlatform: (e) => {
@@ -38199,6 +38199,7 @@ var version = "v2-dev";
                   flash: 0,
                   gravity: 1,
                   dashing: false,
+                  isGravity: false,
                 };
           },
           el = function (e, t) {
@@ -38277,6 +38278,7 @@ var version = "v2-dev";
               flash: e.flash,
               gravity: e.gravity,
               dashing: e.dashing,
+              isGravity: e.isGravity
             };
           },
           al = v({
@@ -38315,7 +38317,7 @@ var version = "v2-dev";
             ],
           }),
           il = {},
-          nl = function (e, t, a, i, n, grad, o, r, l, c, d, gravity) {
+          nl = function (e, t, a, i, n, grad, o, r, l, c, d, gravity, isGravity) {
             // n is player dir
             //console.warn(n);
             (il.touchingPortals = void 0),
@@ -38372,6 +38374,7 @@ var version = "v2-dev";
                   (a = p.x + (a - h.x)),
                   (i = p.y),
                   (grad = Math.max(Math.abs(grad), G.initGrad(r)));
+                  (isGravity && (gravity = -1));
                 break;
               case "up-down":
               case "down-down":
@@ -38379,6 +38382,7 @@ var version = "v2-dev";
                   (a = p.x + (a - h.x)),
                   (i = p.y),
                   (grad = Math.min(-Math.abs(grad), -r / 5));
+                  (gravity = 1);
             }
             return (
               (il.touchingPortals = [g[1], g[0]]),
@@ -38387,6 +38391,7 @@ var version = "v2-dev";
                 playerX: a,
                 playerY: i,
                 playerDir: n,
+                gravity: gravity
               }),
               il
             );
@@ -38766,7 +38771,7 @@ var version = "v2-dev";
                 else if (e && toggleGravity > -1) {
                   var g = z.switchButtons[toggleGravity].gravity;
                   (U.dashing = false),
-                  (g == 0 ? (U.dashing = true) : (U.gravity = g)),
+                  (g == 0 ? (U.dashing = true) : (U.gravity = g, U.isGravity = true)),
                   (U.playerGradY = G.initGrad(V) * -2 * U.gravity),
                   (L.blockJumpUntilReleased = true),
                   (H = false),
@@ -38878,6 +38883,7 @@ var version = "v2-dev";
                   if ((U.gravityHitObject || U.dashing) && e) {
                     U.dashing = false;
                   U.gravity = 1;
+                  U.isGravity = false;
                   U.jumping = true;
                   U.playerGradY = -1;
                   (L.blockJumpUntilReleased = true),
@@ -38885,6 +38891,9 @@ var version = "v2-dev";
                   (U.justDownInputTimer = 0);
                   }
                 } else {
+                  if (U.dashing) {
+                    e && (U.dashing = false)
+                  } else {
                   U.jumping ||
                     0 !== U.playerGradY ||
                     (X
@@ -38895,6 +38904,7 @@ var version = "v2-dev";
                         (U.jumpSwitch.delay = 2),
                         (U.justDownInputTimer = 0),
                         null == v || v.jump(false)));
+                    }
                     }
               } else
                 U.skateboardJumpCharge > 0 &&
@@ -38949,7 +38959,7 @@ var version = "v2-dev";
                 } else U.playerRot = 0;
               else
                 (J && !U.dashing) ||
-                  ((U.playerRot += (90 * U.playerDir * k) / C * U.gravity),
+                  ((U.playerRot += (90 * U.playerDir * k) / C * U.gravity * (U.dashing ? 2 : 1)),
                   U.playerRot < 0
                     ? (U.playerRot += 360)
                     : U.playerRot > 360 && (U.playerRot -= 360));
@@ -39264,7 +39274,7 @@ var version = "v2-dev";
               _.layout.portals, //t
               U.playerX, //a
               U.playerY, //i
-              U.dashing ? 0 : U.playerDir, //n
+              U.playerDir, //n
               U.playerGradY, //s
               j, //o
               V, //r
@@ -39273,7 +39283,8 @@ var version = "v2-dev";
                 : h[0]) || null, //l
               Z, //c
               k, //d
-              U.gravity
+              U.gravity,
+              U.isGravity
             );
             (U.touchingPortals = oe.touchingPortals || null),
               (U.crashed = (oe.crashed) || U.crashed),
@@ -39283,6 +39294,7 @@ var version = "v2-dev";
                 (U.playerY = oe.teleport.playerY),
                 (U.playerGradY = oe.teleport.playerGradY),
                 (U.playerDir = oe.teleport.playerDir),
+                (U.gravity = oe.teleport.gravity),
                 (Z = be.hitObject(
                   U.playerX,
                   U.playerY,
@@ -39356,8 +39368,8 @@ var version = "v2-dev";
                 J,
                 U.playerScaleX,
                 U.playerScaleY,
-                U.playerRot,
-                U.dashing ? 0 : U.playerDir,
+                U.dashing ? 0 : U.playerRot,
+                U.playerDir,
                 U.crashed,
                 Q,
                 X,
@@ -39378,8 +39390,8 @@ var version = "v2-dev";
                 J,
                 U.playerScaleX,
                 U.playerScaleY,
-                U.playerRot,
-                U.dashing ? 0 : U.playerDir,
+                U.dashing ? 0 : U.playerRot,
+                U.playerDir,
                 U.crashed,
                 Q,
                 X,
@@ -39395,8 +39407,8 @@ var version = "v2-dev";
                 J,
                 U.playerScaleX,
                 U.playerScaleY,
-                U.playerRot,
-                U.dashing ? 0 : U.playerDir,
+                U.dashing ? 0 : U.playerRot,
+                U.playerDir,
                 U.crashed,
                 Q,
                 X,
@@ -39406,6 +39418,7 @@ var version = "v2-dev";
                 true
               ).crashed) {
                 U.gravity = 1;
+                U.isGravity = false;
               }
             }
             U.gravityHitObject = U.gravity > 0 ? (null) : ce.hitObject;
@@ -39455,7 +39468,7 @@ var version = "v2-dev";
                     ((U.score = zo.didLand(U.score)),
                     null == v || v.addScore());
                 (U.playerWasOnGroundCooldown = 10), (U.playerRot = 0);
-              } else U.playerRot = et.closestFlatAngle(U.playerRot);
+              } else U.playerRot = U.dashing ? U.playerRot : et.closestFlatAngle(U.playerRot);
               if (
                 (Math.abs(U.playerGradY) > w &&
                   (L.landTimer = et.landTimerLimit),
@@ -39802,7 +39815,8 @@ var version = "v2-dev";
                 : h[0]) || null, //l
               stackCollide(stack), //c
               k, //d
-              U.gravity
+              U.gravity,
+              false
             );
             // (U.touchingPortals = p.touchingPortals || null),
               ((crashed = (p.crashed) || crashed),
@@ -44786,6 +44800,7 @@ var version = "v2-dev";
                 }),
               (e) => Object.assign(Object.assign({}, e), {
                   dashing: false,
+                  isGravity: false,
                 }),
             ],
             finalSchema: kc({
@@ -44852,6 +44867,7 @@ var version = "v2-dev";
               flash: fc,
               gravity: fc,
               dashing: yc,
+              isGravity: yc
             }),
             uncompress: (e) => e,
             compress: (e) =>
@@ -53349,9 +53365,11 @@ var version = "v2-dev";
                   playerDir: t.playerDir,
                   crashed: t.crashed,
                   gravity: t.gravity,
-                  dashing: t.dashing
+                  dashing: t.dashing,
+                  isGravity: t.isGravity
                 },
                 (e) => {
+                  (e.isGravity = t.isGravity),
                   (e.dashing = t.dashing),
                   (e.cameraX = t.cameraX),
                     (e.cameraY = t.cameraY),
@@ -53428,8 +53446,10 @@ var version = "v2-dev";
                   flash: t?.flash,
                   gravity: t.gravity,
                   dashing: t.dashing,
+                  isGravity: t.isGravity
                 },
                 (e) => {
+                  (e.isGravity = t.isGravity),
                   (e.dashing = t.dashing),
                   (e.frame = t.frame),
                     (e.df = t.df),
@@ -57428,9 +57448,11 @@ var version = "v2-dev";
                     flash: t?.flash,
                     gravity: t.gravity,
                     dashing: t.dashing,
+                    isGravity: t.isGravity
                   },
                   (a) => {
                     var i, n, s, o, r;
+                    (a.isGravity = t.mutValues.levelState.isGravity),
                     (a.dashing = t.mutValues.levelState.dashing),
                     (a.frame = t.mutValues.levelState.frame),
                       (a.df = t.df),
@@ -66666,6 +66688,7 @@ var version = "v2-dev";
                     flash: t?.flash,
                     gravity: t.gravity,
                     dashing: t.dashing,
+                    isGravity: t.isGravity
                   },
                   (a) => {
                     var i;
@@ -66686,6 +66709,7 @@ var version = "v2-dev";
                       },
                       otherPlayersInfo: p,
                     } = e;
+                    (a.isGravity = r.isGravity),
                     (a.dashing = r.dashing),
                     (a.playerName = o),
                       (a.frame = r.frame),
