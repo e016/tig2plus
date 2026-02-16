@@ -33522,8 +33522,30 @@ var version = "v2-dev";
             render({ props: e, state: t, getContext: a }) {
               if (e.theme == "world2") {
                 return [
-                  
-                  O(
+                  Ya.Single(
+                                {
+                                  fileName:
+                                    "images/themes/world2/speed-change.png",
+                                  width: e.speedChange.width,
+                                  height: e.speedChange.height,
+                                  columns: 4,
+                                  rows: 2,
+                                  x: e.speedChange.x,
+                                  y: e.speedChange.y,
+                                  scaleX: "right" === e.speedChange.direction ? 1 : -1,
+                                  frame: 0,
+                                  frameRate: 3,
+                                },
+                                (t) => {
+                                  (t.x = e.speedChange.x),
+                                    (t.y = e.speedChange.y),
+                                    (t.scaleX = "right" === e.speedChange.direction ? 1 : -1),
+                                    (t.frame = 0);
+                                }
+                              ),
+                  T(
+                    () => t.hitCount > 0,
+                    () => [O(
                   () => t.hitCount,
                   () => [
                           Ua.Single(
@@ -33537,6 +33559,7 @@ var version = "v2-dev";
                               width: e.speedChange.width,
                               height: e.speedChange.height,
                               df: 0 === t.hitCount ? 0 : e.df || 0,
+                              hideOnEnd: true,
                             },
                             (t) => {
                               var a;
@@ -33550,7 +33573,7 @@ var version = "v2-dev";
                                   0 === t.hitCount ? 0 : e.df || 0);
                             }
                           ),
-                        ])
+                        ])])
                 ]
               }
               if (bgOnly || e.isEditor)
@@ -39093,7 +39116,7 @@ var version = "v2-dev";
                     (U.playerX += a * U.playerSpeedMultiplier),
                     null == v || v.hitSpeedChange(U.playerSpeedMultiplier, e);
                 }
-                U.justHitObject = { array: "speedChanges", index: e };
+                (U.justHitObject?.array != "speedChanges" && U.justHitObject?.index != e) && (U.justHitObject = { array: "speedChanges", index: e });
               }
             }
             const ae = z.flags.findIndex((e) => {
