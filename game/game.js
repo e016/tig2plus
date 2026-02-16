@@ -15932,7 +15932,7 @@ var version = "v2-dev";
                   null !== (n = null == e ? void 0 : e.height) && void 0 !== n
                     ? n
                     : 30,
-                trigger: e == undefined ? "jump" : e?.trigger || "jump",
+                trigger: e == undefined ? "beat" : e?.trigger || "beat",
                 init: e == undefined ? "red" : e?.init || "red",
                 snapSize: null == e ? void 0 : e.snapSize,
               };
@@ -39313,6 +39313,7 @@ var version = "v2-dev";
               if (-1 !== idx) {
                 const spring = z.springs[idx];
                 (stack || (U.jumping = true)),
+                (stack || (U.gravity = 1)),
                   (setGradY((spring.direction > 0
                       ? Math.max(1.5 * G.initGrad(V), Math.abs(gradY))
                       : -Math.min(1 * G.initGrad(V), -gradY)) *
@@ -40365,7 +40366,7 @@ var version = "v2-dev";
                 bpm: 140,
               },
               soulless4: {
-              name: "Soulless 4",
+                name: "Soulless 4",
                 author: "Exilelord",
                 fileName: "audio/tracks/exilelord-soulless-4.mp3",
                 bpm: 125,
@@ -65278,6 +65279,56 @@ var version = "v2-dev";
                 ...(createNewsText(message)),
               ];
           }}),
+          competition = S({
+            render({ props: { updateView: e, backToMainMenu: t, }, device: a }) {
+              const i = a.size.width + 2 * a.size.widthMargin,
+                nn = a.size.height + 2 * a.size.heightMargin,
+                s = nn / 2 - 40;
+              
+              return [Uf({
+                  id: "Title",
+                  text: localize("COMPETITION"),
+                  width: 200,
+                  height: 35,
+                  x: -i / 2 + 120,
+                  y: s,
+                }),
+                Fo({
+                  id: "BackButton",
+                  text: localize("BACK"),
+                  width: 80,
+                  height: 40,
+                  onPress: t,
+                  x: -i / 2 + 60,
+                  y: -nn / 2 + 40,
+                }),
+                Fo({
+                  id: "TrailerButton",
+                  text: localize("WATCH TRAILER"),
+                  width: 150,
+                  height: 40,
+                  onPress: ()=>(
+                    zu.openLink("") // link does not exist
+                  ),
+                  x: 0,
+                  y: -nn / 2 + 80,
+                }),
+                n({
+                  text: "Nothing here yet...",
+                  color: ve,
+                  x: 0,
+                  y: 10,
+                  font: {size: 20},
+                }),
+                n({
+                  text: "...But you can help make some levels!",
+                  color: ve,
+                  x: 0,
+                  y: -10,
+                  font: {size: 20},
+                })
+              ];
+          }}),
           Jy = S({
             render({ props: { updateView: e, backToMainMenu: t }, device: a }) {
               const i = a.size.width + 2 * a.size.widthMargin,
@@ -65773,6 +65824,10 @@ var version = "v2-dev";
                 ];
               const E = t.frame / eE(),
                 b = E > 0.9 ? 10 * (E - 0.9) : E < 0.2 ? 5 * (0.2 - E) : 0;
+              if ("competition" === o.type) {
+                  return [competition({ id: "News", updateView: r, backToMainMenu: h,})];
+              
+              }
               if ("main" === o.type) {
                 const a = "requestingAuth" === d.type || "signingIn" === d.type,
                   o = "loggedIn" === d.type && "anon" !== d.auth,
@@ -65798,12 +65853,12 @@ var version = "v2-dev";
                     text: localize("LEVELS"),
                     onPress: () =>
                       r({
-                        type: "levels",
-                        worldsView: { type: "worldsList" },
+                        type: "competition",//"levels",
+                        // worldsView: { type: "worldsList" },
                       }),
                     y: -30,
                     x: -200,
-                    disabled: true,
+                    disabled: false,
                     shadowOffsetX: -1,
                     shadowOffsetY: 0,
                     beatSize: b,
