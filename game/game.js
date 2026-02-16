@@ -33118,7 +33118,7 @@ var version = "v2-dev";
               return { total: e.total, local: 0, multiplier: 0 };
             },
             hitArrow: function (e, t, a) {
-              const i =
+              const i  =
                 t <= 2 * a
                   ? zo.arrowValues.perfect
                   : t <= 4 * a
@@ -33533,11 +33533,9 @@ var version = "v2-dev";
                                 "images/themes/world2/speed-change.png",
                               columns: 4,
                               rows: 2,
-                              maxIndex: t.hitCount ? 8 : 1,
                               frameRate: 3,
                               width: e.speedChange.width,
                               height: e.speedChange.height,
-                              startFrame: 0,
                               df: 0 === t.hitCount ? 0 : e.df || 0,
                             },
                             (t) => {
