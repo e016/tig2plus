@@ -19839,6 +19839,7 @@ var version = "v2-dev";
                           df: e.inGame.df,
                           x: t.x,
                           y: t.y,
+                          theme: e.theme,
                         };
                       },
                       array: () => e.blocks,
@@ -19855,6 +19856,7 @@ var version = "v2-dev";
                             (null === (i = e.inGame) || void 0 === i
                               ? void 0
                               : i.df) || 1);
+                          (t.theme = e.theme || "world2")
                       },
                     }),
                   ];
@@ -19880,7 +19882,7 @@ var version = "v2-dev";
                 () => [
                   Ua.Single(
                     {
-                      fileName: "images/themes/world2/block-explosion.png",
+                      fileName: `images/themes/${t.theme || "world2"}/block-explosion.png`,
                       columns: 3,
                       rows: 2,
                       frameRate: 3,
@@ -20098,6 +20100,7 @@ var version = "v2-dev";
                           df: e.inGame.df,
                           x: t.x,
                           y: t.y,
+                          theme: e.theme
                         };
                       },
                       array: () => e.spikes,
@@ -20137,6 +20140,7 @@ var version = "v2-dev";
                                     df: e.inGame.df,
                                     x: n.x,
                                     y: n.y,
+                                    theme: e.theme,
                                   },
                                   (t) => {
                                     (t.paused = e.inGame.paused),
@@ -20205,7 +20209,7 @@ var version = "v2-dev";
                 () => [
                   Ua.Single(
                     {
-                      fileName: "images/themes/world2/spike-explosion.png",
+                      fileName: `images/themes/${t.theme == "classic" ? "classic" : "world2"}/spike-explosion.png`,
                       columns: 3,
                       rows: 2,
                       frameRate: 3,
@@ -29553,8 +29557,9 @@ var version = "v2-dev";
               "images/themes/world2/blue.png",
               "images/themes/world1/red-outline.png",
               "images/themes/world1/blue-outline.png",
-              "images/themes/world2/block-explosion.png",
+              `images/themes/${e.objects.block || "world2"}/block-explosion.png`,
               "images/themes/world2/spike-explosion.png",
+              "images/themes/classic/spike-explosion.png",
               "images/themes/world2/gun/bullet.png",
               "images/themes/world2/gun/bullet-enemy.png",
               "images/themes/world2/gun/ground.png",
@@ -30111,6 +30116,7 @@ var version = "v2-dev";
                         df: e.inGame.df,
                         x: t.x,
                         y: t.y,
+                        theme: e.theme
                       };
                     },
                     array: () => e.saws,
@@ -30171,6 +30177,7 @@ var version = "v2-dev";
                         df: e.inGame.df,
                         x: t.x,
                         y: t.y,
+                        theme: e.theme
                       };
                     },
                     array: () => e.saws,
@@ -30210,6 +30217,7 @@ var version = "v2-dev";
                                   df: e.inGame.df,
                                   x: i.x,
                                   y: i.y,
+                                  theme: e.theme,
                                 },
                                 (t) => {
                                   (t.paused = e.inGame.paused),
@@ -30388,7 +30396,7 @@ var version = "v2-dev";
                 () => [
                   Ua.Single(
                     {
-                      fileName: "images/themes/world2/spike-explosion.png",
+                      fileName: `images/themes/${t.theme == "classic" ? "classic" : "world2"}/spike-explosion.png`,
                       columns: 3,
                       rows: 2,
                       frameRate: 3,
