@@ -15817,6 +15817,7 @@ var version = "v2-dev";
                   null !== (o = null == e ? void 0 : e.skipMissiles) &&
                   void 0 !== o &&
                   o,
+                isLaser: o == null ? false : e.isLaser
               };
             },
             newBlock: (e) => {
@@ -16467,6 +16468,69 @@ var version = "v2-dev";
             new F.Vector(3),
             new F.Vector(4),
           ]);
+        function laserHitbox(obj, inset) {
+          let w2 = obj.width / 2,
+          h4 = obj.height / 4;
+          var hit = new F.Polygon(new F.Vector(), [
+            new F.Vector(),
+            new F.Vector(1),
+            new F.Vector(2),
+            new F.Vector(3),
+            new F.Vector(4),
+            new F.Vector(5),
+          ]);
+          switch (obj.rotation) {
+            case 0:
+              // why did i do this
+              return (
+            (oe.pos.x = obj.x),
+            (oe.pos.y = obj.y),
+            (oe.points[0].x = -w2),
+            (oe.points[0].y = 0),
+
+            (oe.points[1].x = -w2 + h4),
+            (oe.points[1].y = h4),
+
+            (oe.points[2].x = w2 - h4),
+            (oe.points[2].y = h4),
+
+            (oe.points[3].x = w2),
+            (oe.points[3].y = 0),
+
+            (oe.points[4].x = w2 - h4),
+            (oe.points[4].y = -h4),
+
+            (oe.points[5].x = -w2 + h4),
+            (oe.points[5].y = -h4),
+            oe.setPoints(oe.points),
+            oe
+          );
+            case 90:
+              return (
+            (oe.pos.x = obj.x),
+            (oe.pos.y = obj.y),
+            (oe.points[0].x = 0),
+            (oe.points[0].y = -w2),
+
+            (oe.points[1].x = h4),
+            (oe.points[1].y = -w2 + h4),
+
+            (oe.points[2].x = h4),
+            (oe.points[2].y = w2 - h4),
+
+            (oe.points[3].x = 0),
+            (oe.points[3].y = w2),
+
+            (oe.points[4].x = -h4),
+            (oe.points[4].y = w2 - h4),
+
+            (oe.points[5].x = -h4),
+            (oe.points[5].y = -w2 + h4),
+            oe.setPoints(oe.points),
+            oe
+              );
+          }
+        }
         function ce(e, t) {
           switch (e.rotation) {
             case 0:
@@ -16566,52 +16630,52 @@ var version = "v2-dev";
               ae.setAngle(0),
               ae
             ),
-            getObjectPolygon: (e, t, a = 3) => {
-              switch (e.type) {
+            getObjectPolygon: (obj, t, inset = 3) => {
+              switch (obj.type) {
                 case "spike":
-                  return t
-                    ? te(e.x, e.y, e.width - 2 * a, e.height - 2 * a)
-                    : ce(e, a);
+                  return obj.isLaser ? laserHitbox(obj, inset) : t
+                    ? te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset)
+                    : ce(obj, inset);
                 case "powerup":
                   return re(
-                    e.x,
-                    e.y,
-                    -e.width / 2 + 1,
-                    -e.height / 2 + 1,
-                    e.width / 2 - 1,
-                    -e.height / 2 + 1,
+                    obj.x,
+                    obj.y,
+                    -obj.width / 2 + 1,
+                    -obj.height / 2 + 1,
+                    obj.width / 2 - 1,
+                    -obj.height / 2 + 1,
                     0,
-                    e.height / 2 - 1
+                    obj.height / 2 - 1
                   );
                 case "collectible": {
                   const t = 20,
                     a = 20;
-                  return te(e.x, e.y, t, a);
+                  return te(obj.x, obj.y, t, a);
                 }
                 case "block":
                   return t
-                    ? ce(e, a)
-                    : te(e.x, e.y, e.width - 2 * a, e.height - 2 * a);
+                    ? ce(obj, inset)
+                    : te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset);
                 case "platform":
-                  return te(e.x, e.y, e.width - 2 * a, e.height - 2 * a);
+                  return te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset);
                 case "portal":
-                  return "up" === e.direction || "down" === e.direction
-                    ? te(e.x, e.y, e.height, e.width)
-                    : te(e.x, e.y, e.width, e.height);
+                  return "up" === obj.direction || "down" === obj.direction
+                    ? te(obj.x, obj.y, obj.height, obj.width)
+                    : te(obj.x, obj.y, obj.width, obj.height);
                 case "enemy":
-                  return "walkerHelmet" === e.kind
-                    ? ((i = e.x),
-                      (n = e.y),
-                      (s = -e.width / 2),
-                      (o = -e.height / 2),
-                      (r = e.width / 2),
-                      (l = -e.height / 2),
-                      (c = e.width / 2),
-                      (d = -e.height / 2 + M),
+                  return "walkerHelmet" === obj.kind
+                    ? ((i = obj.x),
+                      (n = obj.y),
+                      (s = -obj.width / 2),
+                      (o = -obj.height / 2),
+                      (r = obj.width / 2),
+                      (l = -obj.height / 2),
+                      (c = obj.width / 2),
+                      (d = -obj.height / 2 + M),
                       0,
-                      (u = e.height / 2 - 1),
-                      (h = -e.width / 2),
-                      (p = -e.height / 2 + M),
+                      (u = obj.height / 2 - 1),
+                      (h = -obj.width / 2),
+                      (p = -obj.height / 2 + M),
                       (le.pos.x = i),
                       (le.pos.y = n),
                       (le.points[0].x = s),
@@ -16626,24 +16690,24 @@ var version = "v2-dev";
                       (le.points[4].y = p),
                       le.setPoints(le.points),
                       le)
-                    : "walker" === e.kind
-                    ? te(e.x, e.y, e.width, e.height - 2 * a)
-                    : te(e.x, e.y, e.width, e.height);
+                    : "walker" === obj.kind
+                    ? te(obj.x, obj.y, obj.width, obj.height - 2 * inset)
+                    : te(obj.x, obj.y, obj.width, obj.height);
                 case "directionChange":
                 case "speedChange":
                 case "flag":
                 case "switchButton":
                 case "spring":
-                  return te(e.x, e.y, e.width, e.height);
+                  return te(obj.x, obj.y, obj.width, obj.height);
                 case "switchPlatform": {
-                  const t = e.height / 2,
-                    i = -t + a,
-                    n = -t + e.width - a,
-                    s = -e.height / 2 + a,
-                    o = e.height / 2 - a;
+                  const t = obj.height / 2,
+                    i = -t + inset,
+                    n = -t + obj.width - inset,
+                    s = -obj.height / 2 + inset,
+                    o = obj.height / 2 - inset;
                   return (
-                    (ee.pos.x = e.x - e.width / 2 + t),
-                    (ee.pos.y = e.y),
+                    (ee.pos.x = obj.x - obj.width / 2 + t),
+                    (ee.pos.y = obj.y),
                     (ee.points[0].x = i),
                     (ee.points[0].y = s),
                     (ee.points[1].x = n),
@@ -16652,12 +16716,12 @@ var version = "v2-dev";
                     (ee.points[2].y = o),
                     (ee.points[3].x = i),
                     (ee.points[3].y = o),
-                    ee.setAngle(B.toRad(-e.rotation)),
+                    ee.setAngle(B.toRad(-obj.rotation)),
                     ee
                   );
                 }
                 case "saw":
-                  return Z(e.x, e.y, e.width / 2);
+                  return Z(obj.x, obj.y, obj.width / 2);
               }
               var i, n, s, o, r, l, c, d, u, h, p;
             },
@@ -20064,7 +20128,37 @@ var version = "v2-dev";
                                 : s.spikeStates) || void 0 === o
                             ? void 0
                             : s.spikeStates[n];
-                        (a.show = !(null == r ? void 0 : r.destroyed)),
+                        (a.show = !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = i.y),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t),
+                          (a.height = i.height * t);
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    E({
+                      fileName: `images/themes/world3/bottom/laser-line.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        (a.show = i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = i.y),
                           (a.rotation = i.rotation),
@@ -20149,7 +20243,7 @@ var version = "v2-dev";
                                 )
                               : y(
                                   {
-                                    fileName: a.isLazer
+                                    fileName: a.isLaser
                                       ? `images/themes/world3/bottom/laser-line.png`
                                       : `images/themes/${e.theme}/spike.png`,
                                     width: a.width * t,
@@ -29546,6 +29640,7 @@ var version = "v2-dev";
               `images/themes/${e.objects.spike}/spike.png`,
               `images/themes/${e.objects.switch}/switch-platform.png`,
               `images/themes/${e.objects.switch}/switch-button.png`,
+              "images/themes/world3/bottom/laser-line.png",
               "images/themes/world2/speed-change.png",
               "images/themes/world1/arrow.png",
               "images/themes/world2/double-jump.png",
@@ -34416,7 +34511,7 @@ var version = "v2-dev";
                       options: [
                         {
                           name: "Up",
-                          selected: !t.isLazer && 0 === t.rotation,
+                          selected: !t.isLaser && 0 === t.rotation,
                           onPress: () => {
                             a.map((j) => {
                               e({
@@ -34426,7 +34521,7 @@ var version = "v2-dev";
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     rotation: 0,
-                                    isLazer: false,
+                                    isLaser: false,
                                   }),
                               });
                             });
@@ -34434,7 +34529,7 @@ var version = "v2-dev";
                         },
                         {
                           name: "Left",
-                          selected: 270 === t.rotation,
+                          selected: !t.isLaser && 270 === t.rotation,
                           onPress: () => {
                             a.map((j) => {
                               e({
@@ -34444,7 +34539,7 @@ var version = "v2-dev";
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     rotation: 270,
-                                    isLazer: false,
+                                    isLaser: false,
                                   }),
                               });
                             });
@@ -34452,7 +34547,7 @@ var version = "v2-dev";
                         },
                         {
                           name: "Down",
-                          selected: 180 === t.rotation,
+                          selected: !t.isLaser && 180 === t.rotation,
                           onPress: () => {
                             a.map((j) => {
                               e({
@@ -34462,7 +34557,7 @@ var version = "v2-dev";
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     rotation: 180,
-                                    isLazer: false,
+                                    isLaser: false,
                                   }),
                               });
                             });
@@ -34470,7 +34565,7 @@ var version = "v2-dev";
                         },
                         {
                           name: "Right",
-                          selected: 90 === t.rotation,
+                          selected: !t.isLaser && 90 === t.rotation,
                           onPress: () => {
                             a.map((j) => {
                               e({
@@ -34480,15 +34575,15 @@ var version = "v2-dev";
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     rotation: 90,
-                                    isLazer: false,
+                                    isLaser: false,
                                   }),
                               });
                             });
                           },
                         },
-                        /*{
+                        {
                           name: "Lazer",
-                          selected: t.isLazer,
+                          selected: t.isLaser,
                           onPress: () => {
                             a.map((j) => {
                               e({
@@ -34498,12 +34593,12 @@ var version = "v2-dev";
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     rotation: 0,
-                                    isLazer: true,
+                                    isLaser: true,
                                   }),
                               });
                             });
                           },
-                        },*/
+                        },
                       ],
                     },
                   ];
@@ -43835,6 +43930,7 @@ var version = "v2-dev";
                 ),
                 Oc(
                   Bc([
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(0), _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(1), _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(1)]),
@@ -44152,19 +44248,21 @@ var version = "v2-dev";
                             })
                           : []
                       ),
-                    spikes: l.map(([e, t, a, i, n]) =>
+                    spikes: l.map(([e, t, a, i, n, laser]) =>
                       n
                         ? $.newMiniSpike({
                             x: e,
                             y: t,
                             rotation: Hd[a],
                             skipMissiles: 1 === i,
+                            isLaser: 1 === laser
                           })
                         : $.newSpike({
                             x: e,
                             y: t,
                             rotation: Hd[a],
                             skipMissiles: 1 === i,
+                            isLaser: 1 === laser
                           })
                     ),
                     platforms: c.map(([e, t, a, i]) =>
@@ -44335,7 +44433,8 @@ var version = "v2-dev";
                           : [e.x, e.y]
                       ),
                     i.spikes.map((e) =>
-                      e.width === $.miniSpikeWidth
+                      e.isLaser ? ([e.x, e.y, ru(e.rotation, Hd), e.skipMissiles ? 1 : 0, +(e.width === $.miniSpikeWidth), 1]
+                      ) : (e.width === $.miniSpikeWidth
                         ? [
                             e.x,
                             e.y,
@@ -44345,7 +44444,7 @@ var version = "v2-dev";
                           ]
                         : e.skipMissiles
                         ? [e.x, e.y, ru(e.rotation, Hd), 1]
-                        : [e.x, e.y, ru(e.rotation, Hd)]
+                        : [e.x, e.y, ru(e.rotation, Hd)])
                     ),
                     i.platforms.map((e) => [
                       e.x,
