@@ -17659,11 +17659,11 @@ var version = "v2-dev";
             id: "world2",
             name: "World 2",
             colour: "#5A20BE",
-            player: Wt.skins.pixel,
+            player: bgOnly ? "blank" : Wt.skins.pixel,
             background: "world2",
             objects: {
-              block: "world2",
-              spike: "world2",
+              block: bgOnly ? "blank" : "world2",
+              spike: bgOnly ? "blank" : "world2",
               platform: "world2",
               dirChange: "world2",
               flag: "world2",
@@ -17686,8 +17686,8 @@ var version = "v2-dev";
             player: bgOnly ? Wt.skins.blank : Wt.skins.default,
             background: "world1",
             objects: {
-              block: "bgOnly" ? "blank" : "world1",
-              spike: "bgOnly" ? "blank" : "world1",
+              block: bgOnly ? "blank" : "world1",
+              spike: bgOnly ? "blank" : "world1",
               platform: "world1",
               dirChange: "world1",
               flag: "world1",
@@ -18777,8 +18777,8 @@ var version = "v2-dev";
                 } else {
                   !d.destroyed &&
                     !d.off &&
-                    c(s) && (blocksKilled++) &&
-                    Na(
+                    c(s) &&
+                    (Na(
                       i,
                       n,
                       Object.assign(Object.assign({}, d), {
@@ -18788,7 +18788,7 @@ var version = "v2-dev";
                       a,
                       r,
                       l
-                    );
+                    ), blocksKilled++);
                 }
               };
             return blocksKilled;
@@ -52346,13 +52346,13 @@ var version = "v2-dev";
                 "arrows" === e.theme.id
                   ? Ho.Single(
                       {
-                        x: et.initialPosition.x * e.playerDir,
+                        x: e.playerX - e.cameraX,
                         y: et.initialPosition.y - e.cameraY,
                         playerYRelative: e.playerY - et.initialPosition.y,
                         isBlank: e.theme.objects.block == "blank"
                       },
                       (t) => {
-                        (t.x = et.initialPosition.x * e.playerDir),
+                        (t.x = e.playerX - e.cameraX),
                         (t.y = et.initialPosition.y - e.cameraY),
                           (t.playerYRelative =
                             e.playerY - et.initialPosition.y);
