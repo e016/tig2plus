@@ -16479,55 +16479,55 @@ var version = "v2-dev";
             new F.Vector(4),
             new F.Vector(5),
           ]);
-          switch (obj.rotation) {
+          switch (obj.rotation % 90) { // just in case
             case 0:
               // why did i do this
               return (
-            (oe.pos.x = obj.x),
-            (oe.pos.y = obj.y),
-            (oe.points[0].x = -w2),
-            (oe.points[0].y = 0),
+            (hit.pos.x = obj.x),
+            (hit.pos.y = obj.y),
+            (hit.points[0].x = -w2 + inset),
+            (hit.points[0].y = 0),
 
-            (oe.points[1].x = -w2 + h4),
-            (oe.points[1].y = h4),
+            (hit.points[1].x = -w2 + h4 + inset),
+            (hit.points[1].y = h4),
 
-            (oe.points[2].x = w2 - h4),
-            (oe.points[2].y = h4),
+            (hit.points[2].x = w2 - h4 - inset),
+            (hit.points[2].y = h4),
 
-            (oe.points[3].x = w2),
-            (oe.points[3].y = 0),
+            (hit.points[3].x = w2 - inset),
+            (hit.points[3].y = 0),
 
-            (oe.points[4].x = w2 - h4),
-            (oe.points[4].y = -h4),
+            (hit.points[4].x = w2 - h4 - inset),
+            (hit.points[4].y = -h4),
 
-            (oe.points[5].x = -w2 + h4),
-            (oe.points[5].y = -h4),
-            oe.setPoints(oe.points),
-            oe
+            (hit.points[5].x = -w2 + h4 + inset),
+            (hit.points[5].y = -h4),
+            hit.setPoints(hit.points),
+            hit
           );
             case 90:
               return (
-            (oe.pos.x = obj.x),
-            (oe.pos.y = obj.y),
-            (oe.points[0].x = 0),
-            (oe.points[0].y = -w2),
+            (hit.pos.x = obj.x),
+            (hit.pos.y = obj.y),
+            (hit.points[0].x = 0),
+            (hit.points[0].y = -w2),
 
-            (oe.points[1].x = h4),
-            (oe.points[1].y = -w2 + h4),
+            (hit.points[1].x = h4),
+            (hit.points[1].y = -w2 + h4),
 
-            (oe.points[2].x = h4),
-            (oe.points[2].y = w2 - h4),
+            (hit.points[2].x = h4),
+            (hit.points[2].y = w2 - h4),
 
-            (oe.points[3].x = 0),
-            (oe.points[3].y = w2),
+            (hit.points[3].x = 0),
+            (hit.points[3].y = w2),
 
-            (oe.points[4].x = -h4),
-            (oe.points[4].y = w2 - h4),
+            (hit.points[4].x = -h4),
+            (hit.points[4].y = w2 - h4),
 
-            (oe.points[5].x = -h4),
-            (oe.points[5].y = -w2 + h4),
-            oe.setPoints(oe.points),
-            oe
+            (hit.points[5].x = -h4),
+            (hit.points[5].y = -w2 + h4),
+            hit.setPoints(hit.points),
+            hit
               );
           }
         }
@@ -20162,8 +20162,8 @@ var version = "v2-dev";
                           (a.x = i.x),
                           (a.y = i.y),
                           (a.rotation = i.rotation),
-                          (a.width = i.width * t),
-                          (a.height = i.height * t);
+                          (a.width = i.width),
+                          (a.height = i.height);
                       },
                       array: () => e.spikes,
                       testId: (t, a) => {
@@ -20246,8 +20246,8 @@ var version = "v2-dev";
                                     fileName: a.isLaser
                                       ? `images/themes/world3/bottom/laser-line.png`
                                       : `images/themes/${e.theme}/spike.png`,
-                                    width: a.width * t,
-                                    height: a.height * t,
+                                    width: a.width * (a.isLaser ? 1 : t),
+                                    height: a.height * (a.isLaser ? 1 : t),
                                     rotation: a.rotation,
                                   },
                                   (e) => {
@@ -34505,11 +34505,44 @@ var version = "v2-dev";
             switch (t.type) {
               case "spike":
                 return (function (e, t, a) {
-                  return [
-                    {
-                      name: "Direction",
-                      options: [
+                  let di =
+                  t.isLaser ? [
                         {
+                          name: "Up-Down",
+                          selected: 90 === t.rotation,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 90,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Left-Right",
+                          selected: 0 === t.rotation,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 0,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+
+                  ] : [{
                           name: "Up",
                           selected: !t.isLaser && 0 === t.rotation,
                           onPress: () => {
@@ -34580,9 +34613,34 @@ var version = "v2-dev";
                               });
                             });
                           },
+                        }];
+                  return [
+                    {
+                      name: "Direction",
+                      options: di,
+                    },
+                    {
+                      name: "Type",
+                      options: [
+                        {
+                          name: "Spike",
+                          selected: !t.isLaser,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    isLaser: false,
+                                  }),
+                              });
+                            });
+                          },
                         },
                         {
-                          name: "Lazer",
+                          name: "Laser",
                           selected: t.isLaser,
                           onPress: () => {
                             a.map((j) => {
@@ -34592,15 +34650,15 @@ var version = "v2-dev";
                                 index: j,
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
-                                    rotation: 0,
+                                    rotation: e.rotation % 90,
                                     isLaser: true,
                                   }),
                               });
                             });
                           },
                         },
-                      ],
-                    },
+                      ]
+                    }
                   ];
                 })(e, t, i);
               case "portal":
