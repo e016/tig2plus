@@ -16510,22 +16510,22 @@ var version = "v2-dev";
             (hit.pos.x = obj.x),
             (hit.pos.y = obj.y),
             (hit.points[0].x = 0),
-            (hit.points[0].y = -w2),
+            (hit.points[0].y = -w2 + inset),
 
             (hit.points[1].x = h4),
-            (hit.points[1].y = -w2 + h4),
+            (hit.points[1].y = -w2 + h4 + inset),
 
             (hit.points[2].x = h4),
-            (hit.points[2].y = w2 - h4),
+            (hit.points[2].y = w2 - h4 - inset),
 
             (hit.points[3].x = 0),
-            (hit.points[3].y = w2),
+            (hit.points[3].y = w2 - inset),
 
             (hit.points[4].x = -h4),
-            (hit.points[4].y = w2 - h4),
+            (hit.points[4].y = w2 - h4 - inset),
 
             (hit.points[5].x = -h4),
-            (hit.points[5].y = -w2 + h4),
+            (hit.points[5].y = -w2 + h4 + inset),
             hit.setPoints(hit.points),
             hit
               );
@@ -17683,11 +17683,11 @@ var version = "v2-dev";
             id: "world1",
             name: "World 1",
             colour: "#050229",
-            player: Wt.skins.default,
+            player: bgOnly ? Wt.skins.blank : Wt.skins.default,
             background: "world1",
             objects: {
-              block: "world1",
-              spike: "world1",
+              block: "bgOnly" ? "blank" : "world1",
+              spike: "bgOnly" ? "blank" : "world1",
               platform: "world1",
               dirChange: "world1",
               flag: "world1",
@@ -17840,10 +17840,10 @@ var version = "v2-dev";
               name: "Arrows",
               colour: "#0F35A1",
               background: "arrows",
-              player: Wt.skins.arrows,
+              player: bgOnly ? Wt.skins.blank : Wt.skins.arrows,
               objects: {
-                block: "world1",
-                spike: "world1",
+                block: bgOnly ? "blank" : "world1",
+                spike: bgOnly ? "blank" : "world1",
                 platform: "world1",
                 dirChange: "world1",
                 flag: "world1",
@@ -18763,7 +18763,7 @@ var version = "v2-dev";
           updateHitDrillState: function (frame, t, a, playerX, playerY, dir, layoutState, r, l, scale) {
             var blocksKilled = 0;
             const c = be.rectTouchesRect({
-              x: playerX + (-$.drillWidth / 4) * scale,
+              x: playerX,
               y: playerY + (-$.punchWidth / 2) * scale,
               width: $.drillWidth * scale,
               height: $.punchWidth * scale,
@@ -29685,6 +29685,7 @@ var version = "v2-dev";
               "images/themes/arrows/arrow.png",
               "images/themes/arrows/arrow-outline.png",
               "images/themes/arrows/arrow-outline-selected.png",
+              `images/themes/blank/bottom/block.png`,
               ...Js([e.player], []),
               ...qs(e.background),
               ...("world2" === e.objects.flag
@@ -33174,7 +33175,7 @@ var version = "v2-dev";
                 (e.showArrows[2] = Xo(t.playerYRelative, 60)),
                 (e.showArrows[3] = Xo(t.playerYRelative, 90));
             },
-            render: ({ state: e }) => [
+            render: ({ state: e, props: x }) => [
               E({
                 fileName: "images/themes/arrows/arrow-outline.png",
                 props: (e, t) => {
@@ -33187,7 +33188,7 @@ var version = "v2-dev";
                   };
                 },
                 update: (e, t) => {
-                  e.show = !t;
+                  e.show = !t && !x.isBlank;
                 },
                 array: () => e.showArrows,
               }),
@@ -33203,7 +33204,7 @@ var version = "v2-dev";
                   };
                 },
                 update: (e, t) => {
-                  e.show = t;
+                  e.show = t && !x.isBlank;
                 },
                 array: () => e.showArrows,
               }),
@@ -52348,6 +52349,7 @@ var version = "v2-dev";
                         x: et.initialPosition.x * e.playerDir,
                         y: et.initialPosition.y - e.cameraY,
                         playerYRelative: e.playerY - et.initialPosition.y,
+                        isBlank: e.theme.objects.block == "blank"
                       },
                       (t) => {
                         (t.x = et.initialPosition.x * e.playerDir),
