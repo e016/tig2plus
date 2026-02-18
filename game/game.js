@@ -20146,7 +20146,7 @@ var version = "v2-dev";
                       },
                     }),
                     E({
-                      fileName: `images/themes/world3/bottom/laser-line.png`,
+                      fileName: `images/themes/${e.theme=="classic"?"classic":e.theme=="world2"?"world2":"world3"}/bottom/laser-line.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -20244,7 +20244,7 @@ var version = "v2-dev";
                               : y(
                                   {
                                     fileName: a.isLaser
-                                      ? `images/themes/world3/bottom/laser-line.png`
+                                      ? `images/themes/${e.theme=="classic"?"classic":e.theme=="world2"?"world2":"world3"}/bottom/laser-line.png`
                                       : `images/themes/${e.theme}/spike.png`,
                                     width: a.width * (a.isLaser ? 1 : t),
                                     height: a.height * (a.isLaser ? 1 : t),
@@ -29641,6 +29641,8 @@ var version = "v2-dev";
               `images/themes/${e.objects.switch}/switch-platform.png`,
               `images/themes/${e.objects.switch}/switch-button.png`,
               "images/themes/world3/bottom/laser-line.png",
+              "images/themes/classic/bottom/laser-line.png",
+              "images/themes/world2/bottom/laser-line.png",
               "images/themes/world2/speed-change.png",
               "images/themes/world1/arrow.png",
               "images/themes/world2/double-jump.png",
