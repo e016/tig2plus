@@ -18940,7 +18940,7 @@ var version = "v2-dev";
             i--,
               (t = t.map((e) => {
                 const { x: t, y: i } = V(
-                  { x: e.x + M, y: e.y + a * M },
+                  { x: e.x + (M / 2), y: e.y + a * (M / 2) },
                   e.snapSize
                 );
                 return $.updateXY(e, t, i);
