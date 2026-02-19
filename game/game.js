@@ -17763,6 +17763,7 @@ var version = "v2-dev";
           ia = Object.assign(Object.assign({}, aa), {
             id: "world4Boss",
             name: "World 4 Boss",
+            colour: "#6d2056",
             background: "world4Boss",
           }),
           na = Object.assign(Object.assign({}, aa), {
@@ -20201,7 +20202,7 @@ var version = "v2-dev";
                       filter: (t, a) => {
                         const i = e.inGame.spikeStates[a];
                         return (
-                          void 0 !== i.destroyed && "missile" !== i.destroyed.by
+                          void 0 !== i?.destroyed && "missile" !== i?.destroyed?.by
                         );
                       },
                       key: (t, a) => e.inGame.indexes[a],
@@ -29655,6 +29656,7 @@ var version = "v2-dev";
               "images/themes/world1/red-outline.png",
               "images/themes/world1/blue-outline.png",
               `images/themes/${e.objects.block || "world2"}/block-explosion.png`,
+              "images/themes/world1/spike-explosion.png",
               "images/themes/world2/spike-explosion.png",
               "images/themes/classic/spike-explosion.png",
               "images/themes/world2/gun/bullet.png",
@@ -30494,7 +30496,7 @@ var version = "v2-dev";
                 () => [
                   Ua.Single(
                     {
-                      fileName: `images/themes/${t.theme == "classic" ? "classic" : "world2"}/spike-explosion.png`,
+                      fileName: `images/themes/${t.theme == "world1" ? "world1" : t.theme == "classic" ? "classic" : "world2"}/spike-explosion.png`,
                       columns: 3,
                       rows: 2,
                       frameRate: 3,
@@ -33157,14 +33159,24 @@ var version = "v2-dev";
               ),
             ],
           }),
+          calculateRGB = function (e) {
+            var rgb = Number.parseInt(e.slice(1), 16),
+               r,
+               g,
+               b,
+               a = 1;
+            (r = rgb >> 16), (g = (rgb >> 8) & 255), (b = 255 & rgb);
+            return {r: r, g: g, b: b}
+          },
           Go = v({
-            init: ({ props: { targetOpacity: e } }) => ({
+            init: ({ props: { targetOpacity: e, targetColor: c, } }) => ({
               opacity: { ref: e },
+              color: { ref: c },
             }),
-            loop({ state: e, props: { targetOpacity: t } }) {
+            loop({ state: e, props: { targetOpacity: t, targetColor: l } }) {
               e.opacity.ref += (t - e.opacity.ref) / 10;
             },
-            render: ({ props: e, state: t }) => e.sprite(t.opacity),
+            render: ({ props: e, state: t }) => e.sprite(t.opacity, t.color),
           }),
           Vo = 25,
           Ho = v({
