@@ -15394,7 +15394,7 @@ var version = "v2-dev";
         function _(e) {
           return (t, a) => ({ type: "native", name: e, props: t, update: a });
         }
-        function v(e) {
+        function makeSprite(e) {
           return {
             Single: function (t, a) {
               return { type: "mutable", spriteObj: e, props: t, update: a };
@@ -15474,9 +15474,10 @@ var version = "v2-dev";
               let s;
               return (
                 !e.numberOfLines || e.numberOfLines <= 1
-                  ? ((s = document.createElement("input")), (s.type = "text"))
-                  : ((s = document.createElement("textarea")),
+                  ? ((s = document.createElement(e.tagName || "input")), (e.tagName || (s.type = "text")))
+                  : ((s = document.createElement(e.tagName || "textarea")),
                     (s.style.resize = "none")),
+                (e.setupElement?.(s)),
                 (s.id = n),
                 (s.style.position = "absolute"),
                 (s.style.boxSizing = "border-box"),
@@ -17068,7 +17069,7 @@ var version = "v2-dev";
               state: { isPressed: a },
             }) => e(!t && a),
           }),
-          _e = v({
+          _e = makeSprite({
             init: () => ({ isPressed: false }),
             loop({ state: e, getInputs: t, props: a, getContext: i }) {
               if (a.disabled) return;
@@ -17260,7 +17261,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Je = v({
+          Je = makeSprite({
             render({ props: e, device: t }) {
               const a = e.width / 100,
                 i = 8 * a,
@@ -17870,7 +17871,7 @@ var version = "v2-dev";
                 dirChange: "world2",
                 flag: "world2",
                 saw: "classic",
-                bottom: "world3",
+                bottom: "classic",
                 switch: "world2",
               },
               isBonusTheme: true,
@@ -19186,7 +19187,7 @@ var version = "v2-dev";
               return { type: "undoChangeTheme", theme: t.properties.theme };
           }
         }
-        const Ya = v({
+        const Ya = makeSprite({
             render({ props: e }) {
               const t = ja(e.frameRate, e.rows, e.columns, e.maxIndex);
               return [
@@ -19207,7 +19208,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Ua = v({
+          Ua = makeSprite({
             init({ props: e }) {
               const t = ja(e.frameRate, e.rows, e.columns, e.maxIndex);
               return {
@@ -19250,7 +19251,7 @@ var version = "v2-dev";
           Va = (e) => e.scale > 0,
           Ha = (e) => e.scale <= e.maxScale,
           //death anim
-          Xa = v({
+          Xa = makeSprite({
             init({ props: e, device: t }) {
               const a = Array.from({ length: 12 }, () => ({
                   angle: 360 * t.random(),
@@ -19333,7 +19334,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          za = v({
+          za = makeSprite({
             init({ device: e, props: t, getContext: a }) {
               const i = Math.round(10 * e.random()) + 10,
                 n = (t.objectX - t.playerX) / i,
@@ -19442,7 +19443,7 @@ var version = "v2-dev";
             },
           }),
           Wa = 6,
-          qa = v({
+          qa = makeSprite({
             init({ device: e, props: t }) {
               if (t.justDestroyed && false !== t.sfx) {
                 const t = st(1, 3, e.random);
@@ -19493,7 +19494,7 @@ var version = "v2-dev";
             ],
           }),
           $a = (e, t) => e >= t - 10,
-          Ja = v({
+          Ja = makeSprite({
             render: ({ props: e }) => [
               O(
                 () => e.theme,
@@ -19929,7 +19930,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Ka = v({
+          Ka = makeSprite({
             init({ props: e, device: t, getContext: a }) {
               if (e.justDestroyed) {
                 const { settings: i } = a(Se);
@@ -19967,7 +19968,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Qa = v({
+          Qa = makeSprite({
             render({ props: e }) {
               if (e.editor)
                 return [
@@ -20109,7 +20110,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Za = v({
+          Za = makeSprite({
             render: ({ props: e }) => [
               O(
                 () => e.theme,
@@ -20290,7 +20291,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          ei = v({
+          ei = makeSprite({
             init({ props: e, device: t, getContext: a }) {
               if (e.justDestroyed) {
                 const { settings: e } = a(Se);
@@ -29704,7 +29705,7 @@ var version = "v2-dev";
                     "images/themes/world2/direction-change-hit.png",
                   ]
                 : []),
-              ...("world3" === e.objects.bottom
+              ...("world3" === e.objects.bottom || "classic" === e.objects.bottom
                 ? [
                     "images/themes/world3/bottom/laser-line.png",
                     "images/themes/world3/bottom/block.png",
@@ -29967,7 +29968,7 @@ var version = "v2-dev";
               "audio/online/xp.wav",
             ],
           },
-          Zs = v({
+          Zs = makeSprite({
             init: ({ props: e }) => ({ wasAlreadyHit: e.wasHit || false }),
             render({ props: e, state: t, getContext: a }) {
               const i = (e) => ("right" === e.direction ? -1 : 1);
@@ -30127,7 +30128,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          eo = v({
+          eo = makeSprite({
             render: ({ props: e }) => [
               O(
                 () => e.theme,
@@ -30482,7 +30483,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          to = v({
+          to = makeSprite({
             init({ props: e, device: t, getContext: a }) {
               if (e.justDestroyed) {
                 const { settings: e } = a(Se);
@@ -30516,7 +30517,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          ao = v({
+          ao = makeSprite({
             init({ props: e }) {
               var t;
               return {
@@ -30844,7 +30845,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          io = v({
+          io = makeSprite({
             render: ({ props: e }) => [
               y(
                 {
@@ -30860,7 +30861,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          no = v({
+          no = makeSprite({
             render: ({ props: e }) => [
               O(
                 () => e.bullet.width,
@@ -30895,7 +30896,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          so = v({
+          so = makeSprite({
             render() {
               const e = Array.from({ length: 6 });
               return [
@@ -31142,7 +31143,7 @@ var version = "v2-dev";
             },
             shouldShoot: go,
           },
-          fo = v({
+          fo = makeSprite({
             render: ({ props: e }) => [
               T(
                 () => null !== e.enemyState.bullet,
@@ -31301,7 +31302,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          yo = v({
+          yo = makeSprite({
             init: () => ({ shooting: false }),
             loop({ state: e, props: t }) {
               t.aboutToShoot && (e.shooting = true);
@@ -31447,7 +31448,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Eo = v({
+          Eo = makeSprite({
             init({ props: e, device: t, getContext: a }) {
               if (e.justDestroyed) {
                 const { settings: e } = a(Se);
@@ -31487,7 +31488,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          bo = v({
+          bo = makeSprite({
             init({ props: e, device: t, getContext: a }) {
               if (e.justDestroyed && !e.mute) {
                 const { settings: e } = a(Se);
@@ -31584,7 +31585,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Io = v({
+          Io = makeSprite({
             render: ({ props: e }) => [
               O(
                 () => e.topColour,
@@ -31731,7 +31732,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          To = v({
+          To = makeSprite({
             render: ({ props: e }) => [
               O(
                 () => e.skin.fileName,
@@ -31768,7 +31769,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Ro = v({
+          Ro = makeSprite({
             init({ props: e, device: t, getContext: a }) {
               if (e.isGameSfx) {
                 const { settings: i } = a(Se);
@@ -31807,7 +31808,7 @@ var version = "v2-dev";
               t.audio(e.fileName).pause();
             },
           }),
-          Oo = v({
+          Oo = makeSprite({
             render({ getContext: e, props: t }) {
               const { animationAssets: a, animationRenderer: i } = e(Ws),
                 n = () => 7.5 * (1 - t.playerScaleY);
@@ -31970,7 +31971,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Co = v({
+          Co = makeSprite({
             render: ({ props: e, getContext: t }) => [
               O(
                 () => e.powerup.item,
@@ -32152,7 +32153,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          wo = v({
+          wo = makeSprite({
             render: ({ props: e, getContext: t }) => [
               O(
                 () => e.powerup.item,
@@ -32248,7 +32249,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Ao = v({
+          Ao = makeSprite({
             init: () => ({
               didJustStartUsing: true,
               didJustFinishUsing: false,
@@ -32408,7 +32409,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          ko = v({
+          ko = makeSprite({
             render({ props: e, getContext: t }) {
               switch (e.powerup.item) {
                 case "doubleJump":
@@ -32517,7 +32518,7 @@ var version = "v2-dev";
               }
             },
           }),
-          No = v({
+          No = makeSprite({
             render: ({ props: e }) =>
               "jetpack" === e.powerup.item
                 ? [
@@ -32542,7 +32543,7 @@ var version = "v2-dev";
                   ]
                 : [],
           }),
-          xo = v({
+          xo = makeSprite({
             init: () => ({ justHitTimer: 0 }),
             loop({ props: e, state: t }) {
               e.justHit && (t.justHitTimer = 60),
@@ -32739,7 +32740,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Po = v({
+          Po = makeSprite({
             render: ({ props: e }) => [
               E({
                 fileName: `images/themes/${e.theme}/switch-platform.png`,
@@ -32802,7 +32803,7 @@ var version = "v2-dev";
             ],
           }),
           Mo = S({ render: ({ props: { sprites: e } }) => e }),
-          Lo = v({ render: ({ props: { sprites: e } }) => e }),
+          Lo = makeSprite({ render: ({ props: { sprites: e } }) => e }),
           Do = S({
             init({
               props: {
@@ -32900,7 +32901,7 @@ var version = "v2-dev";
               document.removeEventListener("wheel", e.onScroll, false);
             },
           }),
-          Bo = v({
+          Bo = makeSprite({
             init({
               props: {
                 initScrollY: e = 0,
@@ -33046,7 +33047,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          Yo = v({
+          Yo = makeSprite({
             render: ({ props: e, device: t }) => [
               _e.Single(
                 {
@@ -33139,7 +33140,7 @@ var version = "v2-dev";
             render: ({ props: { sprite: e, fadeFrames: t = 10 }, state: a }) =>
               0 === a.fade ? [] : e(a.fade / t),
           }),
-          jo = v({
+          jo = makeSprite({
             init({ props: { initShow: e = false, fadeFrames: t = 10 } }) {
               const a = e ? t : 0;
               return { fade: a, opacity: { ref: a / t } };
@@ -33168,7 +33169,7 @@ var version = "v2-dev";
             (r = rgb >> 16), (g = (rgb >> 8) & 255), (b = 255 & rgb);
             return {r: r, g: g, b: b}
           },
-          Go = v({
+          Go = makeSprite({
             init: ({ props: { targetOpacity: e, targetColor: c, } }) => ({
               opacity: { ref: e },
               color: { ref: c },
@@ -33179,7 +33180,7 @@ var version = "v2-dev";
             render: ({ props: e, state: t }) => e.sprite(t.opacity, t.color),
           }),
           Vo = 25,
-          Ho = v({
+          Ho = makeSprite({
             init: () => ({ showArrows: [false, false, false, false] }),
             loop({ state: e, props: t }) {
               (e.showArrows[0] = Xo(t.playerYRelative, 0)),
@@ -33248,7 +33249,7 @@ var version = "v2-dev";
             },
             arrowValues: { perfect: 400, great: 250, ok: 100 },
           },
-          Wo = v({
+          Wo = makeSprite({
             render: ({ props: e }) => [
               qo.Array({
                 props: (t, a) => {
@@ -33281,7 +33282,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          qo = v({
+          qo = makeSprite({
             render: ({ props: e, getContext: t }) =>
               e.wasPickedUp
                 ? []
@@ -33491,7 +33492,7 @@ var version = "v2-dev";
                     ),
                   ],
           }),
-          $o = v({
+          $o = makeSprite({
             init: () => ({ hitCount: 0 }),
             loop({ props: e, state: t }) {
               e.justHit && t.hitCount++;
@@ -33546,7 +33547,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Jo = v({
+          Jo = makeSprite({
             render({ props: e, getContext: t }) {
               var a;
               if (e.isEditor)
@@ -33613,7 +33614,7 @@ var version = "v2-dev";
             },
           }),
           Ko = ["green", "blue", "red", "yellow"],
-          Qo = v({
+          Qo = makeSprite({
             render: ({ props: e }) => [
               O(
                 () => e.portal.pairId,
@@ -33632,7 +33633,7 @@ var version = "v2-dev";
             ],
           }),
           Zo = (e) => e.replace(/([a-z])([A-Z])/g, "$1 $2").toLocaleUpperCase(),
-          er = v({
+          er = makeSprite({
             init: () => ({ hitCount: 0 }),
             loop({ props: e, state: t }) {
               e.justHit && t.hitCount++;
@@ -37182,7 +37183,7 @@ var version = "v2-dev";
               }
             return { gridLinesVert: o, gridLinesHoriz: r, beatLines: d };
           },
-          Xr = v({
+          Xr = makeSprite({
             init({ props: e, device: t }) {
               const a =
                   t.size.fullHeight / e.parentOffset.scale + 2 * G.jumpDistance,
@@ -38352,7 +38353,7 @@ var version = "v2-dev";
               });
           }
         }
-        const Qr = v({
+        const Qr = makeSprite({
             init({ props: e }) {
               const t = (t) => {
                 0 === t.deltaMode && e.onScaleDelta(t.deltaY);
@@ -38517,7 +38518,7 @@ var version = "v2-dev";
               isGravity: e.isGravity
             };
           },
-          al = v({
+          al = makeSprite({
             render: ({ props: e }) => [
               R(
                 () => e.hidden,
@@ -39811,7 +39812,7 @@ var version = "v2-dev";
                       : f.objects) && void 0 !== y
                   ? y
                   : ((e, t, a) => {
-                      if ("world3" === a) {
+                      if ("world3" === a || "classic" === a) {
                         const a = [];
                         for (
                           let i = e - Ca.inViewAreaWidth;
@@ -49222,7 +49223,7 @@ var version = "v2-dev";
             }
           },
           eg = 12,
-          tg = v({
+          tg = makeSprite({
             render: ({ props: e }) => [
               ag.Single(
                 {
@@ -49302,7 +49303,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          ag = v({
+          ag = makeSprite({
             init: ({ props: e, device: t }) => ({
               followY: e.playerY,
               width: 1,
@@ -49481,7 +49482,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          ig = v({
+          ig = makeSprite({
             init: ({ props: e }) => ({
               path: Array.from({ length: eg }, () => ({
                 x: 40,
@@ -49545,7 +49546,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          ng = v({
+          ng = makeSprite({
             render: ({ props: e, device: t }) => [
               E({
                 fileName: "images/online/name-arrow.png",
@@ -49612,7 +49613,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          sg = v({
+          sg = makeSprite({
             init: ({ props: e }) => ({ fade: 0, text: e.text }),
             loop({ props: e, state: t }) {
               if (e.text !== t.text) {
@@ -49645,7 +49646,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          rg = v({
+          rg = makeSprite({
             init({
               device: { random: e },
               props: { element: t, halfDeviceWidth: a, halfDeviceHeight: i },
@@ -49729,7 +49730,7 @@ var version = "v2-dev";
             return o ? a * r : r;
           },
           cg = 950,
-          dg = v({
+          dg = makeSprite({
             init: ({ props: { playerX: e } }) =>
               e < 0
                 ? { startX1: e, startX2: e + cg }
@@ -49751,7 +49752,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          ug = v({
+          ug = makeSprite({
             render({ props: e, getContext: t }) {
               switch (e.bossState.type) {
                 case "robot":
@@ -50215,7 +50216,7 @@ var version = "v2-dev";
               }
             },
           }),
-          hg = v({
+          hg = makeSprite({
             render({ props: e, getContext: t }) {
               switch (e.bossState.type) {
                 case "flying":
@@ -50277,7 +50278,7 @@ var version = "v2-dev";
               }
             },
           }),
-          pg = v({
+          pg = makeSprite({
             render: ({ props: e }) =>
               "pixel" === e.bossState.type
                 ? [
@@ -50314,7 +50315,7 @@ var version = "v2-dev";
                   ]
                 : [],
           }),
-          gg = v({
+          gg = makeSprite({
             init: () => ({ isGunOut: false, gunFired: false }),
             render: ({ props: e, state: t }) => [
               R(
@@ -50432,7 +50433,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          mg = v({
+          mg = makeSprite({
             init: () => ({
               step: 1,
               explosions: [
@@ -50579,7 +50580,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          fg = v({
+          fg = makeSprite({
             render({ getContext: e, props: t }) {
               const { animationAssets: a, animationRenderer: i } = e(Ws);
               return [
@@ -50660,7 +50661,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          yg = v({
+          yg = makeSprite({
             render: ({ props: e }) => [
               y(
                 {
@@ -50682,7 +50683,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Eg = v({
+          Eg = makeSprite({
             render({ props: e }) {
               const t =
                 "topEntry" === e.tile.type
@@ -50716,7 +50717,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          bg = v({
+          bg = makeSprite({
             render: ({ props: e }) => [
               Hs(
                 {
@@ -50745,7 +50746,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Sg = v({
+          Sg = makeSprite({
             render: ({ props: e }) => [
               Hs(
                 {
@@ -50774,7 +50775,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Ig = v({
+          Ig = makeSprite({
             render({ props: e, device: t }) {
               const a = Array.from({ length: 25 }).map((e, t) => 38 * t);
               return e.narrowLines
@@ -50831,7 +50832,7 @@ var version = "v2-dev";
                   ];
             },
           }),
-          _g = v({
+          _g = makeSprite({
             init: ({ device: e, props: t }) => ({
               ash: Array.from({ length: 20 }).map(() => ({
                 x:
@@ -50897,7 +50898,7 @@ var version = "v2-dev";
             };
           },
           //arrows
-          arrowTheme = v({
+          arrowTheme = makeSprite({
             init({ device: e }) {
               const t = [],
                 a = be.rectTouchesRect({
@@ -51150,7 +51151,7 @@ var version = "v2-dev";
                                         : j.color == "#000000" ? 0.8 : 0.4;
                                   }
                             )),
-          xg = v({
+          xg = makeSprite({
             render({ props: e, device: t }) {
               const a = (() => {
                 switch (e.theme.id) {
@@ -52343,7 +52344,7 @@ var version = "v2-dev";
               return bg;
             },
           }),
-          Pg = v({
+          Pg = makeSprite({
             render({ props: e, device: t }) {
               const a = (() => {
                 switch (e.theme.id) {
@@ -52840,7 +52841,7 @@ var version = "v2-dev";
               "#000000": "#000000",
             };
           },
-          Hg = v({
+          Hg = makeSprite({
             render({ props: e, device: t }) {
               const darker = (col, amt) => {
                 var num = parseInt(col.substring(1), 16);
@@ -52915,7 +52916,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Xg = v({
+          Xg = makeSprite({
             render({ props: e, device: t }) {
               var a = e.isRed ? "#a20e05" : "#40a5de",
                 i = e.isRed ? 0.7 : 0.5;
@@ -52959,7 +52960,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          zg = v({
+          zg = makeSprite({
             render: ({ device: e }) => [
               p(
                 {
@@ -53009,7 +53010,7 @@ var version = "v2-dev";
               thickness: 1 + 2 * e(),
             };
           },
-          qg = v({
+          qg = makeSprite({
             init: ({ device: e }) => ({
               stars: [Wg(e.random)],
               newStarTimer: 60,
@@ -53061,7 +53062,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          $g = v({
+          $g = makeSprite({
             render: ({ props: e }) => [
               p({ height: e.height }, (t) => {
                 (t.width = e.width),
@@ -53072,7 +53073,7 @@ var version = "v2-dev";
             ],
           }),
           Jg = { left: 0, up: 90, right: 180, down: 270 },
-          Kg = v({
+          Kg = makeSprite({
             init: () => ({ player2X: 0, player2Y: 0 }),
             loop({
               props: { playerX: e, playerY: t, touchingPortals: a },
@@ -53161,7 +53162,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Qg = v({
+          Qg = makeSprite({
             render: ({ props: e }) => [
               To.Single(
                 {
@@ -53197,7 +53198,7 @@ var version = "v2-dev";
             }
           },
           em = (e) => (B.isEven((e + 90) / 180) ? -1 : 1),
-          tm = v({
+          tm = makeSprite({
             render: ({ props: e }) => [
               y(
                 {
@@ -53211,7 +53212,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          am = v({
+          am = makeSprite({
             init: ({ props: e }) => ({
               fade: 0,
               jumpOut: 0,
@@ -53314,7 +53315,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          im = v({
+          im = makeSprite({
             render: ({ props: e, device: t }) => [
               T(
                 () => e.highScore > 0,
@@ -53371,7 +53372,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          nm = v({
+          nm = makeSprite({
             render: ({ props: e }) => [
               O(
                 () => e.hasStarted,
@@ -53388,7 +53389,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          sm = v({
+          sm = makeSprite({
             render: ({ props: e }) => [
               E({
                 fileName: `images/player/skins/dark/${e.fileName}.png`,
@@ -53472,7 +53473,7 @@ var version = "v2-dev";
             offCamera: p,
           };
         }
-        const rm = v({
+        const rm = makeSprite({
             render: ({ props: e }) => [
               E({
                 fileName: "images/online/name-arrow.png",
@@ -53529,7 +53530,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          lm = v({
+          lm = makeSprite({
             init: () => ({
               fade: 0,
               text: "",
@@ -53598,7 +53599,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          cm = v({
+          cm = makeSprite({
             render: ({ device: e, props: t, getContext: a }) => [
               xg.Single(
                 {
@@ -53917,7 +53918,7 @@ var version = "v2-dev";
                 : null,
             ],
           }),
-          dm = v({
+          dm = makeSprite({
             render({ props: e }) {
               const t = [];
               return [
@@ -54651,7 +54652,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          um = v({
+          um = makeSprite({
             render: ({ device: e, props: t }) =>
               bgOnly
                 ? []
@@ -54948,7 +54949,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Sm = v({
+          Sm = makeSprite({
             init({
               props: { onModalClose: e, onPurchaseComplete: t },
               device: a,
@@ -55142,7 +55143,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          vm = v({
+          vm = makeSprite({
             init: () => ({ didRequest: false }),
             loop({ state: e, props: t, getContext: a }) {
               var i;
@@ -55250,7 +55251,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          Rm = v({
+          Rm = makeSprite({
             render: ({ props: e, device: t }) => [
               _e.Single(
                 {
@@ -55328,7 +55329,7 @@ var version = "v2-dev";
               ),
             ],
           });
-        const Om = v({
+        const Om = makeSprite({
             init({ getContext: e }) {
               const { settings: t } = e(Se);
               return {
@@ -55802,7 +55803,7 @@ var version = "v2-dev";
               );
             },
           }),
-          Cm = v({
+          Cm = makeSprite({
             render: ({ props: e }) => [
               Se.Single({
                 context: () => e.globalContextVal,
@@ -55818,7 +55819,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          wm = v({
+          wm = makeSprite({
             loop({ props: e, getInputs: t, getContext: a }) {
               const { pointer: i } = t();
               if (i.pressed && i.y > -15 && i.y < 15) {
@@ -55869,7 +55870,7 @@ var version = "v2-dev";
             l((i = i.apply(e, t || [])).next());
           });
         };
-        const km = v({
+        const km = makeSprite({
             init: () => ({ boostersMenuOpen: false }),
             loop({ props: e, getInputs: t }) {
               !e.paused && t().keysJustPressed.Escape && e.onPause();
@@ -55965,7 +55966,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Nm = v({
+          Nm = makeSprite({
             init: ({ props: { onReset: e, onEndGame: t } }) => ({
               xPositions:
                 e || t
@@ -56094,7 +56095,7 @@ var version = "v2-dev";
         }
         const Pm = 110,
           Mm = 40,
-          Lm = v({
+          Lm = makeSprite({
             init: ({ props: e, getState: t }) =>
               e.booster
                 ? {
@@ -56324,7 +56325,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Dm = v({
+          Dm = makeSprite({
             render: ({ props: e }) => [
               m(
                 {
@@ -56413,7 +56414,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Bm = v({
+          Bm = makeSprite({
             init({ props: e, device: t, getState: a, getContext: i }) {
               const { online: n } = i(Se);
               return (
@@ -56632,7 +56633,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          Fm = v({
+          Fm = makeSprite({
             init: () => ({ arrowY: 0 }),
             loop({ state: e }) {
               (e.arrowY += 0.3), e.arrowY > 10 && (e.arrowY = -10);
@@ -56799,7 +56800,7 @@ var version = "v2-dev";
           pf = function (e, t) {},
           gf = function () {},
           mf = function (e) {};
-        const ff = v({
+        const ff = makeSprite({
           init({ getContext: e, device: t, props: a }) {
             if ((t.audio("audio/levels/level-complete.wav").play(0), a.world)) {
               const { online: i, achievementUnlocked: n } = e(Se),
@@ -56967,7 +56968,7 @@ var version = "v2-dev";
             highScore: a,
           };
         }
-        const Ef = v({
+        const Ef = makeSprite({
             render: ({ props: { attempts: e } }) => [
               qe({ width: 500, height: 100, fillColor: Ce }),
               qe({ width: 480, height: 80, fillColor: ve }),
@@ -56987,7 +56988,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          bf = v({
+          bf = makeSprite({
             render: ({ props: { attempts: e, prevBestAttempts: t } }) => [
               qe({ width: 500, height: 140, fillColor: Ce }),
               qe({ width: 480, height: 120, fillColor: ve }),
@@ -57034,7 +57035,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          Sf = v({
+          Sf = makeSprite({
             render: ({ props: { attempts: e, score: t, isHighScore: a } }) => [
               qe({ width: 500, height: 140, fillColor: Ce }),
               qe({ width: 480, height: 120, fillColor: ve }),
@@ -57064,7 +57065,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          If = v({
+          If = makeSprite({
             render: ({ props: { attempts: e, score: t, highScore: a } }) => [
               qe({ width: 500, height: 160, fillColor: Ce }),
               qe({ width: 480, height: 140, fillColor: ve }),
@@ -57154,7 +57155,7 @@ var version = "v2-dev";
                   height: 49,
                 };
           };
-        const vf = v({
+        const vf = makeSprite({
             init({ device: e, props: t, getState: a, getContext: i }) {
               var n, s, o, r, l, c;
               let d;
@@ -59076,7 +59077,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Bf = v({
+          Bf = makeSprite({
             render: ({ props: e, device: t }) => [
               Se.Single({
                 context: () => e.globalContextVal,
@@ -59097,7 +59098,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          Ff = v({
+          Ff = makeSprite({
             render: ({ props: e }) => [
               Se.Single({
                 context: () => e.globalContextVal,
@@ -62094,7 +62095,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          _y = v({
+          _y = makeSprite({
             render: ({ props: e }) => [
               c(
                 {
@@ -62342,7 +62343,7 @@ var version = "v2-dev";
               _m({ id: "GoOnline", y: -t / 2 + 40 }),*/
             ],
           }),
-          Ry = v({
+          Ry = makeSprite({
             render: ({ props: e }) => [
               Se.Single({
                 context: () => e.globalContextVal,
@@ -65431,7 +65432,7 @@ var version = "v2-dev";
               function createNewsText(m) {
                 const length = m.split("\n").length,
                 start = (length + 1) / 2 - 1,
-                size = 15;
+                size = 20;
 
                 return m.split("\n").map((message, i)=>(n({
                         font: {size: size},
@@ -65439,6 +65440,7 @@ var version = "v2-dev";
                         color: "white",
                         y: (start * size)-((i) * size),
                 })),)
+                
               };
               return [Uf({
                   id: "Title",
@@ -65473,6 +65475,39 @@ var version = "v2-dev";
                   height: 35,
                   x: -i / 2 + 120,
                   y: s,
+                }),
+                P({
+                  id: "TrailerVideo",
+                  fontName: "Montserrat",
+                  fontSize: 15,
+                  text: "",
+                  onChangeText: () => void 0,
+                  color: Be,
+                  align: "left",
+                  width: 400,
+                  x: 0,
+                  y: -50,
+                  tagName: "iframe",
+                  numberOfLines: 15,
+                  setupElement: (e) => {
+                    e.src = "https://www.youtube-nocookie.com/embed/ZMdJYx6dDaU?si=142UWuBZYSqP86Q1";
+                    e.style.padding = "0px";
+                    e.width = "560";
+                    e.height = "315";
+                    e.title = "Competition Trailer";
+                    e.frameborder = "0";
+                    e.setAttribute("allow", `
+    accelerometer;
+    autoplay;
+    clipboard-write;
+    encrypted-media;
+    gyroscope;
+    picture-in-picture;
+    web-share;
+  `);
+  e.setAttribute("refererpolicy", "strict-origin-when-cross-origin");
+  e.setAttribute("allowfullscreen", "true")
+                  }
                 }),
                 Fo({
                   id: "BackButton",
@@ -66544,7 +66579,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          iE = v({
+          iE = makeSprite({
             render: ({ props: e }) => [
               Se.Single({
                 context: () => e.globalContextVal,
@@ -66891,7 +66926,7 @@ var version = "v2-dev";
               }
             }
           },
-          bE = v({
+          bE = makeSprite({
             init: ({ props: e }) => ({
               cameraY: e.viewingPlayer.state.mutValues.levelState.playerY,
               cameraXOffset: 0,
@@ -67088,7 +67123,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          SE = v({
+          SE = makeSprite({
             render: ({ props: e }) => [
               qe({
                 width: 240,
@@ -67142,7 +67177,7 @@ var version = "v2-dev";
               ),
             ],
           }),
-          IE = v({
+          IE = makeSprite({
             init: ({ props: e }) => ({
               timerText: null !== e.timeoutTimer ? _E(e.timeoutTimer) : null,
             }),
@@ -67224,7 +67259,7 @@ var version = "v2-dev";
         function _E(e) {
           return B.formatSeconds(Math.max(0, Math.round(e / 60)));
         }
-        const vE = v({
+        const vE = makeSprite({
             init: ({ props: { delayFrames: e, shouldShow: t } }) => ({
               timer: t ? e : 0,
             }),
@@ -67240,7 +67275,7 @@ var version = "v2-dev";
             loop: ({ state: e }) => (e.timer > 0 ? { timer: e.timer - 1 } : e),
             render: ({ props: e, state: t }) => (t.timer > 0 ? [] : e.sprites),
           }),
-          RE = v({
+          RE = makeSprite({
             init({ props: e, device: t }) {
               var a;
               const i = e.rankingsByIndex
@@ -67411,7 +67446,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          OE = v({
+          OE = makeSprite({
             render: ({ props: e }) => [
               d({
                 props: (e, t) => ({
@@ -67428,7 +67463,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          CE = v({
+          CE = makeSprite({
             render: ({ props: e }) => [
               Se.Single({
                 context: () => e.globalContextVal,
@@ -67463,7 +67498,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          wE = v({
+          wE = makeSprite({
             init({
               props: e,
               getState: t,
@@ -69789,7 +69824,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          BE = v({
+          BE = makeSprite({
             init: ({ getState: e, preloadFiles: t, props: a, device: i }) => ({
               spineContext: ("string" == typeof a.level
                 ? Hf(a.level)
@@ -69936,7 +69971,7 @@ var version = "v2-dev";
                 : Gs(e.spineContext.animationAssets);
             },
           }),
-          FE = v({
+          FE = makeSprite({
             init: ({ getState: e, preloadFiles: t, props: a, device: i }) => ({
               spineContext: Xf(
                 a.level,
