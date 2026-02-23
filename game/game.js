@@ -17530,7 +17530,7 @@ var version = "v2-dev";
             size: 67,
             trail: ct({ form: "pixel" }),
           },
-          Yt = { name: "Dreamy", fileName: "dreamy", size: 30, trail: ct() },
+          Yt = { name: "Dreamy", fileName: "dreamy", size: 31, trail: ct() },
           Ut = {
             name: "Boss 1",
             fileName: "boss1",
