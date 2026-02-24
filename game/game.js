@@ -38116,6 +38116,7 @@ var version = "v2-dev";
                 isLoading: y,
                 playerSkin: E,
               },
+              getContext
             }) {
               if (y)
                 return [
@@ -38139,6 +38140,7 @@ var version = "v2-dev";
                 _ = $.getBorderDimensions(b),
                 { objects: v, player: T } = g.properties.theme,
                 R = "default" === E.fileName ? T : E;
+                overlapObjects = getContext(Se).settings.overlapObjects;
               return [
                 Xr.Single({ id: "GridLines", parentOffset: o }),
                 Ja.Single({ id: "Blocks", blocks: h.blocks, theme: v.block }),
@@ -39782,9 +39784,7 @@ var version = "v2-dev";
             }
             U.gravityHitObject = U.gravity > 0 ? (null) : ce.hitObject;
             if ((null !== Q && !J) || U.crashed || -1 !== touchedSpring) {
-              if (U.gravity > 0) {
-                U.isGravity = false;
-              }
+              
               const e = be.pointInBox({
                 x: U.playerX,
                 y: U.playerY - (15 * U.playerScale),
@@ -39812,6 +39812,9 @@ var version = "v2-dev";
             }
             const ue = Ca.getAllDeadlyObjects(z, W);
             if (null !== Q) {
+              if (U.gravity > 0) {
+                U.isGravity = false;
+              }
               const e = G.getOvershootPercent(U.playerY - Q, U.playerGradY, j);
               if (X) {
                 const e = Math.abs(U.playerRot % 360);
@@ -45312,11 +45315,12 @@ var version = "v2-dev";
                 ])
               ),
               fc,
-              nd.tuple([yc, yc, yc, yc, yc, yc, fc]),
+              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
               Oc(Gc([mc, mc])),
             ]),
             uncompress: (e) => {
-              const [t, a, [i, n, s, o, r, l, c], d] = e;
+              console.warn(e)
+              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror], d] = e;
               return {
                 levelsProgress: t.map(
                   ([e, t, a, [i, n, s], [o, r], l, c, d]) => {
@@ -45346,6 +45350,9 @@ var version = "v2-dev";
                   hideUi: r,
                   muteMenuMusic: l,
                   headphonesDelay: c,
+                  overlapObjects: overlap || false,
+                  tig1menu: tm || false,
+                  mirrorMenuButton: mirror || false
                 },
                 friendRequests: d.map(([e, t]) => ({
                   playerName: t,
@@ -45381,7 +45388,9 @@ var version = "v2-dev";
                 e.settings.hideUi,
                 e.settings.muteMenuMusic,
                 e.settings.headphonesDelay,
-                e.settings.overlapObjects,
+                e.settings.overlapObjects || false,
+                e.settings.tig1menu || false,
+                e.settings.mirrorMenuButton || false,
               ],
               e.friendRequests.map((e) => [e.profileId, e.playerName]),
             ],
@@ -49038,6 +49047,7 @@ var version = "v2-dev";
               const e = yield xp(t, i);
               if (e instanceof Error) {
                 const t = `Error loading saved data: ${e.message}`;
+                console.error(e);
                 return (
                   null == a || a.ok(t),
                   Ql(t),
@@ -49047,6 +49057,7 @@ var version = "v2-dev";
               return { data: e.data, dateUpdated: e.dateUpdated };
             } catch (e) {
               const t = `Error loading saved data: ${e.message}`;
+              console.error(e);
               return (
                 null == a || a.ok(t),
                 Ql(t),
@@ -55505,7 +55516,7 @@ var version = "v2-dev";
                     {
                       containerHeight: a.size.fullHeight - 70 + 50,
                       containerWidth: a.size.fullWidth,
-                      contentHeight: 550,
+                      contentHeight: 650,
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
@@ -55838,7 +55849,7 @@ var version = "v2-dev";
                               (e.noPress = o.ref);
                           }
                         ),
-                        /*Rm.Single(
+                        Rm.Single(
                           {
                             text: "MIRROR MENU BUTTON",
                             selected: false,
@@ -55850,7 +55861,7 @@ var version = "v2-dev";
                             },
                             width: 250,
                             height: 40,
-                            y: -550,
+                            y: -600,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -55858,7 +55869,7 @@ var version = "v2-dev";
                             (e.selected = a.mirrorMenuButton),
                               (e.noPress = o.ref);
                           }
-                        ),*/
+                        ),
                       ],
                     },
                     (e) => {
@@ -56025,12 +56036,12 @@ var version = "v2-dev";
                   {
                     hidden: n.hideUi,
                     onPress: e.onPause,
-                    x: -a.size.fullWidth / 2 + 50,
+                    x: (-a.size.fullWidth / 2 + 50) * (n.mirrorMenuButton ? -1 : 1),
                     y: a.size.fullHeight / 2 - 50,
                   },
                   (e) => {
                     (e.hidden = i(Se).settings.hideUi),
-                      (e.x = -a.size.fullWidth / 2 + 50),
+                      (e.x = (-a.size.fullWidth / 2 + 50) * (i(Se).settings.mirrorMenuButton ? -1 : 1)),
                       (e.y = a.size.fullHeight / 2 - 50);
                   }
                 ),
@@ -56047,11 +56058,11 @@ var version = "v2-dev";
                         },
                         width: Pm,
                         height: Mm,
-                        x: a.size.fullWidth / 2 - 80,
+                        x: (a.size.fullWidth / 2 - 80) * (n.mirrorMenuButton ? -1 : 1),
                         y: a.size.fullHeight / 2 - 50,
                       },
                       (e) => {
-                        (e.x = a.size.fullWidth / 2 - 80),
+                        (e.x = (a.size.fullWidth / 2 - 80) * (i(Se).settings.mirrorMenuButton ? -1 : 1)),
                           (e.y = a.size.fullHeight / 2 - 50);
                       }
                     ),
@@ -58457,6 +58468,7 @@ var version = "v2-dev";
               updateState: u,
               getContext: h,
             }) {
+              
               const p = e.size.width + 2 * e.size.widthMargin,
                 g = e.size.height + 2 * e.size.heightMargin,
                 m = [
