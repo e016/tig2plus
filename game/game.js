@@ -15420,26 +15420,26 @@ var version = "v2-dev";
             },
           };
         }
-        const T = (e, t) => ({
+        const ifConditional = (e, t) => ({
             type: "conditional",
             condition: e,
             trueSprites: t,
             falseSprites: () => [],
           }),
-          R = (e, t, a) => ({
+          conditional = (e, t, a) => ({
             type: "conditional",
             condition: e,
             trueSprites: t,
             falseSprites: a,
           }),
-          O = (e, t) => ({ type: "onChange", value: e, sprites: t }),
-          C = (e) => ({
+          onChange = (e, t) => ({ type: "onChange", value: e, sprites: t }),
+          circleMask = (e) => ({
             type: "circleMask",
             radius: e.radius,
             x: e.x || 0,
             y: e.y || 0,
           }),
-          w = (e) => ({
+          rectangleMask = (e) => ({
             type: "rectangleMask",
             width: e.width,
             height: e.height,
@@ -17095,7 +17095,7 @@ var version = "v2-dev";
                   : (e.isPressed = false);
             },
             render: ({ props: e, state: t }) => [
-              R(
+              conditional(
                 () => t.isPressed && !e.disabled,
                 () => e.sprites(true),
                 () => e.sprites(false)
@@ -18620,8 +18620,8 @@ var version = "v2-dev";
               return { type: "collectibleState", wasPickedUp: false };
           }
         }
-        const Aa = ["saws", "blocks", "spikes", "enemies"],
-          ka = Aa.filter((e) => "blocks" !== e);
+        const destroyableObjects = ["saws", "blocks", "spikes", "enemies"],
+          destroyableDeadlyObjects = destroyableObjects.filter((e) => "blocks" !== e);
         function Na(e, t, a, i, n, s, o) {
           let r = e;
           o &&
@@ -18702,31 +18702,35 @@ var version = "v2-dev";
               "platforms",
             ].includes(e);
           },
-          updateHitBulletState: function (e, t, a, i, n, s, o) {
-            for (let r = 0; r < i.length; r++) {
-              const l = be.rectTouchesRect(i[r]);
-              for (const c of Aa)
-                for (let d = 0; d < t[c].length; d++) {
-                  const u = t[c][d],
-                    h = a[c][d];
-                  if (h?.steel && l(u)) {
-                    return Na(c, d, h, n, a, s, o), void i.splice(r, 1);
+          updateHitBulletState: function (frame, layout, layoutState, bullets, n, s, o) {
+            for (let i = 0; i < bullets.length; i++) {
+              const hit = be.rectTouchesRect(bullets[i]);
+              for (const destroyableType of destroyableObjects)
+                for (let objIndex = 0; objIndex < layout[destroyableType].length; objIndex++) {
+                  const obj = layout[destroyableType][objIndex],
+                    state = layoutState[destroyableType][objIndex];
+                  if (state?.steel && hit(obj)) {
+                    return (Na(destroyableType, objIndex, state, n, layoutState, s, o), 
+                      bullets[i].x = (obj.x - obj.width / 2) - bullets[i].width / 2,
+                      bullets[i].frame = 1,
+                      console.log(bullets, bullets[i])
+                  );
                   }
 
-                  if (!h.destroyed && !h.off && l(u))
+                  if (!state.destroyed && !state.off && hit(obj))
                     return (
                       Na(
-                        c,
-                        d,
-                        Object.assign(Object.assign({}, h), {
-                          destroyed: { frame: e, x: u.x, y: u.y, by: "gun" },
+                        destroyableType,
+                        objIndex,
+                        Object.assign(Object.assign({}, state), {
+                          destroyed: { frame: frame, x: obj.x, y: obj.y, by: "gun" },
                         }),
                         n,
-                        a,
+                        layoutState,
                         s,
                         o
                       ),
-                      void i.splice(r, 1)
+                      void bullets.splice(i, 1)
                     );
                 }
             }
@@ -18738,7 +18742,7 @@ var version = "v2-dev";
               width: $.punchWidth * scale,
               height: 40 * scale,
             });
-            for (const i of Aa)
+            for (const i of destroyableObjects)
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
@@ -18770,7 +18774,7 @@ var version = "v2-dev";
               width: $.drillWidth * scale,
               height: $.punchWidth * scale,
             });
-            for (const i of Aa)
+            for (const i of destroyableObjects)
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
@@ -18796,7 +18800,7 @@ var version = "v2-dev";
             return blocksKilled;
           },
           useMissiles: function (e, t, a, i, n, s, o, r) {
-            for (const l of ka)
+            for (const l of destroyableDeadlyObjects)
               for (let c = 0; c < t[l].length; c++) {
                 const d = t[l][c],
                   u = a[l][c];
@@ -19223,7 +19227,7 @@ var version = "v2-dev";
                 (e.frame += t.df));
             },
             render: ({ state: e, props: t }) => [
-              T(
+              ifConditional(
                 () => !(t.hideOnEnd && e.frame === e.maxFrame - 1),
                 () => [
                   Ya.Single(
@@ -19293,7 +19297,7 @@ var version = "v2-dev";
               }
             },
             render: ({ state: e, props: t }) => [
-              T(
+              ifConditional(
                 () => e.justDestroyed,
                 () => [
                   g({
@@ -19378,10 +19382,10 @@ var version = "v2-dev";
             render({ state: e, props: t }) {
               const a = () => e.frame >= e.missileFrames;
               return [
-                T(
+                ifConditional(
                   () => e.justDestroyed,
                   () => [
-                    O(
+                    onChange(
                       () => a(),
                       () => [t.getSprite(a(), e.pos)]
                     ),
@@ -19454,7 +19458,7 @@ var version = "v2-dev";
               }
             },
             render: ({ props: e }) => [
-              R(
+              conditional(
                 () => "pixel" === e.trail.form,
                 () => [
                   Ua.Single(
@@ -19496,7 +19500,7 @@ var version = "v2-dev";
           $a = (e, t) => e >= t - 10,
           Ja = makeSprite({
             render: ({ props: e }) => [
-              O(
+              onChange(
                 () => e.theme,
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
@@ -19547,7 +19551,7 @@ var version = "v2-dev";
                 }
               ),
               // outlines
-              O(
+              onChange(
                 () => e.theme,
                 () => {
                   const t = "world3" === e.theme ? 1 : 1;
@@ -19591,7 +19595,7 @@ var version = "v2-dev";
                   ];
                 }
               ),
-              O(
+              onChange(
                 () => e.theme,
                 () => {
                   const t = "world3" === e.theme ? 1 : 1;
@@ -19638,7 +19642,7 @@ var version = "v2-dev";
                   ];
                 }
               ),
-              O(
+              onChange(
                 () => e.theme,
                 () => {
                   const t = "world3" === e.theme ? 1 : 1;
@@ -19682,7 +19686,7 @@ var version = "v2-dev";
                   ];
                 }
               ),
-              O(
+              onChange(
                 () => e.theme,
                 () => {
                   const t = "world3" === e.theme ? 1 : 1;
@@ -19730,7 +19734,7 @@ var version = "v2-dev";
                   ];
                 }
               ),
-              O(
+              onChange(
                 () => e.theme,
                 () => {
                   const t = 1;
@@ -19773,7 +19777,7 @@ var version = "v2-dev";
                   ];
                 }
               ),
-              O(
+              onChange(
                 () => e.theme,
                 () => {
                   const t = 1;
@@ -19816,7 +19820,7 @@ var version = "v2-dev";
                   ];
                 }
               ),
-              O(
+              onChange(
                 () => e.theme,
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
@@ -19861,7 +19865,7 @@ var version = "v2-dev";
                   ];
                 }
               ),
-              T(
+              ifConditional(
                 () => void 0 !== e.inGame,
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
@@ -19943,7 +19947,7 @@ var version = "v2-dev";
               return { show: e.justDestroyed };
             },
             render: ({ state: e, props: t }) => [
-              T(
+              ifConditional(
                 () => e.show,
                 () => [
                   Ua.Single(
@@ -19972,7 +19976,7 @@ var version = "v2-dev";
             render({ props: e }) {
               if (e.editor)
                 return [
-                  O(
+                  onChange(
                     () => e.theme,
                     () => {
                       const t = "world2" === e.theme ? 20 / 3 : 3,
@@ -20035,7 +20039,7 @@ var version = "v2-dev";
                           },
                           array: () => e.platforms,
                         }),
-                        T(
+                        ifConditional(
                           () => void 0 !== e.editor.previewYs,
                           () => [
                             g({
@@ -20112,7 +20116,7 @@ var version = "v2-dev";
           }),
           Za = makeSprite({
             render: ({ props: e }) => [
-              O(
+              onChange(
                 () => e.theme,
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
@@ -20180,7 +20184,7 @@ var version = "v2-dev";
                   ];
                 }
               ),
-              T(
+              ifConditional(
                 () => void 0 !== e.inGame,
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
@@ -20300,7 +20304,7 @@ var version = "v2-dev";
               return { show: e.justDestroyed };
             },
             render: ({ state: e, props: t }) => [
-              T(
+              ifConditional(
                 () => e.show,
                 () => [
                   Ua.Single(
@@ -29663,6 +29667,7 @@ var version = "v2-dev";
               "images/themes/classic/spike-explosion.png",
               "images/themes/world2/gun/bullet.png",
               "images/themes/world2/gun/bullet-enemy.png",
+              "images/themes/world2/gun/bullet-destroy.png",
               "images/themes/world2/gun/ground.png",
               "images/themes/world2/gun/idle.png",
               "images/themes/world2/gun/shooting.png",
@@ -29974,10 +29979,10 @@ var version = "v2-dev";
             render({ props: e, state: t, getContext: a }) {
               const i = (e) => ("right" === e.direction ? -1 : 1);
               return [
-                R(
+                conditional(
                   () => "world2" === e.theme,
                   () => [
-                    R(
+                    conditional(
                       () => true === e.wasHit,
                       () => {
                         var a;
@@ -30027,7 +30032,7 @@ var version = "v2-dev";
                     ),
                   ],
                   () => [
-                    R(
+                    conditional(
                       () => void 0 !== e.isEditor || bgOnly,
                       () => [
                         y(
@@ -30049,7 +30054,7 @@ var version = "v2-dev";
                         const n = i(e.directionChange),
                           { animationAssets: s, animationRenderer: o } = a(Ws);
                         return [
-                          R(
+                          conditional(
                             () => true === e.wasHit,
                             () => {
                               var a;
@@ -30131,7 +30136,7 @@ var version = "v2-dev";
           }),
           eo = makeSprite({
             render: ({ props: e }) => [
-              O(
+              onChange(
                 () => e.theme,
                 () => {
                   const t = "world2" === e.theme ? 20 / 3 : 3,
@@ -30150,7 +30155,7 @@ var version = "v2-dev";
                   ];
                 }
               ),
-              R(
+              conditional(
                 () => void 0 !== e.inGame,
                 () => [
                   E({
@@ -30364,7 +30369,7 @@ var version = "v2-dev";
                   }),
                 ],
                 () => [
-                  O(
+                  onChange(
                     () => e.theme,
                     () => [
                       E({
@@ -30454,7 +30459,7 @@ var version = "v2-dev";
                         array: () => e.saws,
                         testId: (e, t) => `Saw-${t}`,
                       }),
-                      T(
+                      ifConditional(
                         () => {
                           var t;
                           return (
@@ -30493,7 +30498,7 @@ var version = "v2-dev";
               return { show: e.justDestroyed };
             },
             render: ({ state: e, props: t }) => [
-              T(
+              ifConditional(
                 () => e.show,
                 () => [
                   Ua.Single(
@@ -30529,7 +30534,7 @@ var version = "v2-dev";
               };
             },
             render: ({ props: e, getContext: t, state: a }) => [
-              R(
+              conditional(
                 () => {
                   var t;
                   return (
@@ -30542,7 +30547,7 @@ var version = "v2-dev";
                 () => {
                   const { animationAssets: i, animationRenderer: n } = t(Ws);
                   return [
-                    R(
+                    conditional(
                       () => !e.inGame.wasHit,
                       () => [
                         Hs(
@@ -30595,13 +30600,13 @@ var version = "v2-dev";
                   ];
                 },
                 () => [
-                  R(
+                  conditional(
                     () => "world1" === e.theme,
                     () => [
-                      R(
+                      conditional(
                         () => void 0 === e.inGame,
                         () => [
-                          O(
+                          onChange(
                             () => e.flag.role,
                             () => {
                               const t =
@@ -30625,7 +30630,7 @@ var version = "v2-dev";
                           const { animationAssets: i, animationRenderer: n } =
                             t(Ws);
                           return [
-                            R(
+                            conditional(
                               () => "endOfLevel" === e.flag.role,
                               () => [
                                 Hs(
@@ -30651,7 +30656,7 @@ var version = "v2-dev";
                                 ),
                               ],
                               () => [
-                                R(
+                                conditional(
                                   () => {
                                     var t;
                                     return (
@@ -30719,7 +30724,7 @@ var version = "v2-dev";
                       ),
                     ],
                     () => [
-                      R(
+                      conditional(
                         () => "endOfLevel" === e.flag.role,
                         () => {
                           var t;
@@ -30750,7 +30755,7 @@ var version = "v2-dev";
                           ];
                         },
                         () => [
-                          R(
+                          conditional(
                             () => {
                               var t;
                               return (
@@ -30846,25 +30851,51 @@ var version = "v2-dev";
               ),
             ],
           }),
-          io = makeSprite({
+          bulletSprite = makeSprite({
             render: ({ props: e }) => [
-              y(
-                {
-                  fileName: `images/themes/world2/gun/bullet${
-                    e.isEnemy ? "-enemy" : ""
-                  }.png`,
-                  width: e.bullet.width,
-                  height: e.bullet.height,
-                },
-                (t) => {
-                  t.scaleX = Math.sign(e.bullet.speed);
-                }
-              ),
+              conditional(
+                () => e.isEnemy,
+                () => [
+                  y(
+                    {
+                      fileName: `images/themes/world2/gun/bullet-enemy.png`,
+                      width: e.bullet.width,
+                      height: e.bullet.height,
+                    },
+                    (t) => {
+                      t.scaleX = Math.sign(e.bullet.speed);
+                    }
+                  )
+                ],
+                () => [
+                  Ua.Single(
+                    {
+                      fileName:
+                        "images/themes/world2/gun/bullet-destroy.png",
+                      columns: 4,
+                      rows: 1,
+                      frameRate: 3,
+                      width: 70,
+                      height: 65,
+                      df:
+                        Math.min(e.bullet.frame || 0, 1),
+                      onEnd: () => (
+                        e.removeBullet()
+                      ),
+                    },
+                    (t) => {
+                      (t.df = Math.min(e.bullet.frame || 0, 1)),
+                      (t.scaleX = Math.sign(e.bullet.speed) * (e.bullet.width / 70));
+                      (t.scaleY = e.bullet.height / 35);
+                    }
+                  ),
+                ]
+              )
             ],
           }),
           no = makeSprite({
             render: ({ props: e }) => [
-              O(
+              onChange(
                 () => e.bullet.width,
                 () => [
                   "laser" === e.bullet.type
@@ -30919,7 +30950,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          oo = (e, t, a) => ({ x: e, y: t, width: 23, height: 12, speed: a }),
+          oo = (e, t, a) => ({ x: e, y: t, width: 23, height: 12, speed: a, df: 0 }),
           ro = 3 * G.jumpDistance,
           lo = { ref: false },
           co = { ref: 0 };
@@ -31146,10 +31177,10 @@ var version = "v2-dev";
           },
           fo = makeSprite({
             render: ({ props: e }) => [
-              T(
+              ifConditional(
                 () => null !== e.enemyState.bullet,
                 () => [
-                  io.Single(
+                  bulletSprite.Single(
                     { bullet: e.enemyState.bullet, isEnemy: true },
                     (t) => {
                       (t.x = e.enemyState.bullet.x),
@@ -31159,7 +31190,7 @@ var version = "v2-dev";
                   ),
                 ]
               ),
-              O(
+              onChange(
                 () => {
                   var t;
                   return null === (t = e.enemyState.destroyed) || void 0 === t
@@ -31309,7 +31340,7 @@ var version = "v2-dev";
               t.aboutToShoot && (e.shooting = true);
             },
             render: ({ props: e, state: t }) => [
-              T(
+              ifConditional(
                 () => true === e.showArea,
                 () => [
                   p(
@@ -31325,10 +31356,10 @@ var version = "v2-dev";
                   ),
                 ]
               ),
-              O(
+              onChange(
                 () => e.enemy.kind,
                 () => [
-                  O(
+                  onChange(
                     () => e.enemy.giant,
                     () => {
                       switch (e.enemy.kind) {
@@ -31385,7 +31416,7 @@ var version = "v2-dev";
                         }
                         case "shooter":
                           return [
-                            R(
+                            conditional(
                               () => t.shooting,
                               () => {
                                 var a;
@@ -31462,7 +31493,7 @@ var version = "v2-dev";
               const a = e.giant ? 175 : 175 / 3,
                 i = e.giant ? 110 : 110 / 3;
               return [
-                T(
+                ifConditional(
                   () => t.show,
                   () => [
                     Ua.Single(
@@ -31500,7 +31531,7 @@ var version = "v2-dev";
             render({ state: e, props: t }) {
               const a = t.giant ? 300 : 100;
               return [
-                T(
+                ifConditional(
                   () => e.show,
                   () => [
                     Ua.Single(
@@ -31588,13 +31619,13 @@ var version = "v2-dev";
           }),
           Io = makeSprite({
             render: ({ props: e }) => [
-              O(
+              onChange(
                 () => e.topColour,
                 () => [
-                  O(
+                  onChange(
                     () => e.bottomColour,
                     () => [
-                      O(
+                      onChange(
                         () => {
                           var t;
                           return null === (t = e.stroke) || void 0 === t
@@ -31602,7 +31633,7 @@ var version = "v2-dev";
                             : t.colour;
                         },
                         () => [
-                          O(
+                          onChange(
                             () => e.isPressed,
                             () => {
                               const {
@@ -31735,7 +31766,7 @@ var version = "v2-dev";
           }),
           To = makeSprite({
             render: ({ props: e }) => [
-              O(
+              onChange(
                 () => e.skin.fileName,
                 () => [
                   y(
@@ -31749,7 +31780,7 @@ var version = "v2-dev";
                       t.y = e.onSkateboard ? $.skateboardHeight : 0;
                     }
                   ),
-                  T(
+                  ifConditional(
                     () => Boolean(e.landTimer),
                     () => [
                       y(
@@ -31814,7 +31845,7 @@ var version = "v2-dev";
               const { animationAssets: a, animationRenderer: i } = e(Ws),
                 n = () => 7.5 * (1 - t.playerScaleY);
               return [
-                R(
+                conditional(
                   () => t.jumping,
                   () => {
                     return [
@@ -31851,7 +31882,7 @@ var version = "v2-dev";
                     var e;
                   },
                   () => [
-                    R(
+                    conditional(
                       () => t.isUsing,
                       () => [
                         Hs(
@@ -31890,7 +31921,7 @@ var version = "v2-dev";
                         ),
                       ],
                       () => [
-                        R(
+                        conditional(
                           () => t.didJustFinishUsing,
                           () => [
                             Hs(
@@ -31946,7 +31977,7 @@ var version = "v2-dev";
                                   (e.rotation = t.playerRot);
                               }
                             ),
-                            T(
+                            ifConditional(
                               () => t.playerIsOnGround,
                               () => [
                                 Ro.Single(
@@ -31974,13 +32005,13 @@ var version = "v2-dev";
           }),
           Co = makeSprite({
             render: ({ props: e, getContext: t }) => [
-              O(
+              onChange(
                 () => e.powerup.item,
                 () => {
                   switch (e.powerup.item) {
                     case "doubleJump":
                       return [
-                        R (
+                        conditional (
                         ()=> e.theme == "world2", 
                         ()=>[
                           Ya.Single(
@@ -32002,7 +32033,7 @@ var version = "v2-dev";
                         ],
                       
                         ()=>[
-                          R(
+                          conditional(
                           () => void 0 !== e.isEditor,
                           () => [
                             y(
@@ -32156,7 +32187,7 @@ var version = "v2-dev";
           }),
           wo = makeSprite({
             render: ({ props: e, getContext: t }) => [
-              O(
+              onChange(
                 () => e.powerup.item,
                 () => {
                   switch (e.powerup.item) {
@@ -32263,13 +32294,13 @@ var version = "v2-dev";
                 : (t.didJustStartUsing = true);
             },
             render: ({ props: e, state: t }) => [
-              O(
+              onChange(
                 () => e.powerup.item,
                 () => {
                   switch (e.powerup.item) {
                     case "jetpack":
                       return [
-                        R(
+                        conditional(
                           () => e.isUsing,
                           () => [
                             Ro.Single(
@@ -32283,7 +32314,7 @@ var version = "v2-dev";
                                 (t.paused = e.paused), (t.df = e.df);
                               }
                             ),
-                            R(
+                            conditional(
                               () => !t.didJustStartUsing,
                               () => [
                                 Ya.Single(
@@ -32368,7 +32399,7 @@ var version = "v2-dev";
                       ];
                     case "skateboard":
                       return [
-                        T(
+                        ifConditional(
                           () => !e.crashed,
                           () => [
                             Oo.Single(
@@ -32551,7 +32582,7 @@ var version = "v2-dev";
                 t.justHitTimer > 0 && t.justHitTimer--;
             },
             render: ({ props: e, getContext: t, state: a }) => [
-              O(
+              onChange(
                 () => e.switchButton.affects,
                 () => {
                   switch (e.switchButton.affects) {
@@ -32608,7 +32639,7 @@ var version = "v2-dev";
                       const { animationAssets: i, animationRenderer: n } =
                         t(Ws);
                       return [
-                        O(
+                        onChange(
                           () => e.switchBlockSpikes,
                           () => {
                             var t;
@@ -32673,7 +32704,7 @@ var version = "v2-dev";
                     case "blockSpike": {
                       if (e.theme == "world2") {
                         return [
-                          O(
+                          onChange(
                           () => (a.justHitTimer),
                           () => [
                           Ua.Single(
@@ -32724,7 +32755,7 @@ var version = "v2-dev";
                       const { animationAssets: i, animationRenderer: n } =
                         t(Ws);
                       return [
-                        O(
+                        onChange(
                           () => e.switchBlockSpikes,
                           () => {
                             var t;
@@ -32796,7 +32827,7 @@ var version = "v2-dev";
                 },
                 array: () => e.switchPlatforms,
               }),
-              T(
+              ifConditional(
                 () => void 0 !== e.editor,
                 () => [
                   E({
@@ -32816,7 +32847,7 @@ var version = "v2-dev";
                     },
                     array: () => e.switchPlatforms,
                   }),
-                  T(
+                  ifConditional(
                     () => void 0 !== e.editor.previewRots,
                     () => [
                       g({
@@ -32919,7 +32950,7 @@ var version = "v2-dev";
                   id: "ScrollContent",
                   sprites: e(c || !u),
                   y: s.scrollY,
-                  mask: w({ width: a, height: t, y: -s.scrollY - t / 2 }),
+                  mask: rectangleMask({ width: a, height: t, y: -s.scrollY - t / 2 }),
                 }),
                 n
                   ? o({
@@ -33004,7 +33035,7 @@ var version = "v2-dev";
                 {
                   sprites: e.sprites(t.noPress),
                   y: t.scrollY,
-                  mask: w({
+                  mask: rectangleMask({
                     width: e.containerWidth,
                     height: e.containerHeight,
                     y: -t.scrollY - e.containerHeight / 2,
@@ -33013,7 +33044,7 @@ var version = "v2-dev";
                 (a) => {
                   (a.sprites = e.sprites(t.noPress)),
                     (a.y = t.scrollY),
-                    (a.mask = w({
+                    (a.mask = rectangleMask({
                       width: e.containerWidth,
                       height: e.containerHeight,
                       y: -t.scrollY - e.containerHeight / 2,
@@ -33190,7 +33221,7 @@ var version = "v2-dev";
                 : e.fade > 0 && (e.fade--, (e.opacity.ref = e.fade / a));
             },
             render: ({ props: e, state: t }) => [
-              T(
+              ifConditional(
                 () => t.fade > 0,
                 () => e.sprite(t.opacity)
               ),
@@ -33240,7 +33271,7 @@ var version = "v2-dev";
             }),
             loop({ state: e, props: { targetOpacity: t, targetColor: targetColor } }) {
               e.opacity.ref += (t - e.opacity.ref) / 10;
-              if (!(t == 0)) {
+              if (!(t == 0) && targetColor) {
                 if (e.opacity.ref < 0.5 && t > 0) {
                   e.color.ref = targetColor || "#000000";
                   e.color.trueRef = calculateRGB(targetColor, 255);
@@ -33365,7 +33396,7 @@ var version = "v2-dev";
               e.wasPickedUp
                 ? []
                 : [
-                    O(
+                    onChange(
                       () => e.collectible.form,
                       () => {
                         if ("arrow" === e.collectible.form) {
@@ -33389,10 +33420,10 @@ var version = "v2-dev";
                           const { animationAssets: a, animationRenderer: i } =
                             t(Ws);
                           return [
-                            R(
+                            conditional(
                               () => e.wasPickedUp,
                               () => [
-                                R(
+                                conditional(
                                   () => void 0 !== e.score && e.score > 0,
                                   () => {
                                     var t;
@@ -33517,7 +33548,7 @@ var version = "v2-dev";
                           ];
                         }
                         return [
-                          R(
+                          conditional(
                             () => e.wasPickedUp,
                             () => [
                               Ua.Single(
@@ -33593,7 +33624,7 @@ var version = "v2-dev";
                 ];
               const { animationAssets: i, animationRenderer: n } = a(Ws);
               return [
-                O(
+                onChange(
                   () => t.hitCount,
                   () => [
                     Hs(
@@ -33694,7 +33725,7 @@ var version = "v2-dev";
           Ko = ["green", "blue", "red", "yellow"],
           Qo = makeSprite({
             render: ({ props: e }) => [
-              O(
+              onChange(
                 () => e.portal.pairId,
                 () => {
                   const t = Ko[e.portal.pairId % Ko.length];
@@ -33740,9 +33771,9 @@ var version = "v2-dev";
                                     (t.frame = 0);
                                 }
                               ),
-                  T(
+                  ifConditional(
                     () => t.hitCount > 0,
-                    () => [O(
+                    () => [onChange(
                   () => t.hitCount,
                   () => [
                           Ua.Single(
@@ -33793,7 +33824,7 @@ var version = "v2-dev";
                 ];
               const { animationAssets: i, animationRenderer: n } = a(Ws);
               return [
-                O(
+                onChange(
                   () => t.hitCount,
                   () => [
                     Hs(
@@ -38598,7 +38629,7 @@ var version = "v2-dev";
           },
           al = makeSprite({
             render: ({ props: e }) => [
-              R(
+              conditional(
                 () => e.hidden,
                 () => [
                   _e.Single({
@@ -38799,7 +38830,7 @@ var version = "v2-dev";
             for (let a = 0; a < e.playerBullets.length; a++) {
               const i = e.playerBullets[a];
               e.playerBullets[a] = Object.assign(Object.assign({}, i), {
-                x: i.x + i.speed * t,
+                x: i.x + (i.frame > 0 ? 0 : i.speed * t),
               });
             }
             lt(
@@ -39350,28 +39381,29 @@ var version = "v2-dev";
                 q,
                 K
               );
-            const te = U.justHitObject;
+            const previousJustHitObject = U.justHitObject;
             U.justHitObject = null;
             for (let e = 0; e < z.speedChanges.length; e++) {
               const t = z.speedChanges[e],
+                index = e,
                 a = U.playerX - t.x;
               if (
                 (Z(t) || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(t, U.playerX, U.playerStacks))) &&
                 ((1 === U.playerDir && a >= 0) ||
                   (-1 === U.playerDir && a <= 0))
-              ) {
-                if (null === te) {
-                  const e =
+                ) {
+                  if (null === previousJustHitObject) {
+                    const e =
                     (1 === U.playerDir && "right" === t.direction) ||
                     (-1 === U.playerDir && "left" === t.direction);
                   e
-                    ? (U.playerSpeedMultiplier *= 1.5)
-                    : (U.playerSpeedMultiplier /= 1.5),
-                    (U.playerX -= a),
-                    (U.playerX += a * U.playerSpeedMultiplier),
+                  ? (U.playerSpeedMultiplier *= 1.5)
+                  : (U.playerSpeedMultiplier /= 1.5),
+                  (U.playerX -= a),
+                  (U.playerX += a * U.playerSpeedMultiplier),
                     null == v || v.hitSpeedChange(U.playerSpeedMultiplier, e);
-                }
-                (U.justHitObject?.array != "speedChanges" && U.justHitObject?.index != e) && (U.justHitObject = { array: "speedChanges", index: e });
+                  }
+                  U.justHitObject = { array: "speedChanges", index: index };
               }
             }
             const ae = z.flags.findIndex((e) => {
@@ -44890,7 +44922,7 @@ var version = "v2-dev";
             }),
             xc({ snapSize: lu }),
           ]),
-          du = kc({ x: fc, y: fc, width: fc, height: fc, speed: fc }),
+          du = kc({ x: fc, y: fc, width: fc, height: fc, speed: fc, frame: fc }),
           uu = Uc([
             kc({
               type: _c("portal"),
@@ -45130,6 +45162,7 @@ var version = "v2-dev";
               (e) => Object.assign(Object.assign({}, e), {
                   dashing: false,
                   isGravity: false,
+                  bullets: e.bullets.map((bullet)=>({...bullet, frame: 0}))
                 }),
             ],
             finalSchema: kc({
@@ -49466,13 +49499,13 @@ var version = "v2-dev";
                   ])));
             },
             render: ({ state: e, props: t, getContext: a }) => [
-              T(
+              ifConditional(
                 () => !a(Se).settings.hidePlayerTrail,
                 () => [
-                  O(
+                  onChange(
                     () => t.skin.fileName,
                     () => [
-                      R(
+                      conditional(
                         () => "pixel" === t.skin.trail.form,
                         () => [
                           g({
@@ -49603,7 +49636,7 @@ var version = "v2-dev";
               }
             },
             render: ({ props: e, state: t, getContext: a }) => [
-              T(
+              ifConditional(
                 () => !a(Se).settings.hidePlayerTrail,
                 () => [
                   m(
@@ -49846,7 +49879,7 @@ var version = "v2-dev";
                         t.runtime = e.bossState.runtime;
                       }
                     ),
-                    T(
+                    ifConditional(
                       () => e.bossState.debug.length > 0,
                       () => [
                         m(
@@ -49862,7 +49895,7 @@ var version = "v2-dev";
                   const i = 338,
                     n = 285;
                   return [
-                    O(
+                    onChange(
                       () => e.bossState.view,
                       () => {
                         const t = e.bossState,
@@ -50116,7 +50149,7 @@ var version = "v2-dev";
                           (t.frame = e.frame);
                       }
                     ),
-                    R(
+                    conditional(
                       () => e.bossState.destroyed,
                       () => [
                         qa.Single(
@@ -50187,7 +50220,7 @@ var version = "v2-dev";
                       array: () => e.bossState.minions,
                       key: (e) => e.index,
                     }),
-                    T(
+                    ifConditional(
                       () => e.bossState.minions.length > 0,
                       () => [
                         Ro.Single(
@@ -50226,7 +50259,7 @@ var version = "v2-dev";
                       array: () => e.bossState.fireballs,
                       key: (e) => e.index,
                     }),
-                    T(
+                    ifConditional(
                       () => e.bossState.fireballs.length > 0,
                       () => [
                         Ro.Single(
@@ -50243,7 +50276,7 @@ var version = "v2-dev";
                         ),
                       ]
                     ),
-                    T(
+                    ifConditional(
                       () => e.frame > Rl && e.frame < Ol && !e.playerCrashed,
                       () => {
                         const t = et.closestFlatAngle(e.playerRot) % 360;
@@ -50272,7 +50305,7 @@ var version = "v2-dev";
                         ];
                       }
                     ),
-                    T(
+                    ifConditional(
                       () => e.frame > Rl && !e.playerCrashed,
                       () => [
                         Ro.Single(
@@ -50360,10 +50393,10 @@ var version = "v2-dev";
             render: ({ props: e }) =>
               "pixel" === e.bossState.type
                 ? [
-                    T(
+                    ifConditional(
                       () => e.frame >= 430,
                       () => [
-                        O(
+                        onChange(
                           () => e.bossState.health,
                           () => {
                             const t =
@@ -50381,7 +50414,7 @@ var version = "v2-dev";
                                 fileName: "images/level/boss2/healthbar.png",
                                 width: 328,
                                 height: 60,
-                                mask: w({ width: t, height: 60, x: t / 2 }),
+                                mask: rectangleMask({ width: t, height: 60, x: t / 2 }),
                                 anchorX: -164,
                                 x: -164,
                               }),
@@ -50396,7 +50429,7 @@ var version = "v2-dev";
           gg = makeSprite({
             init: () => ({ isGunOut: false, gunFired: false }),
             render: ({ props: e, state: t }) => [
-              R(
+              conditional(
                 () => t.gunFired,
                 () => [
                   Ua.Single(
@@ -50421,7 +50454,7 @@ var version = "v2-dev";
                     width: e.bossWidth,
                     height: e.bossHeight,
                   }),
-                  R(
+                  conditional(
                     () => t.isGunOut,
                     () => [
                       y({
@@ -50544,7 +50577,7 @@ var version = "v2-dev";
               }
             },
             render: ({ props: e, state: t }) => [
-              O(
+              onChange(
                 () => t.step,
                 () => {
                   switch (t.step) {
@@ -50662,7 +50695,7 @@ var version = "v2-dev";
             render({ getContext: e, props: t }) {
               const { animationAssets: a, animationRenderer: i } = e(Ws);
               return [
-                O(
+                onChange(
                   () => t.gunView,
                   () => {
                     switch (t.gunView) {
@@ -51231,7 +51264,7 @@ var version = "v2-dev";
                         },
                         (t) => {
                           t.targetOpacity = (e.bgColor || "#00FFFF") == "#00FFFF" ? 0 : 0.5;
-                          t.targetColor = e.bgColor || t.targetColor;
+                          t.targetColor = e.bgColor || "#00FFFF";
                         }
                       )),
           xg = makeSprite({
@@ -51272,7 +51305,7 @@ var version = "v2-dev";
                 }
               })();
               var bg = [
-                R(
+                conditional(
                   () => e.plain,
                   () => [
                     p(
@@ -52463,7 +52496,7 @@ var version = "v2-dev";
                       }
                     )
                   : null,
-                T(
+                ifConditional(
                   () => !e.plain,
                   () => {
                     switch (e.theme.id) {
@@ -53067,7 +53100,7 @@ var version = "v2-dev";
                     (t.anchorY = e.size.fullHeight / 4);
                 }
               ),
-              O(
+              onChange(
                 () => e.size.fullWidth,
                 () => [
                   ...Array.from({ length: 10 }).flatMap((t, a) => {
@@ -53215,7 +53248,7 @@ var version = "v2-dev";
                     (t.skin = e.skin),
                     (t.landTimer = e.landTimer),
                     (t.onSkateboard = e.onSkateboard),
-                    (t.mask = C(
+                    (t.mask = circleMask(
                       Zg(e.touchingPortals[0], e.playerX, e.playerY)
                     ));
                 }
@@ -53242,7 +53275,7 @@ var version = "v2-dev";
                     (a.skin = e.skin),
                     (a.landTimer = e.landTimer),
                     (a.onSkateboard = e.onSkateboard),
-                    (a.mask = C(
+                    (a.mask = circleMask(
                       Zg(
                         e.touchingPortals[1],
                         e.playerX + t.player2X,
@@ -53321,7 +53354,7 @@ var version = "v2-dev";
                 : e.fade > 0 && e.fade--;
             },
             render: ({ state: e, props: t, device: a }) => [
-              T(
+              ifConditional(
                 () => t.highScore > 0,
                 () => [
                   c(
@@ -53357,7 +53390,7 @@ var version = "v2-dev";
                     (e.y = a.size.fullHeight / 2 - (t.highScore > 0 ? 65 : 50));
                 }
               ),
-              T(
+              ifConditional(
                 () => 0 !== e.fade,
                 () => [
                   Lo.Single(
@@ -53378,7 +53411,7 @@ var version = "v2-dev";
                             (a.scaleX = i), (a.scaleY = i);
                           }
                         ),
-                        T(
+                        ifConditional(
                           () => e.prevMultiplier > 1,
                           () => [
                             c(
@@ -53408,7 +53441,7 @@ var version = "v2-dev";
           }),
           im = makeSprite({
             render: ({ props: e, device: t }) => [
-              T(
+              ifConditional(
                 () => e.highScore > 0,
                 () => [
                   c(
@@ -53444,7 +53477,7 @@ var version = "v2-dev";
                     (a.y = t.size.fullHeight / 2 - (e.highScore > 0 ? 65 : 50));
                 }
               ),
-              T(
+              ifConditional(
                 () => e.combo > 0,
                 () => [
                   c(
@@ -53465,7 +53498,7 @@ var version = "v2-dev";
           }),
           nm = makeSprite({
             render: ({ props: e }) => [
-              O(
+              onChange(
                 () => e.hasStarted,
                 () => [
                   sm.Array({
@@ -53591,7 +53624,7 @@ var version = "v2-dev";
                       ? `${e.playerName} & ${e.info.otherPlayerWithSameXName}`
                       : `${e.playerName} & ${e.info.otherPlayersWithSameX} OPPONENTS`);
               }),
-              T(
+              ifConditional(
                 () =>
                   (e.info.otherPlayersWithSameX > 0 ||
                     e.info.nameProps.length > 5) &&
@@ -53659,7 +53692,7 @@ var version = "v2-dev";
               t.didCrash || (t.didCrash = true);
             },
             render: ({ state: e }) => [
-              T(
+              ifConditional(
                 () => e.show,
                 () => [
                   y(
@@ -53868,7 +53901,7 @@ var version = "v2-dev";
               ),
               t.showAttempts
                 ? t.fadeOutAttempts
-                  ? O(
+                  ? onChange(
                       () => t.attempt,
                       () => [
                         jo.Single({
@@ -53887,7 +53920,7 @@ var version = "v2-dev";
                       e.attempt = t.attempt;
                     })
                 : null,
-              T(
+              ifConditional(
                 () => t.collectibles > 0,
                 () => [
                   c(
@@ -53905,7 +53938,7 @@ var version = "v2-dev";
                   ),
                 ]
               ),
-              R(
+              conditional(
                 () => {
                   var e;
                   return (
@@ -53934,7 +53967,7 @@ var version = "v2-dev";
                   ),
                 ],
                 () => [
-                  T(
+                  ifConditional(
                     () => t.score.total > 0,
                     () => [
                       im.Single(
@@ -53953,7 +53986,7 @@ var version = "v2-dev";
                   ),
                 ]
               ),
-              T(
+              ifConditional(
                 () => {
                   var e;
                   return (
@@ -53972,7 +54005,7 @@ var version = "v2-dev";
                   ),
                 ]
               ),
-              T(
+              ifConditional(
                 () => void 0 !== t.otherPlayersInfo,
                 () => [
                   ng.Single(
@@ -54013,7 +54046,7 @@ var version = "v2-dev";
             render({ props: e }) {
               const t = [];
               return [
-                T(
+                ifConditional(
                   () => void 0 !== e.otherPlayersInfo,
                   () => [
                     nm.Single(
@@ -54191,18 +54224,23 @@ var version = "v2-dev";
                   props: (t) => ({
                     speedChange: t,
                     justHit: false,
+                    previousJustHit: false,
                     df: e.df,
                     paused: e.paused,
                     theme: e.layout.properties.theme.objects.switch
                   }),
                   update: (t, a, i) => {
-                    (t.speedChange = a),
-                      (t.justHit =
+                    t.speedChange = a;
+                      t.previousJustHit = null == e.justHitObject ? false : t.previousJustHit || t.justHit;
+                      t.justHit =
                         null !== e.justHitObject &&
                         "speedChanges" === e.justHitObject.array &&
-                        e.justHitObject.index === i),
-                      (t.df = e.df),
-                      (t.paused = e.paused);
+                        e.justHitObject.index === i;
+                      if (t.previousJustHit == true) {
+                        t.justHit = false
+                      }
+                      t.df = e.df;
+                      t.paused = e.paused;
                   },
                   array: () => e.layout.speedChanges,
                   key: (t, a) => e.layoutStateIndex.speedChanges[a],
@@ -54326,7 +54364,7 @@ var version = "v2-dev";
                   array: () => e.layout.enemies,
                   key: (t, a) => e.layoutStateIndex.enemies[a],
                 }),
-                T(
+                ifConditional(
                   () => void 0 !== e.otherPlayersInfo,
                   () => [
                     rm.Single(
@@ -54348,7 +54386,7 @@ var version = "v2-dev";
                     ),
                   ]
                 ),
-                R(
+                conditional(
                   () => null !== e.playerPowerup,
                   () => [
                     Ao.Single(
@@ -54391,7 +54429,7 @@ var version = "v2-dev";
                     ),
                   ],
                   () => [
-                    T(
+                    ifConditional(
                       () => null !== e.playerPowerupOut,
                       () => [
                         No.Single(
@@ -54420,8 +54458,8 @@ var version = "v2-dev";
                     ),
                   ]
                 ),
-                io.Array({
-                  props: (e) => ({ x: e.x, y: e.y, bullet: e, isEnemy: false }),
+                bulletSprite.Array({
+                  props: (t) => ({ x: t.x, y: t.y, bullet: t, isEnemy: false, removeBullet: () => (e.playerBullets && e.playerBullets.splice(e.playerBullets.indexOf(t), 1)) }),
                   update: (e, t) => {
                     (e.x = t.x), (e.y = t.y), (e.bullet = t);
                   },
@@ -54429,7 +54467,7 @@ var version = "v2-dev";
                   key: (e, t) => t,
                 }),
                 e.isFlyingLevel
-                  ? O(
+                  ? onChange(
                       () => e.attempt,
                       () => [
                         ig.Single(
@@ -54452,10 +54490,10 @@ var version = "v2-dev";
                       ]
                     )
                   : null,
-                T(
+                ifConditional(
                   () => !e.hidePlayer,
                   () => [
-                    R(
+                    conditional(
                       () => e.crashed,
                       () => [
                         qa.Single(
@@ -54474,7 +54512,7 @@ var version = "v2-dev";
                         ),
                       ],
                       () => [
-                        R(
+                        conditional(
                           () => null !== e.touchingPortals,
                           () => [
                             Kg.Single(
@@ -54552,10 +54590,10 @@ var version = "v2-dev";
                                 }),
                           ]
                         ),
-                        R(
+                        conditional(
                           () => null !== e.playerPowerup,
                           () => [
-                            R(
+                            conditional(
                               () => {
                                 var t;
                                 return (
@@ -54626,7 +54664,7 @@ var version = "v2-dev";
                             ),
                           ],
                           () => [
-                            T(
+                            ifConditional(
                               () => null !== e.playerPowerupOut,
                               () => [
                                 ko.Single(
@@ -54719,7 +54757,7 @@ var version = "v2-dev";
                   array: () => e.explosions,
                   key: (e, t) => t,
                 }),
-                T(
+                ifConditional(
                   () => void 0 !== e.maxFrame && void 0 !== e.hasCheckpoints,
                   () => [
                     lm.Single(
@@ -55092,7 +55130,7 @@ var version = "v2-dev";
                 onPress: t.onModalClose,
                 strokeColor: Ye,
               }),
-              R(
+              conditional(
                 () => "loading" === e.purchases,
                 () => [
                   c({
@@ -55103,7 +55141,7 @@ var version = "v2-dev";
                   }),
                 ],
                 () => [
-                  R(
+                  conditional(
                     () => e.isPurchasing,
                     () => [
                       c({
@@ -55376,7 +55414,7 @@ var version = "v2-dev";
                               x: -e.width / 2 + 20,
                               y: t,
                             }),
-                            T(
+                            ifConditional(
                               () => e.selected,
                               () => [
                                 m({
@@ -55620,7 +55658,7 @@ var version = "v2-dev";
                             e.noPress = o.ref;
                           }
                         ),
-                        T(
+                        ifConditional(
                           () => i.didChangeHeadphoneSync,
                           () => [
                             c({
@@ -55982,7 +56020,7 @@ var version = "v2-dev";
                       (e.y = a.size.fullHeight / 2 - 50);
                   }
                 ),
-                T(
+                ifConditional(
                   () => void 0 !== e.boosters,
                   () => [
                     Yo.Single(
@@ -56003,7 +56041,7 @@ var version = "v2-dev";
                           (e.y = a.size.fullHeight / 2 - 50);
                       }
                     ),
-                    T(
+                    ifConditional(
                       () => e.boosters.showPrompt,
                       () => [
                         Fm.Single(
@@ -56020,10 +56058,10 @@ var version = "v2-dev";
                     ),
                   ]
                 ),
-                T(
+                ifConditional(
                   () => e.paused,
                   () => [
-                    R(
+                    conditional(
                       () => t.boostersMenuOpen && void 0 !== e.boosters,
                       () => [
                         Lm.Single(
@@ -56091,7 +56129,7 @@ var version = "v2-dev";
                       (e.height = a.size.fullHeight);
                   }
                 ),
-                R(
+                conditional(
                   () => t.showSettings,
                   () => [
                     Om.Single({
@@ -56117,7 +56155,7 @@ var version = "v2-dev";
                       },
                       x: t.xPositions[1],
                     }),
-                    R(
+                    conditional(
                       () => void 0 !== e.onReset,
                       () => [
                         Je.Single({
@@ -56139,7 +56177,7 @@ var version = "v2-dev";
                         }),
                       ],
                       () => [
-                        T(
+                        ifConditional(
                           () => void 0 !== e.onEndGame,
                           () => [
                             Je.Single({
@@ -56238,7 +56276,7 @@ var version = "v2-dev";
                 strokeThickness: 12,
                 y: 160,
               }),
-              R(
+              conditional(
                 () => "loading" === t.view.type,
                 () => [
                   c({
@@ -56391,7 +56429,7 @@ var version = "v2-dev";
                             (a.numBooster = t.view.boosters.numSlowMotions);
                       }
                     ),
-                    T(
+                    ifConditional(
                       () =>
                         "boosters" === t.view.type && null !== t.view.buying,
                       () => [
@@ -56452,7 +56490,7 @@ var version = "v2-dev";
                   t.disabled = e.disable || e.isBeingUsed || 0 === e.numBooster;
                 }
               ),
-              R(
+              conditional(
                 () => e.isBeingUsed,
                 () => [
                   Yo.Single({
@@ -56466,10 +56504,10 @@ var version = "v2-dev";
                   }),
                 ],
                 () => [
-                  T(
+                  ifConditional(
                     () => !e.disable,
                     () => [
-                      R(
+                      conditional(
                         () => 0 === e.numBooster,
                         () => [
                           Yo.Single({
@@ -56554,7 +56592,7 @@ var version = "v2-dev";
                 onPress: e.closeMenu,
                 strokeColor: Ye,
               }),
-              R(
+              conditional(
                 () => null === i(Se).online,
                 () => [
                   c({
@@ -56641,7 +56679,7 @@ var version = "v2-dev";
                             y: -40,
                           }),
                         ]),
-                    R(
+                    conditional(
                       () => "loading" === t.items,
                       () => [
                         c({
@@ -56651,7 +56689,7 @@ var version = "v2-dev";
                         }),
                       ],
                       () => [
-                        R(
+                        conditional(
                           () => t.isPurchasing,
                           () => [
                             c({
@@ -56701,7 +56739,7 @@ var version = "v2-dev";
                         ),
                       ]
                     ),
-                    T(
+                    ifConditional(
                       () => null !== t.showBuyBlocksModal,
                       () => [
                         Sm.Single({
@@ -56988,7 +57026,7 @@ var version = "v2-dev";
                 height: 0,
                 df: 1,
               }),
-              T(
+              ifConditional(
                 () => 0 !== a.opacity,
                 () => [
                   Lo.Single(
@@ -57099,7 +57137,7 @@ var version = "v2-dev";
                 x: 130,
                 y: 25,
               }),
-              T(
+              ifConditional(
                 () => e < t,
                 () => [
                   c({
@@ -57897,7 +57935,7 @@ var version = "v2-dev";
                       ));
                   }
                 ),
-                O(
+                onChange(
                   () => {
                     var e;
                     return null === (e = t.booster) || void 0 === e
@@ -57928,7 +57966,7 @@ var version = "v2-dev";
                     ];
                   }
                 ),
-                T(
+                ifConditional(
                   () => void 0 !== e.backToMenu && !e.online,
                   () => [
                     km.Single(
@@ -58062,7 +58100,7 @@ var version = "v2-dev";
                     ),
                   ]
                 ),
-                T(
+                ifConditional(
                   () => t.mutValues.levelState.finishedLevel && !e.online,
                   () => {
                     var a, i;
@@ -66678,7 +66716,7 @@ var version = "v2-dev";
                   Ws.Single({
                     context: () => e.spineContextVal,
                     sprites: [
-                      O(
+                      onChange(
                         () => e.refreshCount,
                         () => [
                           vf.Single(
@@ -67239,7 +67277,7 @@ var version = "v2-dev";
                 strokeThickness: 5,
                 y: -5,
               }),
-              T(
+              ifConditional(
                 () => !e.loadingNewPlayer,
                 () => [
                   Yo.Single({
@@ -67328,7 +67366,7 @@ var version = "v2-dev";
                   t.text = `${e.reached} / ${e.total}`;
                 }
               ),
-              T(
+              ifConditional(
                 () => null !== t.timerText,
                 () => [
                   c(
@@ -67358,7 +67396,7 @@ var version = "v2-dev";
               t ? (e.timer = a) : e.timer > 0 && e.timer--;
             },
             render: ({ props: e, state: t }) => [
-              T(() => t.timer > 0, e.sprites),
+              ifConditional(() => t.timer > 0, e.sprites),
             ],
           }),
           TE = makeCustomSprite({
@@ -67495,7 +67533,7 @@ var version = "v2-dev";
                   x: 80,
                   y: 45,
                 }),
-                T(
+                ifConditional(
                   () => void 0 !== e.xp,
                   () => [
                     c({
@@ -68326,7 +68364,7 @@ var version = "v2-dev";
               }
             },
             render: ({ props: e, state: t, device: a }) => [
-              R(
+              conditional(
                 () => "error" === t.status.type,
                 () => [
                   Yo.Single({
@@ -68339,7 +68377,7 @@ var version = "v2-dev";
                   c({ text: t.status.message, color: Ve }),
                 ],
                 () => [
-                  R(
+                  conditional(
                     () =>
                       "waitForServer" === t.status.type ||
                       "loadingLevel" === t.status.type,
@@ -68380,10 +68418,10 @@ var version = "v2-dev";
                         Ws.Single({
                           context: () => t.status.spineContext,
                           sprites: [
-                            R(
+                            conditional(
                               () => null !== t.viewingPlayer,
                               () => [
-                                O(
+                                onChange(
                                   () => t.viewingPlayer.playerIndex,
                                   () => {
                                     var e;
@@ -68649,7 +68687,7 @@ var version = "v2-dev";
                                 ];
                               }
                             ),
-                            T(
+                            ifConditional(
                               () => void 0 !== t.checkpoint && !t.isGameOver,
                               () => [
                                 IE.Single(
@@ -68671,7 +68709,7 @@ var version = "v2-dev";
                                 ),
                               ]
                             ),
-                            T(
+                            ifConditional(
                               () => void 0 !== t.orderInfo && !t.isGameOver,
                               () => [
                                 OE.Single(
@@ -68688,7 +68726,7 @@ var version = "v2-dev";
                                 ),
                               ]
                             ),
-                            T(
+                            ifConditional(
                               () => t.viewCount > 0,
                               () => [
                                 y(
@@ -68721,10 +68759,10 @@ var version = "v2-dev";
                                 ),
                               ]
                             ),
-                            R(
+                            conditional(
                               () => null !== t.viewingPlayer,
                               () => [
-                                O(
+                                onChange(
                                   () => t.viewingPlayer.playerIndex,
                                   () => {
                                     const i = t.viewingPlayer.playerIndex,
@@ -68752,7 +68790,7 @@ var version = "v2-dev";
                                             (e.y = -a.size.fullHeight / 2 + 50);
                                         }
                                       ),
-                                      T(
+                                      ifConditional(
                                         () =>
                                           t.viewingPlayer.eliminated &&
                                           !t.isGameOver,
@@ -68774,7 +68812,7 @@ var version = "v2-dev";
                               () => {
                                 var i;
                                 return [
-                                  T(
+                                  ifConditional(
                                     () => null !== t.mode,
                                     () => [
                                       jo.Single(
@@ -68887,7 +68925,7 @@ var version = "v2-dev";
                                         null !== t.checkpoint.resumeTimer;
                                     }
                                   ),
-                                  T(
+                                  ifConditional(
                                     () => t.eliminated && !t.isGameOver,
                                     () => [
                                       c({
@@ -68942,7 +68980,7 @@ var version = "v2-dev";
                               {
                                 shouldShow: n(),
                                 sprite: (a) => [
-                                  T(
+                                  ifConditional(
                                     () => null !== t.rankings,
                                     () => [
                                       RE.Single(
@@ -68986,7 +69024,7 @@ var version = "v2-dev";
                                 e.shouldShow = n();
                               }
                             ),
-                            O(
+                            onChange(
                               () => t.connection,
                               () => {
                                 switch (t.connection) {
@@ -69038,7 +69076,7 @@ var version = "v2-dev";
                                     ];
                                   case "connected":
                                     return [
-                                      R(
+                                      conditional(
                                         () =>
                                           "started" !== t.status.type &&
                                           null === t.startingIn,
@@ -69083,7 +69121,7 @@ var version = "v2-dev";
                                                     e.df = t.countdownDf;
                                                   }
                                                 ),
-                                                T(
+                                                ifConditional(
                                                   () => false,
                                                   () => [
                                                     c({
@@ -69106,7 +69144,7 @@ var version = "v2-dev";
                                 }
                               }
                             ),
-                            O(
+                            onChange(
                               () => {
                                 var e;
                                 return null === (e = t.mode) || void 0 === e
@@ -70007,7 +70045,7 @@ var version = "v2-dev";
               },
             }),
             render: ({ props: e, state: t }) => [
-              R(
+              conditional(
                 () => !t.level || "then" in t.spineContext,
                 () => [
                   c({
@@ -70085,7 +70123,7 @@ var version = "v2-dev";
               },
             }),
             render: ({ props: e, state: t }) => [
-              R(
+              conditional(
                 () => "then" in t.spineContext,
                 () => [
                   c({
