@@ -17353,8 +17353,8 @@ var version = "v2-dev";
           landTimerLimit: 20,
           closestFlatAngle: (e) => e + 45 - ((e + 45) % 90),
         };
-        function tt(e, t, a) {
-          return [...e.slice(0, a), t, ...e.slice(a + 1)];
+        function tt(array, thing, index) {
+          return [...array.slice(0, index), thing, ...array.slice(index + 1)];
         }
         function at(e, t) {
           return [...e.slice(0, t), ...e.slice(t + 1)];
@@ -18708,10 +18708,11 @@ var version = "v2-dev";
               for (const destroyableType of destroyableObjects)
                 for (let objIndex = 0; objIndex < layout[destroyableType].length; objIndex++) {
                   const obj = layout[destroyableType][objIndex],
-                    state = layoutState[destroyableType][objIndex];
+                    state = layoutState[destroyableType][objIndex],
+                    sign = Math.sign(bullets[i].speed);
                   if (state?.steel && hit(obj)) {
                     return (Na(destroyableType, objIndex, state, n, layoutState, s, o), 
-                      bullets[i].x = (obj.x - obj.width / 2) - bullets[i].width / 2,
+                      bullets[i].x = (obj.x - (obj.width / 2) * sign) - bullets[i].width / (2 * sign),
                       bullets[i].frame = 1,
                       console.log(bullets, bullets[i])
                   );
@@ -38970,6 +38971,16 @@ var version = "v2-dev";
                   v,
                   U.bottomLine?.objects || []
                 ),
+                U.playerBullets &&
+                xa.updateHitBulletState(
+                  U.frame,
+                  z,
+                  W,
+                  U.playerBullets,
+                  U.layoutState,
+                  q,
+                  U.switchBlockSpikes
+                ),
                 0 === L.resetTimer && N)
               ) {
                 const e = Zr(
@@ -39771,6 +39782,9 @@ var version = "v2-dev";
             }
             U.gravityHitObject = U.gravity > 0 ? (null) : ce.hitObject;
             if ((null !== Q && !J) || U.crashed || -1 !== touchedSpring) {
+              if (U.gravity > 0) {
+                U.isGravity = false;
+              }
               const e = be.pointInBox({
                 x: U.playerX,
                 y: U.playerY - (15 * U.playerScale),
@@ -51138,14 +51152,14 @@ var version = "v2-dev";
             return i;
           throw Error(e.getShaderInfoLog(i) || "");
         }
-        const Cg = makeNativeSprite("ShaderBg"),
-          wg = {
-            create: ({ props: e }) => {
-              const t = document
+        const dreamySprite = makeNativeSprite("ShaderBg"),
+          createShaderBg = {
+            create: ({ props: props }) => {
+              const ctx = document
                 .getElementById("replay-canvas")
                 .getContext("webgl");
-              if (!t) return null;
-              const a = t.getExtension("OES_vertex_array_object");
+              if (!ctx) return null;
+              const a = ctx.getExtension("OES_vertex_array_object");
               if (!a) return null;
               const i = (function (e, t, a) {
                   const i = Og(e, e.VERTEX_SHADER, t),
@@ -51159,28 +51173,28 @@ var version = "v2-dev";
                   )
                     return s;
                   throw Error(e.getProgramInfoLog(s) || "");
-                })(t, kg, Ng),
+                })(ctx, kg, Ng),
                 n = a.createVertexArrayOES();
               if (!n) return null;
               a.bindVertexArrayOES(n);
-              const s = t.getAttribLocation(i, "a_position"),
-                o = t.createBuffer();
-              t.bindBuffer(t.ARRAY_BUFFER, o),
-                t.enableVertexAttribArray(s),
-                t.vertexAttribPointer(s, 2, t.FLOAT, false, 0, 0),
-                t.bufferData(
-                  t.ARRAY_BUFFER,
+              const s = ctx.getAttribLocation(i, "a_position"),
+                o = ctx.createBuffer();
+              ctx.bindBuffer(ctx.ARRAY_BUFFER, o),
+                ctx.enableVertexAttribArray(s),
+                ctx.vertexAttribPointer(s, 2, ctx.FLOAT, false, 0, 0),
+                ctx.bufferData(
+                  ctx.ARRAY_BUFFER,
                   new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
-                  t.STATIC_DRAW
+                  ctx.STATIC_DRAW
                 );
-              const r = t.getUniformLocation(i, "u_resolution"),
-                l = t.getUniformLocation(i, "u_time"),
-                c = t.getUniformLocation(i, "u_ct"),
-                d = t.getUniformLocation(i, "u_xboost"),
-                u = t.getUniformLocation(i, "u_yboost"),
-                h = t.getUniformLocation(i, "u_col0"),
-                p = t.getUniformLocation(i, "u_col1"),
-                g = t.getUniformLocation(i, "u_col2");
+              const r = ctx.getUniformLocation(i, "u_resolution"),
+                l = ctx.getUniformLocation(i, "u_time"),
+                c = ctx.getUniformLocation(i, "u_ct"),
+                d = ctx.getUniformLocation(i, "u_xboost"),
+                u = ctx.getUniformLocation(i, "u_yboost"),
+                h = ctx.getUniformLocation(i, "u_col0"),
+                p = ctx.getUniformLocation(i, "u_col1"),
+                g = ctx.getUniformLocation(i, "u_col2");
               a.bindVertexArrayOES(null);
               const m = [0.43, 0.04, 0.64],
                 f = [0.08, 0.02, 0.61],
@@ -51188,34 +51202,34 @@ var version = "v2-dev";
                 E = [0.03, 0.11, 0.14],
                 b = [0.62, 0.17, 0.11],
                 S = [0.21, 0.05, 0.04],
-                I = [0, 0, 0],
-                _ = [0, 0, 0],
-                v = [0, 0, 0];
+                finish1 = [0, 0, 0],
+                finish2 = [0, 0, 0],
+                finish3 = [0, 0, 0];
               function T(e, t, a) {
                 return 0.5 * (1 + Math.cos(0.017453292519943295 * e)) * t + a;
               }
               return {
-                render: (e, s) => {
-                  t.useProgram(i),
+                render: (frame, bgSwitchTimer) => {
+                  ctx.useProgram(i),
                     a.bindVertexArrayOES(n),
-                    t.uniform2f(r, t.canvas.width, t.canvas.height);
-                  const o = (e / 20) * 1.25;
-                  t.uniform1f(l, o),
-                    t.uniform1f(c, T(5 * o, 3, 1.1)),
-                    t.uniform1f(d, T(0.2 * o, 5, 5)),
-                    t.uniform1f(u, T(0.1 * o, 10, 5)),
-                    Ag(f, E, s, I),
-                    Ag(m, S, s, _),
-                    Ag(y, b, s, v),
-                    t.uniform3f(h, ...I),
-                    t.uniform3f(p, ..._),
-                    t.uniform3f(g, ...v),
-                    t.drawArrays(t.TRIANGLES, 0, 6);
+                    ctx.uniform2f(r, ctx.canvas.width, ctx.canvas.height);
+                  const o = (frame / 20) * 1.25;
+                  ctx.uniform1f(l, o),
+                    ctx.uniform1f(c, T(5 * o, 3, 1.1)),
+                    ctx.uniform1f(d, T(0.2 * o, 5, 5)),
+                    ctx.uniform1f(u, T(0.1 * o, 10, 5)),
+                    Ag(f, E, bgSwitchTimer, finish1),
+                    Ag(m, S, bgSwitchTimer, finish2),
+                    Ag(y, b, bgSwitchTimer, finish3),
+                    ctx.uniform3f(h, ...finish1),
+                    ctx.uniform3f(p, ...finish2),
+                    ctx.uniform3f(g, ...finish3),
+                    ctx.drawArrays(ctx.TRIANGLES, 0, 6);
                 },
-                bgSwitchTimer: e.bgSwitch ? 1 : 0,
+                bgSwitchTimer: props.bgSwitch ? 1 : 0,
                 cleanup: () => {
-                  t.deleteBuffer(o),
-                    t.deleteProgram(i),
+                  ctx.deleteBuffer(o),
+                    ctx.deleteProgram(i),
                     a.deleteVertexArrayOES(n);
                 },
               };
@@ -51231,10 +51245,10 @@ var version = "v2-dev";
               null == e || e.cleanup();
             },
           };
-        function Ag(e, t, a, i) {
-          (i[0] = e[0] * (1 - a) + t[0] * a),
-            (i[1] = e[1] * (1 - a) + t[1] * a),
-            (i[2] = e[2] * (1 - a) + t[2] * a);
+        function Ag(color, other, fraction, final) {
+          (final[0] = color[0] * (1 - fraction) + other[0] * fraction),
+            (final[1] = color[1] * (1 - fraction) + other[1] * fraction),
+            (final[2] = color[2] * (1 - fraction) + other[2] * fraction);
         }
         //var bgColor = "#69c5ff";
         const kg =
@@ -52150,7 +52164,7 @@ var version = "v2-dev";
                           ];
                         case "dreamy":
                           return [
-                            Cg(
+                            dreamySprite(
                               {
                                 id: "ShaderBg",
                                 frame: e.frame,
@@ -70214,7 +70228,7 @@ var version = "v2-dev";
                 cleanup: () => {},
               },
               SpineWithRuntime: Xs,
-              ShaderBg: wg,
+              ShaderBg: createShaderBg,
             },
             imageResolution: 3,
             maxPixels: 2e6,
