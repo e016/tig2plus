@@ -1,6 +1,7 @@
 /*! For license information please see game.js.LICENSE.txt */
 var game;
-var bgOnly = false;
+var bgOnly = false,
+showcaseOnly = false;
 
 var version = "v2-dev";
 (() => {
@@ -16181,7 +16182,7 @@ var version = "v2-dev";
                     ? s
                     : "movement",
                 color: e == undefined ? "flash" : e?.color || 0,
-                gravity: e == undefined ? 1 : e?.gravity
+                gravity: e == undefined ? 1 : (e?.gravity == null ? 1 : e?.gravity)
               };
             },
             newSwitchPlatform: (e) => {
@@ -16838,9 +16839,9 @@ var version = "v2-dev";
         function getObjectBottomY(obj, t, a) {
           if ("switchPlatform" === obj.type && 0 !== obj.rotation) {
             const i = obj.height / 2;
-            if (-90 === obj.rotation) return obj.y - obj.width - i;
+            if (-90 === obj.rotation) return obj.y - 7.5;
             if (180 === obj.rotation) return obj.y - 7.5;
-            if (90 === obj.rotation) return obj.y + i + 15;
+            if (90 === obj.rotation) return obj.y - i - 15;
             const n = -B.toRad(obj.rotation),
               s = obj.x - obj.width / 2 + i;
             const o = B.clamp2(0, obj.width - i, Math.hypot(t - s, a - obj.y));
@@ -17671,6 +17672,7 @@ var version = "v2-dev";
               saw: "world2",
               bottom: "world2",
               switch: "world2",
+              speedChange: "world2",
             },
             isBonusTheme: false,
           },
@@ -17695,6 +17697,7 @@ var version = "v2-dev";
               saw: "world1",
               bottom: "world1",
               switch: "world3",
+              speedChange: "speed",
             },
             isBonusTheme: false,
           },
@@ -17728,6 +17731,7 @@ var version = "v2-dev";
               saw: "world1",
               bottom: "world3",
               switch: "world3",
+              speedChange: "speed",
             },
             isBonusTheme: false,
           },
@@ -17758,6 +17762,7 @@ var version = "v2-dev";
               saw: "world1",
               bottom: "world4",
               switch: "world3",
+              speedChange: "speed",
             },
             isBonusTheme: false,
           },
@@ -17788,6 +17793,7 @@ var version = "v2-dev";
               saw: "skater",
               bottom: "world1",
               switch: "world3",
+              speedChange: "speed",
             },
             isBonusTheme: true,
           },
@@ -17806,6 +17812,7 @@ var version = "v2-dev";
               saw: "world1",
               bottom: "world3",
               switch: "world3",
+              speedChange: "speed",
             },
             isBonusTheme: true,
           },
@@ -17824,6 +17831,7 @@ var version = "v2-dev";
               saw: "world1",
               bottom: "world1",
               switch: "world3",
+              speedChange: "speed",
             },
             isBonusTheme: true,
           },
@@ -17852,6 +17860,7 @@ var version = "v2-dev";
                 saw: "world1",
                 bottom: "world3",
                 switch: "world3",
+                speedChange: "speed",
               },
               isBonusTheme: true,
             },
@@ -17873,6 +17882,7 @@ var version = "v2-dev";
                 saw: "classic",
                 bottom: "classic",
                 switch: "world2",
+                speedChange: "speed",
               },
               isBonusTheme: true,
             },
@@ -32823,7 +32833,7 @@ var version = "v2-dev";
                     x: 1,
                     y: e.direction == 0 || e.direction == 180 ? 1 : -1,
                   }),
-                    (e.rotation = t.rotation);
+                    (e.rotation = t.rotation + (void 0 !== e.editor ? t.direction: 0));
                   e.scaleY = e.direction == 0 || e.direction == 180 ? 1 : -1;
                 },
                 array: () => e.switchPlatforms,
@@ -33925,6 +33935,10 @@ var version = "v2-dev";
                 isOpen: false,
                 y: -56,
               }),
+              void (window.onbeforeunload = !e.canUndo
+                      ? undefined
+                      : () =>
+                          "You have unsaved changes. Are you sure you want to return to the main menu?"),
               vo({
                 id: "Theme",
                 fileName: "images/editor/theme.png",
@@ -34223,7 +34237,7 @@ var version = "v2-dev";
                       speedChange: c,
                       isEditor: true,
                       justHit: false,
-                      theme: t.switch
+                      theme: t.speedChange
                     }),
                     unlocked: e.includes("speedChange"),
                   },
@@ -38165,7 +38179,7 @@ var version = "v2-dev";
                     speedChange: e,
                     isEditor: true,
                     justHit: false,
-                    theme: v.switch,
+                    theme: v.speedChange,
                   })
                 ),
                 ...h.flags.map((e, t) =>
@@ -38208,7 +38222,7 @@ var version = "v2-dev";
                   id: "SwitchPlatforms",
                   switchPlatforms: h.switchPlatforms,
                   editor: {
-                    previewRots: p.switchPlatforms.map((e) => e.rotation),
+                    previewRots: p.switchPlatforms.map((e) => e.rotation + e.direction),
                   },
                   theme: v.switch
                 }),
@@ -38354,7 +38368,7 @@ var version = "v2-dev";
                     speedChange: e,
                     isEditor: true,
                     justHit: false,
-                    theme: n.switch
+                    theme: n.speedChange
                   });
                 case "saw":
                   return eo.Single({
@@ -38640,7 +38654,7 @@ var version = "v2-dev";
                     width: 50,
                     height: 50,
                     sprites: (e) => [
-                      bgOnly
+                      bgOnly || showcaseOnly
                         ? null
                         : c({
                             font: { size: 8, style: "italic" },
@@ -49137,7 +49151,7 @@ var version = "v2-dev";
                 try {
                   const i = ul(a, "every5", n, s, o, r),
                     d = -1 === c ? [...l, i] : tt(l, i, c);
-                  return yield Vp(e, d, t), d;
+                  return {data: (yield Vp(e, d, t), d), error: false};
                 } catch (r) {
                   console.error(
                     "Probably not enough storage space, trying again with less history",
@@ -49152,7 +49166,7 @@ var version = "v2-dev";
                     console.error(e);
                     Ql(t), i.ok(t);
                   }
-                  return u;
+                  return {data: u, error: true};
                 }
               });
             },
@@ -54252,7 +54266,7 @@ var version = "v2-dev";
                     previousJustHit: false,
                     df: e.df,
                     paused: e.paused,
-                    theme: e.layout.properties.theme.objects.switch
+                    theme: e.layout.properties.theme.objects.speedChange
                   }),
                   update: (t, a, i) => {
                     t.speedChange = a;
@@ -54808,7 +54822,7 @@ var version = "v2-dev";
           }),
           um = makeSprite({
             render: ({ device: e, props: t }) =>
-              bgOnly
+              bgOnly || showcaseOnly
                 ? []
                 : [
                     y(
@@ -58611,7 +58625,7 @@ var version = "v2-dev";
                       height: 50,
                       onPress: () => {
                         d.saved
-                          ? ((window.onbeforeunload = undefined), s())
+                          ? (s())
                           : e.alert.okCancel(
                               localize(
                                 "You have unsaved changes. Are you sure you want to return to the main menu?"
@@ -58917,7 +58931,7 @@ var version = "v2-dev";
                             Object.assign({}, e.savedLevel.level),
                             { name: t.levelName, layout: t.layout }
                           ),
-                          n = yield Jp.saveLevel(
+                          n = (yield Jp.saveLevel(
                             i.storage,
                             i.now,
                             a,
@@ -58926,13 +58940,13 @@ var version = "v2-dev";
                             t.runHistory,
                             t.runHistoryIndex,
                             t.initRunHistoryIndex
-                          ),
+                          )),
                           { online: o } = s(Se);
                         o &&
                           o.signedInAccount &&
                           (yield bp.updateLevelsStorage(
                             o.backend,
-                            n.map(({ level: e }) => e),
+                            n.data.map(({ level: e }) => e),
                             i.now
                           ));
                       }),
@@ -61341,7 +61355,7 @@ var version = "v2-dev";
                       "loading" === e.data
                         ? e.data
                         : Object.assign(Object.assign({}, e.data), {
-                            levels: fy(t, c, u, h),
+                            levels: fy(t.data, c, u, h),
                           }),
                   })
                 );
@@ -61350,7 +61364,7 @@ var version = "v2-dev";
                   n.signedInAccount &&
                   (yield bp.updateLevelsStorage(
                     n.backend,
-                    t.map(({ level: e }) => e),
+                    t.data.map(({ level: e }) => e),
                     a.now
                   ));
               });
@@ -65854,7 +65868,7 @@ var version = "v2-dev";
                   y: t / 2 - 20,
                   disabled: true,
                   onPress: () => {},
-                }),
+                }),*/
                 We({
                   width: 110,
                   height: 40,
@@ -65868,13 +65882,13 @@ var version = "v2-dev";
                   color: ve,
                   x: -e / 2 + 305,
                   y: t / 2 - 20,
-                }),*/
+                }),
                 n({
-                  text: "SKINS",
+                  text: localize("SKINS"),
                   font: { size: 18 },
                   color: Ae,
                   gradient: i,
-                  x: 3 - e / 2 + 305, //-e / 2 + 305,
+                  x: 3 - e / 2 + 300, //-e / 2 + 305,
                   y: t / 2 - 20,
                 }),
                 We({
@@ -66124,7 +66138,7 @@ var version = "v2-dev";
                   localStorage.getItem("endOfGame") ||
                   ("credits" === i.view.type && i.view.endOfGame),
                 o = `audio/tracks/${alternativeMenuMusic && !s ? 'rustic-runes' : 'monstaz-popcorn-funk'}${
-                  s ? "-credits" : ""
+                  !alternativeMenuMusic && s ? "-credits" : ""
                 }.mp3`;
               return (
                 e({
@@ -71058,9 +71072,10 @@ var version = "v2-dev";
                     savedLevel: e.view.level,
                     backToMenu: () =>
                       a((e) =>
-                        Object.assign(Object.assign({}, e), {
+                        (window.onbeforeunload = undefined,
+                          Object.assign(Object.assign({}, e), {
                           view: { type: "menu", menuView: { type: "editor" } },
-                        })
+                        }))
                       ),
                     playerSkin: o,
                   }),
