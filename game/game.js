@@ -15347,7 +15347,7 @@ var version = "v2-dev";
             update: t,
             isMut: true,
           }),
-          E = ({
+          imageArray = ({
             props: e,
             fileName: t,
             mask: a,
@@ -15365,7 +15365,7 @@ var version = "v2-dev";
             array: n,
             isMut: true,
           }),
-          b = (e, t) => ({
+          spriteSheetPrimitive = (e, t) => ({
             type: "spriteSheet",
             props: i(
               {
@@ -17640,6 +17640,12 @@ var version = "v2-dev";
               size: 30,
               trail: ct(),
             },
+            headphone: {
+              name: "Headphones",
+              fileName: "headphone",
+              size: 47,
+              trail: ct(),
+            },
             blank: {
               name: "Blank",
               fileName: "blank",
@@ -17864,6 +17870,25 @@ var version = "v2-dev";
               },
               isBonusTheme: true,
             },
+            /*skaterArrows: {
+               id: "skaterArrows",
+               name: "Skater + Arrows",
+              colour: "#0F35A1",
+              background: "arrows",
+              player: Wt.skins.arrows,
+              objects: {
+                block: "skater",
+               spike: "skater",
+               platform: "world1",
+               dirChange: "world1",
+               flag: "world1",
+               saw: "world1",
+               bottom: "world3",
+               switch: "world3",
+                speedChange: "speed",
+              },
+              isBonusTheme: true,
+            },*/
             fighter: la,
             dreamy: ra,
             speed: oa,
@@ -19202,11 +19227,11 @@ var version = "v2-dev";
               return { type: "undoChangeTheme", theme: t.properties.theme };
           }
         }
-        const Ya = makeSprite({
+        const loopingSpriteSheet = makeSprite({
             render({ props: e }) {
               const t = ja(e.frameRate, e.rows, e.columns, e.maxIndex);
               return [
-                b(
+                spriteSheetPrimitive(
                   {
                     fileName: e.fileName,
                     columns: e.columns,
@@ -19223,7 +19248,7 @@ var version = "v2-dev";
               ];
             },
           }),
-          Ua = makeSprite({
+          triggerableSpriteSheet = makeSprite({
             init({ props: e }) {
               const t = ja(e.frameRate, e.rows, e.columns, e.maxIndex);
               return {
@@ -19241,7 +19266,7 @@ var version = "v2-dev";
               ifConditional(
                 () => !(t.hideOnEnd && e.frame === e.maxFrame - 1),
                 () => [
-                  Ya.Single(
+                  loopingSpriteSheet.Single(
                     {
                       fileName: t.fileName,
                       columns: t.columns,
@@ -19472,7 +19497,7 @@ var version = "v2-dev";
               conditional(
                 () => "pixel" === e.trail.form,
                 () => [
-                  Ua.Single(
+                  triggerableSpriteSheet.Single(
                     {
                       fileName: "images/player/pixel-explosion.png",
                       columns: 4,
@@ -19516,7 +19541,7 @@ var version = "v2-dev";
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/${e.theme}/block.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -19567,7 +19592,7 @@ var version = "v2-dev";
                 () => {
                   const t = "world3" === e.theme ? 1 : 1;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/world1/red-outline.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -19611,7 +19636,7 @@ var version = "v2-dev";
                 () => {
                   const t = "world3" === e.theme ? 1 : 1;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/world1/blue-outline.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -19658,7 +19683,7 @@ var version = "v2-dev";
                 () => {
                   const t = "world3" === e.theme ? 1 : 1;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/${e.theme == "world2" ? "world2" : "world1"}/red.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -19702,7 +19727,7 @@ var version = "v2-dev";
                 () => {
                   const t = "world3" === e.theme ? 1 : 1;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/${e.theme == "world2" ? "world2" : "world1"}/blue.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -19750,7 +19775,7 @@ var version = "v2-dev";
                 () => {
                   const t = 1;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/${e.theme}/steel.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -19793,7 +19818,7 @@ var version = "v2-dev";
                 () => {
                   const t = 1;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/${e.theme}/bottom/block.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -19836,7 +19861,7 @@ var version = "v2-dev";
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/${e.theme}/boss.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -19881,7 +19906,7 @@ var version = "v2-dev";
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/${e.theme}/block-light.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -19961,7 +19986,7 @@ var version = "v2-dev";
               ifConditional(
                 () => e.show,
                 () => [
-                  Ua.Single(
+                  triggerableSpriteSheet.Single(
                     {
                       fileName: `images/themes/${t.theme || "world2"}/block-explosion.png`,
                       columns: 3,
@@ -19993,7 +20018,7 @@ var version = "v2-dev";
                       const t = "world2" === e.theme ? 20 / 3 : 3,
                         a = "world2" === e.theme ? 90 : 93;
                       return [
-                        E({
+                        imageArray({
                           fileName: `images/themes/${e.theme}/platform-rail.png`,
                           props: () => ({ width: t, height: a }),
                           update: (e, t) => {
@@ -20005,7 +20030,7 @@ var version = "v2-dev";
                           },
                           array: () => e.platforms,
                         }),
-                        E({
+                        imageArray({
                           fileName: `images/themes/${e.theme}/platform.png`,
                           props: () => ({}),
                           update: (e, t) => {
@@ -20020,7 +20045,7 @@ var version = "v2-dev";
                           array: () => e.platforms,
                           testId: (e, t) => `Platform-${t}`,
                         }),
-                        E({
+                        imageArray({
                           fileName: `images/themes/${e.theme}/platform.png`,
                           props: () => ({}),
                           update: (e, t) => {
@@ -20035,7 +20060,7 @@ var version = "v2-dev";
                           },
                           array: () => e.platforms,
                         }),
-                        E({
+                        imageArray({
                           fileName: `images/themes/${e.theme}/platform.png`,
                           props: () => ({}),
                           update: (e, t) => {
@@ -20072,7 +20097,7 @@ var version = "v2-dev";
                             }),
                           ]
                         ),
-                        E({
+                        imageArray({
                           fileName: "images/themes/skater/rail.png",
                           props: () => ({ width: 90, height: 20 }),
                           update: (e, t) => {
@@ -20089,7 +20114,7 @@ var version = "v2-dev";
               const t = "world2" === e.theme ? 20 / 3 : 3,
                 a = "world2" === e.theme ? 90 : 93;
               return [
-                E({
+                imageArray({
                   fileName: `images/themes/${e.theme}/platform-rail.png`,
                   props: () => ({ width: t, height: a }),
                   update: (e, t) => {
@@ -20100,7 +20125,7 @@ var version = "v2-dev";
                   },
                   array: () => e.platforms,
                 }),
-                E({
+                imageArray({
                   fileName: `images/themes/${e.theme}/platform.png`,
                   props: () => ({}),
                   update: (e, t) => {
@@ -20112,7 +20137,7 @@ var version = "v2-dev";
                   },
                   array: () => e.platforms,
                 }),
-                E({
+                imageArray({
                   fileName: "images/themes/skater/rail.png",
                   props: () => ({ width: 90, height: 20 }),
                   update: (e, t) => {
@@ -20132,7 +20157,7 @@ var version = "v2-dev";
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/${e.theme}/spike.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -20162,7 +20187,7 @@ var version = "v2-dev";
                         }`;
                       },
                     }),
-                    E({
+                    imageArray({
                       fileName: `images/themes/${e.theme=="classic"?"classic":e.theme=="world2"?"world2":"world3"}/bottom/laser-line.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -20318,7 +20343,7 @@ var version = "v2-dev";
               ifConditional(
                 () => e.show,
                 () => [
-                  Ua.Single(
+                  triggerableSpriteSheet.Single(
                     {
                       fileName: `images/themes/${t.theme == "classic" ? "classic" : "world2"}/spike-explosion.png`,
                       columns: 3,
@@ -29696,10 +29721,10 @@ var version = "v2-dev";
               "images/editor/editorOnly/color-button.png",
               "images/themes/skater/rail.png",
               "images/themes/skater/skateboard.png",
-              "images/themes/world4/portal-green.png",
-              "images/themes/world4/portal-yellow.png",
-              "images/themes/world4/portal-red.png",
-              "images/themes/world4/portal-blue.png",
+              `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-green.png`,
+              `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-yellow.png`,
+              `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-red.png`,
+              `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-blue.png`,
               "images/themes/synthwave/collectible.png",
               "images/themes/synthwave/collectible-pickup.png",
               "images/themes/arrows/arrow.png",
@@ -29728,6 +29753,7 @@ var version = "v2-dev";
                     "images/themes/world3/bottom/block.png",
                     "images/themes/world1/bottom/block.png",
                     `images/themes/classic/bottom/block.png`,
+                    "images/themes/skater/bottom/block.png"
                   ]
                 : [
                     `images/themes/${e.objects.bottom}/bottom/block-small-spike.png`,
@@ -29998,7 +30024,7 @@ var version = "v2-dev";
                       () => {
                         var a;
                         return [
-                          Ua.Single(
+                          triggerableSpriteSheet.Single(
                             {
                               id: "Hit",
                               fileName:
@@ -30153,7 +30179,7 @@ var version = "v2-dev";
                   const t = "world2" === e.theme ? 20 / 3 : 3,
                     a = "world2" === e.theme ? 90 : 93;
                   return [
-                    E({
+                    imageArray({
                       fileName: `images/themes/${e.theme}/saw-rail.png`,
                       props: () => ({ width: t, height: a }),
                       update: (e, t) => {
@@ -30169,7 +30195,7 @@ var version = "v2-dev";
               conditional(
                 () => void 0 !== e.inGame,
                 () => [
-                  E({
+                  imageArray({
                     fileName: `images/themes/${e.theme}/saw.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
@@ -30196,7 +30222,7 @@ var version = "v2-dev";
                     array: () => e.saws,
                     testId: (e, t) => `Saw-${t}`,
                   }),
-                  E({
+                  imageArray({
                     fileName: `images/themes/world1/saw-big.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
@@ -30257,7 +30283,7 @@ var version = "v2-dev";
                             : i.df) || 1);
                     },
                   }),
-                  E({
+                  imageArray({
                     fileName: `images/themes/world1/saw-medium.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
@@ -30383,7 +30409,7 @@ var version = "v2-dev";
                   onChange(
                     () => e.theme,
                     () => [
-                      E({
+                      imageArray({
                         fileName: `images/themes/${e.theme}/saw.png`,
                         props: () => ({}),
                         update: (e, t) => {
@@ -30401,7 +30427,7 @@ var version = "v2-dev";
                         array: () => e.saws,
                         testId: (e, t) => `Saw-${t}`,
                       }),
-                      E({
+                      imageArray({
                         fileName: `images/themes/${e.theme}/saw.png`,
                         props: () => ({}),
                         update: (e, t) => {
@@ -30418,7 +30444,7 @@ var version = "v2-dev";
                         },
                         array: () => e.saws,
                       }),
-                      E({
+                      imageArray({
                         fileName: `images/themes/${e.theme}/saw.png`,
                         props: () => ({}),
                         update: (e, t) => {
@@ -30436,7 +30462,7 @@ var version = "v2-dev";
                         array: () => e.saws,
                         testId: (e, t) => `Saw-${t}`,
                       }),
-                      E({
+                      imageArray({
                         fileName: `images/themes/world1/saw-medium.png`,
                         props: () => ({}),
                         update: (e, t) => {
@@ -30453,7 +30479,7 @@ var version = "v2-dev";
                         array: () => e.saws,
                         testId: (e, t) => `Saw-${t}`,
                       }),
-                      E({
+                      imageArray({
                         fileName: `images/themes/world1/saw-big.png`,
                         props: () => ({}),
                         update: (e, t) => {
@@ -30512,7 +30538,7 @@ var version = "v2-dev";
               ifConditional(
                 () => e.show,
                 () => [
-                  Ua.Single(
+                  triggerableSpriteSheet.Single(
                     {
                       fileName: `images/themes/${t.theme == "world1" ? "world1" : t.theme == "classic" ? "classic" : "world2"}/spike-explosion.png`,
                       columns: 3,
@@ -30740,7 +30766,7 @@ var version = "v2-dev";
                         () => {
                           var t;
                           return [
-                            Ya.Single(
+                            loopingSpriteSheet.Single(
                               {
                                 fileName: "images/themes/world2/flag/end.png",
                                 columns: 4,
@@ -30779,7 +30805,7 @@ var version = "v2-dev";
                             () => {
                               var t;
                               return [
-                                Ya.Single(
+                                loopingSpriteSheet.Single(
                                   {
                                     fileName:
                                       "images/themes/world2/flag/passed.png",
@@ -30803,7 +30829,7 @@ var version = "v2-dev";
                                           : a.frame) || 0);
                                   }
                                 ),
-                                Ua.Single(
+                                triggerableSpriteSheet.Single(
                                   {
                                     fileName:
                                       "images/themes/world2/flag/confetti.png",
@@ -30827,7 +30853,7 @@ var version = "v2-dev";
                             () => {
                               var t;
                               return [
-                                Ya.Single(
+                                loopingSpriteSheet.Single(
                                   {
                                     fileName:
                                       "images/themes/world2/flag/idle.png",
@@ -30879,7 +30905,7 @@ var version = "v2-dev";
                   )
                 ],
                 () => [
-                  Ua.Single(
+                  triggerableSpriteSheet.Single(
                     {
                       fileName:
                         "images/themes/world2/gun/bullet-destroy.png",
@@ -30943,7 +30969,7 @@ var version = "v2-dev";
             render() {
               const e = Array.from({ length: 6 });
               return [
-                E({
+                imageArray({
                   fileName: "images/level/boss2/lasercharge/laserbody.png",
                   props: (e, t) => ({
                     width: 100,
@@ -31379,7 +31405,7 @@ var version = "v2-dev";
                             a = e.enemy.giant ? 110 : 110 / 3,
                             i = e.enemy.giant ? 5 : 2;
                           return [
-                            Ya.Single(
+                            loopingSpriteSheet.Single(
                               {
                                 fileName:
                                   "images/themes/world2/enemy-walker.png",
@@ -31404,7 +31430,7 @@ var version = "v2-dev";
                           const t = e.enemy.giant ? 165 : 55,
                             a = e.enemy.giant ? 145 : 145 / 3;
                           return [
-                            Ya.Single(
+                            loopingSpriteSheet.Single(
                               {
                                 fileName:
                                   "images/themes/world2/enemy-walker-helmet.png",
@@ -31432,7 +31458,7 @@ var version = "v2-dev";
                               () => {
                                 var a;
                                 return [
-                                  Ua.Single(
+                                  triggerableSpriteSheet.Single(
                                     {
                                       fileName:
                                         "images/themes/world2/enemy-shooting.png",
@@ -31463,7 +31489,7 @@ var version = "v2-dev";
                                 ];
                               },
                               () => [
-                                Ya.Single(
+                                loopingSpriteSheet.Single(
                                   {
                                     fileName:
                                       "images/themes/world2/enemy-shooter.png",
@@ -31507,7 +31533,7 @@ var version = "v2-dev";
                 ifConditional(
                   () => t.show,
                   () => [
-                    Ua.Single(
+                    triggerableSpriteSheet.Single(
                       {
                         fileName:
                           "images/themes/world2/enemy-walker-stomped.png",
@@ -31545,7 +31571,7 @@ var version = "v2-dev";
                 ifConditional(
                   () => e.show,
                   () => [
-                    Ua.Single(
+                    triggerableSpriteSheet.Single(
                       {
                         fileName: "images/themes/world2/enemy-explosion.png",
                         columns: 4,
@@ -32025,7 +32051,7 @@ var version = "v2-dev";
                         conditional (
                         ()=> e.theme == "world2", 
                         ()=>[
-                          Ya.Single(
+                          loopingSpriteSheet.Single(
                           {
                             fileName: "images/themes/world2/double-jump.png",
                             columns: 4,
@@ -32097,7 +32123,7 @@ var version = "v2-dev";
                       ];
                     case "punch":
                       return [
-                        Ya.Single(
+                        loopingSpriteSheet.Single(
                           {
                             fileName: "images/themes/punch/ground.png",
                             columns: 4,
@@ -32116,7 +32142,7 @@ var version = "v2-dev";
                       ];
                     case "drill":
                       return [
-                        Ya.Single(
+                        loopingSpriteSheet.Single(
                           {
                             fileName: "images/themes/world2/drill/ground.png",
                             columns: 4,
@@ -32135,7 +32161,7 @@ var version = "v2-dev";
                       ];
                     case "gun":
                       return [
-                        Ya.Single(
+                        loopingSpriteSheet.Single(
                           {
                             fileName: "images/themes/world2/gun/ground.png",
                             columns: 4,
@@ -32154,7 +32180,7 @@ var version = "v2-dev";
                       ];
                     case "jetpack":
                       return [
-                        Ya.Single(
+                        loopingSpriteSheet.Single(
                           {
                             fileName: "images/themes/world2/jetpack/ground.png",
                             columns: 4,
@@ -32328,7 +32354,7 @@ var version = "v2-dev";
                             conditional(
                               () => !t.didJustStartUsing,
                               () => [
-                                Ya.Single(
+                                loopingSpriteSheet.Single(
                                   {
                                     fileName:
                                       "images/themes/world2/jetpack/back-on.png",
@@ -32348,7 +32374,7 @@ var version = "v2-dev";
                                 ),
                               ],
                               () => [
-                                Ua.Single(
+                                triggerableSpriteSheet.Single(
                                   {
                                     fileName:
                                       "images/themes/world2/jetpack/back-launch.png",
@@ -32388,7 +32414,7 @@ var version = "v2-dev";
                             ),
                           ]
                         ),
-                        Ya.Single(
+                        loopingSpriteSheet.Single(
                           {
                             fileName: "images/themes/world2/jetpack/gauge.png",
                             columns: 4,
@@ -32483,7 +32509,7 @@ var version = "v2-dev";
                   ];
                 case "punch":
                   return [
-                    Ua.Single(
+                    triggerableSpriteSheet.Single(
                       {
                         fileName: "images/themes/punch/punch.png",
                         columns: 2,
@@ -32501,7 +32527,7 @@ var version = "v2-dev";
                   ];
                 case "drill":
                   return [
-                    Ua.Single(
+                    triggerableSpriteSheet.Single(
                       {
                         fileName: "images/themes/punch/punch.png",
                         columns: 2,
@@ -32519,7 +32545,7 @@ var version = "v2-dev";
                   ];
                 case "gun":
                   return [
-                    Ua.Single(
+                    triggerableSpriteSheet.Single(
                       {
                         fileName: "images/themes/world2/gun/shooting.png",
                         columns: 3,
@@ -32536,7 +32562,7 @@ var version = "v2-dev";
                   ];
                 case "jetpack":
                   return [
-                    Ua.Single(
+                    triggerableSpriteSheet.Single(
                       {
                         fileName: "images/themes/world2/jetpack/front-out.png",
                         columns: 4,
@@ -32565,7 +32591,7 @@ var version = "v2-dev";
             render: ({ props: e }) =>
               "jetpack" === e.powerup.item
                 ? [
-                    Ua.Single(
+                    triggerableSpriteSheet.Single(
                       {
                         fileName: "images/themes/world2/jetpack/back-out.png",
                         columns: 4,
@@ -32718,7 +32744,7 @@ var version = "v2-dev";
                           onChange(
                           () => (a.justHitTimer),
                           () => [
-                          Ua.Single(
+                          triggerableSpriteSheet.Single(
                       {
                         fileName: "images/themes/world2/block-spike-switch.png",
                         columns: 4,
@@ -32820,7 +32846,7 @@ var version = "v2-dev";
           }),
           Po = makeSprite({
             render: ({ props: e }) => [
-              E({
+              imageArray({
                 fileName: `images/themes/${e.theme}/switch-platform.png`,
                 props: (e) => ({ width: e.width, height: e.height }),
                 update: (e, t) => {
@@ -32841,7 +32867,7 @@ var version = "v2-dev";
               ifConditional(
                 () => void 0 !== e.editor,
                 () => [
-                  E({
+                  imageArray({
                     fileName: `images/themes/${e.theme}/switch-platform.png`,
                     props: (e) => ({
                       width: e.width,
@@ -33309,7 +33335,7 @@ var version = "v2-dev";
                 (e.showArrows[3] = Xo(t.playerYRelative, 90));
             },
             render: ({ state: e, props: x }) => [
-              E({
+              imageArray({
                 fileName: "images/themes/arrows/arrow-outline.png",
                 props: (e, t) => {
                   const a = 30 * t;
@@ -33325,7 +33351,7 @@ var version = "v2-dev";
                 },
                 array: () => e.showArrows,
               }),
-              E({
+              imageArray({
                 fileName: "images/themes/arrows/arrow-outline-selected.png",
                 props: (e, t) => {
                   const a = 30 * t;
@@ -33562,7 +33588,7 @@ var version = "v2-dev";
                           conditional(
                             () => e.wasPickedUp,
                             () => [
-                              Ua.Single(
+                              triggerableSpriteSheet.Single(
                                 {
                                   fileName:
                                     "images/themes/synthwave/collectible-pickup.png",
@@ -33584,7 +33610,7 @@ var version = "v2-dev";
                               ),
                             ],
                             () => [
-                              Ya.Single(
+                              loopingSpriteSheet.Single(
                                 {
                                   fileName:
                                     "images/themes/synthwave/collectible.png",
@@ -33672,7 +33698,7 @@ var version = "v2-dev";
               var a;
               if (e.isEditor)
                 return [
-                  Qo.Single({ portal: e.portal }, (t) => {
+                  Qo.Single({ portal: e.portal, pixel: e.theme == "world2" }, (t) => {
                     (t.portal = e.portal),
                       (t.x = e.portal.x),
                       (t.y = e.portal.y),
@@ -33742,7 +33768,7 @@ var version = "v2-dev";
                   const t = Ko[e.portal.pairId % Ko.length];
                   return [
                     y({
-                      fileName: `images/themes/world4/portal-${t}.png`,
+                      fileName: `images/themes/${e.pixel ? "world2" : "world4"}/portal-${t}.png`,
                       width: 56,
                       height: 97,
                       x: -12,
@@ -33761,7 +33787,7 @@ var version = "v2-dev";
             render({ props: e, state: t, getContext: a }) {
               if (e.theme == "world2") {
                 return [
-                  Ya.Single(
+                  loopingSpriteSheet.Single(
                                 {
                                   fileName:
                                     "images/themes/world2/speed-change.png",
@@ -33787,7 +33813,7 @@ var version = "v2-dev";
                     () => [onChange(
                   () => t.hitCount,
                   () => [
-                          Ua.Single(
+                          triggerableSpriteSheet.Single(
                             {
                               id: "Hit",
                               fileName:
@@ -34137,7 +34163,7 @@ var version = "v2-dev";
                       powerup: u,
                       skin: a,
                       isEditor: true,
-                      theme: t.switch,
+                      theme: t.speedChange,
                     }),
                     unlocked:
                       e.includes("gun") ||
@@ -38191,7 +38217,7 @@ var version = "v2-dev";
                     powerup: e,
                     skin: R,
                     isEditor: true,
-                    theme: v.switch,
+                    theme: v.speedChange,
                   })
                 ),
                 eo.Single({
@@ -38389,7 +38415,7 @@ var version = "v2-dev";
                     powerup: e,
                     skin: s,
                     isEditor: true,
-                    theme: n.switch
+                    theme: n.speedChange
                   });
                 case "enemy":
                   return yo.Single({ id: `PlacingEnemy-${a}`, enemy: e });
@@ -45193,7 +45219,12 @@ var version = "v2-dev";
               (e) => Object.assign(Object.assign({}, e), {
                   dashing: false,
                   isGravity: false,
-                  bullets: e.bullets.map((bullet)=>({...bullet, frame: 0}))
+                  bullets: e.bullets.map((bullet)=>({...bullet, frame: 0})),
+                  cameraX: e.playerX + e.cameraXOffset,
+                  cameraScale: 1,
+              cameraYOffset: 0,
+              cameraAnchorX: null,
+              cameraAnchorY: null,
                 }),
             ],
             finalSchema: kc({
@@ -45250,7 +45281,12 @@ var version = "v2-dev";
               checkpoint: kc({ index: fc, state: Hc }),
               onObject: Bc([hc, kc({ array: Hc, index: fc, y: fc })]),
               cameraXOffset: fc,
+              cameraX: fc,
               cameraY: fc,
+              cameraScale: fc,
+              cameraYOffset: fc,
+              cameraAnchorX: Bc([hc, fc]),
+              cameraAnchorY: Bc([hc, fc]),
               crashed: yc,
               finishedLevel: yc,
               frameCountSinceHistoryPush: fc,
@@ -49698,7 +49734,7 @@ var version = "v2-dev";
           }),
           ng = makeSprite({
             render: ({ props: e, device: t }) => [
-              E({
+              imageArray({
                 fileName: "images/online/name-arrow.png",
                 props: () => ({ width: 13, height: 8 }),
                 update: (a, i) => {
@@ -49856,7 +49892,7 @@ var version = "v2-dev";
               }
             },
             render: ({ props: e, state: t }) => [
-              E({
+              imageArray({
                 fileName: e.element.fileName,
                 props: () => ({
                   width: e.element.width,
@@ -49942,7 +49978,7 @@ var version = "v2-dev";
                         switch (t.view) {
                           case "idle":
                             return [
-                              Ya.Single(
+                              loopingSpriteSheet.Single(
                                 {
                                   fileName: `images/level/boss2/idle/health${a}.png`,
                                   columns: 6,
@@ -49963,7 +49999,7 @@ var version = "v2-dev";
                             ];
                           case "gunOut":
                             return [
-                              Ua.Single(
+                              triggerableSpriteSheet.Single(
                                 {
                                   fileName: `images/level/boss2/gunout/health${a}.png`,
                                   columns: 3,
@@ -49985,7 +50021,7 @@ var version = "v2-dev";
                             ];
                           case "gunIn":
                             return [
-                              Ua.Single(
+                              triggerableSpriteSheet.Single(
                                 {
                                   fileName: `images/level/boss2/gunin/health${a}.png`,
                                   columns: 2,
@@ -50010,7 +50046,7 @@ var version = "v2-dev";
                               o = 2 === a || 4 === a ? 2 : 1,
                               r = 6 * s * o - 1;
                             return [
-                              Ya.Single(
+                              loopingSpriteSheet.Single(
                                 {
                                   fileName: `images/level/boss2/gunshot/health${a}.png`,
                                   columns: s,
@@ -50064,7 +50100,7 @@ var version = "v2-dev";
                             ];
                           case "chargeLaserDamage":
                             return [
-                              Ua.Single(
+                              triggerableSpriteSheet.Single(
                                 {
                                   fileName: `images/level/boss2/laserdamage/health${a}.png`,
                                   columns: 2,
@@ -50159,7 +50195,7 @@ var version = "v2-dev";
                       array: () => e.bossState.insideAsteroid,
                       key: (e) => e.index,
                     }),
-                    E({
+                    imageArray({
                       fileName: "images/level/boss3/bullet.png",
                       props: () => ({}),
                       update: (e, t) => {
@@ -50471,7 +50507,7 @@ var version = "v2-dev";
               conditional(
                 () => t.gunFired,
                 () => [
-                  Ua.Single(
+                  triggerableSpriteSheet.Single(
                     {
                       fileName: `images/level/boss2/lasercharge/shot/health${e.health}.png`,
                       columns: 2,
@@ -50502,7 +50538,7 @@ var version = "v2-dev";
                         width: e.bossWidth,
                         height: e.bossHeight,
                       }),
-                      Ua.Single(
+                      triggerableSpriteSheet.Single(
                         {
                           fileName:
                             "images/level/boss2/lasercharge/laserbar.png",
@@ -50520,7 +50556,7 @@ var version = "v2-dev";
                           (t.paused = e.paused), (t.df = e.df);
                         }
                       ),
-                      Ya.Single(
+                      loopingSpriteSheet.Single(
                         {
                           fileName:
                             "images/level/boss2/lasercharge/laserorbs.png",
@@ -50536,7 +50572,7 @@ var version = "v2-dev";
                           t.frame = e.frame;
                         }
                       ),
-                      Ua.Single(
+                      triggerableSpriteSheet.Single(
                         {
                           fileName:
                             "images/level/boss2/lasercharge/lasertip.png",
@@ -50559,7 +50595,7 @@ var version = "v2-dev";
                       ),
                     ],
                     () => [
-                      Ua.Single(
+                      triggerableSpriteSheet.Single(
                         {
                           fileName: "images/level/boss2/lasercharge/gunout.png",
                           columns: 3,
@@ -50622,7 +50658,7 @@ var version = "v2-dev";
                   switch (t.step) {
                     case 1:
                       return [
-                        Ua.Single(
+                        triggerableSpriteSheet.Single(
                           {
                             fileName: "images/level/boss2/death/death1.png",
                             columns: 4,
@@ -50660,7 +50696,7 @@ var version = "v2-dev";
                       ];
                     case 2:
                       return [
-                        Ua.Single(
+                        triggerableSpriteSheet.Single(
                           {
                             fileName: "images/level/boss2/death/death1.png",
                             columns: 4,
@@ -50683,7 +50719,7 @@ var version = "v2-dev";
                       ];
                     case 3:
                       return [
-                        Ua.Single(
+                        triggerableSpriteSheet.Single(
                           {
                             fileName: "images/level/boss2/death/death2.png",
                             columns: 3,
@@ -50706,7 +50742,7 @@ var version = "v2-dev";
                       ];
                     case 4:
                       return [
-                        Ua.Single(
+                        triggerableSpriteSheet.Single(
                           {
                             fileName: "images/level/boss2/death/explosion.png",
                             columns: 3,
@@ -51021,7 +51057,7 @@ var version = "v2-dev";
               }
             },
             render: ({ state: e, device: t }) => [
-              E({
+              imageArray({
                 fileName: "images/themes/speed/ash.png",
                 props: () => ({
                   width: 6,
@@ -51309,7 +51345,7 @@ var version = "v2-dev";
           xg = makeSprite({
             render({ props: e, device: t }) {
               const a = (() => {
-                switch (e.theme.id) {
+                switch (e.theme.background) {
                   case "world1":
                   case "world1Boss":
                     return Fg(t.size.fullHeight / 2, e.theme.id);
@@ -51364,7 +51400,7 @@ var version = "v2-dev";
                   () => {
                     //*()
                     var b = (() => {
-                      switch (e.theme.id) {
+                      switch (e.theme.background) {
                         case "world1":
                         case "world1Boss":
                           var bgTable = {
@@ -53554,7 +53590,7 @@ var version = "v2-dev";
           }),
           sm = makeSprite({
             render: ({ props: e }) => [
-              E({
+              imageArray({
                 fileName: `images/player/skins/dark/${e.fileName}.png`,
                 props: () => ({}),
                 update: (e, t) => {
@@ -53638,7 +53674,7 @@ var version = "v2-dev";
         }
         const rm = makeSprite({
             render: ({ props: e }) => [
-              E({
+              imageArray({
                 fileName: "images/online/name-arrow.png",
                 props: () => ({ width: 13, height: 8 }),
                 update: (e, t) => {
@@ -54342,7 +54378,7 @@ var version = "v2-dev";
                     frame: e.frame,
                     paused: e.paused,
                     df: e.df,
-                    theme: e.layout.properties.theme.objects.switch
+                    theme: e.layout.properties.theme.objects.speedChange
                   }),
                   filter: (t, a) => !e.layoutState.powerups[a].wasPickedUp,
                   update: (t, a) => {
@@ -54350,7 +54386,7 @@ var version = "v2-dev";
                       (t.frame = e.frame),
                       (t.paused = e.paused && !e.finishedLevel),
                       (t.df = e.df),
-                      (t.theme = e.layout.properties.theme.objects.switch),
+                      (t.theme = e.layout.properties.theme.objects.speedChange),
                       (t.skin = e.playerSkin);
                   },
                   key: (t, a) => e.layoutStateIndex.powerups[a],
@@ -55470,7 +55506,7 @@ var version = "v2-dev";
                               ]
                             ),
                             c({
-                              font: { size: e.fontSize || 15 },
+                              font: { size: e.fontSize || (e.text.length > 18 ? 13 : 15) },
                               text: localize(e.text),
                               color: a,
                               x: 10,
@@ -55534,7 +55570,7 @@ var version = "v2-dev";
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
-                          text: "RESOLUTION:",
+                          text: `${localize("RESOLUTION")}:`,
                           font: { size: 15 },
                           color: ve,
                           x: -130,
@@ -55542,7 +55578,7 @@ var version = "v2-dev";
                         }),
                         Yo.Single(
                           {
-                            text: "LOW",
+                            text: localize("LOW"),
                             onPress: () => {
                               a.resolution.set(0.25), s(0.25);
                             },
@@ -55557,7 +55593,7 @@ var version = "v2-dev";
                         ),
                         Yo.Single(
                           {
-                            text: "MED",
+                            text: localize("MED"),
                             onPress: () => {
                               a.resolution.set(0.5), s(0.5);
                             },
@@ -55572,7 +55608,7 @@ var version = "v2-dev";
                         ),
                         Yo.Single(
                           {
-                            text: "HIGH",
+                            text: localize("HIGH"),
                             onPress: () => {
                               a.resolution.set(0.75), s(0.75);
                             },
@@ -55588,7 +55624,7 @@ var version = "v2-dev";
                         ),
                         Yo.Single(
                           {
-                            text: "MAX",
+                            text: localize("MAX"),
                             onPress: () => {
                               a.resolution.set(1), s(1);
                             },
@@ -55602,7 +55638,7 @@ var version = "v2-dev";
                           }
                         ),
                         c({
-                          text: "MUSIC:",
+                          text: `${localize("MUSIC")}:`,
                           font: { size: 15 },
                           color: ve,
                           x: -130,
@@ -55642,17 +55678,17 @@ var version = "v2-dev";
                           }
                         ),*/
                         c({
-                          text: "HEADPHONE",
+                          text: localize("HEADPHONE"),
                           font: { size: 15 },
                           color: ve,
-                          x: -130,
+                          x: -140,
                           y: -140,
                         }),
                         c(
-                          { font: { size: 15 }, color: ve, x: -130, y: -160 },
+                          { font: { size: 15 }, color: ve, x: -140, y: -160 },
                           (e) => {
                             const { settings: a } = t(Se);
-                            e.text = `DELAY: ${1e3 * a.headphonesDelay}ms`;
+                            e.text = `${localize("DELAY")}: ${1e3 * a.headphonesDelay}ms`;
                           }
                         ),
                         wm.Single(
@@ -55679,7 +55715,7 @@ var version = "v2-dev";
                         ),
                         Yo.Single(
                           {
-                            text: "PLAY SOUND",
+                            text: localize("PLAY SOUND"),
                             noSfx: true,
                             onPress: () => {
                               (i.didChangeHeadphoneSync = true),
@@ -55701,13 +55737,13 @@ var version = "v2-dev";
                           () => i.didChangeHeadphoneSync,
                           () => [
                             c({
-                              text: "TIP: MOVE KNOB SO IT FLASHES",
+                              text: localize("TIP: MOVE KNOB SO IT FLASHES"),
                               color: ve,
                               x: 235,
                               y: -180,
                             }),
                             c({
-                              text: "WHEN YOU HEAR SOUND PLAYED",
+                              text: localize("WHEN YOU HEAR SOUND PLAYED"),
                               color: ve,
                               x: 235,
                               y: -193,
@@ -57646,7 +57682,7 @@ var version = "v2-dev";
                 ));
               const k =
                   be.pointInBox2(
-                    -a.size.fullWidth / 2 + 50,
+                    (-a.size.fullWidth / 2 + 50) * (n(Se).settings.mirrorMenuButton ? -1 : 1),
                     a.size.fullHeight / 2 - 50,
                     50,
                     50,
@@ -57655,7 +57691,7 @@ var version = "v2-dev";
                   ) ||
                   (xm(t.tutorial.boosterPrompt, y.hideUi, e.world) &&
                     be.pointInBox2(
-                      a.size.fullWidth / 2 - 80,
+                      (a.size.fullWidth / 2 - 80) * (n(Se).settings.mirrorMenuButton ? -1 : 1),
                       a.size.fullHeight / 2 - 50,
                       Pm,
                       Mm,
@@ -60369,7 +60405,7 @@ var version = "v2-dev";
               const r = [
                 Uf({
                   id: "Title",
-                  text: "BONUS LEVELS",
+                  text: localize("BONUS LEVELS"),
                   width: 200,
                   height: 35,
                   x: -a / 2 + 120,
@@ -61856,7 +61892,7 @@ var version = "v2-dev";
               return [
                 Uf({
                   id: "Title",
-                  text: "IMPORT LEVEL",
+                  text: localize("IMPORT LEVEL"),
                   width: 200,
                   height: 35,
                   x: -s / 2 + 120,
@@ -61939,7 +61975,7 @@ var version = "v2-dev";
                 }),
                 Uf({
                   id: "Title",
-                  text: "LEVEL EDITOR",
+                  text: localize("LEVEL EDITOR"),
                   width: 200,
                   height: 35,
                   x: -s / 2 + 120,
@@ -65016,7 +65052,7 @@ var version = "v2-dev";
                 g = [
                   Uf({
                     id: "Title",
-                    text: "ACHIEVEMENTS",
+                    text: localize("ACHIEVEMENTS"),
                     width: 200,
                     height: 35,
                     x: -o / 2 + 120,
