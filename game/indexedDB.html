@@ -7,7 +7,7 @@
 <body>
     <h1>indexedDB TEST</h1>
     <script>
-        var db = window.indexedDB.open("savedLevels")
+        var db = window.indexedDB.open("savedLevels", 2)
         db.onsuccess = (event) => {
   window.alert("Database initialized.");
 
@@ -22,8 +22,16 @@ db.onerror = (event) => {
 };
 db.onupgradeneeded = (event) => {
   t = db.result;
-t.createObjectStore("savedLevels", {
+var s = t.createObjectStore("savedLevels", {
     keyPath: "test",
+  }, { autoIncrement: true });
+  s.createIndex("x", "x", { unique: false });
+
+  ({
+    hello: "world",
+    testing: "123",
+  }).forEach((customer) => {
+    objStore.add(customer.name);
   });
 };
     </script>
