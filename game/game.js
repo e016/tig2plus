@@ -57075,13 +57075,13 @@ var version = "v1.5.3";
                     )),
                 N = Pl(w, A),
                 x =
-                  (f.pointer.pressed ||
+                  (((f.pointer.pressed) &&
+                  !k) ||
                     f.keysDown[" "] ||
                     f.keysDown["w"] ||
                     f.keysDown.ArrowUp ||
                     "down" === S ||
                     "justDown" === S) &&
-                  !k &&
                   !C &&
                   !N,
                 P = x
