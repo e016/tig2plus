@@ -29693,6 +29693,7 @@ var version = "v2-dev";
               "images/themes/world2/bottom/laser-line.png",
               "images/themes/world2/speed-change.png",
               "images/themes/world1/arrow.png",
+              "images/themes/world2/arrow.png",
               "images/themes/world2/double-jump.png",
               'images/themes/world1/saw-big.png',
               "images/themes/world1/saw-medium.png",
@@ -32634,7 +32635,7 @@ var version = "v2-dev";
                           y(
                             {
                               fileName:
-                                `images/themes/world1/arrow.png`,
+                                `images/themes/${e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
                               width: e.switchButton.width,
                               height: e.switchButton.height,
                             },
@@ -63661,7 +63662,7 @@ var version = "v2-dev";
                       rad: 5,
                       isPressed: a,
                       topColour: n ? Re : a ? ke : i ? Pe : ze,
-                      bottomColour: i ? xe : Xe,
+                      bottomColour: i || n ? xe : Xe,
                       sprites: (t) => [
                         l({
                           fileName: `images/player/skins/${e.fileName}.png`,
