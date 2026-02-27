@@ -1,11 +1,19 @@
 <!DOCTYPE >
 <html>
   <head>
-    <title>The Impossible Game 2+ | Free ONLINE mod of "The Impossible Game 2"</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A free, online mod of &QUOT;The Impossible Game 2&QUOT; with more features">
-    <meta name="keywords" content="TIG2, The Impossible Game, The Impossible Game 2, Geometry Dash, Online game, free online game">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>
+      The Impossible Game 2+ | Free ONLINE mod of "The Impossible Game 2"
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A free, online mod of &QUOT;The Impossible Game 2&QUOT; with more features"
+    />
+    <meta
+      name="keywords"
+      content="TIG2, The Impossible Game, The Impossible Game 2, Geometry Dash, Online game, free online game"
+    />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <style href="fonts/font-face.css"></style>
     <style>
       :root {
@@ -14,7 +22,7 @@
         --cyan: #06fffe;
         --purple: #550190;
         --darkpurple: #2f0245;
-        --white: #fff;
+        --white: #f9f7fe;
         --yellow: #fddf40;
         color: white;
       }
@@ -47,11 +55,11 @@
       }
       @keyframes grow-twisted {
         0% {
-          transform: scale(1, rotate(-5deg));
+          transform: scale(1) rotate(-5deg);
         }
 
         to {
-          transform: scale(1.03, rotate(-5deg));
+          transform: scale(1.03) rotate(-5deg);
         }
       }
       a {
@@ -60,30 +68,45 @@
       }
       /* PLAY NOW button */
       button {
-        color: black;
+        color: var(--darkpurple);
         background: var(--green);
         padding: 9px;
         padding-block: 0px;
-        height: 50px;
-        font-weight: 600;
+        height: 45px;
+        font-weight: 800;
         font-size: 24px;
         border: unset;
         user-select: none;
         border-radius: 7px;
-        outline: 4px solid var(--purple);
-        width: 200px;
+        width: 300px;
         position: absolute;
-        bottom: 0px;
+        top: 0px;
         left: 0%;
         margin: 0px;
-
-        /* octagon shape */
         corner-shape: bevel;
+        cursor: pointer;
       }
       button:active {
         background: var(--cyan);
-        height: 40px;
+        color: var(--purple);
       }
+
+      .button-outline {
+        display: block;
+        position: absolute;
+        left: calc(50% - 150px);
+        outline: 3px solid var(--purple);
+        border-radius: 7px;
+        corner-shape: bevel;
+        width: 300px;
+        height: 55px;
+        background: var(--white);
+        bottom: 0px;
+      }
+      .button-outline:active {
+        height: 46px;
+      }
+
       main {
         margin-block: 50px;
       }
@@ -102,43 +125,73 @@
         animation-timing-function: ease;
         transform: rotate(-5deg);
       }
+      b {
+        text-shadow: rgb(85, 1, 144) 3px 3px 0px;
+      }
 
       footer {
-        background: white;
+        background: var(--white);
+        align-items: center;
+        display: grid;
+        text-align: center;
       }
       ul {
         text-align: left;
-          margin: auto;
-          width: 70%;
+        margin: auto;
+        width: 50%;
+      }
+      .footer-text {
+        color: #444 !important; 
+        font-size: 14px;
+        margin: 10px;
+        font-size: 13px;
+        font-weight: 100;
+      }
+      .footer-image {
+        margin: 6vh auto;
+        height: 125px;
       }
     </style>
   </head>
   <body>
     <br />
-    <header >
+    <header>
       <h1><img src="logo.png" /></h1>
-      
-      <a href="./game" style="display: block; height: 68px !important; width: 200px; position: relative; left: calc(50% - 100px);"><button>PLAY NOW!</button></a>
+      <br /><br />
+
+      <div style="height: 55px; position: relative">
+        <a href="./game" class="button-outline"><button>PLAY NOW!</button></a>
+      </div>
     </header>
     <main>
       <div><p>NEW FEATURES!</p></div>
       <div>
-      <ul>
-        <li>Static and Falling Saws</li>
-        <li>Move-On-Switch</li>
-        <li>Switch Blocks</li>
-        <li>Bulk Edit</li>
-        <li>20+ More Songs!!!!</li>
-        <li>Right-Facing Enemies</li>
-        <li>Speed-retaining Flags</li>
-        <li>"Classic" theme, for those who liked the original <i>The Impossible Game</i></li>
-        <li>Size Button</li>
-        <li>Small tweaks and QoL stuff</li>
-        <li>And much more...</li>
-      </ul>
-      <b style="font-size: 120%"><b>ALL FOR FREE!</b></b>
+        <ul>
+          <li><span style="font-weight:700;font-size:1.1rem">Traducciones al Español!</span></li>
+          <li>Static and Falling Saws</li>
+          <li>Move-On-Switch</li>
+          <li>Switch Blocks</li>
+          <li>Bulk Edit</li>
+          <li>20+ More Songs!!!!</li>
+          <li>Right-Facing Enemies</li>
+          <li>Speed-retaining Flags</li>
+          <li>
+            "Classic" theme, for those who liked the original
+            <i>The Impossible Game</i>
+          </li>
+          <li>Size Button</li>
+          <li>Small tweaks and QoL stuff</li>
+          <li>And much more...</li>
+        </ul>
+        <br />
+        <b style="font-size: 200%"><b>ALL FOR FREE!</b></b>
       </div>
     </main>
-    <footer></footer>
+    <footer>
+        <img src="e016.png" class="footer-image" />
+        <span class="footer-text">
+          Made by <a href="https://github.com/e016">@e016</a> on Github.<br/>
+          View the <a href="https://github.com/e016/tig2plus">Repository</a>!</span>
+    </footer>
   </body>
 </html>

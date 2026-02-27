@@ -38670,7 +38670,7 @@ var version = "v2-dev";
               isGravity: e.isGravity
             };
           },
-          al = makeSprite({
+          menuButtonSprite = makeSprite({
             render: ({ props: e }) => [
               conditional(
                 () => e.hidden,
@@ -56082,7 +56082,7 @@ var version = "v2-dev";
             render({ props: e, state: t, device: a, getContext: i }) {
               const { settings: n } = i(Se);
               return [
-                al.Single(
+                menuButtonSprite.Single(
                   {
                     hidden: n.hideUi,
                     onPress: e.onPause,
@@ -57682,7 +57682,7 @@ var version = "v2-dev";
                 ));
               const k =
                   be.pointInBox2(
-                    (-a.size.fullWidth / 2 + 50) * (n(Se).settings.mirrorMenuButton ? -1 : 1),
+                    (-a.size.fullWidth / 2 + 50) * ((n(Se).settings.mirrorMenuButton || (void 0 === e.backToMenu)) ? -1 : 1),
                     a.size.fullHeight / 2 - 50,
                     50,
                     50,
@@ -57700,13 +57700,13 @@ var version = "v2-dev";
                     )),
                 N = Pl(w, A),
                 x =
-                  (f.pointer.pressed ||
+                  (((f.pointer.pressed) &&
+                  !k) ||
                     f.keysDown[" "] ||
                     f.keysDown["w"] ||
                     f.keysDown.ArrowUp ||
                     "down" === S ||
                     "justDown" === S) &&
-                  !k &&
                   !C &&
                   !N,
                 P = x
@@ -59287,7 +59287,7 @@ var version = "v2-dev";
               Se.Single({
                 context: () => e.globalContextVal,
                 sprites: [
-                  al.Single(
+                  menuButtonSprite.Single(
                     {
                       hidden: false,
                       onPress: e.onPress,
@@ -65681,39 +65681,7 @@ var version = "v2-dev";
                   x: -i / 2 + 120,
                   y: s,
                 }),
-                P({
-                  id: "TrailerVideo",
-                  fontName: "Montserrat",
-                  fontSize: 15,
-                  text: "",
-                  onChangeText: () => void 0,
-                  color: Be,
-                  align: "left",
-                  width: 400,
-                  x: 0,
-                  y: -50,
-                  tagName: "iframe",
-                  numberOfLines: 15,
-                  setupElement: (e) => {
-                    e.src = "https://www.youtube-nocookie.com/embed/ZMdJYx6dDaU?si=142UWuBZYSqP86Q1";
-                    e.style.padding = "0px";
-                    e.width = "560";
-                    e.height = "315";
-                    e.title = "Competition Trailer";
-                    e.frameborder = "0";
-                    e.setAttribute("allow", `
-    accelerometer;
-    autoplay;
-    clipboard-write;
-    encrypted-media;
-    gyroscope;
-    picture-in-picture;
-    web-share;
-  `);
-  e.setAttribute("refererpolicy", "strict-origin-when-cross-origin");
-  e.setAttribute("allowfullscreen", "true")
-                  }
-                }),
+                
                 Fo({
                   id: "BackButton",
                   text: localize("BACK"),
