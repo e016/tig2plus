@@ -17646,6 +17646,12 @@ var version = "v2-dev";
               size: 47,
               trail: ct(),
             },
+            mikhael: {
+              name: "Mikhael",
+              fileName: "mikhael",
+              size: 31,
+              trail: ct({ topColour: "#78baba", bottomColour: "#78baba"}),
+            },
             blank: {
               name: "Blank",
               fileName: "blank",
@@ -51396,6 +51402,19 @@ var version = "v2-dev";
                           (k.height = t.size.fullHeight);
                       }
                     ),
+                    p(
+                      {
+                        color: "black",
+                        width: t.size.fullWidth,
+                        height: t.size.fullHeight,
+                        opacity: e.theme.id == "classic" ? 0.2 : 0
+                      },
+                      (k) => {
+                        (k.width = t.size.fullWidth),
+                          (k.height = t.size.fullHeight),
+                          (k.opacity = e.theme.id == "classic" ? 0.2 : 0);
+                      }
+                    ),
                   ],
                   () => {
                     //*()
@@ -63632,7 +63651,7 @@ var version = "v2-dev";
                 },
                 disabled: (i || n),
                 sprites: (a) => {
-                  const i = null === t;
+                  const i = true; // null === t;
                   return [
                     So({
                       id: "RaiseRects",
