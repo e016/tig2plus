@@ -32635,7 +32635,7 @@ var version = "v2-dev";
                             (t) => {
                               (t.x = e.switchButton.x),
                                 (t.y = e.switchButton.y),
-                                (t.rotation = e.switchButton.gravity == 0 ? 90 : e.switchButton.gravity > 0 ? 180 : 0);
+                                (t.rotation = e.switchButton.gravity == 0 ? (e.playerDir > 0 ? 90 : -90) : e.switchButton.gravity > 0 ? 180 : 0);
                             }
                           ),
                         ];
@@ -54223,6 +54223,7 @@ var version = "v2-dev";
                     df: e.df,
                     justHit: false,
                     theme: e.layout.properties.theme.objects.switch,
+                    playerDir: e.playerDir
                   }),
                   update: (t, a) => {
                     (t.switchButton = a),
@@ -54234,6 +54235,7 @@ var version = "v2-dev";
                       (t.justHit =
                         null !== e.justHitObject &&
                         "switchButtons" === e.justHitObject.array);
+                        (t.playerDir = e.playerDir);
                   },
                   array: () => e.layout.switchButtons,
                   key: (t, a) => e.layoutStateIndex.switchButtons[a],
