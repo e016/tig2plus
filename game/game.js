@@ -2,7 +2,7 @@
 var game;
 var bgOnly = false;
 
-var version = "v1.5.3";
+var version = "v1.5.4";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -57057,7 +57057,7 @@ var version = "v1.5.3";
                 ));
               const k =
                   be.pointInBox2(
-                    -a.size.fullWidth / 2 + 50,
+                    (-a.size.fullWidth / 2 + 50) * (void 0 === e.backToMenu ? -1 : 1),
                     a.size.fullHeight / 2 - 50,
                     50,
                     50,
