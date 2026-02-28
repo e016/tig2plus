@@ -29734,6 +29734,7 @@ var version = "v2-dev";
               `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-red.png`,
               `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-blue.png`,
               "images/themes/synthwave/collectible.png",
+              "images/themes/world2/collectible.png",
               "images/themes/synthwave/collectible-pickup.png",
               "images/themes/arrows/arrow.png",
               "images/themes/punch/arrow.png",
@@ -39665,16 +39666,17 @@ var version = "v2-dev";
               };
               var setY = (y)=>(stack ? (stack.y = y) :(U.playerY = y));
               var setGradY = (y)=>((stack ? (stack.gradY = y) : (U.playerGradY = y)));
-              var gradY = stack ? stack.gradY : U.playerGradY;
+              var gradY = stack ? stack.gradY : (U.isGravity ? G.initGrad(V) : U.playerGradY);
               if (-1 !== idx) {
                 const spring = z.springs[idx];
                 (stack || (U.jumping = true)),
                 (stack || (U.gravity = 1)),
-                  (setGradY((spring.direction > 0
-                      ? Math.max(1.5 * G.initGrad(V), Math.abs(gradY))
+                (setGradY((spring.direction > 0
+                      ? Math.max(1.5 * G.initGrad(V), Math.abs((gradY)))
                       : -Math.min(1 * G.initGrad(V), -gradY)) *
                     spring.direction)),
-                  (setY(spring.y + (spring.height / 2) * spring.direction + 15 * spring.direction)),
+                    (setY(spring.y + (spring.height / 2) * spring.direction + 15 * spring.direction)),
+                    (stack || (U.isGravity = false)),
                   (stack || (L.landTimer = et.landTimerLimit)),
                   (stack || (U.skateboardJumpCharge = 0)),
                   (U.justHitObject = { array: "springs", index: idx }),
@@ -40728,6 +40730,12 @@ var version = "v2-dev";
                 author: "Exilelord",
                 fileName: "audio/tracks/exilelord-soulless-4.mp3",
                 bpm: 125,
+              },
+              zenith: {
+                name: "Zenith",
+                author: "Geoxor",
+                fileName: "audio/tracks/geoxor-zenith.mp3",
+                bpm: 128,
               }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -44048,6 +44056,7 @@ var version = "v2-dev";
             e[(e.Machina = 44)] = "Machina";
             e[(e.Clutterfunk = 45)] = "Clutterfunk";
             e[(e.Soulless4 = 46)] = "Soulless4";
+            e[(e.Zenith = 47)] = "Zenith";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -44148,6 +44157,7 @@ var version = "v2-dev";
             e[(e.Machina = 44)] = "Machina";
             e[(e.Clutterfunk = 45)] = "Clutterfunk";
             e[(e.Soulless4 = 46)] = "Soulless4";
+            e[(e.Zenith = 47)] = "Zenith";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -44897,7 +44907,8 @@ var version = "v2-dev";
             [Nd.RaceAroundTheWorld]: hl.songs.raceAroundTheWorld,
             [Nd.Machina]: hl.songs.machina,
             [Nd.Clutterfunk]: hl.songs.clutterfunk,
-            [Nd.Soulless4]: hl.songs.soulless4
+            [Nd.Soulless4]: hl.songs.soulless4,
+            [Nd.Zenith]: hl.songs.zenith
           },
           Hd = {
             [ld.Rot0]: 0,
