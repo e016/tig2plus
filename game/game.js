@@ -17650,6 +17650,7 @@ var version = "v2-dev";
               name: "Mikhael",
               fileName: "mikhael",
               size: 31,
+              author: "mikhael",
               trail: ct({ topColour: "#78baba", bottomColour: "#78baba"}),
             },
             blank: {
@@ -29735,6 +29736,7 @@ var version = "v2-dev";
               "images/themes/synthwave/collectible.png",
               "images/themes/synthwave/collectible-pickup.png",
               "images/themes/arrows/arrow.png",
+              "images/themes/punch/arrow.png",
               "images/themes/arrows/arrow-outline.png",
               "images/themes/arrows/arrow-outline-selected.png",
               `images/themes/blank/bottom/block.png`,
@@ -32642,7 +32644,7 @@ var version = "v2-dev";
                             (t) => {
                               (t.x = e.switchButton.x),
                                 (t.y = e.switchButton.y),
-                                (t.rotation = e.switchButton.gravity == 0 ? (e.playerDir > 0 ? 90 : -90) : e.switchButton.gravity > 0 ? 180 : 0);
+                                (t.rotation = e.switchButton.gravity == 0 ? (e.playerDir < 0 ? -90 : 90) : e.switchButton.gravity > 0 ? 180 : 0);
                             }
                           ),
                         ];
@@ -33414,6 +33416,7 @@ var version = "v2-dev";
                     playerX: e.playerX,
                     paused: e.paused,
                     df: e.df,
+                    theme: e.theme
                   };
                 },
                 update: (t, a, i) => {
@@ -33423,7 +33426,8 @@ var version = "v2-dev";
                     (t.wasPickedUp = n.wasPickedUp),
                     (t.playerX = e.playerX),
                     (t.paused = e.paused),
-                    (t.df = e.df);
+                    (t.df = e.df),
+                    (t.theme = e.theme);
                 },
                 updateAll: (t) => {
                   const a = e.frame % 100,
@@ -33448,7 +33452,7 @@ var version = "v2-dev";
                             return [
                               y(
                                 {
-                                  fileName: "images/themes/arrows/arrow.png",
+                                  fileName: `images/themes/${t.theme == "world2" ? "punch" : "arrows"}/arrow.png`,
                                   width: Vo,
                                   height: Vo,
                                 },
@@ -33540,7 +33544,7 @@ var version = "v2-dev";
                                   () => [
                                     y({
                                       fileName:
-                                        "images/themes/arrows/arrow.png",
+                                        `images/themes/${t.theme == "world2" ? "punch" : "arrows"}/arrow.png`,
                                       width: Vo,
                                       height: Vo,
                                       x: e.collectible.x,
@@ -33620,7 +33624,7 @@ var version = "v2-dev";
                               loopingSpriteSheet.Single(
                                 {
                                   fileName:
-                                    "images/themes/synthwave/collectible.png",
+                                    `images/themes/${e.theme == "world2" ? "world2" : "synthwave"}/collectible.png`,
                                   width: 29,
                                   height: 29,
                                   columns: 4,
@@ -34234,6 +34238,7 @@ var version = "v2-dev";
                       collectible: f,
                       wasPickedUp: false,
                       isEditor: true,
+                      theme: t.switch
                     }),
                     unlocked: e.includes("collectible") || e.includes("arrows"),
                   },
@@ -38276,6 +38281,7 @@ var version = "v2-dev";
                     collectible: e,
                     wasPickedUp: false,
                     isEditor: true,
+                    theme: v.switch
                   })
                 ),
                 ...s,
@@ -38449,6 +38455,7 @@ var version = "v2-dev";
                     wasPickedUp: false,
                     collectible: e,
                     isEditor: true,
+                    theme: n.switch
                   });
                 case "spring":
                   return $o.Single({
@@ -39363,6 +39370,8 @@ var version = "v2-dev";
                         null == v || v.scoreMultiplier(U.score.multiplier));
                   }
                 } else U.playerRot = 0;
+              else if (U.isGravity)
+                (U.playerRot % 90) > 89 || (U.playerRot % 90) < 1 ? (U.playerRot = et.closestFlatAngle(U.playerRot)) : (U.playerRot += (et.closestFlatAngle(U.playerRot) - U.playerRot) / 5)
               else
                 (J && !U.dashing) ||
                   ((U.playerRot += (90 * U.playerDir * k) / C * U.gravity * (U.dashing ? 2 : 1)),
@@ -39859,9 +39868,7 @@ var version = "v2-dev";
             }
             const ue = Ca.getAllDeadlyObjects(z, W);
             if (null !== Q) {
-              if (U.gravity > 0) {
                 U.isGravity = false;
-              }
               const e = G.getOvershootPercent(U.playerY - Q, U.playerGradY, j);
               if (X) {
                 const e = Math.abs(U.playerRot % 360);
@@ -54827,6 +54834,7 @@ var version = "v2-dev";
                     playerX: e.playerX,
                     paused: e.paused,
                     df: e.df,
+                    theme: e.layout.properties.theme.objects.switch
                   },
                   (t) => {
                     (t.collectibles = e.layout.collectibles),
@@ -54835,7 +54843,8 @@ var version = "v2-dev";
                       (t.frame = e.frame),
                       (t.playerX = e.playerX),
                       (t.paused = e.paused),
-                      (t.df = e.df);
+                      (t.df = e.df),
+                      (t.theme = e.layout.properties.theme.objects.switch);
                   }
                 ),
                 qa.Array({
