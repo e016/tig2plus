@@ -38721,7 +38721,7 @@ var version = "v2-dev";
             ],
           }),
           il = {},
-          nl = function (e, t, a, i, n, grad, o, r, l, c, d, gravity, isGravity) {
+          nl = function (e, t, a, i, n, grad, o, r, l, c, d, gravity, isGravity, dashing) {
             // n is player dir
             //console.warn(n);
             (il.touchingPortals = void 0),
@@ -38743,6 +38743,9 @@ var version = "v2-dev";
               if (!("down" === h.direction && i > h.y))
                 return (il.touchingPortals = g), il;
               if (!l) return (il.crashed = true), il;
+            }
+            if (p.direction == "up" || p.direction == "down") {
+              dashing = false;
             }
             switch (`${h.direction}-${p.direction}`) {
               case "left-right":
@@ -38795,7 +38798,8 @@ var version = "v2-dev";
                 playerX: a,
                 playerY: i,
                 playerDir: n,
-                gravity: gravity
+                gravity: gravity,
+                dashing: drashing,
               }),
               il
             );
@@ -39703,7 +39707,8 @@ var version = "v2-dev";
               Z, //c
               k, //d
               U.gravity,
-              U.isGravity
+              U.isGravity,
+              U.dashing
             );
             (U.touchingPortals = oe.touchingPortals || null),
               (U.crashed = (oe.crashed) || U.crashed),
@@ -39714,6 +39719,7 @@ var version = "v2-dev";
                 (U.playerGradY = oe.teleport.playerGradY),
                 (U.playerDir = oe.teleport.playerDir),
                 (U.gravity = oe.teleport.gravity),
+                (U.dashing = oe.teleport.dashing || false),
                 (Z = be.hitObject(
                   U.playerX,
                   U.playerY,
