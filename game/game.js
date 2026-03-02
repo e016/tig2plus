@@ -38799,7 +38799,7 @@ var version = "v2-dev";
                 playerY: i,
                 playerDir: n,
                 gravity: gravity,
-                dashing: drashing,
+                dashing: dashing,
               }),
               il
             );
@@ -55692,7 +55692,7 @@ var version = "v2-dev";
                           x: -130,
                           y: -100,
                         }),
-                        wm.Single(
+                        sliderSprite.Single(
                           {
                             x: 50,
                             y: -100,
@@ -55739,7 +55739,7 @@ var version = "v2-dev";
                             e.text = `${localize("DELAY")}: ${1e3 * a.headphonesDelay}ms`;
                           }
                         ),
-                        wm.Single(
+                        sliderSprite.Single(
                           {
                             x: 50,
                             y: -150,
@@ -55748,7 +55748,7 @@ var version = "v2-dev";
                               const { updateSettings: a } = t(Se);
                               (i.didChangeHeadphoneSync = true),
                                 a({
-                                  headphonesDelay: Math.round(1e3 * e) / 1e3,
+                                  headphonesDelay: Math.round(1000 * e) / 1000,
                                 });
                             },
                           },
@@ -56071,7 +56071,7 @@ var version = "v2-dev";
               }),
             ],
           }),
-          wm = makeSprite({
+          sliderSprite = makeSprite({
             loop({ props: e, getInputs: t, getContext: a }) {
               const { pointer: i } = t();
               if (i.pressed && i.y > -15 && i.y < 15) {
@@ -56122,7 +56122,7 @@ var version = "v2-dev";
             l((i = i.apply(e, t || [])).next());
           });
         };
-        const km = makeSprite({
+        const gameplayOverlay = makeSprite({
             init: () => ({ boostersMenuOpen: false }),
             loop({ props: e, getInputs: t }) {
               !e.paused && t().keysJustPressed.Escape && e.onPause();
@@ -58092,7 +58092,7 @@ var version = "v2-dev";
                 ifConditional(
                   () => void 0 !== e.backToMenu && !e.online,
                   () => [
-                    km.Single(
+                    gameplayOverlay.Single(
                       {
                         backToMenu: () => e.backToMenu(false),
                         paused: t.paused,
@@ -69246,7 +69246,7 @@ var version = "v2-dev";
                               () => {
                                 var a;
                                 return [
-                                  km.Single(
+                                  gameplayOverlay.Single(
                                     {
                                       paused: t.levelMenuOpen,
                                       backToMenu: i,
