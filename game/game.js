@@ -29734,7 +29734,7 @@ var version = "v2-dev";
               `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-red.png`,
               `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-blue.png`,
               "images/themes/synthwave/collectible.png",
-              "images/themes/world2/collectible.png",
+              "images/themes/world2/collectible-solid.png",
               "images/themes/synthwave/collectible-pickup.png",
               "images/themes/arrows/arrow.png",
               "images/themes/punch/arrow.png",
@@ -33625,7 +33625,7 @@ var version = "v2-dev";
                               loopingSpriteSheet.Single(
                                 {
                                   fileName:
-                                    `images/themes/${e.theme == "world2" ? "world2" : "synthwave"}/collectible.png`,
+                                    `images/themes/synthwave/collectible.png`,
                                   width: 29,
                                   height: 29,
                                   columns: 4,
