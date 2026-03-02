@@ -36599,7 +36599,7 @@ var version = "v2-dev";
                           });
                         },
                       }),
-                      n.push({
+                      /* n.push({
                         name: "Drill",
                         selected: "drill" === t.item,
                         onPress: () => {
@@ -36615,7 +36615,7 @@ var version = "v2-dev";
                             });
                           });
                         },
-                      }),
+                      }), */
                     (["playerStack", "punch"]).includes(t.item) &&
                       l.push({
                         name: "On",
@@ -39799,7 +39799,7 @@ var version = "v2-dev";
                 Q,
                 X,
                 U.switchBlockSpikes,
-                U.gravity,
+                U.dashing ? 1 : U.gravity,
                 U.gravityHitObject
               );
             (U.crashed = ce.crashed), (Q = ce.onGroundY);
