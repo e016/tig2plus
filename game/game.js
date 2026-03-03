@@ -38959,11 +38959,11 @@ var version = "v2-dev";
                 playerInput,
                 level: _,
                 sfx: v,
-                onCrash: T,
+                onCrash,
                 onReachedCheckpoint: R,
                 onReset: O,
                 levelSpeeds: { jumpFrames: C, speed: w, coefficients: A },
-                df: k,
+                df,
                 shouldResetOnCrash: N,
                 waitAtCheckpoint: x,
                 booster: P,
@@ -38973,7 +38973,7 @@ var version = "v2-dev";
                 bottomLineTheme,
               } = e,
               { levelState: U } = L;
-            U.frame += k;
+            U.frame += df;
             const { a: j, b: V } = A;
             L.blockJumpUntilReleased &&
               "up" === playerInput &&
@@ -38988,13 +38988,13 @@ var version = "v2-dev";
                 : t.item);
             U.justDownInputTimer > 0 && U.justDownInputTimer--,
               "justDown" !== playerInput || skating || (U.justDownInputTimer = 10);
-            const z =
+            const inViewLayout =
                 (null == D ? void 0 : D.inViewLayout) ||
                 Ca.getEmptyLayout(_.layout.properties),
-              W =
+              inViewLayoutState =
                 (null == D ? void 0 : D.inViewLayoutState) ||
-                xa.getInitState(z),
-              q =
+                xa.getInitState(inViewLayout),
+              fullLayoutStateIndexes =
                 (null == D ? void 0 : D.fullLayoutStateIndexes) ||
                 xa.getEmptyStateIndexes();
             if (
@@ -39009,27 +39009,27 @@ var version = "v2-dev";
                 U.jumpSwitch.ratio,
                 U.switchBlockSpikes,
                 L.layoutFirstIndexes,
-                z,
-                W,
-                q
+                inViewLayout,
+                inViewLayoutState,
+                fullLayoutStateIndexes
               ),
               x)
             )
-              return void (U.frame -= k);
+              return void (U.frame -= df);
             if (U.crashed || U.finishedLevel) {
               if (
                 (null !== L.resetTimer && L.resetTimer--,
                 cl(
                   U,
-                  k,
+                  df,
                   w,
                   C,
                   _,
-                  z,
-                  W,
-                  q,
-                  Ca.getAllLandableObjects(z, W, skating),
-                  Ca.getAllDeadlyObjects(z, W),
+                  inViewLayout,
+                  inViewLayoutState,
+                  fullLayoutStateIndexes,
+                  Ca.getAllLandableObjects(inViewLayout, inViewLayoutState, skating),
+                  Ca.getAllDeadlyObjects(inViewLayout, inViewLayoutState),
                   () => false,
                   v,
                   U.bottomLine?.objects || []
@@ -39037,11 +39037,11 @@ var version = "v2-dev";
                 U.playerBullets &&
                 xa.updateHitBulletState(
                   U.frame,
-                  z,
-                  W,
+                  inViewLayout,
+                  inViewLayoutState,
                   U.playerBullets,
                   U.layoutState,
-                  q,
+                  fullLayoutStateIndexes,
                   U.switchBlockSpikes
                 ),
                 0 === L.resetTimer && N)
@@ -39068,9 +39068,9 @@ var version = "v2-dev";
                     e.jumpSwitch.ratio,
                     U.switchBlockSpikes,
                     t,
-                    z,
-                    W,
-                    q
+                    inViewLayout,
+                    inViewLayoutState,
+                    fullLayoutStateIndexes
                   ),
                   (e.attempt = U.attempt + 1),
                   (e.checkpoint = {
@@ -39087,7 +39087,7 @@ var version = "v2-dev";
               return;
             }
             U.playerX +=
-              w * U.playerSpeedMultiplier * k * U.playerDir * (skating ? 1.5 : 1);
+              w * U.playerSpeedMultiplier * df * U.playerDir * (skating ? 1.5 : 1);
             let J = false;
             U.playerUsingPowerup = false;
             const K = U.switchBlockSpikes;
@@ -39098,7 +39098,7 @@ var version = "v2-dev";
             ) {
               const e = _.boss.overrideMovement(
                 { playerX: U.playerX, playerY: U.playerY, jumping: U.jumping },
-                k,
+                df,
                 w,
                 playerInput,
                 U.frame
@@ -39114,10 +39114,10 @@ var version = "v2-dev";
                     : null,
                   a =
                     e &&
-                    z.collectibles.some((e, a) => {
+                    inViewLayout.collectibles.some((e, a) => {
                       var i;
                       if ("arrow" === e.form)
-                        return W.collectibles[a].wasPickedUp
+                        return inViewLayoutState.collectibles[a].wasPickedUp
                           ? void 0
                           : (null == t ? void 0 : t(U.playerX - 10, 70, e)) ||
                               ("playerStack" ===
@@ -39131,7 +39131,7 @@ var version = "v2-dev";
                                   70
                                 ));
                     }),
-                    toggleGravity = z.switchButtons.findIndex((button)=>(button.affects == "gravity" && be.hitObject(
+                    toggleGravity = inViewLayout.switchButtons.findIndex((button)=>(button.affects == "gravity" && be.hitObject(
                 U.playerX,
                 U.playerY,
                 U.playerScaleX * 0.99,
@@ -39148,9 +39148,9 @@ var version = "v2-dev";
                   (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0),
-                    z.collectibles.forEach((e, a) => {
+                    inViewLayout.collectibles.forEach((e, a) => {
                       var i, n;
-                      if (!W.collectibles[a].wasPickedUp)
+                      if (!inViewLayoutState.collectibles[a].wasPickedUp)
                         if (
                           (null == t ? void 0 : t(U.playerX, 50, e)) ||
                           ("playerStack" ===
@@ -39170,8 +39170,8 @@ var version = "v2-dev";
                               score: i,
                             },
                             U.layoutState,
-                            W,
-                            q,
+                            inViewLayoutState,
+                            fullLayoutStateIndexes,
                             K
                           );
                         } else
@@ -39187,13 +39187,13 @@ var version = "v2-dev";
                               a,
                               { type: "collectibleState", wasPickedUp: true },
                               U.layoutState,
-                              W,
-                              q,
+                              inViewLayoutState,
+                              fullLayoutStateIndexes,
                               K
                             ));
                     });
                 else if (e && toggleGravity > -1) {
-                  var g = z.switchButtons[toggleGravity].gravity;
+                  var g = inViewLayout.switchButtons[toggleGravity].gravity;
                   (U.dashing = false),
                   (g == 0 ? (U.dashing = true) : (U.gravity = g, U.isGravity = true)),
                   (U.playerGradY = G.initGrad(V) * -2 * U.gravity),
@@ -39215,13 +39215,13 @@ var version = "v2-dev";
                     (U.playerPowerup = null),
                     xa.updateHitPunchState(
                       U.frame,
-                      z,
-                      W,
+                      inViewLayout,
+                      inViewLayoutState,
                       U.playerX,
                       U.playerY,
                       U.playerDir,
                       U.layoutState,
-                      q,
+                      fullLayoutStateIndexes,
                       K,
                       U.isCompatible ? 1 : U.playerScale
                     );
@@ -39239,13 +39239,13 @@ var version = "v2-dev";
                     (U.playerPowerup = null),
                     xa.updateHitDrillState(
                       U.frame,
-                      z,
-                      W,
+                      inViewLayout,
+                      inViewLayoutState,
                       U.playerX,
                       U.playerY,
                       U.playerDir,
                       U.layoutState,
-                      q,
+                      fullLayoutStateIndexes,
                       K,
                       U.playerScale
                     ) > 0 ? (U.playerGradY = G.initGrad(V) * -1) : void 0;
@@ -39288,7 +39288,7 @@ var version = "v2-dev";
                 ) {
                   if (U.jumping) {
                     if (U.playerGradY < V) {
-                      const e = 1 === k ? 1 : 1.01 * k;
+                      const e = 1 === df ? 1 : 1.01 * df;
                       U.playerGradY += (e * (V - U.playerGradY)) / 5;
                     }
                   } else
@@ -39298,7 +39298,7 @@ var version = "v2-dev";
                         ((U.playerGradY = G.initGrad(V)),
                         (U.playerPowerup = null),
                         null == v || v.useUpPowerup("jetpack"));
-                  (U.playerJetpackFuel -= k * (w / 5)),
+                  (U.playerJetpackFuel -= df * (w / 5)),
                     (U.playerUsingPowerup = true),
                     U.playerJetpackFuel <= 0 &&
                       ((U.playerPowerup = null),
@@ -39324,7 +39324,7 @@ var version = "v2-dev";
                   U.jumping ||
                     0 !== U.playerGradY ||
                     (skating
-                      ? (U.skateboardJumpCharge += k)
+                      ? (U.skateboardJumpCharge += df)
                       : ((U.jumping = true),
                         (U.playerGradY = G.initGrad(V)),
                         (U.jumpSwitch.on = !U.jumpSwitch.on),
@@ -39352,11 +39352,11 @@ var version = "v2-dev";
                   U.skateboardJumpCharge > 0)
                 ) {
                   const e = U.playerScaleY;
-                  U.playerScaleY = Math.max(0.7, U.playerScaleY - 0.05 * k);
+                  U.playerScaleY = Math.max(0.7, U.playerScaleY - 0.05 * df);
                   const t = U.playerScaleY - e;
                   U.playerY += t * sl;
                 } else U.playerScaleY = 1;
-              else et.setScaleInc(U, k, V);
+              else et.setScaleInc(U, df, V);
               if (
                 "jetpack" ===
                 (null === (r = U.playerPowerup) || void 0 === r
@@ -39378,7 +39378,7 @@ var version = "v2-dev";
                     !(0 === U.playerRot && U.playerGradY < -G.initGrad(V) / 2)
                   ) {
                     const e = Math.sign(-U.playerRot) || U.playerDir;
-                    (U.playerRot -= 12 * k * e),
+                    (U.playerRot -= 12 * df * e),
                       276 === Math.abs(U.playerRot % 360) &&
                         ((U.score = zo.addScore(U.score, true, true)),
                         null == v || v.scoreMultiplier(U.score.multiplier));
@@ -39388,11 +39388,11 @@ var version = "v2-dev";
                 (U.playerRot % 90) > 89 || (U.playerRot % 90) < 1 ? (U.playerRot = et.closestFlatAngle(U.playerRot)) : (U.playerRot += (et.closestFlatAngle(U.playerRot) - U.playerRot) / 5)
               else
                 (J && !U.dashing) ||
-                  ((U.playerRot += (90 * U.playerDir * k) / C * U.gravity * (U.dashing ? 2 : 1)),
+                  ((U.playerRot += (90 * U.playerDir * df) / C * U.gravity * (U.dashing ? 2 : 1)),
                   U.playerRot < 0
                     ? (U.playerRot += 360)
                     : U.playerRot > 360 && (U.playerRot -= 360));
-              const e = U.dashing ? {y: U.playerY, gradY: 0} : G.stepY(U.playerY, U.playerGradY, j, k, U.gravity);
+              const e = U.dashing ? {y: U.playerY, gradY: 0} : G.stepY(U.playerY, U.playerGradY, j, df, U.gravity);
               (U.playerY = e.y), (U.playerGradY = e.gradY);
             }
             if (
@@ -39400,15 +39400,15 @@ var version = "v2-dev";
               "blocks" !== U.onObject.array &&
               "spikes" !== U.onObject.array
             ) {
-              const e = q[U.onObject.array].indexOf(U.onObject.index),
-                t = z[U.onObject.array][e];
+              const e = fullLayoutStateIndexes[U.onObject.array].indexOf(U.onObject.index),
+                t = inViewLayout[U.onObject.array][e];
               if (t) {
                 const e = t.y - U.onObject.y;
                 (U.playerY += e),
                   (U.playerGradY =
                     U.playerGradY < 0
-                      ? Math.min(e / k, U.playerGradY)
-                      : Math.max(e / k, U.playerGradY));
+                      ? Math.min(e / df, U.playerGradY)
+                      : Math.max(e / df, U.playerGradY));
               }
             }
             let Q = null,
@@ -39439,13 +39439,13 @@ var version = "v2-dev";
               )),
               ee = null;
             var ttt;
-            for (let e = 0; e < z.directionChanges.length; e++) {
-              const t = z.directionChanges[e],
+            for (let e = 0; e < inViewLayout.directionChanges.length; e++) {
+              const t = inViewLayout.directionChanges[e],
                 a = t.x - U.playerX;
               (Z(t) || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(t, U.playerX, U.playerStacks))) &&
                 ((1 === U.playerDir && "left" === t.direction && a <= 0) ||
                   (-1 === U.playerDir && "right" === t.direction && a >= 0)) &&
-                (W.directionChanges[e].wasHit
+                (inViewLayoutState.directionChanges[e].wasHit
                   ? (U.crashed = true)
                   : ((U.playerDir = "left" === t.direction ? -1 : 1),
                     t.fixSync ? (U.playerX += a) : void 0,
@@ -39460,14 +39460,14 @@ var version = "v2-dev";
                 ee,
                 { type: "directionChangeState", wasHit: !ttt.multiUse },
                 U.layoutState,
-                W,
-                q,
+                inViewLayoutState,
+                fullLayoutStateIndexes,
                 K
               );
             const previousJustHitObject = U.justHitObject;
             U.justHitObject = null;
-            for (let e = 0; e < z.speedChanges.length; e++) {
-              const t = z.speedChanges[e],
+            for (let e = 0; e < inViewLayout.speedChanges.length; e++) {
+              const t = inViewLayout.speedChanges[e],
                 index = e,
                 a = U.playerX - t.x;
               if (
@@ -39489,7 +39489,7 @@ var version = "v2-dev";
                   U.justHitObject = { array: "speedChanges", index: index };
               }
             }
-            const ae = z.flags.findIndex((e) => {
+            const ae = inViewLayout.flags.findIndex((e) => {
               const t = e.x - U.playerX;
               return (
                 (Z(e)  || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(e, U.playerX, U.playerStacks))) &&
@@ -39497,19 +39497,19 @@ var version = "v2-dev";
                   (-1 === U.playerDir && t >= -15))
               );
             });
-            if (-1 !== ae && !W.flags[ae].wasHit) {
-              const e = z.flags[ae];
+            if (-1 !== ae && !inViewLayoutState.flags[ae].wasHit) {
+              const e = inViewLayout.flags[ae];
               if (
                 (xa.updateLayoutStateField(
                   "flags",
                   ae,
                   { type: "flagState", wasHit: true },
                   U.layoutState,
-                  W,
-                  q,
+                  inViewLayoutState,
+                  fullLayoutStateIndexes,
                   K
                 ),
-                "endOfLevel" === z.flags[ae].role)
+                "endOfLevel" === inViewLayout.flags[ae].role)
               )
                 (U.finishedLevel = true),
                   null == v || v.pauseSong(),
@@ -39517,7 +39517,7 @@ var version = "v2-dev";
               else {
                 null == v || v.hitFlag();
                 const t = Zr(
-                  z,
+                  inViewLayout,
                   _.boss,
                   F,
                   null,
@@ -39567,7 +39567,7 @@ var version = "v2-dev";
                   R(false, U.checkpoint.index, a);
               }
             }
-            const ie = z.switchButtons.findIndex((e) => {
+            const ie = inViewLayout.switchButtons.findIndex((e) => {
               var t;
               return (
                 Z(e) ||
@@ -39578,8 +39578,8 @@ var version = "v2-dev";
                   be.hitStack(e, U.playerX, U.playerStacks))
               );
             });
-            if (-1 !== ie && z.switchButtons[ie].affects != "gravity" && W.switchButtons[ie].isPressedCounter <= 0) {
-              const e = z.switchButtons[ie],
+            if (-1 !== ie && inViewLayout.switchButtons[ie].affects != "gravity" && inViewLayoutState.switchButtons[ie].isPressedCounter <= 0) {
+              const e = inViewLayout.switchButtons[ie],
                 colors = {
                   red: "#FF0000",
                   yellow: "#ffea00",
@@ -39597,8 +39597,8 @@ var version = "v2-dev";
                 ie,
                 { type: "switchButtonState", isPressedCounter: 10 },
                 U.layoutState,
-                W,
-                q,
+                inViewLayoutState,
+                fullLayoutStateIndexes,
                 K
               ),
                 "color" === e.affects
@@ -39618,8 +39618,8 @@ var version = "v2-dev";
                 (U.justHitObject = { array: "switchButtons", index: ie });
             }
             U.flash > 0 ? (U.flash -= 0.01) : (U.flash = 0);
-            for (let e = 0; e < W.switchButtons.length; e++) {
-              const t = W.switchButtons[e];
+            for (let e = 0; e < inViewLayoutState.switchButtons.length; e++) {
+              const t = inViewLayoutState.switchButtons[e];
               t.isPressedCounter > 0 &&
                 ie !== e &&
                 xa.updateLayoutStateField(
@@ -39627,19 +39627,19 @@ var version = "v2-dev";
                   e,
                   {
                     type: "switchButtonState",
-                    isPressedCounter: t.isPressedCounter - k,
+                    isPressedCounter: t.isPressedCounter - df,
                   },
                   U.layoutState,
-                  W,
-                  q,
+                  inViewLayoutState,
+                  fullLayoutStateIndexes,
                   K
                 );
             }
             let ne = -1;
-            for (let e = 0; e < z.collectibles.length; e++) {
-              const t = z.collectibles[e];
+            for (let e = 0; e < inViewLayout.collectibles.length; e++) {
+              const t = inViewLayout.collectibles[e];
               "arrow" === t.form
-                ? !W.collectibles[e].wasPickedUp &&
+                ? !inViewLayoutState.collectibles[e].wasPickedUp &&
                   t.x < U.playerX - 60 &&
                   ((U.score.multiplier = 0),
                   xa.updateLayoutStateField(
@@ -39647,8 +39647,8 @@ var version = "v2-dev";
                     e,
                     { type: "collectibleState", wasPickedUp: true },
                     U.layoutState,
-                    W,
-                    q,
+                    inViewLayoutState,
+                    fullLayoutStateIndexes,
                     K
                   ))
                 : (Z(t) ||
@@ -39660,28 +39660,28 @@ var version = "v2-dev";
                   (ne = e);
             }
             -1 !== ne &&
-              (W.collectibles[ne].wasPickedUp ||
+              (inViewLayoutState.collectibles[ne].wasPickedUp ||
                 (xa.updateLayoutStateField(
                   "collectibles",
                   ne,
                   { type: "collectibleState", wasPickedUp: true },
                   U.layoutState,
-                  W,
-                  q,
+                  inViewLayoutState,
+                  fullLayoutStateIndexes,
                   K
                 ),
                 U.collectibles++,
                 null == v || v.hitCollectible()));
-            const touchedSpring = z.springs.findIndex((e) => Z(e));
+            const touchedSpring = inViewLayout.springs.findIndex((e) => Z(e));
             const checkSprings = (idx, stack) => {
               if (stack) {
-                idx = z.springs.findIndex((e) => stackCollide(stack)(e));
+                idx = inViewLayout.springs.findIndex((e) => stackCollide(stack)(e));
               };
               var setY = (y)=>(stack ? (stack.y = y) :(U.playerY = y));
               var setGradY = (y)=>((stack ? (stack.gradY = y) : (U.playerGradY = y)));
               var gradY = stack ? stack.gradY : (U.isGravity ? G.initGrad(V) : U.playerGradY);
               if (-1 !== idx) {
-                const spring = z.springs[idx];
+                const spring = inViewLayout.springs[idx];
                 (stack || (U.jumping = true)),
                 (stack || (U.gravity = 1)),
                 (setGradY((spring.direction > 0
@@ -39702,7 +39702,7 @@ var version = "v2-dev";
             };
             checkSprings(touchedSpring);
             const oe = nl(
-              z.portals, //e
+              inViewLayout.portals, //e
               _.layout.portals, //t
               U.playerX, //a
               U.playerY, //i
@@ -39714,7 +39714,7 @@ var version = "v2-dev";
                 ? void 0
                 : h[0]) || null, //l
               Z, //c
-              k, //d
+              df, //d
               U.gravity,
               U.isGravity,
               U.dashing
@@ -39739,14 +39739,14 @@ var version = "v2-dev";
                   K
                 )),
                 null == v || v.hitPortal());
-            const re = z.powerups.findIndex((e) => {
+            const re = inViewLayout.powerups.findIndex((e) => {
               return (
                 Z(e) ||
                 ("playerStack" === (U.playerPowerup?.item)) &&
                   be.hitStack(e, U.playerX, U.playerStacks))
             });
-            if (-1 !== re && !W.powerups[re].wasPickedUp) {
-              const e = z.powerups[re];
+            if (-1 !== re && !inViewLayoutState.powerups[re].wasPickedUp) {
+              const e = inViewLayout.powerups[re];
               if (!U.isCompatible && "skateboard" === e.item) {
 
               }
@@ -39757,8 +39757,8 @@ var version = "v2-dev";
                   re,
                   { type: "powerupState", wasPickedUp: true },
                   U.layoutState,
-                  W,
-                  q,
+                  inViewLayoutState,
+                  fullLayoutStateIndexes,
                   K
                 ),
                 null == v || v.pickupPowerup(e.item),
@@ -39795,10 +39795,10 @@ var version = "v2-dev";
                 y: 0,
               });
             }
-            let le = Ca.getAllLandableObjects(z, W, skating),
+            let le = Ca.getAllLandableObjects(inViewLayout, inViewLayoutState, skating),
               ce = rl(
                 le,
-                q,
+                fullLayoutStateIndexes,
                 U.playerX,
                 U.playerY,
                 U.playerGradY,
@@ -39820,7 +39820,7 @@ var version = "v2-dev";
               
               (U.crashed = U.crashed || rl(
                 le,
-                q,
+                fullLayoutStateIndexes,
                 U.playerX,
                 U.playerY,
                 U.playerGradY,
@@ -39837,7 +39837,7 @@ var version = "v2-dev";
               ).crashed)
               if (!rl(
                 le,
-                q,
+                fullLayoutStateIndexes,
                 U.playerX,
                 U.playerY + 7.5,
                 U.playerGradY,
@@ -39867,10 +39867,10 @@ var version = "v2-dev";
                 width: 90 * U.playerScale,
                 height: 120 * U.playerScale,
               });
-              for (let t = 0; t < z.blocks.length; t++) {
-                const a = z.blocks[t];
+              for (let t = 0; t < inViewLayout.blocks.length; t++) {
+                const a = inViewLayout.blocks[t];
                 if (e(a)) {
-                  const e = W.blocks[t];
+                  const e = inViewLayoutState.blocks[t];
                   (!e?.hitFrame || e?.hitFrame < U.frame - 60) &&
                     xa.updateLayoutStateField(
                       "blocks",
@@ -39879,14 +39879,14 @@ var version = "v2-dev";
                         hitFrame: U.frame - Math.abs(U.playerX - a.x) / 5,
                       }),
                       U.layoutState,
-                      W,
-                      q,
+                      inViewLayoutState,
+                      fullLayoutStateIndexes,
                       K
                     );
                 }
               }
             }
-            const ue = Ca.getAllDeadlyObjects(z, W);
+            const ue = Ca.getAllDeadlyObjects(inViewLayout, inViewLayoutState);
             if (null !== Q) {
                 U.isGravity = false;
               const e = G.getOvershootPercent(U.playerY - Q, U.playerGradY, j);
@@ -39973,7 +39973,7 @@ var version = "v2-dev";
                 const e = mo.didLandOnHead(
                   U.frame,
                   t,
-                  W.enemies[a],
+                  inViewLayoutState.enemies[a],
                   U.playerY,
                   U.playerGradY,
                   V,
@@ -39986,8 +39986,8 @@ var version = "v2-dev";
                       a,
                       e.enemyState,
                       U.layoutState,
-                      W,
-                      q,
+                      inViewLayoutState,
+                      fullLayoutStateIndexes,
                       K
                     ),
                     e.playerCrashed && (U.crashed = true);
@@ -40003,7 +40003,7 @@ var version = "v2-dev";
                     ? void 0
                     : g.minY) && void 0 !== m
                 ? m
-                : Ca.getMinYFromX(U.playerX, z.properties.minY);
+                : Ca.getMinYFromX(U.playerX, inViewLayout.properties.minY);
             if (U.playerY <= pe) {
               const e =
                 null !==
@@ -40132,12 +40132,12 @@ var version = "v2-dev";
             "missiles" === (null == P ? void 0 : P.type) &&
               xa.useMissiles(
                 U.frame,
-                z,
-                W,
+                inViewLayout,
+                inViewLayoutState,
                 U.playerX,
                 U.playerY,
                 U.layoutState,
-                q,
+                fullLayoutStateIndexes,
                 K
               ),
               "playerStack" ===
@@ -40223,8 +40223,8 @@ var version = "v2-dev";
                       index,
                       j.enemyState,
                       U.layoutState,
-                      W,
-                      q,
+                      inViewLayoutState,
+                      fullLayoutStateIndexes,
                       K
                     ),
                     j.playerCrashed && (crashed = true);
@@ -40241,7 +40241,7 @@ var version = "v2-dev";
                       // portals
                       
                       const p = nl(
-              z.portals, //e
+              inViewLayout.portals, //e
               _.layout.portals, //t
               U.playerX, //a
               stack.y, //i
@@ -40253,7 +40253,7 @@ var version = "v2-dev";
                 ? void 0
                 : h[0]) || null, //l
               stackCollide(stack), //c
-              k, //d
+              df, //d
               U.gravity,
               false
             );
@@ -40277,12 +40277,12 @@ var version = "v2-dev";
                 })(
                   U.playerStacks,
                   j,
-                  k,
+                  df,
                   U.playerX,
                   U.playerY,
                   U.playerDir,
                   le,
-                  q,
+                  fullLayoutStateIndexes,
                   ue,
                   U.layoutState.enemies,
                   U.explosions,
@@ -40291,38 +40291,38 @@ var version = "v2-dev";
                 0 === U.playerStacks.length && (U.playerPowerup = null)),
               U.switchButtons.on && U.switchButtons.rot < 90
                 ? (U.switchButtons.rot = Math.min(
-                    U.switchButtons.rot + k * (180 / C),
+                    U.switchButtons.rot + df * (180 / C),
                     90
                   ))
                 : !U.switchButtons.on &&
                   U.switchButtons.rot > 0 &&
                   (U.switchButtons.rot = Math.max(
-                    U.switchButtons.rot - k * (180 / C),
+                    U.switchButtons.rot - df * (180 / C),
                     0
                   )),
               U.jumpSwitch.delay > 0
-                ? (U.jumpSwitch.delay -= k)
+                ? (U.jumpSwitch.delay -= df)
                 : U.jumpSwitch.on && U.jumpSwitch.ratio < 1
                 ? (U.jumpSwitch.ratio = Math.min(
-                    U.jumpSwitch.ratio + k * (2.6 / C),
+                    U.jumpSwitch.ratio + df * (2.6 / C),
                     1
                   ))
                 : !U.jumpSwitch.on &&
                   U.jumpSwitch.ratio > 0 &&
                   (U.jumpSwitch.ratio = Math.max(
-                    U.jumpSwitch.ratio - k * (2.6 / C),
+                    U.jumpSwitch.ratio - df * (2.6 / C),
                     0
                   )),
-              U.jumpSwitch.timeout > 0 && (U.jumpSwitch.timeout -= k),
-              cl(U, k, w, C, _, z, W, q, le, ue, he, v, U.bottomLine?.objects || []),
+              U.jumpSwitch.timeout > 0 && (U.jumpSwitch.timeout -= df),
+              cl(U, df, w, C, _, inViewLayout, inViewLayoutState, fullLayoutStateIndexes, le, ue, he, v, U.bottomLine?.objects || []),
               U.playerBullets &&
                 xa.updateHitBulletState(
                   U.frame,
-                  z,
-                  W,
+                  inViewLayout,
+                  inViewLayoutState,
                   U.playerBullets,
                   U.layoutState,
-                  q,
+                  fullLayoutStateIndexes,
                   K
                 ),
               U.crashed &&
@@ -40346,7 +40346,7 @@ var version = "v2-dev";
                       (null === (S = U.playerPowerup) || void 0 === S
                         ? void 0
                         : S.item) && (U.playerPowerup = null),
-                    T(U.checkpoint.index),
+                    onCrash(U.checkpoint.index),
                     N && (L.resetTimer = 60)));
             let ge = U.explosions.length;
             ge > 0 &&
@@ -40363,7 +40363,7 @@ var version = "v2-dev";
               (U.playerOnGroundY = null != Q ? Q : U.playerOnGroundY),
               (U.playerWasOnGroundCooldown = Math.max(
                 0,
-                U.playerWasOnGroundCooldown - k
+                U.playerWasOnGroundCooldown - df
               )),
               de
                 ? U.onObject
