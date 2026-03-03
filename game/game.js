@@ -66307,7 +66307,7 @@ var version = "v2-dev";
                       }),
                     y: -30,
                     x: -200,
-                    disabled: false,
+                    disabled: true,
                     shadowOffsetX: -1,
                     shadowOffsetY: 0,
                     beatSize: b,
