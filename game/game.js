@@ -17337,7 +17337,9 @@ var version = "v2-dev";
               playerScaleX: sx,
               playerScaleY: sy,
               playerScale: ps,
+              isGravity
             } = e;
+            gy = isGravity ? 0 : gy;
             globalPlayerScale = ps;
             sx = sx / ps;
             sy = sy / ps;
@@ -35024,7 +35026,7 @@ var version = "v2-dev";
                       : [];
                   t.affects == "gravity" &&
                   j.push({
-                    name: "Color",
+                    name: "Direction",
                     options: [
                       {
                           name: "Up",
@@ -36616,7 +36618,7 @@ var version = "v2-dev";
                           });
                         },
                       }), */
-                    (["playerStack", "punch"]).includes(t.item) &&
+                    (["playerStack", "punch", "skateboard"]).includes(t.item) &&
                       l.push({
                         name: "On",
                         selected: t.compatible,
@@ -36634,7 +36636,7 @@ var version = "v2-dev";
                           });
                         },
                       }),
-                    (["playerStack", "punch"]).includes(t.item) &&
+                    (["playerStack", "punch", "skateboard"]).includes(t.item) &&
                       l.push({
                         name: "Off",
                         selected: !t.compatible,
@@ -38806,16 +38808,16 @@ var version = "v2-dev";
           },
           sl = M,
           ol = [];
-        function rl(e, t, a, i, n, s, o, r, l, c, d, u, h, p, gravity, hObj, forceCheck) {
+        function rl(e, t, a, i, n, s, o, r, l, c, d, u, skating, p, gravity, hObj, forceCheck) {
           let crashed = d,
             onGroundY = u;
             if (gravity < 0 && hObj?.object) {
               console.log(hObj);
               const e = (l > 45 && l < 135) || (l > 225 && l < 315) ? o : r,
-              t = be[gravity > 0 ? 'getObjectTopY' : 'getObjectBottomY'](hObj.object, a, i) + 15 * e * gravity;
+              t = be[gravity > 0 ? 'getObjectTopY' : 'getObjectBottomY'](hObj.object, a, i) + (15 + (skating && gravity < 0 ? $.skateboardHeight : 0)) * e * gravity;
               return {crashed: false, onGroundY: t, hitObject: hObj}
             }
-          const f = de.getPlayerPoly(a, i, o, r, l, h, de.pooledPlayerPoly3);
+          const f = de.getPlayerPoly(a, i, o, r, l, skating, de.pooledPlayerPoly3);
           let y = 0;
           for (let s = 0; s < e.length; s++) {
             const { object: d, index: u } = e[s],
@@ -38862,17 +38864,17 @@ var version = "v2-dev";
                   f,
                   p,
                   gravity,
-                  forceCheck
+                  forceCheck,
                 );
                 if (gravity > 0) {
-                  (e.crashed) ? (crashed = true) : (onGroundY = e.y)
+                  (e.crashed) ? (crashed = true) : (onGroundY = e.y + ((skating && gravity < 0) ? $.skateboardHeight : 0))
                 } else {
-                  (e.crashed) ? (crashed = true) : (onGroundY = e.y)
+                  (e.crashed) ? (crashed = false) : (onGroundY = e.y + ((skating && gravity < 0) ? $.skateboardHeight : 0))
                 };
           };
           if (hitObject) {
             const e = (l > 45 && l < 135) || (l > 225 && l < 315) ? o : r,
-              t = be[gravity > 0 ? 'getObjectTopY' : 'getObjectBottomY'](hitObject.object, a, i) + 15 * e * gravity;
+              t = be[gravity > 0 ? 'getObjectTopY' : 'getObjectBottomY'](hitObject.object, a, i) + (15 + ((skating && gravity < 0) ? $.skateboardHeight : 0)) * e * gravity;
               switch (hitObject.result.type) {
                 case "crashed":
                 gravity > 0 ? (crashed = true) : hitBottomEdge();
@@ -38954,7 +38956,7 @@ var version = "v2-dev";
         const dl = function (e) {
             var t, a, i, n, s, o, r, l, c, d, u, h, p, g, m, f, y, E, b, S;
             const {
-                playerInput: I,
+                playerInput,
                 level: _,
                 sfx: v,
                 onCrash: T,
@@ -38968,24 +38970,24 @@ var version = "v2-dev";
                 mutValues: L,
                 bigMutValues: D,
                 animationAssets: F,
-                bottomLineTheme: Y,
+                bottomLineTheme,
               } = e,
               { levelState: U } = L;
             U.frame += k;
             const { a: j, b: V } = A;
             L.blockJumpUntilReleased &&
-              "up" === I &&
+              "up" === playerInput &&
               (L.blockJumpUntilReleased = false);
-            let H =
-              ("up" !== I || U.justDownInputTimer > 0) &&
+            let isDown =
+              ("up" !== playerInput || U.justDownInputTimer > 0) &&
               !L.blockJumpUntilReleased;
-            const X =
+            const skating =
               "skateboard" ===
               (null === (t = U.playerPowerup) || void 0 === t
                 ? void 0
                 : t.item);
             U.justDownInputTimer > 0 && U.justDownInputTimer--,
-              "justDown" !== I || X || (U.justDownInputTimer = 10);
+              "justDown" !== playerInput || skating || (U.justDownInputTimer = 10);
             const z =
                 (null == D ? void 0 : D.inViewLayout) ||
                 Ca.getEmptyLayout(_.layout.properties),
@@ -39026,7 +39028,7 @@ var version = "v2-dev";
                   z,
                   W,
                   q,
-                  Ca.getAllLandableObjects(z, W, X),
+                  Ca.getAllLandableObjects(z, W, skating),
                   Ca.getAllDeadlyObjects(z, W),
                   () => false,
                   v,
@@ -39085,7 +39087,7 @@ var version = "v2-dev";
               return;
             }
             U.playerX +=
-              w * U.playerSpeedMultiplier * k * U.playerDir * (X ? 1.5 : 1);
+              w * U.playerSpeedMultiplier * k * U.playerDir * (skating ? 1.5 : 1);
             let J = false;
             U.playerUsingPowerup = false;
             const K = U.switchBlockSpikes;
@@ -39098,14 +39100,14 @@ var version = "v2-dev";
                 { playerX: U.playerX, playerY: U.playerY, jumping: U.jumping },
                 k,
                 w,
-                I,
+                playerInput,
                 U.frame
               );
               (U.playerY = e.playerY),
                 (U.playerX = e.playerX),
                 (U.jumping = e.jumping);
             } else {
-              if (H) {
+              if (isDown) {
                 const e = U.justDownInputTimer > 0,
                   t = e
                     ? (e, t, a) => be.rectTouchesRect2(e, U.playerY, t, M, a)
@@ -39135,12 +39137,16 @@ var version = "v2-dev";
                 U.playerScaleX * 0.99,
                 U.playerScaleY * 0.99,
                 U.dashing ? 0 : U.playerRot,
-                X,
+                skating,
                 K
-              )(button)))
+              )(button)));
+              U.dashing && e && ((U.dashing = false),
+                    ((!U.playerPowerup && U.playerPowerup?.item != "playerStack") && (L.blockJumpUntilReleased = true),
+                    (isDown = false),
+                    (U.justDownInputTimer = 0)));
                 if (a)
                   (L.blockJumpUntilReleased = true),
-                    (H = false),
+                    (isDown = false),
                     (U.justDownInputTimer = 0),
                     z.collectibles.forEach((e, a) => {
                       var i, n;
@@ -39192,7 +39198,7 @@ var version = "v2-dev";
                   (g == 0 ? (U.dashing = true) : (U.gravity = g, U.isGravity = true)),
                   (U.playerGradY = G.initGrad(V) * -2 * U.gravity),
                   (L.blockJumpUntilReleased = true),
-                  (H = false),
+                  (isDown = false),
                   (U.justDownInputTimer = 0);
                 }
                 else if (
@@ -39204,7 +39210,7 @@ var version = "v2-dev";
                 )
                   null == v || v.useUpPowerup("punch"),
                     (L.blockJumpUntilReleased = true),
-                    (H = false),
+                    (isDown = false),
                     (U.justDownInputTimer = 0),
                     (U.playerPowerup = null),
                     xa.updateHitPunchState(
@@ -39228,7 +39234,7 @@ var version = "v2-dev";
                 )
                   null == v || v.useUpPowerup("punch"),
                     (L.blockJumpUntilReleased = true),
-                    (H = false),
+                    (isDown = false),
                     (U.justDownInputTimer = 0),
                     (U.playerPowerup = null),
                     xa.updateHitDrillState(
@@ -39253,7 +39259,7 @@ var version = "v2-dev";
                 )
                   null == v || v.useUpPowerup("gun"),
                     (L.blockJumpUntilReleased = true),
-                    (H = false),
+                    (isDown = false),
                     (U.justDownInputTimer = 0),
                     (U.playerPowerup = null),
                     U.playerBullets.push(
@@ -39305,16 +39311,19 @@ var version = "v2-dev";
                   U.jumping = true;
                   U.playerGradY = -1;
                   (L.blockJumpUntilReleased = true),
-                  (H = false),
+                  (isDown = false),
                   (U.justDownInputTimer = 0);
                   }
                 } else {
                   if (U.dashing) {
-                    e && (U.dashing = false)
+                    U.dashing && e && ((U.dashing = false),
+                    (L.blockJumpUntilReleased = true),
+                    (isDown = false),
+                    (U.justDownInputTimer = 0));
                   } else {
                   U.jumping ||
                     0 !== U.playerGradY ||
-                    (X
+                    (skating
                       ? (U.skateboardJumpCharge += k)
                       : ((U.jumping = true),
                         (U.playerGradY = G.initGrad(V)),
@@ -39337,7 +39346,7 @@ var version = "v2-dev";
                   (U.justDownInputTimer = 0),
                   (U.skateboardJumpCharge = 0),
                   null == v || v.jump(true));
-              if (((J = 0 === U.playerGradY && !U.dashing), X))
+              if (((J = 0 === U.playerGradY && !U.dashing), skating))
                 if (
                   ((U.playerScaleX = 1 * globalPlayerScale),
                   U.skateboardJumpCharge > 0)
@@ -39362,10 +39371,10 @@ var version = "v2-dev";
                   : l.item)
               )
                 U.playerRot = 0;
-              else if (X)
+              else if (skating)
                 if (U.jumping) {
                   if (
-                    "down" === I &&
+                    "down" === playerInput &&
                     !(0 === U.playerRot && U.playerGradY < -G.initGrad(V) / 2)
                   ) {
                     const e = Math.sign(-U.playerRot) || U.playerDir;
@@ -39409,7 +39418,7 @@ var version = "v2-dev";
                 U.playerScaleX,
                 U.playerScaleY,
                 U.dashing ? 0 : U.playerRot,
-                X,
+                skating,
                 K
               ),
               stackCollide = (stack, enemy)=>(enemy ? be.hitRectangle(
@@ -39418,14 +39427,14 @@ var version = "v2-dev";
               1,
               1,
               0,
-              X
+              skating
             ) : be.hitObject(
                 U.playerX,
                 stack.y,
                 U.isCompatible ? 1 : U.playerScale,
                 U.isCompatible ? 1 : U.playerScale,
                 0,
-                X,
+                skating,
                 K
               )),
               ee = null;
@@ -39553,7 +39562,7 @@ var version = "v2-dev";
                     state: null,
                   }),
                   (a.onObject = t.onObject),
-                  X && (a.score = zo.didLand(U.score)),
+                  skating && (a.score = zo.didLand(U.score)),
                   (U.checkpoint = { index: U.checkpoint.index + 1, state: a }),
                   R(false, U.checkpoint.index, a);
               }
@@ -39726,7 +39735,7 @@ var version = "v2-dev";
                   U.playerScaleX,
                   U.playerScaleY,
                   U.dashing ? 0 : U.playerRot,
-                  X,
+                  skating,
                   K
                 )),
                 null == v || v.hitPortal());
@@ -39738,6 +39747,9 @@ var version = "v2-dev";
             });
             if (-1 !== re && !W.powerups[re].wasPickedUp) {
               const e = z.powerups[re];
+              if (!U.isCompatible && "skateboard" === e.item) {
+
+              }
               U.isCompatible = e.compatible;
               if (
                 (xa.updateLayoutStateField(
@@ -39783,7 +39795,7 @@ var version = "v2-dev";
                 y: 0,
               });
             }
-            let le = Ca.getAllLandableObjects(z, W, X),
+            let le = Ca.getAllLandableObjects(z, W, skating),
               ce = rl(
                 le,
                 q,
@@ -39797,10 +39809,10 @@ var version = "v2-dev";
                 U.playerDir,
                 U.crashed,
                 Q,
-                X,
+                skating,
                 U.switchBlockSpikes,
                 U.dashing ? 1 : U.gravity,
-                U.gravityHitObject
+                U.gravityHitObject,
               );
             (U.crashed = ce.crashed), (Q = ce.onGroundY);
             var de = U.gravityHitObject || ce.hitObject;
@@ -39819,9 +39831,9 @@ var version = "v2-dev";
                 U.playerDir,
                 U.crashed,
                 Q,
-                X,
+                skating,
                 U.switchBlockSpikes,
-                1
+                1,
               ).crashed)
               if (!rl(
                 le,
@@ -39836,7 +39848,7 @@ var version = "v2-dev";
                 U.playerDir,
                 U.crashed,
                 Q,
-                X,
+                skating,
                 U.switchBlockSpikes,
                 1,
                 null,
@@ -39878,7 +39890,7 @@ var version = "v2-dev";
             if (null !== Q) {
                 U.isGravity = false;
               const e = G.getOvershootPercent(U.playerY - Q, U.playerGradY, j);
-              if (X) {
+              if (skating) {
                 const e = Math.abs(U.playerRot % 360);
                 if (e > 60 && e < 300) U.crashed = true;
                 else if (
@@ -39899,7 +39911,7 @@ var version = "v2-dev";
               if (
                 (Math.abs(U.playerGradY) > w &&
                   (L.landTimer = et.landTimerLimit),
-                (U.jumping = U.gravity > 0 ? (H && !X) : false),
+                (U.jumping = U.gravity > 0 ? (isDown && !skating) : false),
                 (U.playerY = Q),
                 (U.playerGradY = 0),
                 U.jumping &&
@@ -39914,7 +39926,7 @@ var version = "v2-dev";
                   U.playerScaleX,
                   U.playerScaleY,
                   U.dashing ? 0 : U.playerRot,
-                  X,
+                  skating,
                   K
                 );
                 for (let e = 0; e < ue.length; e++) {
@@ -39944,7 +39956,7 @@ var version = "v2-dev";
               U.playerScaleX,
               U.playerScaleY,
               U.dashing ? 0 : U.playerRot,
-              X,
+              skating,
               K
             );
             const he = be.hitRectangle(
@@ -39953,7 +39965,7 @@ var version = "v2-dev";
               U.playerScaleX,
               U.playerScaleY,
               U.dashing ? 0 : U.playerRot,
-              X
+              skating
             );
             for (let e = 0; e < ue.length; e++) {
               const { object: t, index: a } = ue[e];
@@ -40104,7 +40116,7 @@ var version = "v2-dev";
                         ),
                         s
                       );
-                    })(U.playerX, U.playerY, Y);
+                    })(U.playerX, U.playerY, bottomLineTheme);
               for (let t = 0; t < e.length; t++) {
                 const a = e[t];
                 he(a) && (U.crashed = true),
