@@ -42118,7 +42118,7 @@ var version = "v1.6.0";
             },
             {
               levelName: "Clonebreaker",
-              levelFileName: "clonebraker",
+              levelFileName: "clonebreaker",
               song: hl.songs.coincidence,
               unlockedByIndex: 3,
               x: 100,
@@ -45264,11 +45264,6 @@ var version = "v1.6.0";
                   dashing: false,
                   isGravity: false,
                   bullets: e.bullets.map((bullet)=>({...bullet, frame: 0})),
-                  cameraX: e.playerX + e.cameraXOffset,
-                  cameraScale: 1,
-              cameraYOffset: 0,
-              cameraAnchorX: null,
-              cameraAnchorY: null,
                 }),
             ],
             finalSchema: kc({
@@ -45325,12 +45320,7 @@ var version = "v1.6.0";
               checkpoint: kc({ index: fc, state: Hc }),
               onObject: Bc([hc, kc({ array: Hc, index: fc, y: fc })]),
               cameraXOffset: fc,
-              cameraX: fc,
               cameraY: fc,
-              cameraScale: fc,
-              cameraYOffset: fc,
-              cameraAnchorX: Bc([hc, fc]),
-              cameraAnchorY: Bc([hc, fc]),
               crashed: yc,
               finishedLevel: yc,
               frameCountSinceHistoryPush: fc,
@@ -60919,7 +60909,7 @@ var version = "v1.6.0";
                   y: 20,
                 }),
                 n({
-                  text: `WORLD ${h}`,
+                  text: `${localize("WORLD")} ${h}`,
                   color: ve,
                   strokeColor: Ye,
                   strokeThickness: 10,
@@ -60930,7 +60920,7 @@ var version = "v1.6.0";
                 e.showStartArrows && 1 === h
                   ? zf({ id: "LevelsHelp", y: 150 })
                   : null,
-                h < 4
+                h < 5
                   ? ny({
                       id: "ArrowRightButton",
                       width: 80,
@@ -61006,25 +60996,31 @@ var version = "v1.6.0";
                 s({
                   color: 1 === h ? ve : Xe,
                   radius: 1 === h ? 8 : 5,
-                  x: -60,
+                  x: -80,
                   y: -150,
                 }),
                 s({
                   color: 2 === h ? ve : Xe,
                   radius: 2 === h ? 8 : 5,
-                  x: -20,
+                  x: -40,
                   y: -150,
                 }),
                 s({
                   color: 3 === h ? ve : Xe,
                   radius: 3 === h ? 8 : 5,
-                  x: 20,
+                  x: 0,
                   y: -150,
                 }),
                 s({
                   color: 4 === h ? ve : Xe,
                   radius: 4 === h ? 8 : 5,
-                  x: 60,
+                  x: 40,
+                  y: -150,
+                }),
+                s({
+                  color: 5 === h ? ve : Xe,
+                  radius: 5 === h ? 8 : 5,
+                  x: 80,
                   y: -150,
                 }),
                 Fo({
@@ -66303,12 +66299,12 @@ var version = "v1.6.0";
                     text: localize("LEVELS"),
                     onPress: () =>
                       r({
-                        type: "competition",//"levels",
-                        // worldsView: { type: "worldsList" },
+                        type: "levels",
+                        worldsView: { type: "worldsList" },
                       }),
                     y: -30,
                     x: -200,
-                    disabled: true,
+                    disabled: false,
                     shadowOffsetX: -1,
                     shadowOffsetY: 0,
                     beatSize: b,
