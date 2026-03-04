@@ -66304,7 +66304,7 @@ var version = "v1.6.0";
                       }),
                     y: -30,
                     x: -200,
-                    disabled: false,
+                    disabled: true,
                     shadowOffsetX: -1,
                     shadowOffsetY: 0,
                     beatSize: b,
