@@ -39856,6 +39856,7 @@ var version = "v1.6.0";
               ).crashed) {
                 U.gravity = 1;
                 U.isGravity = false;
+                U.playerGradY = -1;
               }
             }
             U.gravityHitObject = U.gravity > 0 ? (null) : ce.hitObject;
