@@ -32751,7 +32751,7 @@ var version = "v1.6.0";
                         ),
                       ];
                     case "blockSpike": {
-                      if (e.theme == "world2") {
+                      if (false){//e.theme == "world2") {
                         return [
                           onChange(
                           () => (a.justHitTimer),
