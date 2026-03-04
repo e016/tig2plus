@@ -19,3 +19,8 @@ There are a few rules to follow when creating a new issue asking the developers 
 * Write the BPM of the song in your issue. And don't just guess. **USE A BPM TAPPER** or really *anything* to get the *true* BPM. Also, TIG2's engine cannot handle songs that change their tempo.
 * It is fine to "cut" songs in order to shorten the length of the song. However, one must **not** cut the song 
 sloppily. I've found Audacity's "Snap" feature useful for these kinds of song edits.
+
+
+# Contributing Through Code
+ * TIG2 requires a live server to fetch all the assets
+ * Note that most of the code is still obfuscated (for some reason, only variables and functions are obfuscated, not object properties).

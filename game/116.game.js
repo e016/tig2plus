@@ -1,1 +1,841 @@
-var game;(()=>{"use strict";var e,t,r={9116:(e,t,r)=>{var n=r(1591);const a=n.tuple,i=n.union([n.literal(0),n.literal(1)]),l=n.union([i,n.literal(2)]),s=n.union([l,n.literal(3)]),o=n.union([s,n.literal(4)]),u={tuple:a,enum2:i,enum3:l,enum4:s,enum5:o,enum6:n.union([o,n.literal(5)])};var p=r(2932),c=r(9807);function b({mappers:e,finalSchema:t,uncompress:r,compress:n}){return{getDefaultData:function(){return r(e.reduce(((e,t)=>t(e)),void 0))},jsonToData:function(n){if(Array.isArray(n)&&3===n.length&&"number"==typeof n[0]&&"number"==typeof n[1]){let[a,i,l]=n,s=!1;try{for(;a<e.length;)l=e[a](l),a++,s=!0}catch(e){return Error("Unable to map data to latest version")}const o=function(e,t){return(0,p.z)(t.decode(e),(0,c.fS)((r=>(console.error("Decode error schema",t.name),console.error("Decode error keys",r.map((e=>e.context.map((e=>e.key)).join(","))).join(" --- ")),console.error(e),new Error(`Couldn't decode JSON ${void 0===e?String(e):JSON.stringify(e).slice(0,10)}`)))))}(l,t);return o instanceof Error?o:{data:r(o),didUpdate:s,dateUpdated:i}}return Error("Couldn't read version")},dataToJson:function(t,r){return[e.length,m(r),n(t)]}}}function m(e){return Math.round((e().getTime()-16094592e5)/6e4)}const y=n.partial({x:n.number,y:n.number,offsetX:n.number,offsetY:n.number}),d=n.intersection([n.type({type:n.literal("powerup"),array:n.literal("powerups"),x:n.number,y:n.number,width:n.number,height:n.number,item:n.union([n.literal("gun"),n.literal("doubleJump"),n.literal("jetpack"),n.literal("playerStack"),n.literal("skateboard"),n.literal("punch")])}),n.partial({snapSize:y})]),g=n.type({x:n.number,y:n.number,width:n.number,height:n.number,speed:n.number}),h=n.intersection([n.type({type:n.literal("portal"),array:n.literal("portals"),x:n.number,y:n.number,width:n.number,height:n.number,direction:n.union([n.literal("left"),n.literal("right"),n.literal("up"),n.literal("down")]),pairId:n.number,pair:n.union([n.literal("a"),n.literal("b")])}),n.partial({snapSize:y})]),f=n.type({x:n.number,y:n.number,frame:n.number,by:n.union([n.literal("stomped"),n.literal("gun"),n.literal("object"),n.literal("missile"),n.literal("outOfView")])}),S=n.type({blocks:n.array(n.intersection([n.type({type:n.literal("blockSpikeState")}),n.partial({destroyed:f})])),spikes:n.array(n.intersection([n.type({type:n.literal("blockSpikeState")}),n.partial({destroyed:f})])),saws:n.array(n.intersection([n.type({type:n.literal("sawState")}),n.partial({destroyed:f})])),platforms:n.array(n.type({type:n.literal("platformState")})),switchPlatforms:n.array(n.type({type:n.literal("switchPlatformState")})),switchButtons:n.array(n.type({type:n.literal("switchButtonState"),isPressedCounter:n.number})),directionChanges:n.array(n.type({type:n.literal("directionChangeState"),wasHit:n.boolean})),speedChanges:n.array(n.type({type:n.literal("speedChangeState")})),flags:n.array(n.type({type:n.literal("flagState"),wasHit:n.boolean})),enemies:n.array(n.intersection([n.type({type:n.literal("enemyState"),framesSeen:n.number,offsetX:n.number,offsetY:n.number,bullet:n.union([g,n.null]),direction:n.union([n.literal(1),n.literal(-1)])}),n.partial({destroyed:f})])),powerups:n.array(n.type({type:n.literal("powerupState"),wasPickedUp:n.boolean})),springs:n.array(n.type({type:n.literal("springState")})),collectibles:n.array(n.intersection([n.type({type:n.literal("collectibleState"),wasPickedUp:n.boolean}),n.partial({score:n.number})])),portals:n.array(n.type({type:n.literal("portalState")}))}),k=n.type({type:n.literal("pixel"),bossX:n.number,bossY:n.number,view:n.union([n.literal("idle"),n.literal("gunOut"),n.literal("gun"),n.literal("gunIn"),n.literal("chargeLaser"),n.literal("chargeLaserDamage"),n.literal("death")]),isShootingFrames:n.number,startChargeFrame:n.union([n.number,n.null]),takingDamageTimeout:n.number,health:n.number,bullets:n.array(n.type({type:n.union([n.literal("thinBullet"),n.literal("missile"),n.literal("bomb"),n.literal("bulletHell"),n.literal("bulletHellBig"),n.literal("laser")]),x:n.number,y:n.number,width:n.number,height:n.number,speedX:n.number,speedY:n.number,gradY:n.number})),destroyed:n.boolean}),j=n.type({type:n.union([n.literal("bottomExit"),n.literal("bottomJoin"),n.literal("bottomLeading"),n.literal("bottomSingle"),n.literal("bottomStalecmite"),n.literal("bottomTrailing"),n.literal("middle"),n.literal("topEntry"),n.literal("topJoin"),n.literal("topLeading"),n.literal("topSingle"),n.literal("topStalectite"),n.literal("topTrailing")]),hitType:n.union([n.literal("top"),n.literal("topStalectite"),n.literal("bottom"),n.literal("bottomStalecmite"),n.null]),x:n.number,index:n.number}),O=n.type({type:n.literal("flying"),bossX:n.number,bossY:n.number,isUp:n.boolean,gunView:n.union([n.literal("up"),n.literal("down"),n.literal("toDown"),n.literal("toUp")]),shootFrames:n.number,bullets:n.array(n.type({x:n.number,y:n.number,width:n.number,height:n.number,speed:n.number})),destroyed:n.boolean,allAsteroids:n.array(n.type({x:n.number,y:n.number,radius:n.number,index:n.number})),allInsideAsteroid:n.array(j),asteroids:n.array(n.type({x:n.number,y:n.number,radius:n.number,index:n.number})),insideAsteroid:n.array(j),moveFrames:n.array(n.number)}),w=n.type({type:n.literal("demon"),runtime:n.any,fistRuntime:n.any,collisionFn:n.any,blockCollisionFn:n.any,minions:n.array(n.type({x:n.number,y:n.number,width:n.number,height:n.number,index:n.number})),allMinions:n.array(n.type({x:n.number,y:n.number,width:n.number,height:n.number,index:n.number})),fireballs:n.array(n.type({x:n.number,y:n.number,width:n.number,height:n.number,index:n.number})),allFireballs:n.array(n.type({x:n.number,y:n.number,width:n.number,height:n.number,index:n.number}))}),v=b({mappers:[()=>{throw Error("getDefaultData not supported for levelState storage")},e=>Object.assign(Object.assign({},e),{justHitSpringIndex:null}),e=>e,e=>Object.assign(Object.assign({},e),{jumpSwitch:Object.assign(Object.assign({},e.jumpSwitch),{timeout:0})}),e=>e,e=>{var t;return Object.assign(Object.assign({},e),{bossState:"flying"===(null===(t=e.bossState)||void 0===t?void 0:t.type)?Object.assign(Object.assign({},e.bossState),{asteroids:e.bossState.asteroids.map(((e,t)=>Object.assign(Object.assign({},e),{index:t}))),allAsteroids:e.bossState.allAsteroids.map(((e,t)=>Object.assign(Object.assign({},e),{index:t}))),insideAsteroid:e.bossState.insideAsteroid.map(((e,t)=>Object.assign(Object.assign({},e),{index:t}))),allInsideAsteroid:e.bossState.allInsideAsteroid.map(((e,t)=>Object.assign(Object.assign({},e),{index:t})))}):e.bossState})},e=>Object.assign(Object.assign({},e),{switchBlockSpikes:!1,playerSpeedMultiplier:1,justHitObject:null,layoutState:Object.assign(Object.assign({},e.layoutState),{blocks:e.layoutState.blocks.map((e=>Object.assign(Object.assign({},e),{type:"blockSpikeState"}))),spikes:e.layoutState.spikes.map((e=>Object.assign(Object.assign({},e),{type:"blockSpikeState"}))),speedChanges:[]})})],finalSchema:n.type({frame:n.number,attempt:n.number,jumping:n.boolean,justDownInputTimer:n.number,playerX:n.number,playerY:n.number,playerOnGroundY:n.number,playerWasOnGroundCooldown:n.number,playerGradY:n.number,playerRot:n.number,playerScaleX:n.number,playerScaleY:n.number,playerDir:n.union([n.literal(1),n.literal(-1)]),playerSpeedMultiplier:n.number,playerPowerup:n.union([n.null,d]),playerJetpackFuel:n.number,playerUsingPowerup:n.boolean,playerBullets:n.array(g),playerStacks:n.array(n.type({y:n.number,gradY:n.number})),explosions:n.array(n.type({x:n.number,y:n.number,framesLeft:n.number})),touchingPortals:n.union([n.null,n.tuple([h,h])]),justHitObject:n.union([n.null,n.type({array:n.union([n.literal("springs"),n.literal("speedChanges"),n.literal("switchButtons")]),index:n.number})]),skateboardJumpCharge:n.number,bottomLine:n.union([n.null,n.type({minY:n.number,objects:n.array(n.type({type:n.string,x:n.number,y:n.number,width:n.number,height:n.number}))})]),collectibles:n.number,score:n.type({local:n.number,total:n.number,multiplier:n.number}),bossState:n.union([n.null,k,O,w]),switchButtons:n.type({on:n.boolean,rot:n.number}),jumpSwitch:n.type({on:n.boolean,ratio:n.number,delay:n.number,timeout:n.number}),switchBlockSpikes:n.boolean,checkpoint:n.type({index:n.number,state:n.any}),onObject:n.union([n.null,n.type({array:n.any,index:n.number,y:n.number})]),cameraXOffset:n.number,cameraY:n.number,crashed:n.boolean,finishedLevel:n.boolean,frameCountSinceHistoryPush:n.number,layoutState:S}),uncompress:e=>e,compress:e=>Object.assign(Object.assign({},e),{checkpoint:Object.assign(Object.assign({},e.checkpoint),{state:null}),bossState:x(e.bossState)})});function x(e){if(!e)return null;switch(e.type){case"robot":return null;case"pixel":case"flying":return e;case"demon":return Object.assign(Object.assign({},e),{runtime:null,fistRuntime:null,collisionFn:null,blockCollisionFn:null})}}const C=b({mappers:[()=>["Player",[]],e=>[e[0],e[1],1],e=>[e[0],e[1].map((([e,t,r,[n,a,i],l,s])=>[e,t,r,[n,a,i?[1,0,i]:null],l,s])),e[2]],e=>[e[0],e[1],e[2],[!1,!1,!1,!1,!1,!1]],e=>[e[1],e[2],e[3]],e=>[e[0].map((e=>[...e,0,null])),e[1],e[2]],e=>[...e,[]],e=>[e[0],e[1],[...e[2],0],e[3]]],finalSchema:n.tuple([n.array(u.tuple([n.string,n.number,n.number,n.tuple([n.boolean,n.number,n.union([n.null,n.tuple([n.number,n.number,n.unknown])])]),n.tuple([n.boolean,n.number]),n.number,n.number,n.union([n.null,n.number])])),n.number,u.tuple([n.boolean,n.boolean,n.boolean,n.boolean,n.boolean,n.boolean,n.number]),n.array(n.tuple([n.string,n.string]))]),uncompress:e=>{const[t,r,[n,a,i,l,s,o,u],p]=e;return{levelsProgress:t.map((([e,t,r,[n,a,i],[l,s],o,u,p])=>{const c=v.jsonToData(i);return{levelName:e,levelIndex:t,world:r,checkpoints:{didFinish:n,furthestFrame:a,lastCheckpointState:c instanceof Error?null:c.data},noCheckpoints:{didFinish:l,furthestFrame:s},highScore:o,totalAttempts:u,bestAttempts:p}})),lastOpenedWorld:r,settings:{plainBackground:n,hidePlayerTrail:a,muteJump:i,muteSfx:l,hideUi:s,muteMenuMusic:o,headphonesDelay:u},friendRequests:p.map((([e,t])=>({playerName:t,profileId:e})))}},compress:e=>[e.levelsProgress.map((e=>[e.levelName,e.levelIndex,e.world,[e.checkpoints.didFinish,e.checkpoints.furthestFrame,e.checkpoints.lastCheckpointState&&v.dataToJson(e.checkpoints.lastCheckpointState,(()=>new Date))],[e.noCheckpoints.didFinish,e.noCheckpoints.furthestFrame],e.highScore,e.totalAttempts,e.bestAttempts])),e.lastOpenedWorld,[e.settings.plainBackground,e.settings.hidePlayerTrail,e.settings.muteJump,e.settings.muteSfx,e.settings.hideUi,e.settings.muteMenuMusic,e.settings.headphonesDelay],e.friendRequests.map((e=>[e.profileId,e.playerName]))]}),F=Object.assign(Object.assign({},C),{merge:function(e,t){var r;return{levelsProgress:(r=[...e.levelsProgress.map((e=>e.levelName)),...t.levelsProgress.map((e=>e.levelName))],[...new Set(r)]).map((r=>{const n=e.levelsProgress.find((e=>e.levelName===r)),a=t.levelsProgress.find((e=>e.levelName===r));return n&&a?Object.assign(Object.assign({},n),{checkpoints:{didFinish:n.checkpoints.didFinish||a.checkpoints.didFinish,furthestFrame:Math.max(n.checkpoints.furthestFrame,a.checkpoints.furthestFrame),lastCheckpointState:n.checkpoints.lastCheckpointState||a.checkpoints.lastCheckpointState},noCheckpoints:{didFinish:n.noCheckpoints.didFinish||a.noCheckpoints.didFinish,furthestFrame:Math.max(n.noCheckpoints.furthestFrame,a.noCheckpoints.furthestFrame)},highScore:Math.max(n.highScore,a.highScore)}):n||a})),lastOpenedWorld:e.lastOpenedWorld,settings:e.settings,friendRequests:e.friendRequests}},removeCheckpointData:function(e){return Object.assign(Object.assign({},e),{levelsProgress:e.levelsProgress.map((e=>Object.assign(Object.assign({},e),{checkpoints:Object.assign(Object.assign({},e.checkpoints),{lastCheckpointState:null})})))})},removeNonSerialBossData:function(e){return Object.assign(Object.assign({},e),{levelsProgress:e.levelsProgress.map((e=>Object.assign(Object.assign({},e),{checkpoints:Object.assign(Object.assign({},e.checkpoints),{lastCheckpointState:null===e.checkpoints.lastCheckpointState?null:Object.assign(Object.assign({},e.checkpoints.lastCheckpointState),{bossState:x(e.checkpoints.lastCheckpointState.bossState)})})})))})}});self.onmessage=({data:e})=>{const t=e;if("jsonToData"===t.type){const e=JSON.parse(t.accountStorageString),r={type:"jsonToData",accountStorage:F.jsonToData(e)};return void self.postMessage(r)}const r=F.dataToJson(t.accountStorage,(()=>new Date)),n={type:"dataToJson",accountStorageString:JSON.stringify(r)};self.postMessage(n)}}},n={};function a(e){var t=n[e];if(void 0!==t)return t.exports;var i=n[e]={exports:{}};return r[e](i,i.exports,a),i.exports}a.m=r,a.x=()=>{var e=a.O(void 0,[714],(()=>a(9116)));return a.O(e)},e=[],a.O=(t,r,n,i)=>{if(!r){var l=1/0;for(p=0;p<e.length;p++){for(var[r,n,i]=e[p],s=!0,o=0;o<r.length;o++)(!1&i||l>=i)&&Object.keys(a.O).every((e=>a.O[e](r[o])))?r.splice(o--,1):(s=!1,i<l&&(l=i));if(s){e.splice(p--,1);var u=n();void 0!==u&&(t=u)}}return t}i=i||0;for(var p=e.length;p>0&&e[p-1][2]>i;p--)e[p]=e[p-1];e[p]=[r,n,i]},a.d=(e,t)=>{for(var r in t)a.o(t,r)&&!a.o(e,r)&&Object.defineProperty(e,r,{enumerable:!0,get:t[r]})},a.f={},a.e=e=>Promise.all(Object.keys(a.f).reduce(((t,r)=>(a.f[r](e,t),t)),[])),a.u=e=>e+".game.js",a.g=function(){if("object"==typeof globalThis)return globalThis;try{return this||new Function("return this")()}catch(e){if("object"==typeof window)return window}}(),a.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),a.r=e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},(()=>{var e;a.g.importScripts&&(e=a.g.location+"");var t=a.g.document;if(!e&&t&&(t.currentScript&&(e=t.currentScript.src),!e)){var r=t.getElementsByTagName("script");r.length&&(e=r[r.length-1].src)}if(!e)throw new Error("Automatic publicPath is not supported in this browser");e=e.replace(/#.*$/,"").replace(/\?.*$/,"").replace(/\/[^\/]+$/,"/"),a.p=e})(),(()=>{var e={116:1};a.f.i=(t,r)=>{e[t]||importScripts(a.p+a.u(t))};var t=self.webpackChunkgame=self.webpackChunkgame||[],r=t.push.bind(t);t.push=t=>{var[n,i,l]=t;for(var s in i)a.o(i,s)&&(a.m[s]=i[s]);for(l&&l(a);n.length;)e[n.pop()]=1;r(t)}})(),t=a.x,a.x=()=>a.e(714).then(t);var i=a.x();game=i})();
+var game;
+(() => {
+  "use strict";
+  var e,
+    t,
+    r = {
+      9116: (e, t, r) => {
+        var n = r(1591);
+        const a = n.tuple,
+          i = n.union([n.literal(0), n.literal(1)]),
+          l = n.union([i, n.literal(2)]),
+          s = n.union([l, n.literal(3)]),
+          o = n.union([s, n.literal(4)]),
+          u = {
+            tuple: a,
+            enum2: i,
+            enum3: l,
+            enum4: s,
+            enum5: o,
+            enum6: n.union([o, n.literal(5)]),
+          };
+        var p = r(2932),
+          c = r(9807);
+        function b({ mappers: e, finalSchema: t, uncompress: r, compress: n }) {
+          return {
+            getDefaultData: function () {
+              return r(e.reduce((e, t) => t(e), void 0));
+            },
+            jsonToData: function (n) {
+              if (
+                Array.isArray(n) &&
+                3 === n.length &&
+                "number" == typeof n[0] &&
+                "number" == typeof n[1]
+              ) {
+                let [a, i, l] = n,
+                  s = !1;
+                try {
+                  for (; a < e.length; ) ((l = e[a](l)), a++, (s = !0));
+                } catch (e) {
+                  return Error("Unable to map data to latest version");
+                }
+                const o = (function (e, t) {
+                  return (0, p.z)(
+                    t.decode(e),
+                    (0, c.fS)(
+                      (r) => (
+                        console.error("Decode error schema", t.name),
+                        console.error(
+                          "Decode error keys",
+                          r
+                            .map((e) => e.context.map((e) => e.key).join(","))
+                            .join(" --- "),
+                        ),
+                        console.error(e),
+                        new Error(
+                          `Couldn't decode JSON ${void 0 === e ? String(e) : JSON.stringify(e).slice(0, 10)}`,
+                        )
+                      ),
+                    ),
+                  );
+                })(l, t);
+                return o instanceof Error
+                  ? o
+                  : { data: r(o), didUpdate: s, dateUpdated: i };
+              }
+              return Error("Couldn't read version");
+            },
+            dataToJson: function (t, r) {
+              return [e.length, m(r), n(t)];
+            },
+          };
+        }
+        function m(e) {
+          return Math.round((e().getTime() - 16094592e5) / 6e4);
+        }
+        const y = n.partial({
+            x: n.number,
+            y: n.number,
+            offsetX: n.number,
+            offsetY: n.number,
+          }),
+          d = n.intersection([
+            n.type({
+              type: n.literal("powerup"),
+              array: n.literal("powerups"),
+              x: n.number,
+              y: n.number,
+              width: n.number,
+              height: n.number,
+              item: n.union([
+                n.literal("gun"),
+                n.literal("doubleJump"),
+                n.literal("jetpack"),
+                n.literal("playerStack"),
+                n.literal("skateboard"),
+                n.literal("punch"),
+              ]),
+            }),
+            n.partial({ snapSize: y }),
+          ]),
+          g = n.type({
+            x: n.number,
+            y: n.number,
+            width: n.number,
+            height: n.number,
+            speed: n.number,
+          }),
+          h = n.intersection([
+            n.type({
+              type: n.literal("portal"),
+              array: n.literal("portals"),
+              x: n.number,
+              y: n.number,
+              width: n.number,
+              height: n.number,
+              direction: n.union([
+                n.literal("left"),
+                n.literal("right"),
+                n.literal("up"),
+                n.literal("down"),
+              ]),
+              pairId: n.number,
+              pair: n.union([n.literal("a"), n.literal("b")]),
+            }),
+            n.partial({ snapSize: y }),
+          ]),
+          f = n.type({
+            x: n.number,
+            y: n.number,
+            frame: n.number,
+            by: n.union([
+              n.literal("stomped"),
+              n.literal("gun"),
+              n.literal("object"),
+              n.literal("missile"),
+              n.literal("outOfView"),
+            ]),
+          }),
+          S = n.type({
+            blocks: n.array(
+              n.intersection([
+                n.type({ type: n.literal("blockSpikeState") }),
+                n.partial({ destroyed: f }),
+              ]),
+            ),
+            spikes: n.array(
+              n.intersection([
+                n.type({ type: n.literal("blockSpikeState") }),
+                n.partial({ destroyed: f }),
+              ]),
+            ),
+            saws: n.array(
+              n.intersection([
+                n.type({ type: n.literal("sawState") }),
+                n.partial({ destroyed: f }),
+              ]),
+            ),
+            platforms: n.array(n.type({ type: n.literal("platformState") })),
+            switchPlatforms: n.array(
+              n.type({ type: n.literal("switchPlatformState") }),
+            ),
+            switchButtons: n.array(
+              n.type({
+                type: n.literal("switchButtonState"),
+                isPressedCounter: n.number,
+              }),
+            ),
+            directionChanges: n.array(
+              n.type({
+                type: n.literal("directionChangeState"),
+                wasHit: n.boolean,
+              }),
+            ),
+            speedChanges: n.array(
+              n.type({ type: n.literal("speedChangeState") }),
+            ),
+            flags: n.array(
+              n.type({ type: n.literal("flagState"), wasHit: n.boolean }),
+            ),
+            enemies: n.array(
+              n.intersection([
+                n.type({
+                  type: n.literal("enemyState"),
+                  framesSeen: n.number,
+                  offsetX: n.number,
+                  offsetY: n.number,
+                  bullet: n.union([g, n.null]),
+                  direction: n.union([n.literal(1), n.literal(-1)]),
+                }),
+                n.partial({ destroyed: f }),
+              ]),
+            ),
+            powerups: n.array(
+              n.type({
+                type: n.literal("powerupState"),
+                wasPickedUp: n.boolean,
+              }),
+            ),
+            springs: n.array(n.type({ type: n.literal("springState") })),
+            collectibles: n.array(
+              n.intersection([
+                n.type({
+                  type: n.literal("collectibleState"),
+                  wasPickedUp: n.boolean,
+                }),
+                n.partial({ score: n.number }),
+              ]),
+            ),
+            portals: n.array(n.type({ type: n.literal("portalState") })),
+          }),
+          k = n.type({
+            type: n.literal("pixel"),
+            bossX: n.number,
+            bossY: n.number,
+            view: n.union([
+              n.literal("idle"),
+              n.literal("gunOut"),
+              n.literal("gun"),
+              n.literal("gunIn"),
+              n.literal("chargeLaser"),
+              n.literal("chargeLaserDamage"),
+              n.literal("death"),
+            ]),
+            isShootingFrames: n.number,
+            startChargeFrame: n.union([n.number, n.null]),
+            takingDamageTimeout: n.number,
+            health: n.number,
+            bullets: n.array(
+              n.type({
+                type: n.union([
+                  n.literal("thinBullet"),
+                  n.literal("missile"),
+                  n.literal("bomb"),
+                  n.literal("bulletHell"),
+                  n.literal("bulletHellBig"),
+                  n.literal("laser"),
+                ]),
+                x: n.number,
+                y: n.number,
+                width: n.number,
+                height: n.number,
+                speedX: n.number,
+                speedY: n.number,
+                gradY: n.number,
+              }),
+            ),
+            destroyed: n.boolean,
+          }),
+          j = n.type({
+            type: n.union([
+              n.literal("bottomExit"),
+              n.literal("bottomJoin"),
+              n.literal("bottomLeading"),
+              n.literal("bottomSingle"),
+              n.literal("bottomStalecmite"),
+              n.literal("bottomTrailing"),
+              n.literal("middle"),
+              n.literal("topEntry"),
+              n.literal("topJoin"),
+              n.literal("topLeading"),
+              n.literal("topSingle"),
+              n.literal("topStalectite"),
+              n.literal("topTrailing"),
+            ]),
+            hitType: n.union([
+              n.literal("top"),
+              n.literal("topStalectite"),
+              n.literal("bottom"),
+              n.literal("bottomStalecmite"),
+              n.null,
+            ]),
+            x: n.number,
+            index: n.number,
+          }),
+          O = n.type({
+            type: n.literal("flying"),
+            bossX: n.number,
+            bossY: n.number,
+            isUp: n.boolean,
+            gunView: n.union([
+              n.literal("up"),
+              n.literal("down"),
+              n.literal("toDown"),
+              n.literal("toUp"),
+            ]),
+            shootFrames: n.number,
+            bullets: n.array(
+              n.type({
+                x: n.number,
+                y: n.number,
+                width: n.number,
+                height: n.number,
+                speed: n.number,
+              }),
+            ),
+            destroyed: n.boolean,
+            allAsteroids: n.array(
+              n.type({
+                x: n.number,
+                y: n.number,
+                radius: n.number,
+                index: n.number,
+              }),
+            ),
+            allInsideAsteroid: n.array(j),
+            asteroids: n.array(
+              n.type({
+                x: n.number,
+                y: n.number,
+                radius: n.number,
+                index: n.number,
+              }),
+            ),
+            insideAsteroid: n.array(j),
+            moveFrames: n.array(n.number),
+          }),
+          w = n.type({
+            type: n.literal("demon"),
+            runtime: n.any,
+            fistRuntime: n.any,
+            collisionFn: n.any,
+            blockCollisionFn: n.any,
+            minions: n.array(
+              n.type({
+                x: n.number,
+                y: n.number,
+                width: n.number,
+                height: n.number,
+                index: n.number,
+              }),
+            ),
+            allMinions: n.array(
+              n.type({
+                x: n.number,
+                y: n.number,
+                width: n.number,
+                height: n.number,
+                index: n.number,
+              }),
+            ),
+            fireballs: n.array(
+              n.type({
+                x: n.number,
+                y: n.number,
+                width: n.number,
+                height: n.number,
+                index: n.number,
+              }),
+            ),
+            allFireballs: n.array(
+              n.type({
+                x: n.number,
+                y: n.number,
+                width: n.number,
+                height: n.number,
+                index: n.number,
+              }),
+            ),
+          }),
+          v = b({
+            mappers: [
+              () => {
+                throw Error(
+                  "getDefaultData not supported for levelState storage",
+                );
+              },
+              (e) =>
+                Object.assign(Object.assign({}, e), {
+                  justHitSpringIndex: null,
+                }),
+              (e) => e,
+              (e) =>
+                Object.assign(Object.assign({}, e), {
+                  jumpSwitch: Object.assign(Object.assign({}, e.jumpSwitch), {
+                    timeout: 0,
+                  }),
+                }),
+              (e) => e,
+              (e) => {
+                var t;
+                return Object.assign(Object.assign({}, e), {
+                  bossState:
+                    "flying" ===
+                    (null === (t = e.bossState) || void 0 === t
+                      ? void 0
+                      : t.type)
+                      ? Object.assign(Object.assign({}, e.bossState), {
+                          asteroids: e.bossState.asteroids.map((e, t) =>
+                            Object.assign(Object.assign({}, e), { index: t }),
+                          ),
+                          allAsteroids: e.bossState.allAsteroids.map((e, t) =>
+                            Object.assign(Object.assign({}, e), { index: t }),
+                          ),
+                          insideAsteroid: e.bossState.insideAsteroid.map(
+                            (e, t) =>
+                              Object.assign(Object.assign({}, e), { index: t }),
+                          ),
+                          allInsideAsteroid: e.bossState.allInsideAsteroid.map(
+                            (e, t) =>
+                              Object.assign(Object.assign({}, e), { index: t }),
+                          ),
+                        })
+                      : e.bossState,
+                });
+              },
+              (e) =>
+                Object.assign(Object.assign({}, e), {
+                  switchBlockSpikes: !1,
+                  playerSpeedMultiplier: 1,
+                  justHitObject: null,
+                  layoutState: Object.assign(Object.assign({}, e.layoutState), {
+                    blocks: e.layoutState.blocks.map((e) =>
+                      Object.assign(Object.assign({}, e), {
+                        type: "blockSpikeState",
+                      }),
+                    ),
+                    spikes: e.layoutState.spikes.map((e) =>
+                      Object.assign(Object.assign({}, e), {
+                        type: "blockSpikeState",
+                      }),
+                    ),
+                    speedChanges: [],
+                  }),
+                }),
+            ],
+            finalSchema: n.type({
+              frame: n.number,
+              attempt: n.number,
+              jumping: n.boolean,
+              justDownInputTimer: n.number,
+              playerX: n.number,
+              playerY: n.number,
+              playerOnGroundY: n.number,
+              playerWasOnGroundCooldown: n.number,
+              playerGradY: n.number,
+              playerRot: n.number,
+              playerScaleX: n.number,
+              playerScaleY: n.number,
+              playerDir: n.union([n.literal(1), n.literal(-1)]),
+              playerSpeedMultiplier: n.number,
+              playerPowerup: n.union([n.null, d]),
+              playerJetpackFuel: n.number,
+              playerUsingPowerup: n.boolean,
+              playerBullets: n.array(g),
+              playerStacks: n.array(n.type({ y: n.number, gradY: n.number })),
+              explosions: n.array(
+                n.type({ x: n.number, y: n.number, framesLeft: n.number }),
+              ),
+              touchingPortals: n.union([n.null, n.tuple([h, h])]),
+              justHitObject: n.union([
+                n.null,
+                n.type({
+                  array: n.union([
+                    n.literal("springs"),
+                    n.literal("speedChanges"),
+                    n.literal("switchButtons"),
+                  ]),
+                  index: n.number,
+                }),
+              ]),
+              skateboardJumpCharge: n.number,
+              bottomLine: n.union([
+                n.null,
+                n.type({
+                  minY: n.number,
+                  objects: n.array(
+                    n.type({
+                      type: n.string,
+                      x: n.number,
+                      y: n.number,
+                      width: n.number,
+                      height: n.number,
+                    }),
+                  ),
+                }),
+              ]),
+              collectibles: n.number,
+              score: n.type({
+                local: n.number,
+                total: n.number,
+                multiplier: n.number,
+              }),
+              bossState: n.union([n.null, k, O, w]),
+              switchButtons: n.type({ on: n.boolean, rot: n.number }),
+              jumpSwitch: n.type({
+                on: n.boolean,
+                ratio: n.number,
+                delay: n.number,
+                timeout: n.number,
+              }),
+              switchBlockSpikes: n.boolean,
+              checkpoint: n.type({ index: n.number, state: n.any }),
+              onObject: n.union([
+                n.null,
+                n.type({ array: n.any, index: n.number, y: n.number }),
+              ]),
+              cameraXOffset: n.number,
+              cameraY: n.number,
+              crashed: n.boolean,
+              finishedLevel: n.boolean,
+              frameCountSinceHistoryPush: n.number,
+              layoutState: S,
+            }),
+            uncompress: (e) => e,
+            compress: (e) =>
+              Object.assign(Object.assign({}, e), {
+                checkpoint: Object.assign(Object.assign({}, e.checkpoint), {
+                  state: null,
+                }),
+                bossState: x(e.bossState),
+              }),
+          });
+        function x(e) {
+          if (!e) return null;
+          switch (e.type) {
+            case "robot":
+              return null;
+            case "pixel":
+            case "flying":
+              return e;
+            case "demon":
+              return Object.assign(Object.assign({}, e), {
+                runtime: null,
+                fistRuntime: null,
+                collisionFn: null,
+                blockCollisionFn: null,
+              });
+          }
+        }
+        const C = b({
+            mappers: [
+              () => ["Player", []],
+              (e) => [e[0], e[1], 1],
+              (e) => [
+                e[0],
+                e[1].map(([e, t, r, [n, a, i], l, s]) => [
+                  e,
+                  t,
+                  r,
+                  [n, a, i ? [1, 0, i] : null],
+                  l,
+                  s,
+                ]),
+                e[2],
+              ],
+              (e) => [e[0], e[1], e[2], [!1, !1, !1, !1, !1, !1]],
+              (e) => [e[1], e[2], e[3]],
+              (e) => [e[0].map((e) => [...e, 0, null]), e[1], e[2]],
+              (e) => [...e, []],
+              (e) => [e[0], e[1], [...e[2], 0], e[3]],
+            ],
+            finalSchema: n.tuple([
+              n.array(
+                u.tuple([
+                  n.string,
+                  n.number,
+                  n.number,
+                  n.tuple([
+                    n.boolean,
+                    n.number,
+                    n.union([n.null, n.tuple([n.number, n.number, n.unknown])]),
+                  ]),
+                  n.tuple([n.boolean, n.number]),
+                  n.number,
+                  n.number,
+                  n.union([n.null, n.number]),
+                ]),
+              ),
+              n.number,
+              u.tuple([
+                n.boolean,
+                n.boolean,
+                n.boolean,
+                n.boolean,
+                n.boolean,
+                n.boolean,
+                n.number,
+              ]),
+              n.array(n.tuple([n.string, n.string])),
+            ]),
+            uncompress: (e) => {
+              const [t, r, [n, a, i, l, s, o, u], p] = e;
+              return {
+                levelsProgress: t.map(
+                  ([e, t, r, [n, a, i], [l, s], o, u, p]) => {
+                    const c = v.jsonToData(i);
+                    return {
+                      levelName: e,
+                      levelIndex: t,
+                      world: r,
+                      checkpoints: {
+                        didFinish: n,
+                        furthestFrame: a,
+                        lastCheckpointState: c instanceof Error ? null : c.data,
+                      },
+                      noCheckpoints: { didFinish: l, furthestFrame: s },
+                      highScore: o,
+                      totalAttempts: u,
+                      bestAttempts: p,
+                    };
+                  },
+                ),
+                lastOpenedWorld: r,
+                settings: {
+                  plainBackground: n,
+                  hidePlayerTrail: a,
+                  muteJump: i,
+                  muteSfx: l,
+                  hideUi: s,
+                  muteMenuMusic: o,
+                  headphonesDelay: u,
+                },
+                friendRequests: p.map(([e, t]) => ({
+                  playerName: t,
+                  profileId: e,
+                })),
+              };
+            },
+            compress: (e) => [
+              e.levelsProgress.map((e) => [
+                e.levelName,
+                e.levelIndex,
+                e.world,
+                [
+                  e.checkpoints.didFinish,
+                  e.checkpoints.furthestFrame,
+                  e.checkpoints.lastCheckpointState &&
+                    v.dataToJson(
+                      e.checkpoints.lastCheckpointState,
+                      () => new Date(),
+                    ),
+                ],
+                [e.noCheckpoints.didFinish, e.noCheckpoints.furthestFrame],
+                e.highScore,
+                e.totalAttempts,
+                e.bestAttempts,
+              ]),
+              e.lastOpenedWorld,
+              [
+                e.settings.plainBackground,
+                e.settings.hidePlayerTrail,
+                e.settings.muteJump,
+                e.settings.muteSfx,
+                e.settings.hideUi,
+                e.settings.muteMenuMusic,
+                e.settings.headphonesDelay,
+              ],
+              e.friendRequests.map((e) => [e.profileId, e.playerName]),
+            ],
+          }),
+          F = Object.assign(Object.assign({}, C), {
+            merge: function (e, t) {
+              var r;
+              return {
+                levelsProgress: ((r = [
+                  ...e.levelsProgress.map((e) => e.levelName),
+                  ...t.levelsProgress.map((e) => e.levelName),
+                ]),
+                [...new Set(r)]).map((r) => {
+                  const n = e.levelsProgress.find((e) => e.levelName === r),
+                    a = t.levelsProgress.find((e) => e.levelName === r);
+                  return n && a
+                    ? Object.assign(Object.assign({}, n), {
+                        checkpoints: {
+                          didFinish:
+                            n.checkpoints.didFinish || a.checkpoints.didFinish,
+                          furthestFrame: Math.max(
+                            n.checkpoints.furthestFrame,
+                            a.checkpoints.furthestFrame,
+                          ),
+                          lastCheckpointState:
+                            n.checkpoints.lastCheckpointState ||
+                            a.checkpoints.lastCheckpointState,
+                        },
+                        noCheckpoints: {
+                          didFinish:
+                            n.noCheckpoints.didFinish ||
+                            a.noCheckpoints.didFinish,
+                          furthestFrame: Math.max(
+                            n.noCheckpoints.furthestFrame,
+                            a.noCheckpoints.furthestFrame,
+                          ),
+                        },
+                        highScore: Math.max(n.highScore, a.highScore),
+                      })
+                    : n || a;
+                }),
+                lastOpenedWorld: e.lastOpenedWorld,
+                settings: e.settings,
+                friendRequests: e.friendRequests,
+              };
+            },
+            removeCheckpointData: function (e) {
+              return Object.assign(Object.assign({}, e), {
+                levelsProgress: e.levelsProgress.map((e) =>
+                  Object.assign(Object.assign({}, e), {
+                    checkpoints: Object.assign(
+                      Object.assign({}, e.checkpoints),
+                      { lastCheckpointState: null },
+                    ),
+                  }),
+                ),
+              });
+            },
+            removeNonSerialBossData: function (e) {
+              return Object.assign(Object.assign({}, e), {
+                levelsProgress: e.levelsProgress.map((e) =>
+                  Object.assign(Object.assign({}, e), {
+                    checkpoints: Object.assign(
+                      Object.assign({}, e.checkpoints),
+                      {
+                        lastCheckpointState:
+                          null === e.checkpoints.lastCheckpointState
+                            ? null
+                            : Object.assign(
+                                Object.assign(
+                                  {},
+                                  e.checkpoints.lastCheckpointState,
+                                ),
+                                {
+                                  bossState: x(
+                                    e.checkpoints.lastCheckpointState.bossState,
+                                  ),
+                                },
+                              ),
+                      },
+                    ),
+                  }),
+                ),
+              });
+            },
+          });
+        self.onmessage = ({ data: e }) => {
+          const t = e;
+          if ("jsonToData" === t.type) {
+            const e = JSON.parse(t.accountStorageString),
+              r = { type: "jsonToData", accountStorage: F.jsonToData(e) };
+            return void self.postMessage(r);
+          }
+          const r = F.dataToJson(t.accountStorage, () => new Date()),
+            n = { type: "dataToJson", accountStorageString: JSON.stringify(r) };
+          self.postMessage(n);
+        };
+      },
+    },
+    n = {};
+  function a(e) {
+    var t = n[e];
+    if (void 0 !== t) return t.exports;
+    var i = (n[e] = { exports: {} });
+    return (r[e](i, i.exports, a), i.exports);
+  }
+  ((a.m = r),
+    (a.x = () => {
+      var e = a.O(void 0, [714], () => a(9116));
+      return a.O(e);
+    }),
+    (e = []),
+    (a.O = (t, r, n, i) => {
+      if (!r) {
+        var l = 1 / 0;
+        for (p = 0; p < e.length; p++) {
+          for (var [r, n, i] = e[p], s = !0, o = 0; o < r.length; o++)
+            (!1 & i || l >= i) && Object.keys(a.O).every((e) => a.O[e](r[o]))
+              ? r.splice(o--, 1)
+              : ((s = !1), i < l && (l = i));
+          if (s) {
+            e.splice(p--, 1);
+            var u = n();
+            void 0 !== u && (t = u);
+          }
+        }
+        return t;
+      }
+      i = i || 0;
+      for (var p = e.length; p > 0 && e[p - 1][2] > i; p--) e[p] = e[p - 1];
+      e[p] = [r, n, i];
+    }),
+    (a.d = (e, t) => {
+      for (var r in t)
+        a.o(t, r) &&
+          !a.o(e, r) &&
+          Object.defineProperty(e, r, { enumerable: !0, get: t[r] });
+    }),
+    (a.f = {}),
+    (a.e = (e) =>
+      Promise.all(Object.keys(a.f).reduce((t, r) => (a.f[r](e, t), t), []))),
+    (a.u = (e) => e + ".game.js"),
+    (a.g = (function () {
+      if ("object" == typeof globalThis) return globalThis;
+      try {
+        return this || new Function("return this")();
+      } catch (e) {
+        if ("object" == typeof window) return window;
+      }
+    })()),
+    (a.o = (e, t) => Object.prototype.hasOwnProperty.call(e, t)),
+    (a.r = (e) => {
+      ("undefined" != typeof Symbol &&
+        Symbol.toStringTag &&
+        Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }),
+        Object.defineProperty(e, "__esModule", { value: !0 }));
+    }),
+    (() => {
+      var e;
+      a.g.importScripts && (e = a.g.location + "");
+      var t = a.g.document;
+      if (!e && t && (t.currentScript && (e = t.currentScript.src), !e)) {
+        var r = t.getElementsByTagName("script");
+        r.length && (e = r[r.length - 1].src);
+      }
+      if (!e)
+        throw new Error(
+          "Automatic publicPath is not supported in this browser",
+        );
+      ((e = e
+        .replace(/#.*$/, "")
+        .replace(/\?.*$/, "")
+        .replace(/\/[^\/]+$/, "/")),
+        (a.p = e));
+    })(),
+    (() => {
+      var e = { 116: 1 };
+      a.f.i = (t, r) => {
+        e[t] || importScripts(a.p + a.u(t));
+      };
+      var t = (self.webpackChunkgame = self.webpackChunkgame || []),
+        r = t.push.bind(t);
+      t.push = (t) => {
+        var [n, i, l] = t;
+        for (var s in i) a.o(i, s) && (a.m[s] = i[s]);
+        for (l && l(a); n.length; ) e[n.pop()] = 1;
+        r(t);
+      };
+    })(),
+    (t = a.x),
+    (a.x = () => a.e(714).then(t)));
+  var i = a.x();
+  game = i;
+})();
