@@ -29834,6 +29834,7 @@ var version = "v1.6.0";
               "images/mainMenu/worldSelect/2.png",
               "images/mainMenu/worldSelect/3.png",
               "images/mainMenu/worldSelect/4.png",
+              "images/mainMenu/worldSelect/5.png",
             ],
             getPlayerImages: Js,
             editorImages: [
@@ -42287,7 +42288,32 @@ var version = "v1.6.0";
               boss: xl(),
             },
           ],
-          Ul = [
+          world5Levels = [
+            {
+              levelName: "Fire Aura 2",
+              levelFileName: "fire-aura",
+              author: "Alfredo Gamer",
+              song: hl.songs.fireAura,
+              unlockedByIndex: null,
+              x: -250,
+              y: 30,
+              pathToLevel: [],
+              maxFrames: 9877,
+              difficulty: 5,
+            },
+            {
+              levelName: "Heaven 2",
+              levelFileName: "heaven",
+              song: hl.songs.heaven,
+              unlockedByIndex: 0,
+              x: 0,
+              y: 0,
+              pathToLevel: [],
+              maxFrames: 9877,
+              difficulty: 6,
+            }
+          ],
+          bonusLevels = [
             {
               levelName: "Cloud 9",
               levelFileName: "cloud-9",
@@ -42335,29 +42361,7 @@ var version = "v1.6.0";
               maxFrames: 9877,
               difficulty: 10,
             },
-            {
-              levelName: "Fire Aura 2",
-              levelFileName: "fire-aura",
-              author: "Alfredo Gamer",
-              song: hl.songs.fireAura,
-              unlockedByIndex: null,
-              x: 0,
-              y: 0,
-              pathToLevel: [],
-              maxFrames: 9877,
-              difficulty: 7.5,
-            },
-            {
-              levelName: "Heaven 2",
-              levelFileName: "heaven",
-              song: hl.songs.heaven,
-              unlockedByIndex: null,
-              x: 0,
-              y: 0,
-              pathToLevel: [],
-              maxFrames: 9877,
-              difficulty: 7.5,
-            },
+            
             {
               levelName: "For You",
               levelFileName: "for-you",
@@ -42420,14 +42424,14 @@ var version = "v1.6.0";
               difficulty: 9,
             },
           ],
-          jl = [Dl, Bl, Fl, Yl],
+          jl = [Dl, Bl, Fl, Yl, world5Levels],
           Gl = Dl[0].levelName,
-          Vl = Ul[0].levelName,
+          Vl = bonusLevels[0].levelName,
           Hl = {
             getWorlds: () => jl,
-            getWorld: (e) => (0 === e ? Ul : jl[e - 1]),
+            getWorld: (e) => (0 === e ? bonusLevels : jl[e - 1]),
             firstLevelName: Gl,
-            bonusLevels: Ul,
+            bonusLevels: bonusLevels,
             skateboardLevelName: Vl,
           },
           Xl = (e, t, a, i, n, s, o, r, l, c = 0, d = 0) => {
@@ -60899,7 +60903,7 @@ var version = "v1.6.0";
                 oy({
                   id: "WorldButton",
                   world: h,
-                  disabled: h > u.length,
+                  disabled: false,//h > u.length,
                   onPress: () => {
                     e.updateView({ type: "inWorld", world: h }),
                       Jp.saveAccount(a.storage, null, a.alert, a.now, {
@@ -66304,7 +66308,7 @@ var version = "v1.6.0";
                       }),
                     y: -30,
                     x: -200,
-                    disabled: true,
+                    disabled: false,
                     shadowOffsetX: -1,
                     shadowOffsetY: 0,
                     beatSize: b,
