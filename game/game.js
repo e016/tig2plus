@@ -16728,70 +16728,70 @@ var version = "v1.6.0";
               var i, n, s, o, r, l, c, d, u, h, p;
             },
           },
-          ue = M,
+          playerSize = M,
           he = (e) => (t) =>
             t.x >= e.x - e.width / 2 &&
             t.x <= e.x + e.width / 2 &&
             t.y >= e.y - e.height / 2 &&
             t.y <= e.y + e.height / 2,
-          pe = (e, t, a, i, n) => {
-            const s = n % 360;
+          pe = (e, t, a, i, rotation) => {
+            const playerRot = rotation % 360;
             let o, r, l;
             switch (true) {
-              case s <= 45:
-                (o = B.toRad(s)), (r = ue * a), (l = ue * i);
+              case playerRot <= 45:
+                (o = B.toRad(playerRot)), (r = playerSize * a), (l = playerSize * i);
                 break;
-              case s <= 135:
-                (o = B.toRad(s - 90)), (r = ue * i), (l = ue * a);
+              case playerRot <= 135:
+                (o = B.toRad(playerRot - 90)), (r = playerSize * i), (l = playerSize * a);
                 break;
-              case s <= 225:
-                (o = B.toRad(s - 180)), (r = ue * a), (l = ue * i);
+              case playerRot <= 225:
+                (o = B.toRad(playerRot - 180)), (r = playerSize * a), (l = playerSize * i);
                 break;
-              case s <= 315:
-                (o = B.toRad(s - 270)), (r = ue * i), (l = ue * a);
+              case playerRot <= 315:
+                (o = B.toRad(playerRot - 270)), (r = playerSize * i), (l = playerSize * a);
                 break;
               default:
-                (o = B.toRad(s - 360)), (r = ue * a), (l = ue * i);
+                (o = B.toRad(playerRot - 360)), (r = playerSize * a), (l = playerSize * i);
             }
             const c = e - (Math.sin(o) * r) / 2,
               d = t - (Math.cos(o) * l) / 2;
             let u = 0;
             for (let e = -r / 1.95; e <= r / 1.95; e++)
-              ge[u]
-                ? ((ge[u].x = c + e * Math.cos(o)),
-                  (ge[u].y = d - e * Math.sin(o)))
-                : (ge[u] = { x: c + e * Math.cos(o), y: d - e * Math.sin(o) }),
+              bottomPlayerLine[u]
+                ? ((bottomPlayerLine[u].x = c + e * Math.cos(o)),
+                  (bottomPlayerLine[u].y = d - e * Math.sin(o)))
+                : (bottomPlayerLine[u] = { x: c + e * Math.cos(o), y: d - e * Math.sin(o) }),
                 u++;
-            return u < ge.length && (ge.length = u), ge;
+            return u < bottomPlayerLine.length && (bottomPlayerLine.length = u), bottomPlayerLine;
           },
-          ge = [],
+          bottomPlayerLine = [],
           me = (e, t, a, i, n, s) => {
-            const o = n % 360;
+            const playerDir = n % 360;
             let r, l, c, d;
             switch (true) {
-              case o <= 45:
-                (r = B.toRad(o - 90)), (l = ue * a), (c = ue * i), (d = 1);
+              case playerDir <= 45:
+                (r = B.toRad(playerDir - 90)), (l = playerSize * a), (c = playerSize * i), (d = 1);
                 break;
-              case o <= 90:
-                (r = B.toRad(o)), (l = ue * i), (c = ue * a), (d = 0);
+              case playerDir <= 90:
+                (r = B.toRad(playerDir)), (l = playerSize * i), (c = playerSize * a), (d = 0);
                 break;
-              case o <= 135:
-                (r = B.toRad(o - 180)), (l = ue * i), (c = ue * a), (d = 1);
+              case playerDir <= 135:
+                (r = B.toRad(playerDir - 180)), (l = playerSize * i), (c = playerSize * a), (d = 1);
                 break;
-              case o <= 180:
-                (r = B.toRad(o - 90)), (l = ue * a), (c = ue * i), (d = 0);
+              case playerDir <= 180:
+                (r = B.toRad(playerDir - 90)), (l = playerSize * a), (c = playerSize * i), (d = 0);
                 break;
-              case o <= 225:
-                (r = B.toRad(o - 270)), (l = ue * a), (c = ue * i), (d = 1);
+              case playerDir <= 225:
+                (r = B.toRad(playerDir - 270)), (l = playerSize * a), (c = playerSize * i), (d = 1);
                 break;
-              case o <= 270:
-                (r = B.toRad(o - 180)), (l = ue * i), (c = ue * a), (d = 0);
+              case playerDir <= 270:
+                (r = B.toRad(playerDir - 180)), (l = playerSize * i), (c = playerSize * a), (d = 0);
                 break;
-              case o <= 315:
-                (r = B.toRad(o)), (l = ue * i), (c = ue * a), (d = 1);
+              case playerDir <= 315:
+                (r = B.toRad(playerDir)), (l = playerSize * i), (c = playerSize * a), (d = 1);
                 break;
               default:
-                (r = B.toRad(o - 270)), (l = ue * a), (c = ue * i), (d = 0);
+                (r = B.toRad(playerDir - 270)), (l = playerSize * a), (c = playerSize * i), (d = 0);
             }
             const u = e - (Math.sin(r) * l) / 2,
               h = t - (Math.cos(r) * c) / 2;
@@ -16800,23 +16800,23 @@ var version = "v1.6.0";
               if (1 === s || d) {
                 const t = u - e * Math.cos(r),
                   a = h + e * Math.sin(r);
-                fe[p]
-                  ? ((fe[p].x = t), (fe[p].y = a))
-                  : (fe[p] = { x: t, y: a }),
+                secondBottomPlayerLine[p]
+                  ? ((secondBottomPlayerLine[p].x = t), (secondBottomPlayerLine[p].y = a))
+                  : (secondBottomPlayerLine[p] = { x: t, y: a }),
                   p++;
               }
               if (-1 === s || !d) {
                 const t = u + e * Math.cos(r),
                   a = h - e * Math.sin(r);
-                fe[p]
-                  ? ((fe[p].x = t), (fe[p].y = a))
-                  : (fe[p] = { x: t, y: a }),
+                secondBottomPlayerLine[p]
+                  ? ((secondBottomPlayerLine[p].x = t), (secondBottomPlayerLine[p].y = a))
+                  : (secondBottomPlayerLine[p] = { x: t, y: a }),
                   p++;
               }
             }
-            return (fe.length = p), fe;
+            return (secondBottomPlayerLine.length = p), secondBottomPlayerLine;
           },
-          fe = [],
+          secondBottomPlayerLine = [],
           ye = [];
         function getObjectTopY(obj, t, a) {
           if ("switchPlatform" === obj.type && 0 !== obj.rotation) {
@@ -16923,7 +16923,7 @@ var version = "v1.6.0";
               }
               const h = de.getObjectPolygon(r, c);
               return !("canJumpThrough" in r) && de.polygonHitSomething(l, h)
-                ? { type: "crashed" }
+                ? { type: "crashed", rotatePoint: {x: e + 15 * globalPlayerScale, y: t + 15 * globalPlayerScale }}
                 : null;
             },
             hitObject: function (e, t, a, i, n, s, o) {
@@ -16937,7 +16937,7 @@ var version = "v1.6.0";
                 de.pooledPlayerPoly1
               );
               return (t) => {
-                if (t.x > e + t.width + ue || t.x < e - t.width - ue)
+                if (t.x > e + t.width + playerSize || t.x < e - t.width - playerSize)
                   return false;
                 const a = de.getObjectPolygon(t, o);
                 return de.polygonHitSomething(r, a);
@@ -18757,8 +18757,7 @@ var version = "v1.6.0";
                   if (state?.steel && hit(obj)) {
                     return (Na(destroyableType, objIndex, state, n, layoutState, s, o), 
                       bullets[i].x = (obj.x - (obj.width / 2) * sign) - bullets[i].width / (2 * sign),
-                      bullets[i].frame = 1,
-                      console.log(bullets, bullets[i])
+                      bullets[i].frame = 1
                   );
                   }
 
@@ -33333,7 +33332,7 @@ var version = "v1.6.0";
                 e.color.trueRef.b += (newRgb.b - current.b) / (5);
                 
                 e.color.ref = `#${componentToHex(e.color.trueRef.r, true)}${componentToHex(e.color.trueRef.g, true)}${componentToHex(e.color.trueRef.b, true)}`;
-                console.log(e.color.trueRef);
+                
               }
             },
             render: ({ props: e, state: t }) => e.sprite(t.opacity, t.color),
@@ -38813,16 +38812,15 @@ var version = "v1.6.0";
           let crashed = d,
             onGroundY = u;
             if (gravity < 0 && hObj?.object) {
-              console.log(hObj);
               const e = (l > 45 && l < 135) || (l > 225 && l < 315) ? o : r,
               t = be[gravity > 0 ? 'getObjectTopY' : 'getObjectBottomY'](hObj.object, a, i) + (15 + (skating && gravity < 0 ? $.skateboardHeight : 0)) * e * gravity;
               return {crashed: false, onGroundY: t, hitObject: hObj}
             }
-          const f = de.getPlayerPoly(a, i, o, r, l, skating, de.pooledPlayerPoly3);
+          const playerPoly = de.getPlayerPoly(a, i, o, r, l, skating, de.pooledPlayerPoly3);
           let y = 0;
           for (let s = 0; s < e.length; s++) {
             const { object: d, index: u } = e[s],
-              h = be.hitLandableObject(a, i, n, o, r, l, c, d, f, p, gravity, forceCheck);
+              h = be.hitLandableObject(a, i, n, o, r, l, c, d, playerPoly, p, gravity, forceCheck);
             if (null !== h) {
               let e = d.array;
               p &&
@@ -38839,12 +38837,13 @@ var version = "v1.6.0";
           y < ol.length && (ol.length = y),
             ol.sort(({ result: e, object: t }, { result: a, object: i }) => {
               const n = {
-                crashed: 3,
+                crashed: gravity > 0 ? 3 : 1,
                 hitMidLine: 2,
-                hitBottomEdges: 1,
+                hitBottomEdges: gravity > 0 ? 1 : 3,
                 noHit: 0,
-              };
-              return "hitBottomEdges" === a.type && "hitBottomEdges" === e.type
+              },
+              landCheck = gravity > 0 ? "hitBottomEdges" : "crashed";
+              return landCheck === a.type && landCheck === e.type
                 ? a.rotatePoint.x - e.rotatePoint.x
                 : e.type === a.type
                 ? i.y - t.y
@@ -38862,7 +38861,7 @@ var version = "v1.6.0";
                   s,
                   c,
                   hitObject.object,
-                  f,
+                  playerPoly,
                   p,
                   gravity,
                   forceCheck,
@@ -38975,6 +38974,7 @@ var version = "v1.6.0";
               } = e,
               { levelState: U } = L;
             U.frame += df;
+            
             const { a: j, b: V } = A;
             L.blockJumpUntilReleased &&
               "up" === playerInput &&
@@ -39087,6 +39087,7 @@ var version = "v1.6.0";
               }
               return;
             }
+            console.log(U.frame);
             U.playerX +=
               w * U.playerSpeedMultiplier * df * U.playerDir * (skating ? 1.5 : 1);
             let J = false;
@@ -42296,9 +42297,9 @@ var version = "v1.6.0";
               song: hl.songs.fireAura,
               unlockedByIndex: null,
               x: -250,
-              y: 30,
+              y: 50,
               pathToLevel: [],
-              maxFrames: 9877,
+              maxFrames: 5448,
               difficulty: 5,
             },
             {
@@ -42306,8 +42307,8 @@ var version = "v1.6.0";
               levelFileName: "heaven",
               song: hl.songs.heaven,
               unlockedByIndex: 0,
-              x: 0,
-              y: 0,
+              x: -150,
+              y: -20,
               pathToLevel: [],
               maxFrames: 9877,
               difficulty: 6,
@@ -51428,7 +51429,6 @@ var version = "v1.6.0";
                         height: t.size.fullHeight,
                       },
                       (k) => {
-                        (console.log(e)),
                         (k.color = e.theme.id == "classic" ? (e.bgColor || "#00FFFF") : e.theme.colour),
                         (k.width = t.size.fullWidth),
                           (k.height = t.size.fullHeight);
