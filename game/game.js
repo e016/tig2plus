@@ -17655,6 +17655,18 @@ var version = "v1.6.1";
               author: "mikhael",
               trail: ct({ topColour: "#78baba", bottomColour: "#78baba"}),
             },
+            pumpkin: {
+              name: "Pumpkin",
+              fileName: "pumpkin",
+              size: 45,
+              trail: ct({ topColour: "#e18c0d", bottomColour: "#e18c0d" }),
+            },
+            calavera: {
+              name: "Calavera",
+              fileName: "calavera",
+              size: 45,
+              trail: ct({ topColour: "#f7ded4", bottomColour: "#f7ded4" }),
+            },
             blank: {
               name: "Blank",
               fileName: "blank",
