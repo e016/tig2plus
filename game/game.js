@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.6.1";
+var version = "v1.6.2";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -39539,6 +39539,9 @@ var version = "v1.6.1";
                 );
                 (U.switchButtons.on = e.switchesOn),
                   (U.jumpSwitch.on = e.switchesOn),
+                  (U.playerScale = 1),
+                  (U.playerScaleX = U.playerScale),
+                  (U.playerScaleY = U.playerScale),
                   (U.switchBlockSpikes = false),
                   !e?.retainSpeed && (U.playerSpeedMultiplier = 1),
                   "skateboard" !==
