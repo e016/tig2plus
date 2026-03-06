@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.6.0";
+var version = "v1.6.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -29834,6 +29834,7 @@ var version = "v1.6.0";
               "images/mainMenu/worldSelect/2.png",
               "images/mainMenu/worldSelect/3.png",
               "images/mainMenu/worldSelect/4.png",
+              "images/mainMenu/worldSelect/5.png",
             ],
             getPlayerImages: Js,
             editorImages: [
@@ -31814,7 +31815,7 @@ var version = "v1.6.0";
             },
           }),
           To = makeSprite({
-            render: ({ props: e }) => [
+            render: ({ props: e, getContext }) => [
               onChange(
                 () => e.skin.fileName,
                 () => [
@@ -31830,7 +31831,7 @@ var version = "v1.6.0";
                     }
                   ),
                   ifConditional(
-                    () => Boolean(e.landTimer),
+                    () => Boolean(e.landTimer) && !getContext(Se).settings.hidePlayerGlow,
                     () => [
                       y(
                         {
@@ -42287,6 +42288,31 @@ var version = "v1.6.0";
               boss: xl(),
             },
           ],
+          world5levels = [
+            {
+              levelName: "Fire Aura 2",
+              levelFileName: "fire-aura",
+              author: "Alfredo Gamer",
+              song: hl.songs.fireAura,
+              unlockedByIndex: null,
+              x: -240,
+              y: 20,
+              pathToLevel: [],
+              maxFrames: 9877,
+              difficulty: 7,
+            },
+            {
+              levelName: "Heaven 2",
+              levelFileName: "heaven",
+              song: hl.songs.heaven,
+              unlockedByIndex: 0,
+              x: -100,
+              y: -30,
+              pathToLevel: [],
+              maxFrames: 9877,
+              difficulty: 7,
+            },
+          ],
           Ul = [
             {
               levelName: "Cloud 9",
@@ -42335,29 +42361,7 @@ var version = "v1.6.0";
               maxFrames: 9877,
               difficulty: 10,
             },
-            {
-              levelName: "Fire Aura 2",
-              levelFileName: "fire-aura",
-              author: "Alfredo Gamer",
-              song: hl.songs.fireAura,
-              unlockedByIndex: null,
-              x: 0,
-              y: 0,
-              pathToLevel: [],
-              maxFrames: 9877,
-              difficulty: 7.5,
-            },
-            {
-              levelName: "Heaven 2",
-              levelFileName: "heaven",
-              song: hl.songs.heaven,
-              unlockedByIndex: null,
-              x: 0,
-              y: 0,
-              pathToLevel: [],
-              maxFrames: 9877,
-              difficulty: 7.5,
-            },
+            
             {
               levelName: "For You",
               levelFileName: "for-you",
@@ -42420,7 +42424,7 @@ var version = "v1.6.0";
               difficulty: 9,
             },
           ],
-          jl = [Dl, Bl, Fl, Yl],
+          jl = [Dl, Bl, Fl, Yl, world5levels],
           Gl = Dl[0].levelName,
           Vl = Ul[0].levelName,
           Hl = {
@@ -45384,6 +45388,7 @@ var version = "v1.6.0";
               (e) => [e[0].map((e) => [...e, 0, null]), e[1], e[2]],
               (e) => [...e, []],
               (e) => [e[0], e[1], [...e[2], 0], e[3]],
+              (e) => [e[0], e[1], [...e[2], false, false], e[3]]
             ],
             finalSchema: Gc([
               Oc(
@@ -45399,12 +45404,12 @@ var version = "v1.6.0";
                 ])
               ),
               fc,
-              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
+              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
               Oc(Gc([mc, mc])),
             ]),
             uncompress: (e) => {
               console.warn(e)
-              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror], d] = e;
+              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror, att, glow], d] = e;
               return {
                 levelsProgress: t.map(
                   ([e, t, a, [i, n, s], [o, r], l, c, d]) => {
@@ -45436,7 +45441,9 @@ var version = "v1.6.0";
                   headphonesDelay: c,
                   overlapObjects: overlap || false,
                   tig1menu: tm || false,
-                  mirrorMenuButton: mirror || false
+                  mirrorMenuButton: mirror || false,
+                  fadeOutAttempts: att || false,
+                  hidePlayerGlow: glow || false
                 },
                 friendRequests: d.map(([e, t]) => ({
                   playerName: t,
@@ -45475,6 +45482,8 @@ var version = "v1.6.0";
                 e.settings.overlapObjects || false,
                 e.settings.tig1menu || false,
                 e.settings.mirrorMenuButton || false,
+                e.settings.fadeOutAttempts || false,
+                e.settings.hidePlayerGlow || false
               ],
               e.friendRequests.map((e) => [e.profileId, e.playerName]),
             ],
@@ -54022,25 +54031,30 @@ var version = "v1.6.0";
                 }
               ),
               t.showAttempts
-                ? t.fadeOutAttempts
-                  ? onChange(
+                ? conditional(
+                    () => (t.fadeOutAttempts || a(Se).settings.fadeOutAttempts),
+                    () => [
+                      onChange(
                       () => t.attempt,
                       () => [
                         jo.Single({
-                          initShow: true,
-                          shouldShow: false,
-                          fadeFrames: 120,
-                          sprite: (e) => [
-                            um.Single({ attempt: t.attempt }, (a) => {
-                              (a.attempt = t.attempt), (a.opacity = e.ref);
-                            }),
-                          ],
+                            initShow: true,
+                            shouldShow: false,
+                            fadeFrames: 120,
+                            sprite: (e) => [
+                              attemptCounter.Single({ attempt: t.attempt, theme: t.layout.properties.theme.id }, (a) => {
+                                (a.attempt = t.attempt), (a.theme = t.layout.properties.theme.id), (a.opacity = e.ref);
+                              }),
+                            ],
                         }),
                       ]
                     )
-                  : um.Single({ attempt: t.attempt }, (e) => {
+                    ],
+                    () => [attemptCounter.Single({ attempt: t.attempt, theme: t.layout.properties.theme.id }, (e) => {
                       e.attempt = t.attempt;
-                    })
+                      e.theme = t.layout.properties.theme.id;
+                    })]
+                  )
                 : null,
               ifConditional(
                 () => t.collectibles > 0,
@@ -54907,11 +54921,23 @@ var version = "v1.6.0";
               ];
             },
           }),
-          um = makeSprite({
+          attemptCounter = makeSprite({
             render: ({ device: e, props: t }) =>
               bgOnly || showcaseOnly
                 ? []
-                : [
+                : t.theme == "classic" ? [
+                  c(
+                      {
+                        color: "white",
+                        font: { family: "Akashi", size: 24, weight: 500 },
+                        y: e.size.fullHeight / 2 - 70,
+                      },
+                      (a) => {
+                        (a.text = `${localize("Attempt")} ${t.attempt}`),
+                          (a.y = e.size.fullHeight / 2 - 70);
+                      }
+                    ),
+                ] : [
                     y(
                       {
                         fileName: "images/level/attempt.png",
@@ -55617,7 +55643,7 @@ var version = "v1.6.0";
                     {
                       containerHeight: a.size.fullHeight - 70 + 50,
                       containerWidth: a.size.fullWidth,
-                      contentHeight: 650,
+                      contentHeight: 750,
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
@@ -55971,6 +55997,44 @@ var version = "v1.6.0";
                               (e.noPress = o.ref);
                           }
                         ),
+                        Rm.Single(
+                          {
+                            text: "DISABLE PLAYER GLOW",
+                            selected: false,
+                            onPress: () => {
+                              var a;
+                              const { settings: i, updateSettings: n } = t(Se);
+                              n({ hidePlayerGlow: !i.hidePlayerGlow });
+                            },
+                            width: 250,
+                            height: 40,
+                            y: -650,
+                          },
+                          (e) => {
+                            const { settings: a } = t(Se);
+                            (e.selected = a.hidePlayerGlow),
+                              (e.noPress = o.ref);
+                          }
+                        ),
+                        Rm.Single(
+                          {
+                            text: "FADE OUT ATTEMPTS",
+                            selected: false,
+                            onPress: () => {
+                              var a;
+                              const { settings: i, updateSettings: n } = t(Se);
+                              n({ fadeOutAttempts: !i.fadeOutAttempts });
+                            },
+                            width: 250,
+                            height: 40,
+                            y: -700,
+                          },
+                          (e) => {
+                            const { settings: a } = t(Se);
+                            (e.selected = a.fadeOutAttempts),
+                              (e.noPress = o.ref);
+                          }
+                        ),
                       ],
                     },
                     (e) => {
@@ -56208,12 +56272,19 @@ var version = "v1.6.0";
                         ),
                       ],
                       () => [
-                        Nm.Single({
+                        pauseMenu.Single({
                           backToMenu: e.backToMenu,
                           onResume: e.onResume,
                           onReset: e.onReset,
                           onEndGame: e.onEndGame,
-                        }),
+                          attempt: e.attempt,
+                          frame: e.frame,
+                          maxFrame: e.maxFrame,
+                          fadeOutAttempts: e.fadeOutAttempts
+                        },
+                        (t) => {
+                          t.fadeOutAttempts = e.fadeOutAttempts
+                        } ),
                       ]
                     ),
                   ]
@@ -56221,7 +56292,7 @@ var version = "v1.6.0";
               ];
             },
           }),
-          Nm = makeSprite({
+          pauseMenu = makeSprite({
             init: ({ props: { onReset: e, onEndGame: t } }) => ({
               xPositions:
                 e || t
@@ -56265,6 +56336,26 @@ var version = "v1.6.0";
                     }),
                   ],
                   () => [
+                    ifConditional(
+                    () => e.fadeOutAttempts,
+                    () => [c({
+                        text: `${localize("ATTEMPT")} ${e.attempt}`,
+                        font: { size: 15 },
+                        color: ve,
+                        x: 0,
+                        y: -a.size.fullHeight * 0.45,
+                    })]
+                    ),
+                    ifConditional(
+                      () => e.maxFrame > 0,
+                      () => [ c({
+                          text: `${(e.frame / e.maxFrame) * 100}%`,
+                          font: { size: 15 },
+                          color: ve,
+                          x: 0,
+                          y: -a.size.fullHeight * 0.45 + 15,
+                      }) ]
+                    ),
                     Je.Single({
                       text: localize("RESUME"),
                       width: 100,
@@ -57958,6 +58049,7 @@ var version = "v1.6.0";
                     dashing: t.dashing,
                     isGravity: t.isGravity
                   },
+                  
                   (a) => {
                     var i, n, s, o, r;
                     (a.isGravity = t.mutValues.levelState.isGravity),
@@ -58099,6 +58191,10 @@ var version = "v1.6.0";
                       {
                         backToMenu: () => e.backToMenu(false),
                         paused: t.paused,
+                        attempt: t.mutValues.levelState.attempt,
+                        frame: t.mutValues.levelState.frame,
+                        maxFrame: e.maxFrame,
+                        fadeOutAttempts: Ml(t.mutValues.levelState.bossState) || i(Se).settings.fadeOutAttempts,
                         onResume: () => {
                           if (
                             ((t.paused = false),
@@ -58221,7 +58317,10 @@ var version = "v1.6.0";
                                 disableMissiles: canUseMissiles(e.level),
                               })
                           : (a.boosters = void 0),
-                          (a.paused = t.paused);
+                          (a.paused = t.paused),
+                          (a.attempt = t.mutValues.levelState.attempt),
+                          a.crashed || (a.frame = t.mutValues.levelState.frame),
+                          (a.fadeOutAttempts = Ml(t.mutValues.levelState.bossState) || i(Se).settings.fadeOutAttempts);
                       }
                     ),
                   ]
@@ -60899,7 +60998,7 @@ var version = "v1.6.0";
                 oy({
                   id: "WorldButton",
                   world: h,
-                  disabled: h > u.length,
+                  disabled: false, //h > u.length,
                   onPress: () => {
                     e.updateView({ type: "inWorld", world: h }),
                       Jp.saveAccount(a.storage, null, a.alert, a.now, {
@@ -69258,6 +69357,7 @@ var version = "v1.6.0";
                                   gameplayOverlay.Single(
                                     {
                                       paused: t.levelMenuOpen,
+                                      attempt: t.attempt,
                                       backToMenu: i,
                                       onEndGame:
                                         e.isPartyLeader &&

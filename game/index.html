@@ -160,13 +160,17 @@
         "SemiBold",
         "Medium",
         "MediumItalic",
+        "akashi"
       ];
       Promise.all(
         names.map((name) =>
-          new FontFace(
+          (name == "akashi" ? new FontFace(
+            "Akashi",
+            `url("./fonts/akashi.ttf")`,
+          ) : new FontFace(
             "Montserrat",
             `url("./fonts/Montserrat-${name}.ttf")`,
-          ).load(),
+          )).load(),
         ),
       ).then(() => {
         const result =

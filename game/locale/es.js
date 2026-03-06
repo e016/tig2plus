@@ -58,6 +58,7 @@ Translator["es"] = {
   "Are you sure you want to end the game for all players?":
     "¿Estas seguro que quieres terminar el juego para todos los jugadores?",
   ATTEMPT: "INTENTO",
+  Attempt: "Intento",
   "TOTAL ATTEMPTS:": "TODOS LOS INTENTOS:",
   "NEW RECORD!": "NUEVO RECORD!",
   "ACHIEVEMENT UNLOCKED!": "LOGRO DESBLOQUEADO!",
