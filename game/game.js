@@ -36675,6 +36675,23 @@ var version = "v1.6.3";
                           });
                         },
                       }), */
+                      /* n.push({
+                        name: "Ghost",
+                        selected: "ghost" === t.item,
+                        onPress: () => {
+                          i.map((j) => {
+                            e({
+                              type: "setProperty",
+                              array: "powerups",
+                              index: j,
+                              set: (e) =>
+                                Object.assign(Object.assign({}, e), {
+                                  item: "ghost",
+                                }),
+                            });
+                          });
+                        },
+                      }), */
                     (["playerStack", "punch", "skateboard"]).includes(t.item) &&
                       l.push({
                         name: "On",
@@ -38865,7 +38882,7 @@ var version = "v1.6.3";
           },
           sl = M,
           ol = [];
-        function rl(e, t, a, i, n, s, o, r, l, c, d, u, skating, p, gravity, hObj, forceCheck) {
+        function rl(e, t, a, i, n, s, o, r, l, c, d, u, skating, p, gravity, hObj, invincible) {
           let crashed = d,
             onGroundY = u;
             if (gravity < 0 && hObj?.object) {
@@ -38877,7 +38894,7 @@ var version = "v1.6.3";
           let y = 0;
           for (let s = 0; s < e.length; s++) {
             const { object: d, index: u } = e[s],
-              h = be.hitLandableObject(a, i, n, o, r, l, c, d, f, p, gravity, forceCheck);
+              h = be.hitLandableObject(a, i, n, o, r, l, c, d, f, p, gravity);
             if (null !== h) {
               let e = d.array;
               p &&
@@ -38920,7 +38937,6 @@ var version = "v1.6.3";
                   f,
                   p,
                   gravity,
-                  forceCheck,
                 );
                 if (gravity > 0) {
                   (e.crashed) ? (crashed = true) : (onGroundY = e.y + ((skating && gravity < 0) ? $.skateboardHeight : 0))
@@ -38942,7 +38958,7 @@ var version = "v1.6.3";
                 gravity > 0 ? hitBottomEdge() : (crashed = true);
             }
           }
-          return (ll.crashed = crashed), (ll.onGroundY = onGroundY), (ll.hitObject = hitObject), ll;
+          return (ll.crashed = !invincible && crashed), (ll.onGroundY = onGroundY), (ll.hitObject = hitObject), ll;
         }
         const ll = {};
         function cl(e, t, levelSpeed, jumpFrames, n, s, o, r, l, c, d, u, bottom) {
@@ -39415,17 +39431,17 @@ var version = "v1.6.3";
                 } else U.playerScaleY = 1;
               else et.setScaleInc(U, df, V);
               if (
-                "jetpack" ===
+                ("jetpack" ===
                 (null === (r = U.playerPowerup) || void 0 === r
                   ? void 0
-                  : r.item)
+                  : r.item)) && !U.dashing
               )
                 U.playerRot = B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir;
               else if (
-                "playerStack" ===
+                ("playerStack" ===
                 (null === (l = U.playerPowerup) || void 0 === l
                   ? void 0
-                  : l.item)
+                  : l.item)) & !U.dashing
               )
                 U.playerRot = 0;
               else if (skating)
@@ -39822,11 +39838,11 @@ var version = "v1.6.3";
                   K
                 ),
                 null == v || v.pickupPowerup(e.item),
-                "jetpack" === e.item)
+                "jetpack" === e.item || "ghost" === e.item)
               )
                 (U.playerJetpackFuel = $.maxJetpackFuel),
                   (U.playerRot =
-                    B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir);
+                    e.item === "ghost" ? U.playerRot : B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir);
               //playerStack code
               else if ("playerStack" === e.item && U.playerStacks.length < (8)) {
                 // be.hitStackWhich(e, U.playerX, U.playerStacks)
@@ -39873,6 +39889,7 @@ var version = "v1.6.3";
                 U.switchBlockSpikes,
                 U.dashing ? 1 : U.gravity,
                 U.gravityHitObject,
+                U.playerPowerup ? U.playerPowerup.item == "ghost" : false
               );
             (U.crashed = ce.crashed), (Q = ce.onGroundY);
             var de = U.gravityHitObject || ce.hitObject;
@@ -39894,6 +39911,8 @@ var version = "v1.6.3";
                 skating,
                 U.switchBlockSpikes,
                 1,
+                null,
+                U.playerPowerup ? U.playerPowerup.item == "ghost" : false
               ).crashed)
               if (!rl(
                 le,
@@ -39912,7 +39931,7 @@ var version = "v1.6.3";
                 U.switchBlockSpikes,
                 1,
                 null,
-                true
+                U.playerPowerup ? U.playerPowerup.item == "ghost" : false
               ).crashed) {
                 U.gravity = 1;
                 U.isGravity = false;
@@ -45094,7 +45113,8 @@ var version = "v1.6.3";
                 _c("playerStack"),
                 _c("skateboard"),
                 _c("punch"),
-                _c("drill")
+                _c("drill"),
+                _c("ghost")
               ]),
             }),
             xc({ snapSize: lu }),
