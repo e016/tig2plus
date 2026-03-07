@@ -20233,7 +20233,7 @@ var version = "v1.6.3";
                                 : s.spikeStates) || void 0 === o
                             ? void 0
                             : s.spikeStates[n];
-                        (a.show = (e.theme == "world2" ? 30 : i.width) !== $.miniSpikeWidth && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                        (a.show = (e.theme == "world2" ? i.width : 30) !== $.miniSpikeWidth && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = i.y),
                           (a.rotation = i.rotation),
