@@ -80,6 +80,22 @@
 
   <body>
     <script type="text/javascript">
+        window.onerror = (e, _, line, col) => {
+        window.alert(
+          `${e.message || e}. Line: ${line} col: ${col}, please report to www.github.com/e016/tig2plus/issues`,
+        );
+        console.error(
+          `__crash_game__${e.message || e}. Line: ${line} col: ${col}`,
+        );
+      };
+      window.onunhandledrejection = (event) => {
+        if (event.reason instanceof Error) {
+          const error = event.reason;
+          console.error(`__crash_game__${error}`, event);
+        }
+      };
+
+
       window.Android = {};
       window.Android.bridge = function () {
         console.log("bridge!", arguments);
@@ -139,20 +155,7 @@
     <script type="text/javascript" src="game.js"></script>
     <script type="text/javascript" src="renderCanvas.js"></script>
     <script type="text/javascript">
-      window.onerror = (e, _, line, col) => {
-        window.alert(
-          `${e.message || e}. Line: ${line} col: ${col}, please report to www.github.com/e016/tig2plus/issues`,
-        );
-        console.error(
-          `__crash_game__${e.message || e}. Line: ${line} col: ${col}`,
-        );
-      };
-      window.onunhandledrejection = (event) => {
-        if (event.reason instanceof Error) {
-          const error = event.reason;
-          console.error(`__crash_game__${error}`, event);
-        }
-      };
+    
       const names = [
         "Black",
         "BlackItalic",

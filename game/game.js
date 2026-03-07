@@ -31017,7 +31017,7 @@ var version = "v1.6.2";
           lo = { ref: false },
           co = { ref: 0 };
         function uo(e, t, a, i, n, s, o, r, l, c, bottom) {
-          if (a.destroyed) {
+          if (a.destroyed && a.destroyed?.by != "stomped") {
             return a;
           }
           const d = be.rectTouchesRect(t),
