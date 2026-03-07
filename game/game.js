@@ -19577,7 +19577,49 @@ var version = "v1.6.3";
                               : o[n],
                           gravity = e?.inGame?.gravity || 1;
                         (a.show =
-                          !(e.inGame ? r?.steel : i?.steel) &&
+                          (e.theme == "world2" ? i.width !== $.miniBlockWidth : true) && (!(e.inGame ? r?.steel : i?.steel) &&
+                          !((e.inGame ? r : i) == undefined
+                            ? false
+                            : "init" in (e.inGame ? r : i))) &&
+                          !(e.inGame ? r?.isVoid : i?.isVoid) &&
+                          !(e.inGame ? r?.isBoss : i?.isBoss) &&
+                          !(null == r ? void 0 : r.destroyed) &&
+                          !r?.off),
+                          (a.width = i.width * t),
+                          (a.height = i.height * t),
+                          (a.x = i.x),
+                          (a.y = i.y);
+                      },
+                      array: () => e.blocks,
+                      testId: (t, a) => {
+                        var i, n;
+                        return `Block-${
+                          null !==
+                            (n =
+                              null === (i = e.inGame) || void 0 === i
+                                ? void 0
+                                : i.indexes[a]) && void 0 !== n
+                            ? n
+                            : a
+                        }`;
+                      },
+                    }),
+                    imageArray({
+                      fileName: `images/themes/world2/block-small.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                            null ===
+                              (o =
+                                null === (s = e.inGame) || void 0 === s
+                                  ? void 0
+                                  : s.blockStates) || void 0 === o
+                              ? void 0
+                              : o[n],
+                          gravity = e?.inGame?.gravity || 1;
+                        (a.show =
+                          e.theme == "world2" && i.width === $.miniBlockWidth && !(e.inGame ? r?.steel : i?.steel) &&
                           !((e.inGame ? r : i) == undefined
                             ? false
                             : "init" in (e.inGame ? r : i)) &&
@@ -20191,7 +20233,37 @@ var version = "v1.6.3";
                                 : s.spikeStates) || void 0 === o
                             ? void 0
                             : s.spikeStates[n];
-                        (a.show = !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                        (a.show = e.theme == "world2" && i.width !== $.miniSpikeWidth && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = i.y),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t),
+                          (a.height = i.height * t);
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    imageArray({
+                      fileName: `images/themes/world2/spike-small.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        (a.show = ((e.theme == "world2" ? 30 : i.width) === $.miniSpikeWidth) && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = i.y),
                           (a.rotation = i.rotation),
@@ -29703,6 +29775,8 @@ var version = "v1.6.3";
               `images/themes/${e.objects.spike}/spike.png`,
               `images/themes/${e.objects.switch}/switch-platform.png`,
               `images/themes/${e.objects.switch}/switch-button.png`,
+              "images/themes/world2/block-small.png",
+              "images/themes/world2/spike-small.png",
               "images/themes/world3/bottom/laser-line.png",
               "images/themes/classic/bottom/laser-line.png",
               "images/themes/world2/bottom/laser-line.png",
