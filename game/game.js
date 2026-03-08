@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.6.3";
+var version = "v1.6.4";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -33980,7 +33980,7 @@ var version = "v1.6.3";
                         animationName: "animation",
                         fileNames: Qs.spineFiles.speedChange,
                         loop: false,
-                        df: 0 === t.hitCount ? 0 : e.df || 1.5,
+                        df: (0 === t.hitCount ? 0 : e.df || 1) / 1.2,
                         startFromFrame: 2,
                         paused: e.paused || false,
                         x: e.speedChange.x,
@@ -33992,7 +33992,7 @@ var version = "v1.6.3";
                         height: 0,
                       },
                       (a) => {
-                        (a.df = 0 === t.hitCount ? 0 : e.df || 1),
+                        (a.df = (0 === t.hitCount ? 0 : e.df || 1) / 1.2),
                           (a.paused = e.paused || false),
                           (a.x = e.speedChange.x),
                           (a.y = e.speedChange.y);
