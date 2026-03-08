@@ -31183,6 +31183,9 @@ var version = "v1.6.3";
           );
         }
         function po(e, t, a, i, n, s, o, levelSpeed, jumpFrames, c, d, u, h, p, g, speed) {
+          if (t.isCompatible) {
+            speed = 1;
+          }
           let m = a.bullet;
           if (
             (m &&
@@ -31210,14 +31213,14 @@ var version = "v1.6.3";
           let I = 0,
             _ = 0;
           if (!t.isCompatible) {
-            levelSpeed *= speed
+            // levelSpeed *= speed
           }
           return (
             a.framesSeen > 4 * jumpFrames * (f + 1)
               ? ((I = -levelSpeed * c * s), (_ = (n + 10 - t.y) / (20 / c)))
               : ((I = (b - t.x) / (10 / c)),
                 (_ = (S - t.y) / (10 / c)),
-                Math.abs(I) > 2 * levelSpeed && (_ -= I / 2),
+                Math.abs(I) > 2 * levelSpeed * speed && (_ -= (I) / 2),
                 p.ref++),
             Object.assign(Object.assign({}, a), {
               framesSeen: a.framesSeen + c,
