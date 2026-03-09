@@ -40010,6 +40010,7 @@ var version = "v1.6.4";
                 null,
                 U.playerPowerup ? U.playerPowerup.item == "ghost" : false
               ).crashed) {
+                U.jumping = true;
                 U.gravity = 1;
                 U.isGravity = false;
                 U.playerGradY = -1;
@@ -71426,6 +71427,7 @@ var version = "v1.6.4";
                         })
                       );
                     },
+                    
                     settings: a.settings,
                     updateSettings: (a) => {
                       e((i) =>
