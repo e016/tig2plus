@@ -39293,6 +39293,7 @@ var version = "v1.6.4";
                 K
               )(button)));
               U.dashing && e && ((U.dashing = false),
+                    (U.jumping = true),
                     ((!U.playerPowerup && U.playerPowerup?.item != "playerStack") && (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0)));
