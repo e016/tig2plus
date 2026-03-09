@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.6.4";
+var version = "v1.6.5";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -33014,7 +33014,7 @@ var version = "v1.6.4";
           }),
           Mo = makeCustomSprite({ render: ({ props: { sprites: e } }) => e }),
           Lo = makeSprite({ render: ({ props: { sprites: e } }) => e }),
-          Do = makeCustomSprite({
+          ScrollContainer = makeCustomSprite({
             init({
               props: {
                 initScrollY: e = 0,
@@ -33022,15 +33022,17 @@ var version = "v1.6.4";
                 contentHeight: a,
               },
               updateState: i,
+              getContext
             }) {
-              const n = (e) => {
-                0 === e.deltaMode &&
+              const { addToOnScrollQueue } = getContext(Se),
+              n = (e) => addToOnScrollQueue(() => 
+                (0 === e.deltaMode &&
                   i((t) =>
                     Object.assign(Object.assign({}, t), {
                       scrollY: B.clamp([0, s])(t.scrollY + e.deltaY),
                     })
-                  );
-              };
+                  ))
+                );
               document.addEventListener("wheel", n, false);
               const s = a - t;
               return {
@@ -33119,12 +33121,14 @@ var version = "v1.6.4";
                 contentHeight: a,
               },
               getState: i,
+              getContext
             }) {
-              const n = (e) => {
+              const { addToOnScrollQueue } = getContext(Se);
+              const n = (e) => addToOnScrollQueue(() => {
                 const t = i();
                 0 === e.deltaMode &&
                   (t.scrollY = B.clamp([0, s])(t.scrollY + e.deltaY));
-              };
+              });
               document.addEventListener("wheel", n, false);
               const s = a - t;
               return {
@@ -34400,7 +34404,7 @@ var version = "v1.6.4";
                 fillColor: ve,
               }),
               o({ width: ar - 20, height: 280, x: -10, y: 10, color: je }),
-              Do({
+              ScrollContainer({
                 id: "ScrollContainer",
                 containerHeight: 280,
                 containerWidth: ar - 20,
@@ -34518,7 +34522,7 @@ var version = "v1.6.4";
                 fillColor: ve,
               }),
               o({ width: ar - 20, height: 280, x: -10, y: 10, color: je }),
-              Do({
+              ScrollContainer({
                 id: "ScrollContainer",
                 containerHeight: 280,
                 containerWidth: ar - 20,
@@ -37153,7 +37157,7 @@ var version = "v1.6.4";
                       x: -75,
                       y: 110,
                     }),
-                    Do({
+                    ScrollContainer({
                       id: "ScrollContainer",
                       containerHeight: 225,
                       containerWidth: 200,
@@ -37397,7 +37401,7 @@ var version = "v1.6.4";
           });
         var Yr = a(840),
           Ur = a.n(Yr);
-        const jr = makeNativeSprite("PinchRecogniser"),
+        const PinchRecogniser = makeNativeSprite("PinchRecogniser"),
           Gr = {
             create: ({ props: e, getState: t }) => {
               const a = document.getElementById("replay-canvas"),
@@ -37983,6 +37987,7 @@ var version = "v1.6.4";
               updateState: a,
               device: i,
               getInputs: s,
+              getContext
             }) {
               const r = s(),
                 l = i.size.width + 2 * i.size.widthMargin,
@@ -38199,7 +38204,7 @@ var version = "v1.6.4";
                   : null,
                 ...(i.isTouchScreen
                   ? [
-                      jr({
+                      PinchRecogniser({
                         id: "PinchRecogniser",
                         initScale: d.scale,
                         startPinch: () => {
@@ -38224,7 +38229,7 @@ var version = "v1.6.4";
                           u({ viewOffset: pr(d, e, { x: a, y: i }) });
                         },
                       }),
-                      Qr.Single({
+                      ScrollHandler.Single({
                         id: "ScrollHandler",
                         onScaleDelta: (t) => {
                           e.setSettings({
@@ -38235,10 +38240,11 @@ var version = "v1.6.4";
                             ),
                           });
                         },
+                        addToOnScrollQueue: getContext(Se).addToOnScrollQueue
                       }),
                     ]
                   : [
-                      jr({
+                      PinchRecogniser({
                         id: "PinchRecogniser",
                         initScale: d.scale,
                         startPinch: () => {
@@ -38281,7 +38287,7 @@ var version = "v1.6.4";
                           u({ viewOffset: zoomOut(d) });
                         },
                       }),
-                      Qr.Single({
+                      ScrollHandler.Single({
                         id: "ScrollHandler",
                         onScaleDelta: (t) => {
                           e.setSettings({
@@ -38296,6 +38302,7 @@ var version = "v1.6.4";
                               : { x: d.x, y: d.y + t * 0.9, scale: d.scale },
                           });
                         },
+                        addToOnScrollQueue: getContext(Se).addToOnScrollQueue
                       }),
                     ]),
               ];
@@ -38673,11 +38680,11 @@ var version = "v1.6.4";
               });
           }
         }
-        const Qr = makeSprite({
-            init({ props: e }) {
-              const t = (t) => {
+        const ScrollHandler = makeSprite({
+            init({ props: e}) {
+              const t = (t) => e.addToOnScrollQueue(() => {
                 0 === t.deltaMode && e.onScaleDelta(t.deltaY);
-              };
+              });
               return (
                 document.addEventListener("wheel", t, false), { onScroll: t }
               );
@@ -39291,6 +39298,7 @@ var version = "v1.6.4";
                 K
               )(button)));
               U.dashing && e && ((U.dashing = false),
+                    (U.jumping = true),
                     ((!U.playerPowerup && U.playerPowerup?.item != "playerStack") && (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0)));
@@ -40010,6 +40018,7 @@ var version = "v1.6.4";
                 null,
                 U.playerPowerup ? U.playerPowerup.item == "ghost" : false
               ).crashed) {
+                U.jumping = true;
                 U.gravity = 1;
                 U.isGravity = false;
                 U.playerGradY = -1;
@@ -40138,6 +40147,7 @@ var version = "v1.6.4";
                 );
                 if (e) {
                   (U.playerGradY = e.playerGradY),
+                  (U.isGravity = 0),
                     xa.updateLayoutStateField(
                       "enemies",
                       a,
@@ -60792,7 +60802,7 @@ var version = "v1.6.4";
                       height: qf,
                     })
                   : null,
-                Do({
+                ScrollContainer({
                   id: "ScrollContainer",
                   containerHeight: u,
                   containerWidth: 250,
@@ -61856,7 +61866,7 @@ var version = "v1.6.4";
                     x: r / 2 - 70,
                     y: -o / 2 + 40,
                   }),
-                  Do({
+                  ScrollContainer({
                     id: "LevelsList",
                     containerWidth: r,
                     containerHeight: o - 140,
@@ -62027,7 +62037,7 @@ var version = "v1.6.4";
                   x: -n / 2 + 120,
                   y: s / 2 - 40,
                 }),
-                Do({
+                ScrollContainer({
                   id: "ChooseSongList",
                   containerWidth: n,
                   containerHeight: s - 140,
@@ -62424,7 +62434,7 @@ var version = "v1.6.4";
                   color: "red",
                   y: a / 2 - 40,
                 }),
-                Do({
+                ScrollContainer({
                   id: "ScrollContainer",
                   y: a / 2 - 80,
                   containerHeight: a - 80,
@@ -62999,7 +63009,7 @@ var version = "v1.6.4";
                     : []),
                   "loading" === o
                     ? n({ text: `${localize("LOADING")}...`, color: Be })
-                    : Do({
+                    : ScrollContainer({
                         id: "ScrollContainer",
                         containerWidth: l,
                         containerHeight: c - 80,
@@ -63066,7 +63076,7 @@ var version = "v1.6.4";
                   },
                 ];
                 return [
-                  Do({
+                  ScrollContainer({
                     id: "ScrollContainer",
                     containerWidth: l,
                     containerHeight: c - 80,
@@ -63287,7 +63297,7 @@ var version = "v1.6.4";
                       text: "Add friends to play together!",
                       font: { size: 12 },
                     })
-                  : Do({
+                  : ScrollContainer({
                       id: "FriendsList",
                       containerWidth: e,
                       containerHeight: t - 70,
@@ -63523,7 +63533,7 @@ var version = "v1.6.4";
                   ? n({ color: Ve, text: u.message })
                   : 0 === u.length
                   ? n({ color: Be, text: "No players found" })
-                  : Do({
+                  : ScrollContainer({
                       id: "UserList",
                       containerWidth: s,
                       containerHeight: o - 120,
@@ -63629,7 +63639,7 @@ var version = "v1.6.4";
                 addFriend: c,
               } = e;
               return [
-                Do({
+                ScrollContainer({
                   id: "FriendsList",
                   containerWidth: i,
                   containerHeight: n - 70,
@@ -63902,7 +63912,7 @@ var version = "v1.6.4";
                         })
                       ),
                     ]),
-                Do({
+                ScrollContainer({
                   id: "ScrollContainer",
                   containerHeight: t,
                   containerWidth: u,
@@ -65456,7 +65466,7 @@ var version = "v1.6.4";
                             : null,
                           _m({ id: "GoOnline", x: 260, y: r / 2 - 40 }),
                         ]),
-                    Do({
+                    ScrollContainer({
                       id: "AchievementsList",
                       showScrollBar: true,
                       containerWidth: o - 18,
@@ -66399,7 +66409,7 @@ var version = "v1.6.4";
                 }),
                 t.isBuying
                   ? n({ text: "Processing...", color: "black" })
-                  : Do({
+                  : ScrollContainer({
                       id: "ItemsList",
                       containerWidth: 700,
                       containerHeight: r - 130,
@@ -66471,7 +66481,7 @@ var version = "v1.6.4";
               return (
                 e({
                   imageFileNames: Qs.mainMenuImages,
-                  audioFileNames: [...Qs.mainMenuAudio, o],
+                  audioFileNames: [...Qs.mainMenuAudio, "audio/tracks/monstaz-popcorn-funk-credits.mp3", o],
                 }).then(() => {
                   const { settings: e } = n(Se);
                   (e.muteMenuMusic && !s) ||
@@ -70890,6 +70900,7 @@ var version = "v1.6.4";
               attributes: { notifySuperLevelPack: false },
               accountStateMachine: n,
               onPressQueue: [],
+              onScrollQueue: [],
               hasAchievementPass: true,
               achievementModalQueue: [],
               animationContext: o,
@@ -70902,11 +70913,20 @@ var version = "v1.6.4";
               playerSkin: Wt.default,
             };
           },
-          loop: ({ state: e }) =>
-            e && e.onPressQueue.length > 0
+          loop: ({ state: e }) => {
+            var n = {};
+            n = (e && e.onPressQueue.length > 0
               ? (e.onPressQueue[e.onPressQueue.length - 1](),
                 Object.assign(Object.assign({}, e), { onPressQueue: [] }))
-              : e,
+              : e);
+            console.log(e.onScrollQueue, n.onScrollQueue);
+            n = (n && n.onScrollQueue.length > 0
+                ? (n.onScrollQueue[n.onScrollQueue.length - 1](),
+                Object.assign(Object.assign({}, n), { onScrollQueue: [] }))
+                : n);
+            return n;
+
+          },
           render({ state: e, device: t, updateState: a }) {
             var i;
             if ("loading" === e.view.type || !e.globalContextVal)
@@ -71423,6 +71443,13 @@ var version = "v1.6.4";
                       e((e) =>
                         Object.assign(Object.assign({}, e), {
                           onPressQueue: [...e.onPressQueue, t],
+                        })
+                      );
+                    },
+                    addToOnScrollQueue: (t) => {
+                      e((e) =>
+                        Object.assign(Object.assign({}, e), {
+                          onScrollQueue: [...e.onScrollQueue, t],
                         })
                       );
                     },
