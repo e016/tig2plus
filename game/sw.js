@@ -288,6 +288,7 @@ var version = "1.1.2",
     "images/mainMenu/worldSelect/2.png",
     "images/mainMenu/worldSelect/3.png",
     "images/mainMenu/worldSelect/4.png",
+    "images/mainMenu/worldSelect/5.png",
 
     // player
     "images/player/pixel-explosion.png",
