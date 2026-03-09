@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.6.4";
+var version = "v1.6.5";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -33024,16 +33024,16 @@ var version = "v1.6.4";
               updateState: i,
               getContext
             }) {
-              const n = (e) => {
-                0 === e.deltaMode &&
+              const { addToOnScrollQueue } = getContext(Se),
+              n = (e) => addToOnScrollQueue(() => 
+                (0 === e.deltaMode &&
                   i((t) =>
                     Object.assign(Object.assign({}, t), {
                       scrollY: B.clamp([0, s])(t.scrollY + e.deltaY),
                     })
-                  );
-              },
-              { addToOnScrollQueue } = getContext(Se);
-              document.addEventListener("wheel", (e) => (addToOnScrollQueue(() => n(e))), false);
+                  ))
+                );
+              document.addEventListener("wheel", n, false);
               const s = a - t;
               return {
                 scrollY: B.clamp([0, s])(e),
@@ -33121,12 +33121,14 @@ var version = "v1.6.4";
                 contentHeight: a,
               },
               getState: i,
+              getContext
             }) {
-              const n = (e) => {
+              const { addToOnScrollQueue } = getContext(Se);
+              const n = (e) => addToOnScrollQueue(() => {
                 const t = i();
                 0 === e.deltaMode &&
                   (t.scrollY = B.clamp([0, s])(t.scrollY + e.deltaY));
-              };
+              });
               document.addEventListener("wheel", n, false);
               const s = a - t;
               return {
@@ -37399,7 +37401,7 @@ var version = "v1.6.4";
           });
         var Yr = a(840),
           Ur = a.n(Yr);
-        const jr = makeNativeSprite("PinchRecogniser"),
+        const PinchRecogniser = makeNativeSprite("PinchRecogniser"),
           Gr = {
             create: ({ props: e, getState: t }) => {
               const a = document.getElementById("replay-canvas"),
@@ -37985,6 +37987,7 @@ var version = "v1.6.4";
               updateState: a,
               device: i,
               getInputs: s,
+              getContext
             }) {
               const r = s(),
                 l = i.size.width + 2 * i.size.widthMargin,
@@ -38201,7 +38204,7 @@ var version = "v1.6.4";
                   : null,
                 ...(i.isTouchScreen
                   ? [
-                      jr({
+                      PinchRecogniser({
                         id: "PinchRecogniser",
                         initScale: d.scale,
                         startPinch: () => {
@@ -38226,7 +38229,7 @@ var version = "v1.6.4";
                           u({ viewOffset: pr(d, e, { x: a, y: i }) });
                         },
                       }),
-                      Qr.Single({
+                      ScrollHandler.Single({
                         id: "ScrollHandler",
                         onScaleDelta: (t) => {
                           e.setSettings({
@@ -38237,10 +38240,11 @@ var version = "v1.6.4";
                             ),
                           });
                         },
+                        addToOnScrollQueue: getContext(Se).addToOnScrollQueue
                       }),
                     ]
                   : [
-                      jr({
+                      PinchRecogniser({
                         id: "PinchRecogniser",
                         initScale: d.scale,
                         startPinch: () => {
@@ -38283,7 +38287,7 @@ var version = "v1.6.4";
                           u({ viewOffset: zoomOut(d) });
                         },
                       }),
-                      Qr.Single({
+                      ScrollHandler.Single({
                         id: "ScrollHandler",
                         onScaleDelta: (t) => {
                           e.setSettings({
@@ -38298,6 +38302,7 @@ var version = "v1.6.4";
                               : { x: d.x, y: d.y + t * 0.9, scale: d.scale },
                           });
                         },
+                        addToOnScrollQueue: getContext(Se).addToOnScrollQueue
                       }),
                     ]),
               ];
@@ -38675,11 +38680,11 @@ var version = "v1.6.4";
               });
           }
         }
-        const Qr = makeSprite({
-            init({ props: e }) {
-              const t = (t) => {
+        const ScrollHandler = makeSprite({
+            init({ props: e}) {
+              const t = (t) => e.addToOnScrollQueue(() => {
                 0 === t.deltaMode && e.onScaleDelta(t.deltaY);
-              };
+              });
               return (
                 document.addEventListener("wheel", t, false), { onScroll: t }
               );
