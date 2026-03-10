@@ -39569,7 +39569,7 @@ var version = "v1.6.6";
                 U.playerJetpackFuel < 8 &&
                         ((U.playerPowerup = null),
                         null == v || v.useUpPowerup("jetpack"));
-                  (U.playerJetpackFuel -= df * (w / 5)),
+                  (U.playerJetpackFuel -= df * (w / 10)),
                     (U.playerUsingPowerup = true),
                     U.playerJetpackFuel <= 0 &&
                       ((U.playerPowerup = null),
