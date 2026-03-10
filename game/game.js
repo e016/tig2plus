@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.6.5";
+var version = "v1.6.6";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -54922,7 +54922,7 @@ var version = "v1.6.5";
                                     (t.scaleX = e.playerScaleX * e.playerDir),
                                     (t.scaleY = e.playerScaleY),
                                     (t.skin = e.playerSkin),
-                                    (t.opacity = e.playerPowerup ? e.playerPowerup.item == "ghost" ? 0.5 : 1 : 1)
+                                    (t.opacity = e.playerPowerup ? e.playerPowerup.item == "ghost" ? 0.5 : 1 : 1),
                                     (t.landTimer = e.landTimer);
                                   const i =
                                     "skateboard" ===
@@ -61305,7 +61305,7 @@ var version = "v1.6.5";
                   strokeThickness: 10,
                   font: { size: 24, },
                   x: 0,
-                  y: -180,
+                  y: 160,
                 }),
                 s({
                   color: 1 === h ? ve : Xe,
