@@ -16887,7 +16887,7 @@ var version = "v1.6.5";
               return s < l && r > o && c > h && u < d;
             },
             hitLandableObject: (...params) => {
-              var [e, t, a, i, n, s, o, r, l, c, gravity, force] = params;
+              var [e, t, a, i, n, s, o, r, l, c, gravity, ghost] = params;
               const checkDist = "switchPlatform" === r.type ? 120 : 30;
               if (
                 r.x > e + r.width + checkDist ||
@@ -16902,7 +16902,7 @@ var version = "v1.6.5";
                       )(de.getObjectPolygon(r, c, 0))
                     : he(r),
                 edge = gravity > 0 ? getObjectTopY(r, e, t) : getObjectBottomY(r, e, t);
-              if (a <= 0 && (gravity > 0 ? (t - a >= edge + (force ? 0 : 7.5) * globalPlayerScale) : (t - a <= edge + (force ? 0 : -7.5) * globalPlayerScale))) {
+              if (a <= 0 && (gravity > 0 ? (t - a >= edge + (7.5) * globalPlayerScale) : (t - a <= edge + (-7.5) * globalPlayerScale))) {
                 const k = pe(e, t, i, n, s),
                   l = k[Math.floor(k.length / 2)],
                   c = (function (e, t, a) {
@@ -16923,7 +16923,7 @@ var version = "v1.6.5";
                   if (d(e)) return { type: "hitBottomEdges", rotatePoint: e };
               }
               const h = de.getObjectPolygon(r, c);
-              return !("canJumpThrough" in r) && de.polygonHitSomething(l, h)
+              return !("canJumpThrough" in r) && de.polygonHitSomething(l, h) && !ghost
                 ? { type: "crashed" }
                 : null;
             },
@@ -32309,6 +32309,12 @@ var version = "v1.6.5";
                           (t.x = e.powerup.x), (t.y = e.powerup.y);
                         }),
                       ];
+                    case "ghost":
+                      return [
+                        To.Single({ skin: e.skin }, (t) => {
+                          (t.x = e.powerup.x), (t.y = e.powerup.y), (t.opacity = 0.5);
+                        }),
+                      ];
                     case "skateboard":
                       return [
                         y(
@@ -32418,6 +32424,7 @@ var version = "v1.6.5";
                       ];
                     case "playerStack":
                     case "skateboard":
+                    case "ghost":
                       return [];
                   }
                 }
@@ -32689,6 +32696,7 @@ var version = "v1.6.5";
                   ];
                 case "playerStack":
                 case "skateboard":
+                case "ghost":
                   return [];
               }
             },
@@ -36755,8 +36763,8 @@ var version = "v1.6.5";
                             });
                           });
                         },
-                      }), */
-                      /* n.push({
+                      }), 
+                      n.push({
                         name: "Ghost",
                         selected: "ghost" === t.item,
                         onPress: () => {
@@ -36772,7 +36780,7 @@ var version = "v1.6.5";
                             });
                           });
                         },
-                      }), */
+                      }),*/
                     (["playerStack", "punch", "skateboard"]).includes(t.item) &&
                       l.push({
                         name: "On",
@@ -38978,7 +38986,7 @@ var version = "v1.6.5";
           let y = 0;
           for (let s = 0; s < e.length; s++) {
             const { object: d, index: u } = e[s],
-              h = be.hitLandableObject(a, i, n, o, r, l, c, d, f, p, gravity);
+              h = be.hitLandableObject(a, i, n, o, r, l, c, d, f, p, gravity, invincible);
             if (null !== h) {
               let e = d.array;
               p &&
@@ -39021,6 +39029,7 @@ var version = "v1.6.5";
                   f,
                   p,
                   gravity,
+                  invincible
                 );
                 if (gravity > 0) {
                   (e.crashed) ? (crashed = true) : (onGroundY = e.y + ((skating && gravity < 0) ? $.skateboardHeight : 0))
@@ -39529,6 +39538,7 @@ var version = "v1.6.5";
                   : l.item)) & !U.dashing
               )
                 U.playerRot = 0;
+              
               else if (skating)
                 if (U.jumping) {
                   if (
@@ -39552,6 +39562,18 @@ var version = "v1.6.5";
                     : U.playerRot > 360 && (U.playerRot -= 360));
               const e = U.dashing ? {y: U.playerY, gradY: 0} : G.stepY(U.playerY, U.playerGradY, j, df, U.gravity);
               (U.playerY = e.y), (U.playerGradY = e.gradY);
+              if (("ghost" ===
+                (null === (l = U.playerPowerup) || void 0 === l
+                  ? void 0
+                  : l.item))) {
+                U.playerJetpackFuel < 8 &&
+                        ((U.playerPowerup = null),
+                        null == v || v.useUpPowerup("jetpack"));
+                  (U.playerJetpackFuel -= df * (w / 5)),
+                    (U.playerUsingPowerup = true),
+                    U.playerJetpackFuel <= 0 &&
+                      ((U.playerPowerup = null),
+                      null == v || v.useUpPowerup("jetpack"))}
             }
             if (
               U.onObject &&
@@ -42274,10 +42296,10 @@ var version = "v1.6.5";
               song: hl.songs.breathe,
               unlockedByIndex: 1,
               x: 90,
-              y: 0,
+              y: -20,
               pathToLevel: [
                 [-20, 50],
-                [60, 0],
+                [60, -20],
               ],
               maxFrames: 7477,
               difficulty: 5,
@@ -42285,10 +42307,11 @@ var version = "v1.6.5";
             {
               levelName: "Clonebreaker",
               levelFileName: "clonebreaker",
+              author: "Alfredo Gamer",
               song: hl.songs.coincidence,
               unlockedByIndex: 3,
               x: 100,
-              y: 40,
+              y: 60,
               pathToLevel: [
                 [-20, 50],
                 [60, 0],
@@ -42365,7 +42388,7 @@ var version = "v1.6.5";
                 [70, 10],
               ],
               maxFrames: 7530,
-              difficulty: 1,
+              difficulty: 2,
             },
             {
               levelName: "Sky Fracture",
@@ -43881,6 +43904,7 @@ var version = "v1.6.5";
             enum5: id,
             enum6: Bc([id, _c(5)]),
             enum7: Bc([_c(0), _c(1), _c(2), _c(3), _c(4), _c(5), _c(6)]),
+            enum8: Bc([_c(0), _c(1), _c(2), _c(3), _c(4), _c(5), _c(6), _c(7)]),
             enum9: Bc([
               _c(0),
               _c(1),
@@ -44182,6 +44206,7 @@ var version = "v1.6.5";
               (e[(e.Skateboard = 4)] = "Skateboard"),
               (e[(e.Punch = 5)] = "Punch");
               (e[(e.Drill = 6)] = "Drill");
+              (e[(e.Ghost = 7)] = "Drill");
           })(Id || (Id = {})),
           (function (e) {
             (e[(e.Movement = 0)] = "Movement"),
@@ -44273,6 +44298,7 @@ var version = "v1.6.5";
               (e[(e.Skateboard = 4)] = "Skateboard"),
               (e[(e.Punch = 5)] = "Punch");
               (e[(e.Drill = 6)] = "Drill");
+              (e[(e.Ghost = 7)] = "Drill");
           })(Cd || (Cd = {})),
           (function (e) {
             (e[(e.Movement = 0)] = "Movement"),
@@ -44453,7 +44479,7 @@ var version = "v1.6.5";
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum7, nd.enum2]), Gc([fc, fc, nd.enum7])])
+                  Bc([Gc([fc, fc, nd.enum8, nd.enum2]), Gc([fc, fc, nd.enum8])])
                 ),
                 Oc(
                   Bc([
@@ -44561,7 +44587,7 @@ var version = "v1.6.5";
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum7, nd.enum2]), Gc([fc, fc, nd.enum7])])
+                  Bc([Gc([fc, fc, nd.enum8, nd.enum2]), Gc([fc, fc, nd.enum8])])
                 ),
                 Oc(
                   Bc([
@@ -45150,6 +45176,7 @@ var version = "v1.6.5";
             [Cd.Skateboard]: "skateboard",
             [Cd.Punch]: "punch",
             [Cd.Drill]: "drill",
+            [Cd.Ghost]: "ghost"
           },
           Zd = {
             [fd.Shooter]: "shooter",
@@ -54895,6 +54922,7 @@ var version = "v1.6.5";
                                     (t.scaleX = e.playerScaleX * e.playerDir),
                                     (t.scaleY = e.playerScaleY),
                                     (t.skin = e.playerSkin),
+                                    (t.opacity = e.playerPowerup ? e.playerPowerup.item == "ghost" ? 0.5 : 1 : 1)
                                     (t.landTimer = e.landTimer);
                                   const i =
                                     "skateboard" ===
@@ -60836,7 +60864,7 @@ var version = "v1.6.5";
                 }),
                 ...r,
                 l && null !== i
-                  ? c
+                  ? true// c
                     ? $f({
                         id: `LevelView-${l.levelFileName}`,
                         worldLevel: l,
@@ -60932,7 +60960,7 @@ var version = "v1.6.5";
                             color: Ue,
                             y: t - 10,
                           }),
-                          a
+                          false //a
                             ? l({
                                 fileName: "images/mainMenu/lockIcon.png",
                                 width: 40,
@@ -61176,7 +61204,7 @@ var version = "v1.6.5";
                 oy({
                   id: "WorldButton",
                   world: h,
-                  disabled: false, //h > u.length,
+                  disabled: h == 5, //h > u.length,
                   onPress: () => {
                     e.updateView({ type: "inWorld", world: h }),
                       Jp.saveAccount(a.storage, null, a.alert, a.now, {
@@ -61270,6 +61298,15 @@ var version = "v1.6.5";
                       y: 20,
                     })
                   : null,
+                n({
+                  text: `WARNING! Unfinished!`,
+                  color: "white",
+                  strokeColor: "red",
+                  strokeThickness: 10,
+                  font: { size: 24, },
+                  x: 0,
+                  y: -180,
+                }),
                 s({
                   color: 1 === h ? ve : Xe,
                   radius: 1 === h ? 8 : 5,
@@ -66581,7 +66618,7 @@ var version = "v1.6.5";
                       }),
                     y: -30,
                     x: -200,
-                    disabled: true,
+                    disabled: false, // alright...
                     shadowOffsetX: -1,
                     shadowOffsetY: 0,
                     beatSize: b,
@@ -70919,7 +70956,6 @@ var version = "v1.6.5";
               ? (e.onPressQueue[e.onPressQueue.length - 1](),
                 Object.assign(Object.assign({}, e), { onPressQueue: [] }))
               : e);
-            console.log(e.onScrollQueue, n.onScrollQueue);
             n = (n && n.onScrollQueue.length > 0
                 ? (n.onScrollQueue[n.onScrollQueue.length - 1](),
                 Object.assign(Object.assign({}, n), { onScrollQueue: [] }))
