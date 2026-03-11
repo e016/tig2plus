@@ -42464,7 +42464,7 @@ var version = "v1.6.6";
               levelName: "Overdrive",
               levelFileName: "overdrive",
               song: hl.songs.overdrive,
-              unlockedByIndex: 2,
+              unlockedByIndex: null,//2,
               x: 250,
               y: 0,
               pathToLevel: [
