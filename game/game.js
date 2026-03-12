@@ -40870,6 +40870,7 @@ var version = "v1.6.6";
                 author: "Exilelord",
                 fileName: "audio/tracks/exilelord-mechanical-machine.mp3",
                 bpm: 125,
+                length: "5 mins",
                 isBonusSong: true,
               },
               piratemanners: {
@@ -40937,6 +40938,7 @@ var version = "v1.6.6";
                 author: "Exilelord",
                 fileName: "audio/tracks/exilelord-soulless-4.mp3",
                 bpm: 125,
+                length: "12 mins",
               },
               zenith: {
                 name: "Zenith",
@@ -62096,7 +62098,7 @@ var version = "v1.6.6";
                             ? `${localize(`Custom song`)}...`
                             : `${a.name} ${localize("by")} ${a.author} - ${
                                 a.bpm
-                              } BPM`,
+                              } BPM ${a.length ? `(${a.length})` : ""}`,
                         selected: o === a,
                         colorLeft: xe,
                         colorMid: xe,
