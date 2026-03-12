@@ -42213,10 +42213,10 @@ var version = "v1.6.6";
               song: hl.songs.thinkDifferent,
               unlockedByIndex: 1,
               x: 120,
-              y: -30,
+              y: -50,
               pathToLevel: [
                 [-70, 60],
-                [90, -30],
+                [80, -30],
               ],
               maxFrames: 10054,
               difficulty: 5,
@@ -42228,10 +42228,10 @@ var version = "v1.6.6";
 
               unlockedByIndex: 2,
               x: 150,
-              y: 120,
+              y: 100,
               pathToLevel: [
-                [120, -50],
-                [140, 90],
+                [120, 10],
+                [140, 45],
               ],
               maxFrames: 9738,
               difficulty: 8,
@@ -52817,7 +52817,7 @@ var version = "v1.6.6";
                 switch (e.theme.id) {
                   case "world1":
                   case "world1Boss":
-                    return Yg(e.theme.id);
+                    return Yg(e.theme.id, e.cameraX);
                   default:
                     return [];
                 }
@@ -52855,6 +52855,7 @@ var version = "v1.6.6";
                               halfDeviceWidth: t.size.fullWidth / 2,
                             }),
                             update: (a, i) => {
+                              (i.xRangeMax = 1700 + e.cameraX / 1700 / i.speed),
                               (a.moveX = e.cameraX * i.speed),
                                 (a.moveY = e.cameraY * i.speed),
                                 (a.halfDeviceHeight = t.size.fullHeight / 2),
@@ -53130,14 +53131,14 @@ var version = "v1.6.6";
               yMax: 0.9 * e,
             },
           ],
-          Yg = (e) => [
+          Yg = (e, t) => [
             {
               fileName: `images/themes/${e}/background/Triangle06.png`,
               speed: 2,
               width: 149 / 3,
               height: 74 / 3,
               xRangeMin: 1e3,
-              xRangeMax: 1700,
+              xRangeMax: 1700 * t,
               opacity: "world1Boss" === e ? 0.4 : 0.7,
             },
             {
@@ -53146,7 +53147,7 @@ var version = "v1.6.6";
               width: 221 / 3,
               height: 37,
               xRangeMin: 1e3,
-              xRangeMax: 1700,
+              xRangeMax: 1700 * t,
               opacity: "world1Boss" === e ? 0.4 : 0.7,
             },
           ],
