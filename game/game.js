@@ -39958,9 +39958,7 @@ var version = "v1.6.6";
                     (t, a) => a !== stacksY.length - 1 && stacksY[a + 1] > t + M
                   ) : be.hitStackWhich(e, U.playerX, U.playerStacks) + 1,
                   a = { y: ((-1 === t ? stacksY[stacksY.length - 1] : stacksY[t])) + M, gradY: 0 };
-                -1 !== t && U.isCompatible
-                  ? U.playerStacks.splice(t, 0, a)
-                  : U.playerStacks.push(a);
+                U.playerStacks.splice(t, 0, a)
                 if (false) {
                   //e.direction) {
                   U.playerY += M;
