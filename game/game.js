@@ -42377,6 +42377,7 @@ var version = "v1.6.6";
               ],
               maxFrames: 8782,
               difficulty: 8,
+              comingSoon: true,
             },
             {
               levelName: "Accelerated",
@@ -42504,7 +42505,7 @@ var version = "v1.6.6";
             },
           ],
           Ul = [
-            {
+            /*{
               levelName: "Cloud 9",
               levelFileName: "cloud-9",
               song: hl.songs.cloud9,
@@ -42514,11 +42515,11 @@ var version = "v1.6.6";
               pathToLevel: [],
               maxFrames: 9070,
               difficulty: 5,
-            },
+            },*/
             {
               levelName: "Virtual",
               levelFileName: "virtual",
-              author: "d016",
+              
               song: hl.songs.virtual,
               unlockedByIndex: null,
               x: 0,
@@ -42526,6 +42527,7 @@ var version = "v1.6.6";
               pathToLevel: [],
               maxFrames: 9877,
               difficulty: 6,
+              comingSoon: true,
             },
             {
               levelName: "Normal Polymorph",
@@ -42552,7 +42554,7 @@ var version = "v1.6.6";
               difficulty: 10,
             },
             
-            {
+            /*{
               levelName: "For You",
               levelFileName: "for-you",
               author: "Fluke Games",
@@ -42563,11 +42565,11 @@ var version = "v1.6.6";
               pathToLevel: [],
               maxFrames: 8836,
               difficulty: 5,
-            },
+            },*/
             {
               levelName: "Rum n' Bass",
               levelFileName: "rum-and-bass",
-              author: "d016",
+              
               song: hl.songs.rummy,
               unlockedByIndex: null,
               x: 0,
@@ -42576,7 +42578,7 @@ var version = "v1.6.6";
               maxFrames: 8836,
               difficulty: 5,
             },
-            {
+            /*{
               levelName: "Cool Friends",
               levelFileName: "cool-friends",
               song: hl.songs.coolFriends,
@@ -42588,7 +42590,7 @@ var version = "v1.6.6";
               pathToLevel: [],
               maxFrames: 10740,
               difficulty: 5,
-            },
+            },*/
             {
               levelName: "Nacreous Snowmelt",
               levelFileName: "nacreous-snowmelt",
@@ -42604,7 +42606,7 @@ var version = "v1.6.6";
             {
               levelName: "Aurora",
               levelFileName: "aurora",
-              author: "d016",
+              
               song: hl.songs.aura,
               unlockedByIndex: null,
               x: 0,
@@ -53703,7 +53705,7 @@ var version = "v1.6.6";
                 () => [
                   c(
                     {
-                      text: `HIGH SCORE: ${t.highScore.toLocaleString()}`,
+                      text: `${localize("HIGH SCORE")}: ${t.highScore.toLocaleString()}`,
                       color: Te,
                       strokeColor: He,
                       strokeThickness: 4,
@@ -53720,7 +53722,7 @@ var version = "v1.6.6";
               ),
               c(
                 {
-                  text: `SCORE: ${t.totalScore.toLocaleString()}`,
+                  text: `${localize("SCORE")}: ${t.totalScore.toLocaleString()}`,
                   color: Te,
                   strokeColor: He,
                   strokeThickness: 4,
@@ -53729,7 +53731,7 @@ var version = "v1.6.6";
                   y: a.size.fullHeight / 2 - (t.highScore > 0 ? 65 : 50),
                 },
                 (e) => {
-                  (e.text = `SCORE: ${t.totalScore.toLocaleString()}`),
+                  (e.text = `${localize("SCORE")}: ${t.totalScore.toLocaleString()}`),
                     (e.x = -a.size.fullWidth / 2 + 100),
                     (e.y = a.size.fullHeight / 2 - (t.highScore > 0 ? 65 : 50));
                 }
@@ -53790,7 +53792,7 @@ var version = "v1.6.6";
                 () => [
                   c(
                     {
-                      text: `HIGH SCORE: ${e.highScore.toLocaleString()}`,
+                      text: `${localize("HIGH SCORE")}: ${e.highScore.toLocaleString()}`,
                       color: Te,
                       strokeColor: He,
                       strokeThickness: 4,
@@ -53807,7 +53809,7 @@ var version = "v1.6.6";
               ),
               c(
                 {
-                  text: `SCORE: ${e.totalScore.toLocaleString()}`,
+                  text: `${localize("SCORE")}: ${e.totalScore.toLocaleString()}`,
                   color: Te,
                   strokeColor: He,
                   strokeThickness: 4,
@@ -53816,7 +53818,7 @@ var version = "v1.6.6";
                   y: t.size.fullHeight / 2 - (e.highScore > 0 ? 65 : 50),
                 },
                 (a) => {
-                  (a.text = `SCORE: ${e.totalScore.toLocaleString()}`),
+                  (a.text = `${localize("SCORE")}: ${e.totalScore.toLocaleString()}`),
                     (a.x = -t.size.fullWidth / 2 + 100),
                     (a.y = t.size.fullHeight / 2 - (e.highScore > 0 ? 65 : 50));
                 }
@@ -57617,7 +57619,7 @@ var version = "v1.6.6";
               }),
               c({
                 font: { size: 24 },
-                text: `${a ? "NEW HIGH " : ""}SCORE: ${t.toLocaleString()}`,
+                text: `${localize(a ? "NEW HIGH SCORE" : "SCORE")}: ${t.toLocaleString()}`,
                 color: Te,
                 strokeColor: Ve,
                 strokeThickness: 4,
@@ -57647,7 +57649,7 @@ var version = "v1.6.6";
               }),
               c({
                 font: { size: 20 },
-                text: `SCORE: ${t.toLocaleString()}`,
+                text: `${localize("SCORE")}: ${t.toLocaleString()}`,
                 color: Te,
                 strokeColor: Ve,
                 strokeThickness: 4,
@@ -57655,7 +57657,7 @@ var version = "v1.6.6";
               }),
               c({
                 font: { size: 18 },
-                text: `HIGH SCORE: ${a.toLocaleString()}`,
+                text: `${localize("HIGH SCORE")}: ${a.toLocaleString()}`,
                 color: Te,
                 strokeColor: Ve,
                 strokeThickness: 4,
@@ -60100,7 +60102,7 @@ var version = "v1.6.6";
                 }),
                 n({
                   font: { weight: 500 },
-                  text: "DIFFICULTY",
+                  text: localize("DIFFICULTY"),
                   color: Be,
                   y: -40 + offset,
                 }),
@@ -60146,14 +60148,14 @@ var version = "v1.6.6";
                 }),
                 n({
                   font: { weight: 500 },
-                  text: "PROGRESS",
+                  text: localize("PROGRESS"),
                   color: Be,
                   x: 110,
                   y: -40 + offset,
                 }),
                 Tm({
                   id: "CheckpointsButton",
-                  text: "CHECKPOINTS",
+                  text: localize("CHECKPOINTS"),
                   selected: h,
                   width: 170,
                   height: 40,
@@ -60184,7 +60186,7 @@ var version = "v1.6.6";
                 u ? zf({ id: "LevelsHelp", x: 100, y: -30 }) : null,
                 i
                   ? n({
-                      text: "COMING SOON!",
+                      text: localize("COMING SOON!"),
                       color: ve,
                       strokeColor: Ye,
                       strokeThickness: 3,
@@ -60194,7 +60196,7 @@ var version = "v1.6.6";
                   : null,
                 d
                   ? n({
-                      text: `HIGH SCORE: ${s.highScore.toLocaleString()}`,
+                      text: `${localize("HIGH SCORE")}: ${s.highScore.toLocaleString()}`,
                       font: { size: 15 },
                       color: Te,
                       strokeColor: Ye,
@@ -60204,7 +60206,7 @@ var version = "v1.6.6";
                   : null,
                 h && s.bestAttempts
                   ? n({
-                      text: `PREVIOUS BEST: ${s.bestAttempts.toLocaleString()} ATTEMPT${
+                      text: `${localize("PREVIOUS BEST")}: ${s.bestAttempts.toLocaleString()} ${localize("ATTEMPT")}${
                         1 === s.bestAttempts ? "" : "S"
                       }`,
                       font: { size: 10, weight: 500, style: "italic" },
@@ -62996,7 +62998,7 @@ var version = "v1.6.6";
                   }),
                   Tm({
                     id: "CheckpointsCheckbox",
-                    text: "CHECKPOINTS",
+                    text: localize("CHECKPOINTS"),
                     selected: r,
                     darkBg: true,
                     width: 170,
@@ -65935,7 +65937,8 @@ var version = "v1.6.6";
               const e = [
                 ["CREATED BY", ["ED BENTLEY"]],
                 ["MODDED BY", ["d016"]],
-                ["SPECIAL THANKS TO", ["Alfredo/Outline Gamer", "GatoNegro", "mikhael", "Jfour Robs", "WaterFire"]],
+                ["INSPIRED BY", ["Alfredo/Outline Gamer"]],
+                ["SPECIAL THANKS TO", ["GatoNegro", "mikhael", "Jfour Robs", "WaterFire"]],
                 ["GAME ARTIST", ["ŁUKASZ WIŚNIEWSKI"]],
                 ["UI ARTIST", ["SYLWIA GAWEL"]],
                 ["PIXEL ARTIST", ["NICO NOWAK"]],
@@ -65996,7 +65999,7 @@ var version = "v1.6.6";
               e.map(({ text: e, format: a, y: i }) => {
                 const s = "small" === a;
                 return n({
-                  text: e,
+                  text: localize(e),
                   color: s ? Oe : ve,
                   y: i,
                   font: s
