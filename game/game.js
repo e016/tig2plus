@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.6.7";
+var version = "v1.7.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -15589,7 +15589,7 @@ var version = "v1.6.7";
               const t = (30 / Math.pow(e, 2)) * -10.125;
               return { a: t, b: -t * e };
             },
-            initGrad: (e) => e * (globalPlayerScale === 1 ? 1 : 0.75),
+            initGrad: (e, t) => e * (t ? t : (globalPlayerScale === 1 ? 1 : 0.75)),
             stepY: (e, t, a, i, g) => {
               g = g || 1;
               let n = Math.max(((t * g) + (U(a) * i) / 2), -30) * g;
@@ -18768,7 +18768,7 @@ var version = "v1.6.7";
                   const obj = layout[destroyableType][objIndex],
                     state = layoutState[destroyableType][objIndex],
                     sign = Math.sign(bullets[i].speed);
-                  if (state?.steel && hit(obj)) {
+                  if ((state?.steel || obj.type === "bomb") && hit(obj)) {
                     return (Na(destroyableType, objIndex, state, n, layoutState, s, o), 
                       bullets[i].x = (obj.x - (obj.width / 2) * sign) - bullets[i].width / (2 * sign),
                       bullets[i].frame = 1
@@ -18804,7 +18804,7 @@ var version = "v1.6.7";
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
-                if (d?.steel && c(s)) {
+                if (d?.steel && s.kind === "bomb" && c(s)) {
                   Na(i, n, d, o, a, r, l);
                 } else {
                   !d.destroyed &&
@@ -18836,7 +18836,7 @@ var version = "v1.6.7";
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
-                if (d?.steel && c(s)) {
+                if (d?.steel && s.kind === "bomb" && c(s)) {
                   Na(i, n, d, layoutState, a, r, l);
                 } else {
                   !d.destroyed &&
@@ -30277,7 +30277,10 @@ var version = "v1.6.7";
             },
           }),
           eo = makeSprite({
-            render: ({ props: e }) => [
+            render: ({ props: e }) => {
+              
+              //const sawRatio = 41 / 30; 
+              return [
               onChange(
                 () => e.theme,
                 () => {
@@ -30327,6 +30330,39 @@ var version = "v1.6.7";
                     array: () => e.saws,
                     testId: (e, t) => `Saw-${t}`,
                   }),
+                  
+                  
+                    /*imageArray({
+                      fileName: `images/level/boss3/asteroid60.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.sawStates) || void 0 === o
+                            ? void 0
+                            : s.sawStates[n];
+                        (a.show = (r?.shape == undefined ? false : r?.shape == "smallAsteriod") && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = i.y),
+                          (a.rotation = i.rotation),
+                          (a.width = 72),
+                          (a.height = 72);
+                      },
+                      array: () => e.saws,
+                      testId: (t, a) => {
+                        var i;
+                        return `Saw-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                  */
                   imageArray({
                     fileName: `images/themes/world1/saw-big.png`,
                     props: () => ({}),
@@ -30629,7 +30665,7 @@ var version = "v1.6.7";
                   ),
                 ]
               ),
-            ],
+            ]}
           }),
           to = makeSprite({
             init({ props: e, device: t, getContext: a }) {
@@ -31182,42 +31218,28 @@ var version = "v1.6.7";
                 direction: f,
               });
         }
-        function bombEnemyKind(e, t, a, i, n, s, o, r, l, c, bottom) {
+        function bombEnemyKind(e, t, a, i, n, s, o, r, l, df, bottom, springs, jumpHeight) {
           if (a.destroyed && a.destroyed?.by != "stomped") {
             return a;
           }
+          // 130 BPM is 4.875
+          // 1.95
           let d = be.rectTouchesRect(t),
-            u = c * (l / 2),
-            h = c * l * a.speedY,
-             p = t.x + a.direction * u,
-            g = t.y - h;
-            /*
-            if ("laser" === e.type) return;
-          if (
-            ((e.y += e.speedY * df),
-            (e.speedY += e.gradY * df),
-            "bomb" === e.type)
-          ) {
-            const t = et.initialPosition.y - 15 + e.height / 2;
-            e.y < t && ((e.speedY *= -0.25), (e.y = t + (t - e.y)));
-          } else
-            "missile" === e.type &&
-              (e.x - playerX < 160 || crashed) &&
-              (e.speedY *= 0.85 + (df < 1 ? 0.07 : 0));
-          const n = crashed ? Math.min(-1, e.speedX) : e.speedX;
-          e.x += n * df;
-           */
-          let m = null,
-            f = a.direction,
+            u = df * (l / 1.625),
+            h = df * a.speedY,
+             newX = t.x + a.direction * u,
+            newY = t.y - h;
+          let edge = null,
+            newDirection = a.direction,
             y = false;
-          for (const { object: e, index: a } of n) {
+          for (const { object: e, index: a } of [...n, ...springs]) {
             if ("enemy" === e.type && a === i) continue;
             let n = e;
             if ("switchPlatform" === e.type && 0 !== e.rotation) {
               if (-90 !== e.rotation) {
                 const a = be.hitObject(
-                  p,
-                  g + t.height / 4,
+                  newX,
+                  newY + t.height / 4,
                   1,
                   0.5,
                   0,
@@ -31226,53 +31248,75 @@ var version = "v1.6.7";
                 )(e);
                 //**
                 be.hitObject(
-                  p,
-                  g - t.height / (e.rotation > 90 ? -4 : 4),
+                  newX,
+                  newY - t.height / (e.rotation > 90 ? -4 : 4),
                   1,
                   0.5,
                   0,
                   false,
                   false
                 )(e) && e.rotation > -45
-                  ? (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2)
+                  ? (edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2)
                   : a && (y = true);
                 continue;
               }
               n = $.getSwitchPlatformUpRectangle(e);
             }
             be.rectTouchesRect2(
-              p - t.width / 4,
-              g + t.height / 8,
+              newX - t.width / 4,
+              newY + t.height / 8,
               t.width / 2,
               0.75 * t.height,
               n
-            ) && (f = 1),
+            ) && (newDirection = 1),
               be.rectTouchesRect2(
-                p + t.width / 4,
-                g + t.height / 8,
+                newX + t.width / 4,
+                newY + t.height / 8,
                 t.width / 2,
                 0.75 * t.height,
                 n
-              ) && (f = -1),
+              ) && (newDirection = -1),
               be.rectTouchesRect2(
-                p,
-                g - t.height * (3 / 8),
+                newX,
+                newY - t.height * (3 / 8),
                 t.width / 2,
                 t.height / 4,
                 n
-              ) && (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
+              ) && (edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
+          };
+          for (const spring of springs) {
+            /*be.rectTouchesRect2(
+                newX,
+                newY,
+                t.width,
+                t.height,
+                spring
+            ) && (
+              a.speedY = -(spring.direction > 0
+                      ? Math.max(1.5 * G.initGrad(jumpHeight, 1), -Math.abs((a.speedY)))
+                      : -Math.min(1 * G.initGrad(jumpHeight, 1), a.speedY)) *
+                    spring.direction,
+              h *= df * a.speedY,
+              newY = spring.y + (spring.height / 2) * spring.direction + 15 * spring.direction
+            )*/
           }
-          if (h > 1 && m) {
-            m = null;
-            h *= -0.25;
-            a.speedY *= -0.25;
-            g = t.y - h;
+          if (edge !== null) {
+            if (a.speedY > 1) {
+              h *= -0.25;
+              a.speedY *= -0.25;
+              newY = t.y - h;
+              edge = null;
+            } else {
+              a.speedY = 0;
+              h = 0
+              newY = t.y;
+            }
           }
           const E = o[r[i]].y;
           if (ho(a, e))
             return Object.assign(Object.assign({}, a), {
-              offsetY: null === m ? a.offsetY - h : m - E,
-              direction: f,
+              offsetY: null === edge ? a.offsetY - h : edge - E,
+              direction: newDirection,
             });
           for (const { object: i } of [...s, ...((bottom || []).map(x=>({index: 0, object: x})))])
             if ("enemy" !== i?.type && d(i))
@@ -31281,14 +31325,14 @@ var version = "v1.6.7";
               });
           return y
             ? Object.assign(Object.assign({}, a), {
-                destroyed: { frame: e, x: p, y: g, by: "object" },
+                destroyed: { frame: e, x: newX, y: newY, by: "object" },
               })
             : Object.assign(Object.assign({}, a), {
-                framesSeen: a.framesSeen + c,
-                offsetX: a.offsetX + f * u,
-                offsetY: null === m ? a.offsetY - h : m - E,
-                direction: f,
-                speedY: null === m ? a.speedY + 0.4 : 0,
+                framesSeen: a.framesSeen + df,
+                offsetX: a.offsetX + newDirection * u,
+                offsetY: null === edge ? a.offsetY - h : edge - E,
+                direction: newDirection,
+                speedY: null === edge ? a.speedY + (l * (0.4 / 4.875)) * df : 0,
               });
         }
         
@@ -31352,7 +31396,7 @@ var version = "v1.6.7";
         }
         const mo = {
             updateEnemies: function (
-              e,
+              frame,
               t,
               a,
               i,
@@ -31373,7 +31417,9 @@ var version = "v1.6.7";
               E,
               b,
               bottom,
-              speed
+              speed,
+              springs,
+              jumpHeight
             ) {
               (lo.ref = d), (co.ref = 0);
               const S = [
@@ -31382,11 +31428,11 @@ var version = "v1.6.7";
                   .map((t, a) => ({
                     object: t,
                     index: a,
-                    destroyed: ho(i[a], e),
+                    destroyed: ho(i[a], frame),
                   }))
                   .filter(
                     ({ destroyed: e, object: t }) =>
-                      ("walker" === t.kind || "walkerHelmet" === t.kind) && !e
+                      ("shooter" !== t.kind) && !e
                   ),
               ];
               for (let t = 0; t < n.length; t++) {
@@ -31394,10 +31440,10 @@ var version = "v1.6.7";
                   _ = i[t],
                   v =
                     "bomb" === I.kind
-                      ? bombEnemyKind(e, I, _, t, S, a, s, o, levelSpeed, p, bottom)
+                      ? bombEnemyKind(frame, I, _, t, S, a, s, o, levelSpeed, p, bottom, springs, jumpHeight)
                       : "shooter" === I.kind
-                      ? po(e, I, _, r, l, c, d, levelSpeed, jumpFrames, p, g, m, f, co, lo, speed)
-                      : uo(e, I, _, t, S, a, s, o, levelSpeed, p, bottom);
+                      ? po(frame, I, _, r, l, c, d, levelSpeed, jumpFrames, p, g, m, f, co, lo, speed)
+                      : uo(frame, I, _, t, S, a, s, o, levelSpeed, p, bottom);
                 xa.updateLayoutStateField("enemies", t, v, y, E, b, false);
               }
               return lo.ref;
@@ -31678,18 +31724,19 @@ var version = "v1.6.7";
                         case "bomb": 
                           return [
                             y(
-                        {
-                          fileName: `images/level/boss2/bomb.png`,
-                          width: e.enemy.width,
-                          height: e.enemy.height,
-                        },
-                        (t) => {
-                          (t.x = e.enemy.x),
-                                  (t.y = e.enemy.y),
-                          (t.width = e.enemy.width),
-                            (t.height = e.enemy.height);
-                        }
-                      ),
+                              {
+                                fileName: `images/level/boss2/bomb.png`,
+                                width: e.enemy.width,
+                                height: e.enemy.height,
+                              },
+                              (t) => {
+                                (t.x = e.enemy.x),
+                                (t.y = e.enemy.y),
+                                (t.width = e.enemy.width),
+                                  (t.height = e.enemy.height),
+                                  (t.scaleX = -(e.enemyDir || e.enemy.enemyDir || -1));
+                              }
+                            ),
                           ]
                         case "shooter":
                           return [
@@ -35789,21 +35836,7 @@ var version = "v1.6.7";
                         });
                       },
                     }),
-                    /*s.push({
-                      name: "Bomb",
-                      selected: "bomb" === t.kind,
-                      onPress: () => {
-                        i.map((j) => {
-                          e({
-                            type: "setProperty",
-                            array: "enemies",
-                            index: j,
-                            set: (e, t) =>
-                              n($.changeEnemyKind(e, "bomb"), t),
-                          });
-                        });
-                      },
-                    }),*/
+                    
                     (a.includes("walkingEnemy") || a.includes("giantEnemy")) &&
                       s.push(
                         {
@@ -35837,12 +35870,27 @@ var version = "v1.6.7";
                           },
                         }
                       );
+                      s.push({
+                        name: "Bomb",
+                        selected: "bomb" === t.kind,
+                        onPress: () => {
+                          i.map((j) => {
+                            e({
+                              type: "setProperty",
+                              array: "enemies",
+                              index: j,
+                              set: (e, t) =>
+                                n($.changeEnemyKind(e, "bomb"), t),
+                            });
+                          });
+                        },
+                      });
                   const o = [{ name: "Kind", options: s }];
                   return (
-                    ("walker" === t.kind || "walkerHelmet" === t.kind) &&
+                    ("walker" === t.kind || "walkerHelmet" === t.kind || "bomb" === t.kind) &&
                       a.includes("giantEnemy") &&
                       a.includes("walkingEnemy") &&
-                      (o.push({
+                      ("bomb" !== t.kind && (o.push({
                         name: "Giant",
                         options: [
                           {
@@ -35876,7 +35924,7 @@ var version = "v1.6.7";
                             },
                           },
                         ],
-                      }),
+                      })),
                     o.push({
                       name: "Direction",
                       options: [
@@ -39203,7 +39251,7 @@ var version = "v1.6.7";
           return (ll.crashed = !invincible && crashed), (ll.onGroundY = onGroundY), (ll.hitObject = hitObject), ll;
         }
         const ll = {};
-        function cl(e, t, levelSpeed, jumpFrames, n, s, o, r, l, c, d, u, bottom) {
+        function cl(e, t, levelSpeed, jumpFrames, n, inViewLayout, o, r, landableObjects, deadlyObjects, d, u, jumpHeight) {
           if (e.playerBullets) {
             for (let a = 0; a < e.playerBullets.length; a++) {
               const i = e.playerBullets[a];
@@ -39237,7 +39285,7 @@ var version = "v1.6.7";
                 frame: e.frame,
                 bossState: e.bossState,
                 rectangleHitPlayer: d,
-                inViewLayout: s,
+                inViewLayout: inViewLayout,
                 inViewLayoutState: o,
                 fullLayoutState: e.layoutState,
                 fullLayoutStateIndexes: r,
@@ -39245,10 +39293,10 @@ var version = "v1.6.7";
               (e.crashed = true)),
             (e.crashed = mo.updateEnemies(
               e.frame,
-              l,
-              c,
+              landableObjects,
+              deadlyObjects,
               o.enemies,
-              s.enemies,
+              inViewLayout.enemies,
               n.layout.enemies,
               r.enemies,
               e.playerX,
@@ -39264,8 +39312,10 @@ var version = "v1.6.7";
               e.layoutState,
               o,
               r,
-              bottom,
-              e.playerSpeedMultiplier
+              e.bottomLine?.objects || [],
+              e.playerSpeedMultiplier,
+              inViewLayout.springs.map((e, t) => ({object: e, index: t})),
+              jumpHeight
             ));
         }
         const dl = function (e) {
@@ -39347,7 +39397,7 @@ var version = "v1.6.7";
                   Ca.getAllDeadlyObjects(inViewLayout, inViewLayoutState),
                   () => false,
                   v,
-                  U.bottomLine?.objects || []
+                  V,
                 ),
                 U.playerBullets &&
                 xa.updateHitBulletState(
@@ -44392,6 +44442,7 @@ var version = "v1.6.7";
             (e[(e.Shooter = 0)] = "Shooter"),
               (e[(e.Walker = 1)] = "Walker"),
               (e[(e.WalkerHelmet = 2)] = "WalkerHelmet");
+              (e[(e.Bomb = 3)] = "Bomb");
           })(fd || (fd = {})),
           (function (e) {
             (e[(e.Up = 0)] = "Up"), (e[(e.Right = 1)] = "Right");
@@ -44697,12 +44748,12 @@ var version = "v1.6.7";
                 ),
                 Oc(
                   Bc([
-                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2]),
                   ])
                 ),
                 Oc(
@@ -44806,12 +44857,12 @@ var version = "v1.6.7";
                 ),
                 Oc(
                   Bc([
-                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2]),
-                    Gc([fc, fc, nd.enum3, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2]),
+                    Gc([fc, fc, nd.enum4, nd.enum2]),
                   ])
                 ),
                 Oc(
@@ -45403,6 +45454,7 @@ var version = "v1.6.7";
             [fd.Shooter]: "shooter",
             [fd.Walker]: "walker",
             [fd.WalkerHelmet]: "walkerHelmet",
+            [fd.Bomb]: "bomb",
           },
           eu = {
             [wd.Movement]: "movement",
@@ -51618,18 +51670,31 @@ var version = "v1.6.7";
                 });
             },
             render: ({ device: d, state: t, props: a }) => [
-              p(
-                {
-                  color: arrowsBGTable()[a.bgColor] || "#1254FF",
-                  width: d.size.fullWidth,
-                  height: d.size.fullHeight,
-                },
-                (j) => {
-                  (j.width = d.size.fullWidth),
-                    (j.height = d.size.fullHeight),
-                    (j.color = arrowsBGTable()[a.bgColor] || "#1254FF");
-                }
-              ),
+              Go.Single(
+                        {
+                          targetOpacity: 1,
+                          targetColor: arrowsBGTable()[a.bgColor] || "#1254FF",
+                          sprite: (s, k) => [
+                            p(
+                            {
+                              color: k.ref,
+                              width: d.size.fullWidth,
+                              height: d.size.fullHeight,
+                              opacity: 1,
+                            },
+                            (j) => 
+                              ((j.width = d.size.fullWidth),
+                                (j.height = d.size.fullHeight),
+                                (j.color = k.ref),
+                              (j.opacity = 1))
+                          )
+                          ],
+                        },
+                        (t) => {
+                          t.targetOpacity = 1;
+                          t.targetColor = arrowsBGTable()[a.bgColor] || "#1254FF";
+                        }
+                      ), 
               g({
                 props: (e) => ({
                   color: e.colour,
