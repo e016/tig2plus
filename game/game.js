@@ -18658,6 +18658,7 @@ var version = "v1.6.7";
                 offsetX: 0,
                 offsetY: 0,
                 bullet: null,
+                speedY: 0,
                 direction:
                   t == undefined ? -1 : t.enemies[i.index]?.enemyDir || -1,
               };
@@ -29813,6 +29814,11 @@ var version = "v1.6.7";
               "images/themes/world2/jetpack/ground.png",
               "images/themes/world2/enemy-shooter.png",
               "images/themes/world2/enemy-shooting.png",
+              "images/level/boss2/thinBullet.png",
+              "images/level/boss2/missile.png",
+              "images/level/boss2/bomb.png",
+              "images/level/boss2/bulletHell.png",
+              "images/level/boss2/bulletHellBig.png",
               "images/editor/editorOnly/size-button.png",
               "images/editor/editorOnly/color-button.png",
               "images/themes/skater/rail.png",
@@ -31176,6 +31182,116 @@ var version = "v1.6.7";
                 direction: f,
               });
         }
+        function bombEnemyKind(e, t, a, i, n, s, o, r, l, c, bottom) {
+          if (a.destroyed && a.destroyed?.by != "stomped") {
+            return a;
+          }
+          let d = be.rectTouchesRect(t),
+            u = c * (l / 2),
+            h = c * l * a.speedY,
+             p = t.x + a.direction * u,
+            g = t.y - h;
+            /*
+            if ("laser" === e.type) return;
+          if (
+            ((e.y += e.speedY * df),
+            (e.speedY += e.gradY * df),
+            "bomb" === e.type)
+          ) {
+            const t = et.initialPosition.y - 15 + e.height / 2;
+            e.y < t && ((e.speedY *= -0.25), (e.y = t + (t - e.y)));
+          } else
+            "missile" === e.type &&
+              (e.x - playerX < 160 || crashed) &&
+              (e.speedY *= 0.85 + (df < 1 ? 0.07 : 0));
+          const n = crashed ? Math.min(-1, e.speedX) : e.speedX;
+          e.x += n * df;
+           */
+          let m = null,
+            f = a.direction,
+            y = false;
+          for (const { object: e, index: a } of n) {
+            if ("enemy" === e.type && a === i) continue;
+            let n = e;
+            if ("switchPlatform" === e.type && 0 !== e.rotation) {
+              if (-90 !== e.rotation) {
+                const a = be.hitObject(
+                  p,
+                  g + t.height / 4,
+                  1,
+                  0.5,
+                  0,
+                  false,
+                  false
+                )(e);
+                //**
+                be.hitObject(
+                  p,
+                  g - t.height / (e.rotation > 90 ? -4 : 4),
+                  1,
+                  0.5,
+                  0,
+                  false,
+                  false
+                )(e) && e.rotation > -45
+                  ? (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2)
+                  : a && (y = true);
+                continue;
+              }
+              n = $.getSwitchPlatformUpRectangle(e);
+            }
+            be.rectTouchesRect2(
+              p - t.width / 4,
+              g + t.height / 8,
+              t.width / 2,
+              0.75 * t.height,
+              n
+            ) && (f = 1),
+              be.rectTouchesRect2(
+                p + t.width / 4,
+                g + t.height / 8,
+                t.width / 2,
+                0.75 * t.height,
+                n
+              ) && (f = -1),
+              be.rectTouchesRect2(
+                p,
+                g - t.height * (3 / 8),
+                t.width / 2,
+                t.height / 4,
+                n
+              ) && (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
+          }
+          if (h > 1 && m) {
+            m = null;
+            h *= -0.25;
+            a.speedY *= -0.25;
+            g = t.y - h;
+          }
+          const E = o[r[i]].y;
+          if (ho(a, e))
+            return Object.assign(Object.assign({}, a), {
+              offsetY: null === m ? a.offsetY - h : m - E,
+              direction: f,
+            });
+          for (const { object: i } of [...s, ...((bottom || []).map(x=>({index: 0, object: x})))])
+            if ("enemy" !== i?.type && d(i))
+              return Object.assign(Object.assign({}, a), {
+                destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
+              });
+          return y
+            ? Object.assign(Object.assign({}, a), {
+                destroyed: { frame: e, x: p, y: g, by: "object" },
+              })
+            : Object.assign(Object.assign({}, a), {
+                framesSeen: a.framesSeen + c,
+                offsetX: a.offsetX + f * u,
+                offsetY: null === m ? a.offsetY - h : m - E,
+                direction: f,
+                speedY: null === m ? a.speedY + 0.4 : 0,
+              });
+        }
+        
         function ho(e, t) {
           return (
             e.destroyed &&
@@ -31277,7 +31393,9 @@ var version = "v1.6.7";
                 const I = n[t],
                   _ = i[t],
                   v =
-                    "shooter" === I.kind
+                    "bomb" === I.kind
+                      ? bombEnemyKind(e, I, _, t, S, a, s, o, levelSpeed, p, bottom)
+                      : "shooter" === I.kind
                       ? po(e, I, _, r, l, c, d, levelSpeed, jumpFrames, p, g, m, f, co, lo, speed)
                       : uo(e, I, _, t, S, a, s, o, levelSpeed, p, bottom);
                 xa.updateLayoutStateField("enemies", t, v, y, E, b, false);
@@ -31557,6 +31675,22 @@ var version = "v1.6.7";
                             ),
                           ];
                         }
+                        case "bomb": 
+                          return [
+                            y(
+                        {
+                          fileName: `images/level/boss2/bomb.png`,
+                          width: e.enemy.width,
+                          height: e.enemy.height,
+                        },
+                        (t) => {
+                          (t.x = e.enemy.x),
+                                  (t.y = e.enemy.y),
+                          (t.width = e.enemy.width),
+                            (t.height = e.enemy.height);
+                        }
+                      ),
+                          ]
                         case "shooter":
                           return [
                             conditional(
@@ -35655,6 +35789,21 @@ var version = "v1.6.7";
                         });
                       },
                     }),
+                    /*s.push({
+                      name: "Bomb",
+                      selected: "bomb" === t.kind,
+                      onPress: () => {
+                        i.map((j) => {
+                          e({
+                            type: "setProperty",
+                            array: "enemies",
+                            index: j,
+                            set: (e, t) =>
+                              n($.changeEnemyKind(e, "bomb"), t),
+                          });
+                        });
+                      },
+                    }),*/
                     (a.includes("walkingEnemy") || a.includes("giantEnemy")) &&
                       s.push(
                         {
@@ -41072,21 +41221,21 @@ var version = "v1.6.7";
               };
           }
         }
-        function fl(e, t, a, i) {
+        function fl(e, df, crashed, playerX) {
           if ("laser" === e.type) return;
           if (
-            ((e.y += e.speedY * t),
-            (e.speedY += e.gradY * t),
+            ((e.y += e.speedY * df),
+            (e.speedY += e.gradY * df),
             "bomb" === e.type)
           ) {
             const t = et.initialPosition.y - 15 + e.height / 2;
             e.y < t && ((e.speedY *= -0.25), (e.y = t + (t - e.y)));
           } else
             "missile" === e.type &&
-              (e.x - i < 160 || a) &&
-              (e.speedY *= 0.85 + (t < 1 ? 0.07 : 0));
-          const n = a ? Math.min(-1, e.speedX) : e.speedX;
-          e.x += n * t;
+              (e.x - playerX < 160 || crashed) &&
+              (e.speedY *= 0.85 + (df < 1 ? 0.07 : 0));
+          const n = crashed ? Math.min(-1, e.speedX) : e.speedX;
+          e.x += n * df;
         }
         const yl = G.getJumpFrames(176),
           El = M,
@@ -45359,6 +45508,7 @@ var version = "v1.6.7";
                   offsetY: fc,
                   bullet: Bc([du, hc]),
                   direction: Bc([_c(1), _c(-1)]),
+                  speedY: fc
                 }),
                 xc({ destroyed: hu }),
               ])
@@ -45549,6 +45699,9 @@ var version = "v1.6.7";
                 }),
               (e) => Object.assign(Object.assign({}, e), {
                   playerStacks: e.playerStacks.map(stack => Object.assign(Object.assign({}, stack), {onObject: null}))
+                }),
+                (e) => Object.assign(Object.assign({}, e), {
+                  layoutState: Object.assign(Object.assign({}, e.layoutState), {enemies: Object.assign(e.layoutState.enemies, { speedY: 0 })})
                 }),
             ],
             finalSchema: kc({
