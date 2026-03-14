@@ -38356,7 +38356,7 @@ var version = "v1.6.7";
                 S = (m && g[m.array][m.index]) || null,
                 I =
                   e.some(x=>x.array == "enemies")
-                    ? (e.map(x=>x.index))
+                    ? (e.filter(o => o.array == "enemies").map(x=>x.index))
                     : [],
                 _ = $.getBorderDimensions(b),
                 { objects: v, player: T } = g.properties.theme,
@@ -40336,11 +40336,45 @@ var version = "v1.6.7";
                   for (let l = 0; l < stacks.length; l++) {
                     const stack = stacks[l];
                     let { y: d, gradY: h } = G.stepY(stack.y, stack.gradY, t, a, 1);
+                    let onObject = stack.onObject;
                     var scale = U.isCompatible ? 1 : U.playerScale
                     //console.log(l)
                     const lastStackY = 0 === l ? n : stacks[l - 1].y,
-                    checkStackY = (stackY)=>(d < stackY + (M * scale) + 1 && ((d = stackY + (M * scale)), (h = 0)));
+                    checkStackY = (stackY)=>(d < stackY + (M * scale) + 1 && ((d = stackY + (M * scale)), (h = 0), (onObject = {array: "stack", index: l - 1, y: d })));
                     checkStackY(lastStackY);
+                    if (!U.isCompatible) {
+                      // yo, stay on those platforms!!
+                      if (
+                        onObject &&
+                        "blocks" !== onObject.array &&
+                        "spikes" !== onObject.array &&
+                        "stack"  !== onObject.array
+                      ) {
+                        const e = fullLayoutStateIndexes[onObject.array].indexOf(onObject.index),
+                          t = inViewLayout[onObject.array][e];
+                        if (t) {
+                          const e = t.y - onObject.y;
+                          (d += e),
+                            (h =
+                              h < 0
+                                ? Math.min(e / df, h)
+                                : Math.max(e / df, h));
+                        }
+                      }
+                      // stay on your friends!
+                      // TODO: only do this when player is onObject
+                      /*if (
+                        onObject &&
+                        "stack" === onObject.array
+                      ) {
+                          const e = lastStackY - onObject.y;
+                          (d += e),
+                            (h =
+                              h < 0
+                                ? Math.min(e / df, h)
+                                : Math.max(e / df, h));
+                      }*/
+                    };
                     const g = rl(
                       o,
                       r,
@@ -40358,6 +40392,18 @@ var version = "v1.6.7";
                       u,
                       U.gravity
                     );
+                    g.hitObject
+                    ? onObject
+                      ? ((onObject.array = g.hitObject.object.array),
+                        (onObject.index = g.hitObject.index),
+                        (onObject.y = g.hitObject.object.y))
+                      : (onObject = {
+                          array: g.hitObject.object.array,
+                          index: g.hitObject.index,
+                          y: g.hitObject.object.y,
+                        })
+                    : (onObject = null);
+                    
                     const touchedSpring = U.isCompatible ? false : (checkSprings(undefined, stack));
                     if (touchedSpring) {
                       var offset = 1 * Math.sign(touchedSpring.gradY);
@@ -40377,8 +40423,9 @@ var version = "v1.6.7";
                           gradY: 0,
                           scale: 1,
                           stackCrash: g.crashed,
+                          onObject: onObject,
                         })
-                      : (stacks[l] = { y: d, gradY: h, scale: 1, stackCrash: g.crashed });
+                      : (stacks[l] = { y: d, gradY: h, scale: 1, stackCrash: g.crashed, onObject: onObject });
                   }
                   lt(stacks, (stack) => {
                     let crashed = false;
@@ -40952,7 +40999,7 @@ var version = "v1.6.7";
               },
               funkyPunky: {
                 name: "Funky Punky",
-                author: "George Antian Rose",
+                author: "Grge & Antian Rose",
                 fileName: "audio/tracks/george-antian-rose-funky-punky.mp3",
                 bpm: 128,
               },
@@ -45500,6 +45547,9 @@ var version = "v1.6.7";
                   isGravity: false,
                   bullets: e.bullets.map((bullet)=>({...bullet, frame: 0})),
                 }),
+              (e) => Object.assign(Object.assign({}, e), {
+                  playerStacks: e.playerStacks.map(stack => Object.assign(Object.assign({}, stack), {onObject: null}))
+                }),
             ],
             finalSchema: kc({
               frame: fc,
@@ -45521,7 +45571,7 @@ var version = "v1.6.7";
               playerJetpackFuel: fc,
               playerUsingPowerup: yc,
               playerBullets: Oc(du),
-              playerStacks: Oc(kc({ y: fc, gradY: fc})),
+              playerStacks: Oc(kc({ y: fc, gradY: fc, onObject: Bc([hc, kc({ array: Hc, index: fc, y: fc })]) })),
               playerStackIndex: fc,
               explosions: Oc(kc({ x: fc, y: fc, framesLeft: fc })),
               touchingPortals: Bc([hc, Gc([uu, uu])]),
@@ -59584,10 +59634,8 @@ var version = "v1.6.7";
                     disabled: !t.themeLoaded,
                     onPress: () => {
                       a((e) => {
-                        const t = Object.assign(
+                        const t = 
                             Object.assign({}, e.runHistory[e.runHistoryIndex]),
-                            { onObject: null }
-                          ),
                           { sortedState: a, originalIndexes: i } =
                             xa.sortLayoutState(t.layoutState, e.layout);
                         return Object.assign(Object.assign({}, e), {
