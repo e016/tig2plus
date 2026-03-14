@@ -40943,7 +40943,19 @@ var version = "v1.6.6";
                 author: "Geoxor",
                 fileName: "audio/tracks/geoxor-zenith.mp3",
                 bpm: 128,
-              }
+              },
+              color: {
+                name: "Color",
+                author: "Amidst",
+                fileName: "audio/tracks/amidst-color.mp3",
+                bpm: 130,
+              },
+              funkyPunky: {
+                name: "Funky Punky",
+                author: "George Antian Rose",
+                fileName: "audio/tracks/george-antian-rose-funky-punky.mp3",
+                bpm: 128,
+              },
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -44272,6 +44284,8 @@ var version = "v1.6.6";
             e[(e.Clutterfunk = 45)] = "Clutterfunk";
             e[(e.Soulless4 = 46)] = "Soulless4";
             e[(e.Zenith = 47)] = "Zenith";
+            e[(e.Color = 48)] = "Color";
+            e[(e.FunkyPunky = 49)] = "FunkyPunky";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -44374,6 +44388,8 @@ var version = "v1.6.6";
             e[(e.Clutterfunk = 45)] = "Clutterfunk";
             e[(e.Soulless4 = 46)] = "Soulless4";
             e[(e.Zenith = 47)] = "Zenith";
+            e[(e.Color = 48)] = "Color";
+            e[(e.FunkyPunky = 49)] = "FunkyPunky";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45142,7 +45158,9 @@ var version = "v1.6.6";
             [Nd.Machina]: hl.songs.machina,
             [Nd.Clutterfunk]: hl.songs.clutterfunk,
             [Nd.Soulless4]: hl.songs.soulless4,
-            [Nd.Zenith]: hl.songs.zenith
+            [Nd.Zenith]: hl.songs.zenith,
+            [Nd.Color]: hl.songs.color,
+            [Nd.FunkyPunky]: hl.songs.funkyPunky
           },
           Hd = {
             [ld.Rot0]: 0,
