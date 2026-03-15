@@ -31276,13 +31276,7 @@ var version = "v1.7.2";
                 0.75 * t.height,
                 n
               ) && (newDirection = -1)),
-              ((t.isCompatible || !n.canJumpThrough || be.rectTouchesRect2(
-                newX,
-                newY - t.height - 1,
-                t.width / 2,
-                t.height / 4,
-                n
-              )) && be.rectTouchesRect2(
+              (true && be.rectTouchesRect2(
                 newX,
                 newY - t.height * (3 / 8),
                 t.width / 2,
@@ -50216,7 +50210,7 @@ var version = "v1.7.2";
               ),
             ],
           }),
-          ig = makeSprite({
+          flyingTrail = makeSprite({
             init: ({ props: e }) => ({
               path: Array.from({ length: eg }, () => ({
                 x: 40,
@@ -50228,32 +50222,32 @@ var version = "v1.7.2";
             loop({ state: e, props: t }) {
               if (!t.paused) {
                 e.path.shift();
-                for (let t = 0; t < e.path.length; t++) e.path[t].x -= 10;
+                for (let i = 0; i < e.path.length; i++) e.path[i].x -= 10 * t.playerDir;
                 t.crashed ||
                   e.path.push({
                     x: 40,
                     topY: t.playerY + 8,
                     bottomY: t.playerY - 8,
                   }),
-                  (function (e, t) {
-                    const a = t.length,
-                      i = Math.ceil(a / 2),
-                      n = 2 * a,
-                      s = n,
-                      o = s - e.length;
-                    if (o > 0) for (let t = 0; t < o; t++) e.push([0, 0]);
-                    else o < 0 && (e.length = s);
-                    for (let a = 0; a < t.length; a++) {
-                      const { x: s, topY: o, bottomY: r } = t[a];
-                      if (a < i) {
-                        const t = n - i + a;
-                        (e[t][0] = s), (e[t][1] = o);
+                  (function (renderPath, path) {
+                    const pathLength = path.length,
+                      halfPathLength = Math.ceil(pathLength / 2),
+                      twicePathLength = 2 * pathLength,
+                      anotherTwicePathLength = twicePathLength,
+                      o = anotherTwicePathLength - renderPath.length;
+                    if (o > 0) for (let t = 0; t < o; t++) renderPath.push([0, 0]);
+                    else o < 0 && (renderPath.length = anotherTwicePathLength);
+                    for (let a = 0; a < path.length; a++) {
+                      const { x: pointX, topY: topY, bottomY: bottomY } = path[a];
+                      if (a < halfPathLength) {
+                        const t = twicePathLength - halfPathLength + a;
+                        (renderPath[t][0] = pointX), (renderPath[t][1] = topY);
                       } else {
-                        const t = a - i;
-                        (e[t][0] = s), (e[t][1] = o);
+                        const t = a - halfPathLength;
+                        (renderPath[t][0] = pointX), (renderPath[t][1] = topY);
                       }
-                      const l = n - 1 - i - a;
-                      (e[l][0] = s), (e[l][1] = r);
+                      const l = twicePathLength - 1 - halfPathLength - a;
+                      (renderPath[l][0] = pointX), (renderPath[l][1] = bottomY);
                     }
                   })(e.renderPath, e.path);
               }
@@ -50268,12 +50262,12 @@ var version = "v1.7.2";
                         type: "linearHoriz",
                         width: 80,
                         colors: [e.colour, e.colour],
-                        opacities: [0, 1],
+                        opacities: [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0],
                       },
                       y: -5,
                     },
                     (a) => {
-                      (a.path = t.renderPath), (a.x = e.playerX - 40);
+                      (a.path = t.renderPath), (a.x = e.playerX - 40), (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]);
                     }
                   ),
                 ]
@@ -50754,10 +50748,11 @@ var version = "v1.7.2";
                       },
                       array: () => e.bossState.bullets,
                     }),
-                    ig.Single(
+                    flyingTrail.Single(
                       {
                         playerX: t.bossX,
                         playerY: t.bossY,
+                        playerDir: 1,
                         crashed: t.destroyed,
                         paused: e.paused,
                         frame: e.frame,
@@ -55143,10 +55138,11 @@ var version = "v1.7.2";
                   ? onChange(
                       () => e.attempt,
                       () => [
-                        ig.Single(
+                        flyingTrail.Single(
                           {
                             playerX: e.playerX,
                             playerY: e.playerY,
+                            playerDir: e.playerDir,
                             crashed: e.crashed,
                             paused: e.paused,
                             colour: "#FCDA45",
@@ -55155,6 +55151,7 @@ var version = "v1.7.2";
                           (t) => {
                             (t.playerX = e.playerX),
                               (t.playerY = e.playerY),
+                              (t.playerDir = e.playerDir),
                               (t.crashed = e.crashed),
                               (t.paused = e.paused),
                               (t.frame = e.frame);
