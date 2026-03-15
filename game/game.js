@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.7.0";
+var version = "v1.7.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -29788,8 +29788,8 @@ var version = "v1.7.0";
               "images/themes/world1/arrow.png",
               "images/themes/world2/arrow.png",
               "images/themes/world2/double-jump.png",
-              'images/themes/world1/saw-big.png',
-              "images/themes/world1/saw-medium.png",
+              `images/themes/${e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
+              `images/themes/${e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
               "images/themes/world2/red.png",
@@ -30282,7 +30282,8 @@ var version = "v1.7.0";
           eo = makeSprite({
             render: ({ props: e }) => {
               
-              //const sawRatio = 41 / 30; 
+              const sawRatio = e.bigTheme == "world3" ? 37 / 30 : 1,
+              sawSpeed = e.bigTheme == "world3" ? 2 : 1;
               return [
               onChange(
                 () => e.theme,
@@ -30335,39 +30336,9 @@ var version = "v1.7.0";
                   }),
                   
                   
-                    /*imageArray({
-                      fileName: `images/level/boss3/asteroid60.png`,
-                      props: () => ({}),
-                      update: (a, i, n) => {
-                        var s, o;
-                        const r =
-                          null ===
-                            (o =
-                              null === (s = e.inGame) || void 0 === s
-                                ? void 0
-                                : s.sawStates) || void 0 === o
-                            ? void 0
-                            : s.sawStates[n];
-                        (a.show = (r?.shape == undefined ? false : r?.shape == "smallAsteriod") && !(null == r ? void 0 : r.destroyed)),
-                          (a.x = i.x),
-                          (a.y = i.y),
-                          (a.rotation = i.rotation),
-                          (a.width = 72),
-                          (a.height = 72);
-                      },
-                      array: () => e.saws,
-                      testId: (t, a) => {
-                        var i;
-                        return `Saw-${
-                          null === (i = e.inGame) || void 0 === i
-                            ? void 0
-                            : i.indexes[a]
-                        }`;
-                      },
-                    }),
-                  */
+                    
                   imageArray({
-                    fileName: `images/themes/world1/saw-big.png`,
+                    fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30380,14 +30351,14 @@ var version = "v1.7.0";
                           ? void 0
                           : s[i];
                       (t.show = (r?.shape == undefined ? false : r?.shape == "large") && !(null == r ? void 0 : r.destroyed)),
-                        (t.width = a.width),
-                        (t.height = a.height),
+                        (t.width = a.width * sawRatio),
+                        (t.height = a.height * sawRatio),
                         (t.x = a.x),
                         (t.y = a.y);
                       const l =
-                        (null === (o = e.inGame) || void 0 === o
+                        ((null === (o = e.inGame) || void 0 === o
                           ? void 0
-                          : o.frame) || 0;
+                          : o.frame) || 0) / sawSpeed;
                       t.rotation = ((r?.inverse ? -3 : 3) * l) % 360;
                     },
                     array: () => e.saws,
@@ -30428,7 +30399,7 @@ var version = "v1.7.0";
                     },
                   }),
                   imageArray({
-                    fileName: `images/themes/world1/saw-medium.png`,
+                    fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30441,14 +30412,14 @@ var version = "v1.7.0";
                           ? void 0
                           : s[i];
                       (t.show = (r?.shape == undefined ? false : r?.shape == "small") && !(null == r ? void 0 : r.destroyed)),
-                        (t.width = a.width),
-                        (t.height = a.height),
+                        (t.width = a.width * sawRatio),
+                        (t.height = a.height * sawRatio),
                         (t.x = a.x),
                         (t.y = a.y);
                       const l =
-                        (null === (o = e.inGame) || void 0 === o
+                        ((null === (o = e.inGame) || void 0 === o
                           ? void 0
-                          : o.frame) || 0;
+                          : o.frame) || 0) / sawSpeed;
                       t.rotation = ((r?.inverse ? -3 : 3) * l) % 360;
                     },
                     array: () => e.saws,
@@ -30607,11 +30578,11 @@ var version = "v1.7.0";
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       imageArray({
-                        fileName: `images/themes/world1/saw-medium.png`,
+                        fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                         props: () => ({}),
                         update: (e, t) => {
-                          (e.width = t.width),
-                            (e.height = t.height),
+                          (e.width = t.width * sawRatio),
+                            (e.height = t.height * sawRatio),
                             (e.x = t.x),
                             (e.y = t.midY),
                             (e.opacity = "downUp" === t.movement
@@ -30624,11 +30595,11 @@ var version = "v1.7.0";
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       imageArray({
-                        fileName: `images/themes/world1/saw-big.png`,
+                        fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                         props: () => ({}),
                         update: (e, t) => {
-                          (e.width = t.width),
-                            (e.height = t.height),
+                          (e.width = t.width * sawRatio),
+                            (e.height = t.height * sawRatio),
                             (e.x = t.x),
                             (e.y = t.midY),
                             (e.opacity = "downUp" === t.movement
@@ -34465,6 +34436,7 @@ var version = "v1.7.0";
                       id: "Saws",
                       saws: [$.newSaw()],
                       theme: t.saw,
+                      bigTheme: t.spike
                     }),
                     unlocked: e.includes("saws"),
                   },
@@ -38615,6 +38587,7 @@ var version = "v1.7.0";
                   saws: h.saws,
                   theme: v.saw,
                   editor: { previewYs: p.saws.map((e) => e.y) },
+                  bigTheme: v.spike
                 }),
                 ...h.enemies.map((e, t) =>
                   yo.Single({
@@ -38793,6 +38766,7 @@ var version = "v1.7.0";
                     saws: [e],
                     theme: n.saw,
                     editor: {},
+                    bigTheme: n.spike
                   });
                 case "flag":
                   return ao.Single({
@@ -54905,6 +54879,7 @@ var version = "v1.7.0";
                   {
                     saws: e.layout.saws,
                     theme: e.layout.properties.theme.objects.saw,
+                    bigTheme: e.layout.properties.theme.objects.spike,
                     inGame: {
                       sawStates: e.layoutState.saws,
                       indexes: e.layoutStateIndex.saws,
@@ -54917,6 +54892,7 @@ var version = "v1.7.0";
                   },
                   (t) => {
                     (t.saws = e.layout.saws),
+                    (t.bigTheme = e.layout.properties.theme.objects.spike),
                       (t.theme = e.layout.properties.theme.objects.saw),
                       (t.inGame.sawStates = e.layoutState.saws),
                       (t.inGame.indexes = e.layoutStateIndex.saws),
