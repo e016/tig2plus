@@ -31177,27 +31177,30 @@ var version = "v1.7.0";
               }
               n = $.getSwitchPlatformUpRectangle(e);
             }
-            be.rectTouchesRect2(
+            (n.canJumpThrough && !t.isCompatible) || (be.rectTouchesRect2(
               p - t.width / 4,
               g + t.height / 8,
               t.width / 2,
               0.75 * t.height,
               n
-            ) && (f = 1),
-              be.rectTouchesRect2(
+            ) && (f = 1)),
+              (n.canJumpThrough && !t.isCompatible) || (be.rectTouchesRect2(
                 p + t.width / 4,
                 g + t.height / 8,
                 t.width / 2,
                 0.75 * t.height,
                 n
-              ) && (f = -1),
-              be.rectTouchesRect2(
+              ) && (f = -1)),
+              (be.rectTouchesRect2(
                 p,
                 g - t.height * (3 / 8),
                 t.width / 2,
                 t.height / 4,
                 n
-              ) && (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
+              )) && (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
+              if (n.canJumpThrough && t.isCompatible && m - a.offsetY - h > 7.5) {
+                m = null;
+              }
           }
           const E = o[r[i]].y;
           if (ho(a, e))
@@ -31265,27 +31268,33 @@ var version = "v1.7.0";
               }
               n = $.getSwitchPlatformUpRectangle(e);
             }
-            be.rectTouchesRect2(
+            (n.canJumpThrough && !t.isCompatible) || (be.rectTouchesRect2(
               newX - t.width / 4,
               newY + t.height / 8,
               t.width / 2,
               0.75 * t.height,
               n
-            ) && (newDirection = 1),
-              be.rectTouchesRect2(
+            ) && (newDirection = 1)),
+              (n.canJumpThrough && !t.isCompatible) && (be.rectTouchesRect2(
                 newX + t.width / 4,
                 newY + t.height / 8,
                 t.width / 2,
                 0.75 * t.height,
                 n
-              ) && (newDirection = -1),
-              be.rectTouchesRect2(
+              ) && (newDirection = -1)),
+              ((t.isCompatible || !n.canJumpThrough || be.rectTouchesRect2(
+                newX,
+                newY - t.height - 1,
+                t.width / 2,
+                t.height / 4,
+                n
+              )) && be.rectTouchesRect2(
                 newX,
                 newY - t.height * (3 / 8),
                 t.width / 2,
                 t.height / 4,
                 n
-              ) && (edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
+              )) && (edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
           };
           for (const spring of springs) {
             /*be.rectTouchesRect2(
