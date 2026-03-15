@@ -150,6 +150,7 @@ Translator["es"] = {
   SKATER: "PATINADOR",
   SYNTHWAVE: "SINTETICA",
   CLASSIC: "CLÁSICO",
+  INFINITE: "INFINITO",
   "WORLD 1": "MUNDO 1",
   "WORLD 2": "MUNDO 2",
   "WORLD 3": "MUNDO 3",

@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.7.1";
+var version = "v1.7.2";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -17936,25 +17936,25 @@ var version = "v1.7.1";
               },
               isBonusTheme: true,
             },
-            /* infinite: {
+            infinite: {
               id: "infinite",
               name: "Infinite",
-              colour: "#00c0c0",
+              colour: "#89dde1",
               player: Wt.skins.headphone,
-              background: "classic",
+              background: "infinite",
               objects: {
                 block: "infinite",
                 spike: "infinite",
-                platform: "classic",
-                dirChange: "world2",
-                flag: "world2",
-                saw: "classic",
+                platform: "infinite",
+                dirChange: "world1",
+                flag: "world1",
+                saw: "world1",
                 bottom: "classic",
-                switch: "world2",
+                switch: "infinite",
                 speedChange: "speed",
               },
               isBonusTheme: true,
-            },*/
+            },
             synthwave: ta,
             world1: Jt,
             red: Kt,
@@ -29548,6 +29548,8 @@ var version = "v1.7.1";
                 return [];
               case "classic":
                 return ["images/themes/classic/background/fade.png"];
+              case "infinite":
+                return ["images/themes/infinite/background/tile.png"];
               case "red":
                 return [
                   "images/themes/red/background/background.png",
@@ -29806,9 +29808,10 @@ var version = "v1.7.1";
               "images/themes/world2/speed-change.png",
               "images/themes/world1/arrow.png",
               "images/themes/world2/arrow.png",
+              "images/themes/infinite/arrow.png",
               "images/themes/world2/double-jump.png",
-              `images/themes/${e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
-              `images/themes/${e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
+              `images/themes/${e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
+              `images/themes/${e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
               "images/themes/world2/red.png",
@@ -29879,7 +29882,8 @@ var version = "v1.7.1";
                     "images/themes/world3/bottom/block.png",
                     "images/themes/world1/bottom/block.png",
                     `images/themes/classic/bottom/block.png`,
-                    "images/themes/skater/bottom/block.png"
+                    "images/themes/skater/bottom/block.png",
+                    `images/themes/infinite/bottom/block.png`,
                   ]
                 : [
                     `images/themes/${e.objects.bottom}/bottom/block-small-spike.png`,
@@ -30357,7 +30361,7 @@ var version = "v1.7.1";
                   
                     
                   imageArray({
-                    fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                    fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30418,7 +30422,7 @@ var version = "v1.7.1";
                     },
                   }),
                   imageArray({
-                    fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                    fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30597,7 +30601,7 @@ var version = "v1.7.1";
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       imageArray({
-                        fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                        fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                         props: () => ({}),
                         update: (e, t) => {
                           (e.width = t.width * sawRatio),
@@ -30614,7 +30618,7 @@ var version = "v1.7.1";
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       imageArray({
-                        fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                        fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                         props: () => ({}),
                         update: (e, t) => {
                           (e.width = t.width * sawRatio),
@@ -32925,7 +32929,7 @@ var version = "v1.7.1";
                           y(
                             {
                               fileName:
-                                `images/themes/${e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
+                                `images/themes/${e.theme == "infinite" ? "infinite" : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
                               width: e.switchButton.width,
                               height: e.switchButton.height,
                             },
@@ -44564,6 +44568,7 @@ var version = "v1.7.1";
               (e[(e.Speed = 14)] = "Speed"),
               (e[(e.Fighter = 15)] = "Fighter");
             e[(e.Classic = 16)] = "Classic";
+            e[(e.Infinite = 17)] = "Infinite";
           })(Od || (Od = {})),
           (function (e) {
             (e[(e.Gun = 0)] = "Gun"),
@@ -44573,7 +44578,7 @@ var version = "v1.7.1";
               (e[(e.Skateboard = 4)] = "Skateboard"),
               (e[(e.Punch = 5)] = "Punch");
               (e[(e.Drill = 6)] = "Drill");
-              (e[(e.Ghost = 7)] = "Drill");
+              (e[(e.Ghost = 7)] = "Ghost");
           })(Cd || (Cd = {})),
           (function (e) {
             (e[(e.Movement = 0)] = "Movement"),
@@ -44668,6 +44673,7 @@ var version = "v1.7.1";
               (e[(e.Speed = 14)] = "Speed"),
               (e[(e.Fighter = 15)] = "Fighter");
             e[(e.Classic = 16)] = "Classic";
+            e[(e.Infinite = 17)] = "Infinite";
           })(xd || (xd = {}));
         const Bd = Gc([
             mc,
@@ -45368,6 +45374,7 @@ var version = "v1.7.1";
             [xd.Speed]: "speed",
             [xd.Fighter]: "fighter",
             [xd.Classic]: "classic",
+            [xd.Infinite]: "infinite",
           },
           Vd = {
             [Nd.Dragonfly]: hl.songs.dragonfly,
@@ -50460,7 +50467,7 @@ var version = "v1.7.1";
           dg = makeSprite({
             init: ({ props: { playerX: e } }) =>
               e < 0
-                ? { startX1: e, startX2: e + cg }
+                ? { startX1: e, startX2: e + cg}
                 : { startX1: e - cg, startX2: e },
             loop({ state: e, props: { playerX: t } }) {
               e.startX1 - t < -950
@@ -52810,24 +52817,24 @@ var version = "v1.7.1";
                         case "classic":
                           return [
                             Go.Single(
-                        {
-                          targetOpacity: 1,
-                          targetColor: e.bgColor || "#00FFFF",
-                          sprite: (s, k) => [
-                            p(
-            {
-              color: k.ref,
-              width: t.size.fullWidth,
-              height: t.size.fullHeight,
-              opacity: 1,
-            },
-            (j) => 
-              ((j.width = t.size.fullWidth),
-                (j.height = t.size.fullHeight),
-                (j.color = k.ref),
-              (j.opacity = 1))
-          )
-                          ],
+                              {
+                                targetOpacity: 1,
+                                targetColor: e.bgColor || "#00FFFF",
+                                sprite: (s, k) => [
+                                  p(
+                                    {
+                                      color: k.ref,
+                                      width: t.size.fullWidth,
+                                      height: t.size.fullHeight,
+                                      opacity: 1,
+                                    },
+                                    (j) => 
+                                      ((j.width = t.size.fullWidth),
+                                        (j.height = t.size.fullHeight),
+                                        (j.color = k.ref),
+                                      (j.opacity = 1))
+                                  )
+                                ],
                         },
                         (t) => {
                           t.targetOpacity = 1;
@@ -52847,6 +52854,21 @@ var version = "v1.7.1";
                                 (t.playerX = 0), (t.playerY = 0);
                               }
                             ),
+                          ];
+                        case "infinite":
+                          return [
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/infinite/background/tile.png",
+                                height: cg,
+                                playerX: 0.03 * e.cameraX,
+                                playerY: 0
+                              },
+                              (t) => {
+                                (t.playerX = 0.03 * e.cameraX), (t.playerY = 0);
+                              }
+                            )
                           ];
                         case "fighter":
                           return [
