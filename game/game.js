@@ -40542,6 +40542,7 @@ var version = "v1.7.0";
                     var scale = U.isCompatible ? 1 : U.playerScale
                     //console.log(l)
                     const lastStackY = 0 === l ? n : stacks[l - 1].y,
+                    lastOnObject = 0 === l ? U.onObject : stacks[l - 1].onObject,
                     checkStackY = (stackY)=>(d < stackY + (M * scale) + 1 && ((d = stackY + (M * scale)), (h = 0), (onObject = {array: "stack", index: l - 1, y: d })));
                     checkStackY(lastStackY);
                     if (!U.isCompatible) {
@@ -40565,17 +40566,18 @@ var version = "v1.7.0";
                       }
                       // stay on your friends!
                       // TODO: only do this when player is onObject
-                      /*if (
+                      if (
                         onObject &&
-                        "stack" === onObject.array
+                        "stack" === onObject.array &&
+                        (lastOnObject ? !["block", "spike"].includes(lastOnObject.array) : false)
                       ) {
-                          const e = lastStackY - onObject.y;
-                          (d += e),
+                          const e = (lastStackY + (M * scale)) - (onObject.y);
+                          (d = lastStackY + (M * scale)),
                             (h =
                               h < 0
                                 ? Math.min(e / df, h)
                                 : Math.max(e / df, h));
-                      }*/
+                      }
                     };
                     const g = rl(
                       o,
@@ -40594,17 +40596,22 @@ var version = "v1.7.0";
                       u,
                       U.gravity
                     );
-                    g.hitObject
-                    ? onObject
-                      ? ((onObject.array = g.hitObject.object.array),
-                        (onObject.index = g.hitObject.index),
-                        (onObject.y = g.hitObject.object.y))
-                      : (onObject = {
-                          array: g.hitObject.object.array,
-                          index: g.hitObject.index,
-                          y: g.hitObject.object.y,
-                        })
-                    : (onObject = null);
+                    if (!U.isCompatible) {
+                      g.hitObject
+                      ? onObject
+                        ? ((onObject.array = g.hitObject.object.array),
+                          (onObject.index = g.hitObject.index),
+                          (onObject.y = g.hitObject.object.y))
+                        : (onObject = {
+                            array: g.hitObject.object.array,
+                            index: g.hitObject.index,
+                            y: g.hitObject.object.y,
+                          })
+                      : onObject?.array != "stack" && (onObject = null);
+                      if (onObject && onObject.array === "stack" && !lastOnObject) {
+                        onObject = null;
+                      }
+                    }
                     
                     const touchedSpring = U.isCompatible ? false : (checkSprings(undefined, stack));
                     if (touchedSpring) {
@@ -40677,22 +40684,22 @@ var version = "v1.7.0";
                       // portals
                       
                       const p = nl(
-              inViewLayout.portals, //e
-              _.layout.portals, //t
-              U.playerX, //a
-              stack.y, //i
-              1, //n
-              stack.gradY, //s
-              j, //o
-              V, //r
-              (null === (h = U.touchingPortals) || void 0 === h
-                ? void 0
-                : h[0]) || null, //l
-              stackCollide(stack), //c
-              df, //d
-              U.gravity,
-              false
-            );
+                        inViewLayout.portals, //e
+                        _.layout.portals, //t
+                        U.playerX, //a
+                        stack.y, //i
+                        1, //n
+                        stack.gradY, //s
+                        j, //o
+                        V, //r
+                        (null === (h = U.touchingPortals) || void 0 === h
+                          ? void 0
+                          : h[0]) || null, //l
+                        stackCollide(stack), //c
+                        df, //d
+                        U.gravity,
+                        false
+                      );
             // (U.touchingPortals = p.touchingPortals || null),
               ((crashed = (p.crashed) || crashed),
               p.teleport &&
@@ -40719,7 +40726,7 @@ var version = "v1.7.0";
                   U.playerDir,
                   le,
                   fullLayoutStateIndexes,
-                  ue,
+                  [...ue, ...(U.bottomLine?.objects || []).map((obj, i) => ({object: obj, index: i}))],
                   U.layoutState.enemies,
                   U.explosions,
                   U.switchBlockSpikes
