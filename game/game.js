@@ -16889,6 +16889,9 @@ var version = "v1.7.0";
             hitLandableObject: (...params) => {
               var [e, t, a, i, n, s, o, r, l, c, gravity, ghost] = params;
               const checkDist = "switchPlatform" === r.type ? 120 : 30;
+              if (isNaN(r.y)) {
+                return null;
+              }
               if (
                 r.x > e + r.width + checkDist ||
                 r.x < e - r.width - checkDist
@@ -18018,7 +18021,7 @@ var version = "v1.7.0";
               }
               obj.trueY = trueY;
               return doNotApply &&
-                !willApplyMovement(obj.x, trueY, playerX, playerY)
+                !willApplyMovement(obj.x, obj.midY, playerX, playerY)
                 ? null
                 : "block" === (null == updated ? void 0 : updated.type)
                 ? ((updated.x = obj.x),
