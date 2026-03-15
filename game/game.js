@@ -31334,7 +31334,7 @@ var version = "v1.7.1";
                 offsetX: a.offsetX + newDirection * u,
                 offsetY: null === edge ? a.offsetY - h : edge - E,
                 direction: newDirection,
-                speedY: null === edge ? a.speedY + (l * (0.4 / 4.875)) * df : 0,
+                speedY: null === edge ? Math.min(a.speedY + (l * (0.4 / 4.875)), df * l * 2) * df : 0,
               });
         }
         
