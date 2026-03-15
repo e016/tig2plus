@@ -31142,7 +31142,11 @@ var version = "v1.7.2";
             f = a.direction,
             y = false;
           for (const { object: e, index: a } of n) {
-            if ("enemy" === e.type && a === i) continue;
+            if ("enemy" === e.type )  {
+              if (a === i) {
+                continue
+              }
+            }
             let n = e;
             if ("switchPlatform" === e.type && 0 !== e.rotation) {
               if (-90 !== e.rotation) {
@@ -31191,10 +31195,8 @@ var version = "v1.7.2";
                 t.width / 2,
                 t.height / 4,
                 n
-              )) && (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
-              /*if (n.canJumpThrough && !t.isCompatible && m) {
-                m = null;
-              }*/
+              )) && (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2, (n.kind == "walkerHelmet" && !t.isCompatible && (y = true)));
+            
           }
           const E = o[r[i]].y;
           if (ho(a, e))
@@ -31282,7 +31284,7 @@ var version = "v1.7.2";
                 t.width / 2,
                 t.height / 4,
                 n
-              )) && (edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
+              )) && (edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2, (n.kind == "walkerHelmet" && !t.isCompatible && (y = true)));
           };
           for (const spring of springs) {
             /*be.rectTouchesRect2(
