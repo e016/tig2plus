@@ -31265,7 +31265,7 @@ var version = "v1.7.1";
               0.75 * t.height,
               n
             ) && (newDirection = 1)),
-              (n.canJumpThrough && !t.isCompatible) && (be.rectTouchesRect2(
+              (n.canJumpThrough && !t.isCompatible) || (be.rectTouchesRect2(
                 newX + t.width / 4,
                 newY + t.height / 8,
                 t.width / 2,
