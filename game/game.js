@@ -31198,9 +31198,9 @@ var version = "v1.7.0";
                 t.height / 4,
                 n
               )) && (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
-              if (n.canJumpThrough && t.isCompatible && m - a.offsetY - h > 7.5) {
+              /*if (n.canJumpThrough && !t.isCompatible && m) {
                 m = null;
-              }
+              }*/
           }
           const E = o[r[i]].y;
           if (ho(a, e))
