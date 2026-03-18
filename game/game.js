@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.7.1";
+var version = "v1.7.2";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -29949,6 +29949,7 @@ var version = "v1.7.1";
               "images/mainMenu/worldSelect/3.png",
               "images/mainMenu/worldSelect/4.png",
               "images/mainMenu/worldSelect/5.png",
+              "images/level/arrow-up.png",
             ],
             getPlayerImages: Js,
             editorImages: [
@@ -66840,8 +66841,11 @@ var version = "v1.7.1";
             loop({ state: e }) {
               if (e.loading) return e;
               const t = e.frame + 1;
+              let newArrowY = e.arrowY + 0.3;
+              newArrowY > 10 && (newArrowY = -10);
               return Object.assign(Object.assign({}, e), {
                 frame: t >= eE() ? t - eE() : t,
+                arrowY: newArrowY
               });
             },
             render({
@@ -66851,7 +66855,7 @@ var version = "v1.7.1";
               getContext: i,
               updateState: updateState,
             }) {
-              const {news: newsMessage, id: newsID} = _NEWS;
+              const {news: newsMessage, id: newsID, title: newsTitle} = _NEWS;
               const {
                   view: o,
                   updateView: r,
@@ -66880,7 +66884,7 @@ var version = "v1.7.1";
                   });
                 },
                 f = a.size.height + 2 * a.size.heightMargin,
-                y = a.size.width + 2 * a.size.widthMargin;
+                mostLeft = a.size.width + 2 * a.size.widthMargin;
               if (t.loading)
                 return [
                   n({
@@ -66906,7 +66910,7 @@ var version = "v1.7.1";
                     text: version,
                     color: Re,
                     font: { align: "left" },
-                    x: -y / 2 + 20,
+                    x: -mostLeft / 2 + 20,
                     y: -f / 2 + 20,
                   }),
                   l({
@@ -66973,6 +66977,7 @@ var version = "v1.7.1";
                     x: 100,
                     y: h,
                   }),
+                  
                   ...(localStorage.getItem("news") == newsID ? [] : [s({
                     radius: 13,
                     color: Ve,
@@ -66985,7 +66990,25 @@ var version = "v1.7.1";
                     color: ve,
                     x: 185,
                     y: h + 20,
-                  })]),
+                  }),
+                  ...(newsID == 5 ? [
+                    y(
+                      { fileName: "images/level/arrow-up.png", width: 14, height: 8, x: 200, y: h, rotation: -90 },
+                      (a) => {
+                        a.x = 100 + 170 + Math.abs(t.arrowY);
+                        console.log(t.arrowY);
+                      }
+                    ),
+                    n({
+                      text: localize("IMPORTANT!"),
+                      font: { align: "left", size: 13 },
+                      color: ve,
+                      x: 220,
+                      y: h,
+                    }),
+                  ] : [])
+                
+                ]),
                   /*Fo({
                     id: "AchievementsButton",
                     text: localize("ACHIEVEMENTS"),
@@ -67029,7 +67052,7 @@ var version = "v1.7.1";
                             color: Te,
                             strokeColor: Ye,
                             strokeThickness: 2,
-                            x: y / 2 - 60,
+                            x: mostLeft / 2 - 60,
                             y: f / 2 - 40,
                           }),
                           Fo({
@@ -67044,7 +67067,7 @@ var version = "v1.7.1";
                                 })
                               );
                             },
-                            x: y / 2 - 40,
+                            x: mostLeft / 2 - 40,
                             y: f / 2 - 40,
                           }),
                         ]
@@ -67253,7 +67276,7 @@ var version = "v1.7.1";
               if ("more" === o.type)
                 return [Jy({ id: "More", updateView: r, backToMainMenu: h })];
               if ("news" === o.type)
-                return [news({ id: "News", updateView: r, backToMainMenu: h, newsID: newsID, message: newsMessage })];
+                return [news({ id: "News", updateView: r, backToMainMenu: h, newsID: newsID, title: newsTitle, message: newsMessage })];
               const S = () => {
                 r({ type: "more" });
               };

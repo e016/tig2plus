@@ -10,6 +10,7 @@ Translator["es"] = {
   Back: "Atras",
   BACK: "ATRAS",
   MORE: "MAS",
+  "IMPORTANT!": "IMPORTANTE!",
   "OVERLAP IN EDITOR": "SOBREPONER EN EDITOR",
   "TIG1 MENU MUSIC": "MUSICA DE TIG1",
   CREDITS: "CREDITOS",

@@ -1,4 +1,5 @@
 {
-    "id": 4,
-    "news": "There's a new \"Bomb\" enemy type!\nMore boss elements coming soon!\n\n(P.S: Don't forget about the new lasers and player stack interactions!)"
+    "id": 5,
+    "title": "Prevent Level Corruptions!!",
+    "news": "IMPORTANT!\nSometimes, your levels can get corrupted and make them \neither unplayable or uneditable.\n\n This happens when you have run out of storage.\nTry deleting some of your older levels,\n to make room for your new ones!"
 }
