@@ -50357,8 +50357,8 @@ var version = "v1.7.3";
             }),
             loop({ state: e, props: props }) {
               let calculatedX = e.path.map(part => part.x),
-              width = e.path.length === 0 ? 0 : (0 - Math.min(...calculatedX))
-              
+              width = e.path.length === 0 ? 0 : (0 - Math.min(...calculatedX));
+              e.path.sort((e, t) => e - t);
               
               if (!props.paused) {
                 if (!props.crashed) {
