@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.7.2";
+var version = "v1.7.3";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -45890,7 +45890,8 @@ var version = "v1.7.2";
               (e) => [e[0].map((e) => [...e, 0, null]), e[1], e[2]],
               (e) => [...e, []],
               (e) => [e[0], e[1], [...e[2], 0], e[3]],
-              (e) => [e[0], e[1], [...e[2], false, false], e[3]]
+              (e) => [e[0], e[1], [...e[2], false, false], e[3]],
+              (e) => [e[0], e[1], [...e[2], false], e[3]],
             ],
             finalSchema: Gc([
               Oc(
@@ -45906,12 +45907,12 @@ var version = "v1.7.2";
                 ])
               ),
               fc,
-              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
+              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
               Oc(Gc([mc, mc])),
             ]),
             uncompress: (e) => {
               console.warn(e)
-              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror, att, glow], d] = e;
+              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror, att, glow, flying], d] = e;
               return {
                 levelsProgress: t.map(
                   ([e, t, a, [i, n, s], [o, r], l, c, d]) => {
@@ -45945,7 +45946,8 @@ var version = "v1.7.2";
                   tig1menu: tm || false,
                   mirrorMenuButton: mirror || false,
                   fadeOutAttempts: att || false,
-                  hidePlayerGlow: glow || false
+                  hidePlayerGlow: glow || false,
+                  flyingTrail: flying || false
                 },
                 friendRequests: d.map(([e, t]) => ({
                   playerName: t,
@@ -45985,7 +45987,8 @@ var version = "v1.7.2";
                 e.settings.tig1menu || false,
                 e.settings.mirrorMenuButton || false,
                 e.settings.fadeOutAttempts || false,
-                e.settings.hidePlayerGlow || false
+                e.settings.hidePlayerGlow || false,
+                e.settings.flyingTrail || false
               ],
               e.friendRequests.map((e) => [e.profileId, e.playerName]),
             ],
@@ -49954,87 +49957,148 @@ var version = "v1.7.2";
             }
           },
           eg = 12,
-          tg = makeSprite({
-            render: ({ props: e }) => [
-              ag.Single(
-                {
-                  playerX: e.playerX,
-                  playerY: e.playerY,
-                  y: 90 / 8,
-                  playerDir: e.playerDir,
-                  crashed: e.crashed,
-                  paused: e.paused,
-                  skin: e.skin,
-                },
-                (t) => {
-                  (t.playerX = e.playerX),
-                    (t.playerY = e.playerY),
-                    (t.playerDir = e.playerDir),
-                    (t.crashed = e.crashed),
-                    (t.paused = e.paused),
-                    (t.skin = e.skin);
-                }
-              ),
-              ag.Single(
-                {
-                  playerX: e.playerX,
-                  playerY: e.playerY,
-                  y: 3.75,
-                  playerDir: e.playerDir,
-                  crashed: e.crashed,
-                  paused: e.paused,
-                  skin: e.skin,
-                },
-                (t) => {
-                  (t.playerX = e.playerX),
-                    (t.playerY = e.playerY),
-                    (t.playerDir = e.playerDir),
-                    (t.crashed = e.crashed),
-                    (t.paused = e.paused),
-                    (t.skin = e.skin);
-                }
-              ),
-              ag.Single(
-                {
-                  playerX: e.playerX,
-                  playerY: e.playerY,
-                  y: -3.75,
-                  playerDir: e.playerDir,
-                  crashed: e.crashed,
-                  paused: e.paused,
-                  skin: e.skin,
-                },
-                (t) => {
-                  (t.playerX = e.playerX),
-                    (t.playerY = e.playerY),
-                    (t.playerDir = e.playerDir),
-                    (t.crashed = e.crashed),
-                    (t.paused = e.paused),
-                    (t.skin = e.skin);
-                }
-              ),
-              ag.Single(
-                {
-                  playerX: e.playerX,
-                  playerY: e.playerY,
-                  y: -90 / 8,
-                  playerDir: e.playerDir,
-                  crashed: e.crashed,
-                  paused: e.paused,
-                  skin: e.skin,
-                },
-                (t) => {
-                  (t.playerX = e.playerX),
-                    (t.playerY = e.playerY),
-                    (t.playerDir = e.playerDir),
-                    (t.crashed = e.crashed),
-                    (t.paused = e.paused),
-                    (t.skin = e.skin);
-                }
-              ),
-            ],
+          playerTrail = makeSprite({
+            render: ({ props: e, getContext }) => { 
+              if (!e.isFront) {
+                return [
+                  onChange(() => e.attempt,
+                    () => [
+                      universalFlyingTrail.Single(
+                        {
+                          playerX: e.playerX,
+                          playerY: e.playerY,
+                          radius: 4,
+                          offset: 10.5,
+                          playerDir: e.playerDir,
+                          paused: e.paused,
+                          crashed: e.crashed,
+                          colour: e.skin.trail.topColour,
+                          frame: e.frame || 0
+                        },
+                        (t) => {
+                          (t.playerX = e.playerX),
+                            (t.playerY = e.playerY),
+                            (t.playerDir = e.playerDir),
+                            (t.paused = e.paused),
+                            (t.crashed = e.crashed), 
+                            (t.colour = e.skin.trail.topColour),
+                            (t.frame = e.frame || 0);
+                            console.log(e.skin.trail.topColour)
+                        }
+                      ),
+                      universalFlyingTrail.Single(
+                        {
+                          playerX: e.playerX,
+                          playerY: e.playerY,
+                          radius: 4,
+                          offset: -10.5,
+                          playerDir: e.playerDir,
+                          paused: e.paused,
+                          crashed: e.crashed,
+                          colour: e.skin.trail.topColour,
+                          frame: e.frame || 0
+                        },
+                        (t) => {
+                          (t.playerX = e.playerX),
+                            (t.playerY = e.playerY),
+                            (t.playerDir = e.playerDir),
+                            (t.paused = e.paused),
+                            (t.crashed = e.crashed), 
+                            (t.colour = e.skin.trail.topColour),
+                            (t.frame = e.frame || 0);
+                            console.log(e.skin.trail.topColour)
+                        }
+                      )
+                    ]
+                  )
+                ]
+              }
+              return [ conditional(
+                () => getContext(Se).settings.flyingTrail,
+                () => [],
+                () => [
+                  playerTrailStrip.Single(
+                    {
+                      playerX: e.playerX,
+                      playerY: e.playerY,
+                      y: 90 / 8,
+                      playerDir: e.playerDir,
+                      crashed: e.crashed,
+                      paused: e.paused,
+                      skin: e.skin,
+                    },
+                    (t) => {
+                      (t.playerX = e.playerX),
+                        (t.playerY = e.playerY),
+                        (t.playerDir = e.playerDir),
+                        (t.crashed = e.crashed),
+                        (t.paused = e.paused),
+                        (t.skin = e.skin);
+                    }
+                  ),
+                  playerTrailStrip.Single(
+                    {
+                      playerX: e.playerX,
+                      playerY: e.playerY,
+                      y: 3.75,
+                      playerDir: e.playerDir,
+                      crashed: e.crashed,
+                      paused: e.paused,
+                      skin: e.skin,
+                    },
+                    (t) => {
+                      (t.playerX = e.playerX),
+                        (t.playerY = e.playerY),
+                        (t.playerDir = e.playerDir),
+                        (t.crashed = e.crashed),
+                        (t.paused = e.paused),
+                        (t.skin = e.skin);
+                    }
+                  ),
+                  playerTrailStrip.Single(
+                    {
+                      playerX: e.playerX,
+                      playerY: e.playerY,
+                      y: -3.75,
+                      playerDir: e.playerDir,
+                      crashed: e.crashed,
+                      paused: e.paused,
+                      skin: e.skin,
+                    },
+                    (t) => {
+                      (t.playerX = e.playerX),
+                        (t.playerY = e.playerY),
+                        (t.playerDir = e.playerDir),
+                        (t.crashed = e.crashed),
+                        (t.paused = e.paused),
+                        (t.skin = e.skin);
+                    }
+                  ),
+                  playerTrailStrip.Single(
+                    {
+                      playerX: e.playerX,
+                      playerY: e.playerY,
+                      y: -90 / 8,
+                      playerDir: e.playerDir,
+                      crashed: e.crashed,
+                      paused: e.paused,
+                      skin: e.skin,
+                    },
+                    (t) => {
+                      (t.playerX = e.playerX),
+                        (t.playerY = e.playerY),
+                        (t.playerDir = e.playerDir),
+                        (t.crashed = e.crashed),
+                        (t.paused = e.paused),
+                        (t.skin = e.skin);
+                    }
+                  ),
+                ]
+              )
+              
+            ] },
           }),
-          ag = makeSprite({
+          playerTrailStrip = makeSprite({
             init: ({ props: e, device: t }) => ({
               followY: e.playerY,
               width: 1,
@@ -50276,6 +50340,92 @@ var version = "v1.7.2";
                 ]
               ),
             ],
+          }),
+          universalFlyingTrail = makeSprite({
+            init: ({ props: e }) => ({
+              path: Array.from({ length: eg }, () => ({
+                x: 40,
+                topY: e.playerY + (e.radius || 8) + (e.offset || 0),
+                bottomY: e.playerY - (e.radius || 8) + (e.offset || 0),
+              })),
+              renderPath: Array.from({ length: eg * 2 }, () => [0, 0]),
+              lastPlayerX: e.playerX,
+              width: 0,
+              // 20.454545454545453 is Sky Fracture's jump frames
+              // props.jumpFrames / 0.511363636
+              space: 40
+            }),
+            loop({ state: e, props: props }) {
+              let calculatedX = e.path.map(part => part.x),
+              width = e.path.length === 0 ? 0 : (0 - Math.min(...calculatedX))
+              
+              
+              if (!props.paused) {
+                if (!props.crashed) {
+                  e.space = (Math.abs(props.playerX - e.lastPlayerX) / 0.16125) || 0;
+                  e.width = width;
+                  
+                }
+                e.path.shift();
+                
+                for (let t = 0; t < e.path.length; t++) e.path[t].x -= Math.abs(props.playerX - e.lastPlayerX);
+
+                if (!props.crashed) {
+                  e.path.push({
+                    x: e.space,
+                    topY: props.playerY + (props.radius || 8) + (props.offset || 0),
+                    bottomY: props.playerY - (props.radius || 8) + (props.offset || 0),
+                  });
+                }
+
+                  (function (renderPath, path) {
+                    const a = path.length,
+                      i = Math.ceil(a / 2),
+                      n = (2 * a),
+                      s = n,
+                      o = s - renderPath.length;
+                    if (o > 0) for (let t = 0; t < o; t++) renderPath.push([0, 0]);
+                    else o < 0 && (renderPath.length = s);
+                    for (let pathIdx = 0; pathIdx < path.length; pathIdx++) {
+                      const { x: pathX, topY: o, bottomY: r } = path[pathIdx];
+                      if (pathIdx < i) {
+                        const t = n - i + pathIdx;
+                        (renderPath[t][0] = (pathX)), (renderPath[t][1] = o);
+                      } else {
+                        const t = pathIdx - i;
+                        (renderPath[t][0] = (pathX)), (renderPath[t][1] = o);
+                      }
+                      const l = n - 1 - i - pathIdx;
+                      (renderPath[l][0] = (pathX)), (renderPath[l][1] = r);
+                    }
+                  })(e.renderPath, e.path);
+                  e.lastPlayerX = props.playerX;
+              }
+            },
+            render: ({ props: e, state: t, getContext: a }) => {
+              return [
+              ifConditional(
+                () => !a(Se).settings.hidePlayerTrail && a(Se).settings.flyingTrail,
+                () => [
+                  m(
+                    {
+                      fillGradient: {
+                        type: "linearHoriz",
+                        width: t.width,
+                        colors: [e.colour, e.colour],
+                        opacities: [0, 1],
+                      },
+                    },
+                    (a) => {
+                      (a.x = (e.playerX - t.space * e.playerDir)),
+                      (a.path = t.renderPath),
+                      (a.fillGradient.opacities = [Math.min(e.playerDir, 0), Math.max(e.playerDir, 0)]),
+                      (a.fillGradient.width = Math.abs(t.width));
+                    }
+                  ),
+                ]
+              ),
+            ]},
           }),
           ng = makeSprite({
             render: ({ props: e, device: t }) => [
@@ -55162,7 +55312,27 @@ var version = "v1.7.2";
                         ),
                       ]
                     )
-                  : null,
+                  : playerTrail.Single(
+                      {
+                        playerX: e.playerX,
+                        playerY: e.playerY,
+                        playerDir: e.playerDir,
+                        crashed: e.crashed,
+                        paused: e.paused,
+                        skin: e.playerSkin,
+                        isFront: false,
+                        attempt: e.attempt
+                      },
+                      (t) => {
+                        (t.playerX = e.playerX),
+                          (t.playerY = e.playerY),
+                          (t.playerDir = e.playerDir),
+                          (t.crashed = e.crashed || e.hidePlayer),
+                          (t.paused = e.paused),
+                          (t.skin = e.playerSkin),
+                          (t.attempt = e.attempt);
+                      }
+                    ),
                 ifConditional(
                   () => !e.hidePlayer,
                   () => [
@@ -55279,6 +55449,27 @@ var version = "v1.7.2";
                                 );
                               },
                               () => [
+                                playerTrail.Array({
+                                  props: ({ y: t }) => ({
+                                    skin: e.playerSkin,
+                                    playerX: e.playerX,
+                                    playerY: t,
+                                    playerDir: e.playerDir,
+                                    crashed: false,
+                                    paused: e.paused,
+                                    isFront: false,
+                                    attempt: e.attempt
+                                  }),
+                                  update: (t, { y: a }) => {
+                                    (t.playerX = e.playerX),
+                                      (t.playerY = a),
+                                      (t.playerDir = e.playerDir),
+                                      (t.paused = e.paused),
+                                      (t.attempt = e.attempt);
+                                  },
+                                  array: () => e.playerStacks,
+                                  key: (e, t) => t,
+                                }),
                                 To.Array({
                                   props: () => ({ skin: e.playerSkin }),
                                   update: (t, { y: a }) => {
@@ -55290,7 +55481,7 @@ var version = "v1.7.2";
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
                                 }),
-                                tg.Array({
+                                playerTrail.Array({
                                   props: ({ y: t }) => ({
                                     skin: e.playerSkin,
                                     playerX: e.playerX,
@@ -55298,12 +55489,14 @@ var version = "v1.7.2";
                                     playerDir: e.playerDir,
                                     crashed: false,
                                     paused: e.paused,
+                                    isFront: true,
                                   }),
                                   update: (t, { y: a }) => {
                                     (t.playerX = e.playerX),
                                       (t.playerY = a),
                                       (t.playerDir = e.playerDir),
-                                      (t.paused = e.paused);
+                                      (t.paused = e.paused),
+                                      (t.attempt = e.attempt);
                                   },
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
@@ -55377,7 +55570,7 @@ var version = "v1.7.2";
                 ),
                 e.isFlyingLevel
                   ? null
-                  : tg.Single(
+                  : playerTrail.Single(
                       {
                         playerX: e.playerX,
                         playerY: e.playerY,
@@ -55385,6 +55578,7 @@ var version = "v1.7.2";
                         crashed: e.crashed,
                         paused: e.paused,
                         skin: e.playerSkin,
+                        isFront: true,
                       },
                       (t) => {
                         (t.playerX = e.playerX),
@@ -56179,7 +56373,7 @@ var version = "v1.7.2";
                     {
                       containerHeight: a.size.fullHeight - 70 + 50,
                       containerWidth: a.size.fullWidth,
-                      contentHeight: 750,
+                      contentHeight: 800,
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
@@ -56568,6 +56762,25 @@ var version = "v1.7.2";
                           (e) => {
                             const { settings: a } = t(Se);
                             (e.selected = a.fadeOutAttempts),
+                              (e.noPress = o.ref);
+                          }
+                        ),
+                        Rm.Single(
+                          {
+                            text: "\"INFINITE\" TRAIL",
+                            selected: false,
+                            onPress: () => {
+                              var a;
+                              const { settings: i, updateSettings: n } = t(Se);
+                              n({ flyingTrail: !i.flyingTrail });
+                            },
+                            width: 250,
+                            height: 40,
+                            y: -750,
+                          },
+                          (e) => {
+                            const { settings: a } = t(Se);
+                            (e.selected = a.flyingTrail),
                               (e.noPress = o.ref);
                           }
                         ),
@@ -63115,12 +63328,20 @@ var version = "v1.7.2";
                   rankPercent: c,
                   y: t / 2 - 65,
                 }),
+                Ry.Single({
+                  id: "PlayerTrail",
+                  skin: o,
+                  mockPlayerX: u,
+                  globalContextVal: p(Se),
+                  isFront: false,
+                }),
                 To.Single({ id: "Player", skin: o, x: 20 }),
                 Ry.Single({
                   id: "PlayerTrail",
                   skin: o,
                   mockPlayerX: u,
                   globalContextVal: p(Se),
+                  isFront: true,
                 }),
                 P({
                   id: "Username",
@@ -63231,12 +63452,20 @@ var version = "v1.7.2";
               }),
               We({ color: Re, width: e, height: t - 31, x: 3, y: -20 }),
               We({ color: Be, width: e, height: t - 30, y: -20 }),
+              Ry.Single({
+                id: "PlayerTrailBack",
+                skin: a,
+                mockPlayerX: i,
+                globalContextVal: s(Se),
+                isFront: false
+              }),
               To.Single({ id: "Player", skin: a, x: 20 }),
               Ry.Single({
                 id: "PlayerTrail",
                 skin: a,
                 mockPlayerX: i,
                 globalContextVal: s(Se),
+                isFront: true
               }),
               /*n({
                 text: "OFFLINE",
@@ -63252,7 +63481,7 @@ var version = "v1.7.2";
               Se.Single({
                 context: () => e.globalContextVal,
                 sprites: [
-                  tg.Single(
+                  playerTrail.Single(
                     {
                       x: 20 - e.mockPlayerX,
                       playerX: e.mockPlayerX,
@@ -63261,6 +63490,8 @@ var version = "v1.7.2";
                       crashed: false,
                       paused: false,
                       skin: e.skin,
+                      isFront: e.isFront,
+                      
                     },
                     (t) => {
                       (t.x = 20 - e.mockPlayerX),

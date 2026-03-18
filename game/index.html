@@ -87,7 +87,6 @@
         console.error(
           `__crash_game__${e.message || e}. Line: ${line} col: ${col}`,
         );
-        debugger;
       };
       window.onunhandledrejection = (event) => {
         if (event.reason instanceof Error) {

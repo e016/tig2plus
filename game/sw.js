@@ -579,7 +579,7 @@ var version = "1.1.2",
   spineFiles = [
     ...getSpineFiles("arrow", "arrow_animation"),
     ...getSpineFiles("blockSwitchButton", "Switch_button"),
-    ...getSpineFiles("bossSpaceGun", "bossSpaceGun"),
+    ...getSpineFiles("bossSpaceGun", "spaceship_2"),
     ...getSpineFiles("checkpointBasic"),
     ...getSpineFiles("checkpointEnd"),
     ...getSpineFiles("checkpointHit"),
