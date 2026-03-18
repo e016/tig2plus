@@ -17936,25 +17936,25 @@ var version = "v1.7.2";
               },
               isBonusTheme: true,
             },
-            /* infinite: {
+            infinite: {
               id: "infinite",
               name: "Infinite",
-              colour: "#00c0c0",
+              colour: "#89dde1",
               player: Wt.skins.headphone,
-              background: "classic",
+              background: "infinite",
               objects: {
                 block: "infinite",
                 spike: "infinite",
-                platform: "classic",
-                dirChange: "world2",
-                flag: "world2",
-                saw: "classic",
+                platform: "infinite",
+                dirChange: "world1",
+                flag: "world1",
+                saw: "world1",
                 bottom: "classic",
-                switch: "world2",
+                switch: "infinite",
                 speedChange: "speed",
               },
               isBonusTheme: true,
-            },*/
+            },
             synthwave: ta,
             world1: Jt,
             red: Kt,
@@ -29548,6 +29548,8 @@ var version = "v1.7.2";
                 return [];
               case "classic":
                 return ["images/themes/classic/background/fade.png"];
+              case "infinite":
+                return ["images/themes/infinite/background/tile.png"];
               case "red":
                 return [
                   "images/themes/red/background/background.png",
@@ -29806,9 +29808,10 @@ var version = "v1.7.2";
               "images/themes/world2/speed-change.png",
               "images/themes/world1/arrow.png",
               "images/themes/world2/arrow.png",
+              "images/themes/infinite/arrow.png",
               "images/themes/world2/double-jump.png",
-              `images/themes/${e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
-              `images/themes/${e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
+              `images/themes/${e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
+              `images/themes/${e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
               "images/themes/world2/red.png",
@@ -29879,7 +29882,8 @@ var version = "v1.7.2";
                     "images/themes/world3/bottom/block.png",
                     "images/themes/world1/bottom/block.png",
                     `images/themes/classic/bottom/block.png`,
-                    "images/themes/skater/bottom/block.png"
+                    "images/themes/skater/bottom/block.png",
+                    `images/themes/infinite/bottom/block.png`,
                   ]
                 : [
                     `images/themes/${e.objects.bottom}/bottom/block-small-spike.png`,
@@ -30358,7 +30362,7 @@ var version = "v1.7.2";
                   
                     
                   imageArray({
-                    fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                    fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30419,7 +30423,7 @@ var version = "v1.7.2";
                     },
                   }),
                   imageArray({
-                    fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                    fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30598,7 +30602,7 @@ var version = "v1.7.2";
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       imageArray({
-                        fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                        fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                         props: () => ({}),
                         update: (e, t) => {
                           (e.width = t.width * sawRatio),
@@ -30615,7 +30619,7 @@ var version = "v1.7.2";
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       imageArray({
-                        fileName: `images/themes/${e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                        fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                         props: () => ({}),
                         update: (e, t) => {
                           (e.width = t.width * sawRatio),
@@ -31139,7 +31143,11 @@ var version = "v1.7.2";
             f = a.direction,
             y = false;
           for (const { object: e, index: a } of n) {
-            if ("enemy" === e.type && a === i) continue;
+            if ("enemy" === e.type )  {
+              if (a === i) {
+                continue
+              }
+            }
             let n = e;
             if ("switchPlatform" === e.type && 0 !== e.rotation) {
               if (-90 !== e.rotation) {
@@ -31188,10 +31196,8 @@ var version = "v1.7.2";
                 t.width / 2,
                 t.height / 4,
                 n
-              )) && (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
-              /*if (n.canJumpThrough && !t.isCompatible && m) {
-                m = null;
-              }*/
+              )) && (m = be.getObjectTopY(e, t.x, t.y) + t.height / 2, (n.kind == "walkerHelmet" && !t.isCompatible && (y = true)));
+            
           }
           const E = o[r[i]].y;
           if (ho(a, e))
@@ -31266,26 +31272,20 @@ var version = "v1.7.2";
               0.75 * t.height,
               n
             ) && (newDirection = 1)),
-              (n.canJumpThrough && !t.isCompatible) && (be.rectTouchesRect2(
+              (n.canJumpThrough && !t.isCompatible) || (be.rectTouchesRect2(
                 newX + t.width / 4,
                 newY + t.height / 8,
                 t.width / 2,
                 0.75 * t.height,
                 n
               ) && (newDirection = -1)),
-              ((t.isCompatible || !n.canJumpThrough || be.rectTouchesRect2(
-                newX,
-                newY - t.height - 1,
-                t.width / 2,
-                t.height / 4,
-                n
-              )) && be.rectTouchesRect2(
+              (true && be.rectTouchesRect2(
                 newX,
                 newY - t.height * (3 / 8),
                 t.width / 2,
                 t.height / 4,
                 n
-              )) && (edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2);
+              )) && (edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2, (n.kind == "walkerHelmet" && !t.isCompatible && (y = true)));
           };
           for (const spring of springs) {
             /*be.rectTouchesRect2(
@@ -31335,7 +31335,7 @@ var version = "v1.7.2";
                 offsetX: a.offsetX + newDirection * u,
                 offsetY: null === edge ? a.offsetY - h : edge - E,
                 direction: newDirection,
-                speedY: null === edge ? a.speedY + (l * (0.4 / 4.875)) * df : 0,
+                speedY: null === edge ? Math.min(a.speedY + (l * (0.4 / 4.875)), df * l * 2) * df : 0,
               });
         }
         
@@ -32926,7 +32926,7 @@ var version = "v1.7.2";
                           y(
                             {
                               fileName:
-                                `images/themes/${e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
+                                `images/themes/${e.theme == "infinite" ? "infinite" : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
                               width: e.switchButton.width,
                               height: e.switchButton.height,
                             },
@@ -44565,6 +44565,7 @@ var version = "v1.7.2";
               (e[(e.Speed = 14)] = "Speed"),
               (e[(e.Fighter = 15)] = "Fighter");
             e[(e.Classic = 16)] = "Classic";
+            e[(e.Infinite = 17)] = "Infinite";
           })(Od || (Od = {})),
           (function (e) {
             (e[(e.Gun = 0)] = "Gun"),
@@ -44574,7 +44575,7 @@ var version = "v1.7.2";
               (e[(e.Skateboard = 4)] = "Skateboard"),
               (e[(e.Punch = 5)] = "Punch");
               (e[(e.Drill = 6)] = "Drill");
-              (e[(e.Ghost = 7)] = "Drill");
+              (e[(e.Ghost = 7)] = "Ghost");
           })(Cd || (Cd = {})),
           (function (e) {
             (e[(e.Movement = 0)] = "Movement"),
@@ -44669,6 +44670,7 @@ var version = "v1.7.2";
               (e[(e.Speed = 14)] = "Speed"),
               (e[(e.Fighter = 15)] = "Fighter");
             e[(e.Classic = 16)] = "Classic";
+            e[(e.Infinite = 17)] = "Infinite";
           })(xd || (xd = {}));
         const Bd = Gc([
             mc,
@@ -45369,6 +45371,7 @@ var version = "v1.7.2";
             [xd.Speed]: "speed",
             [xd.Fighter]: "fighter",
             [xd.Classic]: "classic",
+            [xd.Infinite]: "infinite",
           },
           Vd = {
             [Nd.Dragonfly]: hl.songs.dragonfly,
@@ -50210,7 +50213,7 @@ var version = "v1.7.2";
               ),
             ],
           }),
-          ig = makeSprite({
+          flyingTrail = makeSprite({
             init: ({ props: e }) => ({
               path: Array.from({ length: eg }, () => ({
                 x: 40,
@@ -50222,32 +50225,32 @@ var version = "v1.7.2";
             loop({ state: e, props: t }) {
               if (!t.paused) {
                 e.path.shift();
-                for (let t = 0; t < e.path.length; t++) e.path[t].x -= 10;
+                for (let i = 0; i < e.path.length; i++) e.path[i].x -= 10 * t.playerDir;
                 t.crashed ||
                   e.path.push({
                     x: 40,
                     topY: t.playerY + 8,
                     bottomY: t.playerY - 8,
                   }),
-                  (function (e, t) {
-                    const a = t.length,
-                      i = Math.ceil(a / 2),
-                      n = 2 * a,
-                      s = n,
-                      o = s - e.length;
-                    if (o > 0) for (let t = 0; t < o; t++) e.push([0, 0]);
-                    else o < 0 && (e.length = s);
-                    for (let a = 0; a < t.length; a++) {
-                      const { x: s, topY: o, bottomY: r } = t[a];
-                      if (a < i) {
-                        const t = n - i + a;
-                        (e[t][0] = s), (e[t][1] = o);
+                  (function (renderPath, path) {
+                    const pathLength = path.length,
+                      halfPathLength = Math.ceil(pathLength / 2),
+                      twicePathLength = 2 * pathLength,
+                      anotherTwicePathLength = twicePathLength,
+                      o = anotherTwicePathLength - renderPath.length;
+                    if (o > 0) for (let t = 0; t < o; t++) renderPath.push([0, 0]);
+                    else o < 0 && (renderPath.length = anotherTwicePathLength);
+                    for (let a = 0; a < path.length; a++) {
+                      const { x: pointX, topY: topY, bottomY: bottomY } = path[a];
+                      if (a < halfPathLength) {
+                        const t = twicePathLength - halfPathLength + a;
+                        (renderPath[t][0] = pointX), (renderPath[t][1] = topY);
                       } else {
-                        const t = a - i;
-                        (e[t][0] = s), (e[t][1] = o);
+                        const t = a - halfPathLength;
+                        (renderPath[t][0] = pointX), (renderPath[t][1] = topY);
                       }
-                      const l = n - 1 - i - a;
-                      (e[l][0] = s), (e[l][1] = r);
+                      const l = twicePathLength - 1 - halfPathLength - a;
+                      (renderPath[l][0] = pointX), (renderPath[l][1] = bottomY);
                     }
                   })(e.renderPath, e.path);
               }
@@ -50262,12 +50265,12 @@ var version = "v1.7.2";
                         type: "linearHoriz",
                         width: 80,
                         colors: [e.colour, e.colour],
-                        opacities: [0, 1],
+                        opacities: [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0],
                       },
                       y: -5,
                     },
                     (a) => {
-                      (a.path = t.renderPath), (a.x = e.playerX - 40);
+                      (a.path = t.renderPath), (a.x = e.playerX - 40), (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]);
                     }
                   ),
                 ]
@@ -50461,7 +50464,7 @@ var version = "v1.7.2";
           dg = makeSprite({
             init: ({ props: { playerX: e } }) =>
               e < 0
-                ? { startX1: e, startX2: e + cg }
+                ? { startX1: e, startX2: e + cg}
                 : { startX1: e - cg, startX2: e },
             loop({ state: e, props: { playerX: t } }) {
               e.startX1 - t < -950
@@ -50748,10 +50751,11 @@ var version = "v1.7.2";
                       },
                       array: () => e.bossState.bullets,
                     }),
-                    ig.Single(
+                    flyingTrail.Single(
                       {
                         playerX: t.bossX,
                         playerY: t.bossY,
+                        playerDir: 1,
                         crashed: t.destroyed,
                         paused: e.paused,
                         frame: e.frame,
@@ -52811,24 +52815,24 @@ var version = "v1.7.2";
                         case "classic":
                           return [
                             Go.Single(
-                        {
-                          targetOpacity: 1,
-                          targetColor: e.bgColor || "#00FFFF",
-                          sprite: (s, k) => [
-                            p(
-            {
-              color: k.ref,
-              width: t.size.fullWidth,
-              height: t.size.fullHeight,
-              opacity: 1,
-            },
-            (j) => 
-              ((j.width = t.size.fullWidth),
-                (j.height = t.size.fullHeight),
-                (j.color = k.ref),
-              (j.opacity = 1))
-          )
-                          ],
+                              {
+                                targetOpacity: 1,
+                                targetColor: e.bgColor || "#00FFFF",
+                                sprite: (s, k) => [
+                                  p(
+                                    {
+                                      color: k.ref,
+                                      width: t.size.fullWidth,
+                                      height: t.size.fullHeight,
+                                      opacity: 1,
+                                    },
+                                    (j) => 
+                                      ((j.width = t.size.fullWidth),
+                                        (j.height = t.size.fullHeight),
+                                        (j.color = k.ref),
+                                      (j.opacity = 1))
+                                  )
+                                ],
                         },
                         (t) => {
                           t.targetOpacity = 1;
@@ -52848,6 +52852,21 @@ var version = "v1.7.2";
                                 (t.playerX = 0), (t.playerY = 0);
                               }
                             ),
+                          ];
+                        case "infinite":
+                          return [
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/infinite/background/tile.png",
+                                height: cg,
+                                playerX: 0.03 * e.cameraX,
+                                playerY: 0
+                              },
+                              (t) => {
+                                (t.playerX = 0.03 * e.cameraX), (t.playerY = 0);
+                              }
+                            )
                           ];
                         case "fighter":
                           return [
@@ -55122,10 +55141,11 @@ var version = "v1.7.2";
                   ? onChange(
                       () => e.attempt,
                       () => [
-                        ig.Single(
+                        flyingTrail.Single(
                           {
                             playerX: e.playerX,
                             playerY: e.playerY,
+                            playerDir: e.playerDir,
                             crashed: e.crashed,
                             paused: e.paused,
                             colour: "#FCDA45",
@@ -55134,6 +55154,7 @@ var version = "v1.7.2";
                           (t) => {
                             (t.playerX = e.playerX),
                               (t.playerY = e.playerY),
+                              (t.playerDir = e.playerDir),
                               (t.crashed = e.crashed),
                               (t.paused = e.paused),
                               (t.frame = e.frame);
