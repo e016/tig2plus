@@ -39927,7 +39927,7 @@ var version = "v1.7.6";
                 );
                 (U.switchButtons.on = e.switchesOn),
                   (U.jumpSwitch.on = e.switchesOn),
-                  
+                  (U.dashing = false),
                   (U.playerScale = 1),
                   (U.playerScaleX = U.playerScale),
                   (U.playerScaleY = U.playerScale),
@@ -42877,7 +42877,7 @@ var version = "v1.7.6";
               pathToLevel: [],
               maxFrames: 10740,
               difficulty: 5,
-            },*/
+            },
             {
               levelName: "Nacreous Snowmelt",
               levelFileName: "nacreous-snowmelt",
@@ -42889,7 +42889,7 @@ var version = "v1.7.6";
               pathToLevel: [],
               maxFrames: 10996,
               difficulty: 6,
-            },
+            },*/
             {
               levelName: "Aurora",
               levelFileName: "aurora",
