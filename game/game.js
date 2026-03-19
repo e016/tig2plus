@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.7.4";
+var version = "v1.7.5";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -50364,7 +50364,7 @@ var version = "v1.7.4";
                 topY: e.playerY + (e.radius || 8) + (e.offset || 0),
                 bottomY: e.playerY - (e.radius || 8) + (e.offset || 0),
               })),
-              renderPath: Array.from({ length: eg * 2 }, () => [0, 0]),
+              renderPath: Array.from({ length: eg * 2 + 1 }, () => [0, 0]),
               lastPlayerX: e.playerX,
               width: 0,
               // 20.454545454545453 is Sky Fracture's jump frames
@@ -50400,9 +50400,9 @@ var version = "v1.7.4";
                       i = Math.ceil(a / 2),
                       n = (2 * a),
                       s = n,
-                      o = s - renderPath.length;
+                      o = s - renderPath.length - 1;
                     if (o > 0) for (let t = 0; t < o; t++) renderPath.push([0, 0]);
-                    else o < 0 && (renderPath.length = s);
+                    else o < 0 && (renderPath.length = s + 1);
                     for (let pathIdx = 0; pathIdx < path.length; pathIdx++) {
                       const { x: pathX, topY: o, bottomY: r } = path[pathIdx];
                       if (pathIdx < i) {
@@ -50415,6 +50415,8 @@ var version = "v1.7.4";
                       const l = n - 1 - i - pathIdx;
                       (renderPath[l][0] = (pathX * props.playerDir)), (renderPath[l][1] = r);
                     }
+                    (renderPath[renderPath.length - 1] = [renderPath[0][0], renderPath[0][1]]);
+                    // (renderPath[renderPath.length - 2] = [renderPath[renderPath.length - 1][0], renderPath[renderPath.length - 1][1]]);
                   })(e.renderPath, e.path);
                   e.lastPlayerX = props.playerX;
                   
@@ -50442,6 +50444,7 @@ var version = "v1.7.4";
                       (a.fillGradient.width = Math.abs(t.width));
                     }
                   ),
+                  
                 ]
               ),
             ]},
@@ -67294,7 +67297,7 @@ var version = "v1.7.4";
                     y(
                       { fileName: "images/level/arrow-up.png", width: 14, height: 8, x: 200, y: h, rotation: -90 },
                       (a) => {
-                        a.x = 100 + 170 + Math.abs(t.arrowY);
+                        a.x = 200 + Math.abs(t.arrowY);
                         console.log(t.arrowY);
                       }
                     ),
