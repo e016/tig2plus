@@ -39833,17 +39833,21 @@ var version = "v1.7.4";
             for (let e = 0; e < inViewLayout.directionChanges.length; e++) {
               const t = inViewLayout.directionChanges[e],
                 a = t.x - U.playerX;
-              (Z(t) || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(t, U.playerX, U.playerStacks))) &&
-                ((1 === U.playerDir && "left" === t.direction && a <= 0) ||
-                  (-1 === U.playerDir && "right" === t.direction && a >= 0)) &&
-                (inViewLayoutState.directionChanges[e].wasHit
-                  ? (U.crashed = true)
-                  : ((U.playerDir = "left" === t.direction ? -1 : 1),
-                    t.fixSync ? (U.playerX += a) : void 0,
-                    (U.playerX += a),
-                    (ttt = t),
-                    (ee = e),
-                    null == v || v.hitDirectionChange()));
+
+                if (Z(t) || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(t, U.playerX, U.playerStacks))) {
+                  if ((1 === U.playerDir && "left" === t.direction && a <= 0) ||
+                    (-1 === U.playerDir && "right" === t.direction && a >= 0)) {
+                      (inViewLayoutState.directionChanges[e].wasHit
+                        ? (U.crashed = true)
+                        : ((U.playerDir = "left" === t.direction ? -1 : 1),
+                          t.fixSync ? (U.playerX += a) : void 0,
+                          (U.playerX += a),
+                          (ttt = t),
+                          (ee = e),
+                          null == v || v.hitDirectionChange()));
+                  }
+                }
+              
             }
             null !== ee &&
               xa.updateLayoutStateField(
@@ -52572,78 +52576,90 @@ var version = "v1.7.4";
                           var n =
                             bgTable[e.bgColor] || (i ? "#a20e05" : "#40a5de");
                           return [
-                            Hg.Single(
-                              { isRed: i, isVirtual: v, bgColor: n },
-                              (x) => {
-                                x.bgColor =
-                                  bgTable[e.bgColor] ||
-                                  (i ? "#a20e05" : "#40a5de");
-                              }
-                            ),
-                            dg.Single(
+                            Go.Single(
                               {
-                                fileName:
-                                  "images/themes/world3/background/cloud.png",
-                                playerX: 0.01 * e.cameraX,
-                                playerY: 0.01 * e.cameraY,
-                                height: 356,
+                                targetOpacity: 1,
+                                targetColor: bgTable[e.bgColor] || (i ? "#a20e05" : "#40a5de"),
+                                sprite: (s, k) => [
+                                  Hg.Single(
+                                    { isRed: i, isVirtual: v, bgColor: k.ref },
+                                    (x) => {
+                                      x.bgColor =
+                                        k.ref;
+                                    }
+                                  ),
+                                  dg.Single(
+                                    {
+                                      fileName:
+                                        "images/themes/world3/background/cloud.png",
+                                      playerX: 0.01 * e.cameraX,
+                                      playerY: 0.01 * e.cameraY,
+                                      height: 356,
+                                    },
+                                    (t) => {
+                                      (t.playerX = 0.01 * e.cameraX),
+                                        (t.playerY = 0.01 * e.cameraY);
+                                    }
+                                  ),
+                                  dg.Single(
+                                    {
+                                      fileName:
+                                        "images/themes/world3/background/stars-moving.png",
+                                      playerX: 0.02 * e.cameraX,
+                                      playerY: 0.02 * e.cameraY,
+                                      height: 240,
+                                    },
+                                    (t) => {
+                                      (t.playerX = 0.02 * e.cameraX),
+                                        (t.playerY = 0.02 * e.cameraY);
+                                    }
+                                  ),
+                                  qg.Single({ paused: e.paused }, (x) => {
+                                    x.paused = e.paused;
+                                  }),
+                                  Xg.Single(
+                                    { isRed: i, isVirtual: v, bgColor: k.ref },
+                                    (x) => {
+                                      x.bgColor = k.ref;
+                                    }
+                                  ),
+                                  Ig.Single(
+                                    {
+                                      color: k.ref,
+                                      narrowLines: true,
+                                      opacity: 0.5,
+                                      thickness: 4,
+                                      playerX: 0.04 * e.cameraX,
+                                      offsetY: -100,
+                                    },
+                                    (t) => {
+                                      t.playerX = 0.04 * e.cameraX;
+                                      t.color = k.ref;
+                                    }
+                                  ),
+                                  Ig.Single(
+                                    {
+                                      color: k.ref,
+                                      narrowLines: true,
+                                      opacity: 0.5,
+                                      thickness: 4,
+                                      playerX: 0.04 * e.cameraX,
+                                      offsetY: -100,
+                                      scaleY: -1,
+                                    },
+                                    (t) => {
+                                      t.playerX = 0.04 * e.cameraX;
+                                      t.color = k.ref;
+                                    }
+                                  ),
+                                ],
                               },
                               (t) => {
-                                (t.playerX = 0.01 * e.cameraX),
-                                  (t.playerY = 0.01 * e.cameraY);
+                                t.targetOpacity = 1;
+                                t.targetColor = bgTable[e.bgColor] || (i ? "#a20e05" : "#40a5de");
                               }
-                            ),
-                            dg.Single(
-                              {
-                                fileName:
-                                  "images/themes/world3/background/stars-moving.png",
-                                playerX: 0.02 * e.cameraX,
-                                playerY: 0.02 * e.cameraY,
-                                height: 240,
-                              },
-                              (t) => {
-                                (t.playerX = 0.02 * e.cameraX),
-                                  (t.playerY = 0.02 * e.cameraY);
-                              }
-                            ),
-                            qg.Single({ paused: e.paused }, (x) => {
-                              x.paused = e.paused;
-                            }),
-                            Xg.Single(
-                              { isRed: i, isVirtual: v, bgColor: n },
-                              (x) => {
-                                x.bgColor = bgTable[e.bgColor] || n;
-                              }
-                            ),
-                            Ig.Single(
-                              {
-                                color: n,
-                                narrowLines: true,
-                                opacity: 0.5,
-                                thickness: 4,
-                                playerX: 0.04 * e.cameraX,
-                                offsetY: -100,
-                              },
-                              (t) => {
-                                t.playerX = 0.04 * e.cameraX;
-                                t.color = bgTable[e.bgColor] || n;
-                              }
-                            ),
-                            Ig.Single(
-                              {
-                                color: n,
-                                narrowLines: true,
-                                opacity: 0.5,
-                                thickness: 4,
-                                playerX: 0.04 * e.cameraX,
-                                offsetY: -100,
-                                scaleY: -1,
-                              },
-                              (t) => {
-                                t.playerX = 0.04 * e.cameraX;
-                                t.color = bgTable[e.bgColor] || n;
-                              }
-                            ),
+                            ), 
+                            
                             rg.Array({
                               props: (j) => ({
                                 moveX: e.cameraX * Dg,
@@ -52991,12 +53007,12 @@ var version = "v1.7.4";
                                       (j.opacity = 1))
                                   )
                                 ],
-                        },
-                        (t) => {
-                          t.targetOpacity = 1;
-                          t.targetColor = e.bgColor || "#00FFFF";
-                        }
-                      ), 
+                              },
+                              (t) => {
+                                t.targetOpacity = 1;
+                                t.targetColor = e.bgColor || "#00FFFF";
+                              }
+                            ), 
                             dg.Single(
                               {
                                 fileName:
@@ -53788,6 +53804,7 @@ var version = "v1.7.4";
           Hg = makeSprite({
             render({ props: e, device: t }) {
               const darker = (col, amt) => {
+                console.warn(col)
                 var num = parseInt(col.substring(1), 16);
                 var r = (num >> 16) / amt;
                 var b = ((num >> 8) & 0x00ff) / amt;

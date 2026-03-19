@@ -87,6 +87,7 @@
         console.error(
           `__crash_game__${e.message || e}. Line: ${line} col: ${col}`,
         );
+        window.onbeforeunload = undefined;
       };
       window.onunhandledrejection = (event) => {
         if (event.reason instanceof Error) {
