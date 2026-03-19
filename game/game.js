@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.7.3";
+var version = "v1.7.4";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -15478,7 +15478,7 @@ var version = "v1.7.3";
                   ? ((s = document.createElement(e.tagName || "input")), (e.tagName || (s.type = "text")))
                   : ((s = document.createElement(e.tagName || "textarea")),
                     (s.style.resize = "none")),
-                (e.setupElement?.(s)),
+                (e.setupElement ? e.setupElement(s) : null),
                 (s.id = n),
                 (s.style.position = "absolute"),
                 (s.style.boxSizing = "border-box"),
@@ -15787,7 +15787,7 @@ var version = "v1.7.3";
                   void 0 !== l
                     ? l
                     : "beat",
-                multiplier: e == undefined ? 1 : e?.multiplier || 1,
+                multiplier: e ? e.multiplier || 1 : 1,
               };
             },
             newSpike: (e) => {
@@ -15843,9 +15843,9 @@ var version = "v1.7.3";
                   null !== (n = null == e ? void 0 : e.height) && void 0 !== n
                     ? n
                     : 30,
-                steel: e == undefined ? false : e?.steel || false,
-                isVoid: e == undefined ? false : e?.isVoid || false,
-                isBoss: e == undefined ? false : e?.isBoss || false,
+                steel: e == null ? false : e.steel || false,
+                isVoid: e == null ? false : e.isVoid || false,
+                isBoss: e == null ? false : e.isBoss || false,
                 rotation: 0,
                 skipMissiles: false,
                 snapSize: null == e ? void 0 : e.snapSize,
@@ -49967,7 +49967,7 @@ var version = "v1.7.3";
             render: ({ props: e, getContext }) => { 
               if (!e.isFront) {
                 return [
-                  onChange(() => e.attempt,
+                  onChange(() => e.attempt || e.touchingPortals,
                     () => [
                       universalFlyingTrail.Single(
                         {
@@ -50372,7 +50372,6 @@ var version = "v1.7.3";
                   e.width = width;
                   
                 }
-                e.path.sort((e, t) => (e.x - t.x));
                 e.path.shift();
                 
                 for (let t = 0; t < e.path.length; t++) e.path[t].x -= Math.abs(props.playerX - e.lastPlayerX);
@@ -50384,7 +50383,6 @@ var version = "v1.7.3";
                     bottomY: props.playerY - (props.radius || 8) + (props.offset || 0),
                   });
                 }
-                e.path.sort((e, t) => (e.x - t.x) * props.playerDir);
                   (function (renderPath, path) {
                     const a = path.length,
                       i = Math.ceil(a / 2),
@@ -51691,7 +51689,8 @@ var version = "v1.7.3";
                           (a.path[1][0] = l - e.thickness / 2),
                           (a.path[1][1] = c),
                           (a.path[2][0] = l + e.thickness / 2),
-                          (a.path[2][1] = c);
+                          (a.path[2][1] = c),
+                          (a.fillColor = e.color);
                       },
                       array: () => a,
                     }),
@@ -51715,7 +51714,8 @@ var version = "v1.7.3";
                         (a.path[0][0] = o),
                           (a.path[0][1] = r),
                           (a.path[1][0] = l),
-                          (a.path[1][1] = c);
+                          (a.path[1][1] = c),
+                          (a.color = e.color);
                       },
                       array: () => a,
                     }),
@@ -52571,13 +52571,13 @@ var version = "v1.7.3";
                           const i = "world3Red" === e.theme.id,
                             v = false; //"virtual" === e.theme.id,
                           var n =
-                            bgTable[e?.bgColor] || (i ? "#a20e05" : "#40a5de");
+                            bgTable[e.bgColor] || (i ? "#a20e05" : "#40a5de");
                           return [
                             Hg.Single(
                               { isRed: i, isVirtual: v, bgColor: n },
                               (x) => {
                                 x.bgColor =
-                                  bgTable[e?.bgColor] ||
+                                  bgTable[e.bgColor] ||
                                   (i ? "#a20e05" : "#40a5de");
                               }
                             ),
@@ -52613,7 +52613,7 @@ var version = "v1.7.3";
                             Xg.Single(
                               { isRed: i, isVirtual: v, bgColor: n },
                               (x) => {
-                                x.bgColor = bgTable[e?.bgColor] || n;
+                                x.bgColor = bgTable[e.bgColor] || n;
                               }
                             ),
                             Ig.Single(
@@ -52627,7 +52627,7 @@ var version = "v1.7.3";
                               },
                               (t) => {
                                 t.playerX = 0.04 * e.cameraX;
-                                t.color = bgTable[e?.bgColor] || n;
+                                t.color = bgTable[e.bgColor] || n;
                               }
                             ),
                             Ig.Single(
@@ -52642,7 +52642,7 @@ var version = "v1.7.3";
                               },
                               (t) => {
                                 t.playerX = 0.04 * e.cameraX;
-                                t.color = bgTable[e?.bgColor] || n;
+                                t.color = bgTable[e.bgColor] || n;
                               }
                             ),
                             rg.Array({
@@ -52715,6 +52715,7 @@ var version = "v1.7.3";
                               },
                               (t) => {
                                 t.playerX = 0.04 * e.cameraX;
+                                t.color = "#181d4c";
                               }
                             ),
                           ];
@@ -53795,7 +53796,7 @@ var version = "v1.7.3";
                 var newColor = g | (b << 8) | (r << 16);
                 return "#" + newColor.toString(16);
               };
-              var bgColor =
+              let bgColor =
                 e.bgColor == "#40a5de" || e.bgColor == "#a20e05"
                   ? undefined
                   : e.bgColor;
@@ -53837,18 +53838,24 @@ var version = "v1.7.3";
               return [
                 p(
                   {
-                    color: "",
+                    color: {
+                      type: "linearVert",
+                      height: t.size.fullHeight,
+                      colors: calcColors(bgColor),
+                    },
                     gradient: a,
                     width: t.size.fullWidth,
                     height: t.size.fullHeight,
                   },
-                  (e) => {
-                    (e.width = t.size.fullWidth),
-                      (e.height = t.size.fullHeight),
-                      (e.gradient = {
+                  (a) => {
+                    (a.width = t.size.fullWidth),
+                      (a.height = t.size.fullHeight),
+                      (a.gradient = {
                         type: "linearVert",
                         height: t.size.fullHeight,
-                        colors: calcColors(bgColor),
+                        colors: calcColors(e.bgColor == "#40a5de" || e.bgColor == "#a20e05"
+                        ? undefined
+                        : e.bgColor),
                       }); // this might be a bad idea...
                   }
                 ),
@@ -53861,16 +53868,16 @@ var version = "v1.7.3";
             },
           }),
           Xg = makeSprite({
-            render({ props: e, device: t }) {
-              var a = e.isRed ? "#a20e05" : "#40a5de",
-                i = e.isRed ? 0.7 : 0.5;
+            render({ props: props, device: t }) {
+              var a = props.isRed ? "#a20e05" : "#40a5de",
+                i = props.isRed ? 0.7 : 0.5;
               return [
                 ...Array.from({ length: 15 }).flatMap((e, n) => {
                   const s = 2 * Math.pow(n, 1.8);
                   return [
                     m(
                           {
-                            color: e?.bgColor || a,
+                            color: props.bgColor || a,
                             opacity: i,
                             path: [
                               [-t.size.fullWidth / 2, 0],
@@ -53880,12 +53887,12 @@ var version = "v1.7.3";
                             thickness: 0.1 + s / 40,
                           },
                           (t) => {
-                            t.color = e?.bgColor || a;
+                            t.color = props.bgColor || a;
                           }
                         ),
                         m(
                           {
-                            color: e?.bgColor || a,
+                            color: props.bgColor || a,
                             opacity: i,
                             path: [
                               [-t.size.fullWidth / 2, 0],
@@ -53895,7 +53902,7 @@ var version = "v1.7.3";
                             thickness: 0.1 + s / 40,
                           },
                           (t) => {
-                            t.color = e?.bgColor || a;
+                            t.color = props.bgColor || a;
                           }
                         ),
                       
@@ -54552,8 +54559,8 @@ var version = "v1.7.3";
                   cameraY: t.cameraY,
                   paused: t.paused,
                   switchBlockSpikes: t.switchBlockSpikes,
-                  bgColor: t?.bgColor,
-                  flash: t?.flash || 0,
+                  bgColor: t.bgColor,
+                  flash: t.flash || 0,
                   speedMultiplier: t.playerSpeedMultiplier,
                   plain: a(Se).settings.plainBackground,
                   frame: t.frame,
@@ -54571,8 +54578,8 @@ var version = "v1.7.3";
                     (e.cameraY = t.cameraY),
                     (e.paused = t.paused),
                     (e.speedMultiplier = t.playerSpeedMultiplier),
-                    (e.bgColor = t?.bgColor),
-                    (e.flash = t?.flash || 0),
+                    (e.bgColor = t.bgColor),
+                    (e.flash = t.flash || 0),
                     (e.gravity = t.gravity || 1),
                     (e.switchBlockSpikes = t.switchBlockSpikes),
                     (e.plain = a(Se).settings.plainBackground),
@@ -54639,7 +54646,7 @@ var version = "v1.7.3";
                   started: t.started,
                   playerScale: t.playerScale,
                   bgColor: t.bgColor,
-                  flash: t?.flash,
+                  flash: t.flash,
                   gravity: t.gravity,
                   dashing: t.dashing,
                   isGravity: t.isGravity
@@ -54692,7 +54699,7 @@ var version = "v1.7.3";
                     (e.hidePlayer = t.hidePlayer),
                     (e.started = t.started);
                   (e.flash = t.flash),
-                    (e.bgColor = t?.bgColor),
+                    (e.bgColor = t.bgColor),
                     (e.gravity = t.gravity);
                 }
               ),
@@ -55329,7 +55336,8 @@ var version = "v1.7.3";
                         paused: e.paused,
                         skin: e.playerSkin,
                         isFront: false,
-                        attempt: e.attempt
+                        attempt: e.attempt,
+                        touchingPortals: null !== e.touchingPortals
                       },
                       (t) => {
                         (t.playerX = e.playerX),
@@ -55338,7 +55346,8 @@ var version = "v1.7.3";
                           (t.crashed = e.crashed || e.hidePlayer),
                           (t.paused = e.paused),
                           (t.skin = e.playerSkin),
-                          (t.attempt = e.attempt);
+                          (t.attempt = e.attempt),
+                          (t.touchingPortals = null !== e.touchingPortals);
                       }
                     ),
                 ifConditional(
@@ -55466,14 +55475,16 @@ var version = "v1.7.3";
                                     crashed: false,
                                     paused: e.paused,
                                     isFront: false,
-                                    attempt: e.attempt
+                                    attempt: e.attempt,
+                                    touchingPortals: null !== e.touchingPortals,
                                   }),
                                   update: (t, { y: a }) => {
                                     (t.playerX = e.playerX),
                                       (t.playerY = a),
                                       (t.playerDir = e.playerDir),
                                       (t.paused = e.paused),
-                                      (t.attempt = e.attempt);
+                                      (t.attempt = e.attempt),
+                                      (t.touchingPortals = null !== e.touchingPortals)
                                   },
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
@@ -55587,6 +55598,7 @@ var version = "v1.7.3";
                         paused: e.paused,
                         skin: e.playerSkin,
                         isFront: true,
+                        touchingPortals: null !== e.touchingPortals
                       },
                       (t) => {
                         (t.playerX = e.playerX),
@@ -55594,7 +55606,8 @@ var version = "v1.7.3";
                           (t.playerDir = e.playerDir),
                           (t.crashed = e.crashed || e.hidePlayer),
                           (t.paused = e.paused),
-                          (t.skin = e.playerSkin);
+                          (t.skin = e.playerSkin),
+                          (t.touchingPortals = null !== e.touchingPortals);
                       }
                     ),
                 Wo.Single(
@@ -58801,7 +58814,7 @@ var version = "v1.7.3";
                     fadeOutAttempts: Ml(t.mutValues.levelState.bossState),
                     playerScale: t.mutValues.levelState.playerScale,
                     bgColor: t.mutValues.levelState.bgColor,
-                    flash: t?.flash,
+                    flash: t.flash,
                     gravity: t.gravity,
                     dashing: t.dashing,
                     isGravity: t.isGravity
@@ -58895,9 +58908,9 @@ var version = "v1.7.3";
                     (a.cameraX = l),
                       (a.cameraY = t.mutValues.levelState.cameraY),
                       (a.bgColor =
-                        t.mutValues.levelState?.bgColor || "#00FFFF"),
-                      (a.flash = t.mutValues.levelState?.flash || 0),
-                      (a.gravity = t.mutValues.levelState?.gravity || 0),
+                        t.mutValues.levelState.bgColor || "#00FFFF"),
+                      (a.flash = t.mutValues.levelState.flash || 0),
+                      (a.gravity = t.mutValues.levelState.gravity || 0),
                       (a.showAttempts = void 0 === e.editor),
                       (a.tutorial = t.tutorial),
                       (a.hidePlayer = Ll(
@@ -66273,10 +66286,10 @@ var version = "v1.7.3";
                               ...s.ownedItems,
                               ...e.rewards.items.map((r) =>
                                 bp.getItemFromResponse(
-                                  r?.itemId,
-                                  r?.version || 1,
-                                  r?.defId,
-                                  r?.quantity || 1
+                                  r.itemId,
+                                  r.version || 1,
+                                  r.defId,
+                                  r.quantity || 1
                                 )
                               ),
                             ];
@@ -68179,7 +68192,7 @@ var version = "v1.7.3";
                     playerScale:
                       e.viewingPlayer.state.mutValues.levelState.playerScale,
                     bgColor: t.bgColor,
-                    flash: t?.flash,
+                    flash: t.flash,
                     gravity: t.gravity,
                     dashing: t.dashing,
                     isGravity: t.isGravity
@@ -68249,9 +68262,9 @@ var version = "v1.7.3";
                       (a.otherPlayersInfo = p),
                       (a.cameraX = gm(r.playerX, t.cameraXOffset)),
                       (a.cameraY = t.cameraY);
-                    a.bgColor = t?.bgColor;
-                    a.flash = t?.flash;
-                    a.gravity = t?.gravity;
+                    a.bgColor = t.bgColor;
+                    a.flash = t.flash;
+                    a.gravity = t.gravity;
                   }
                 ),
               ];
