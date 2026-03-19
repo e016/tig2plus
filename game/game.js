@@ -64469,7 +64469,7 @@ var version = "v1.7.6";
                   y: t / 2 - 75,
                 }),
                 n({
-                  text: o.skin.name,
+                  text: localize(o.skin.name),
                   font: { size: 16, weight: 800 },
                   color: ve,
                   x: 110,

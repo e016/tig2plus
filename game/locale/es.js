@@ -205,4 +205,5 @@ Translator["es"] = {
   RESOLUTION: "RESOLUCION",
   SCORE: "PUNTAJE",
   "NEW HIGH SCORE": "NUEVO RÉCORD",
+  "Pixel": "Pixél",
 };
