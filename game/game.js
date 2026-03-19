@@ -49978,7 +49978,7 @@ var version = "v1.7.4";
                           playerDir: e.playerDir,
                           paused: e.paused,
                           crashed: e.crashed,
-                          colour: e.skin.trail.topColour,
+                          trail: e.skin.trail,
                           frame: e.frame || 0
                         },
                         (t) => {
@@ -49987,9 +49987,8 @@ var version = "v1.7.4";
                             (t.playerDir = e.playerDir),
                             (t.paused = e.paused),
                             (t.crashed = e.crashed), 
-                            (t.colour = e.skin.trail.topColour),
+                            (t.trail = e.skin.trail),
                             (t.frame = e.frame || 0);
-                            console.log(e.skin.trail.topColour)
                         }
                       ),
                       universalFlyingTrail.Single(
@@ -50001,7 +50000,7 @@ var version = "v1.7.4";
                           playerDir: e.playerDir,
                           paused: e.paused,
                           crashed: e.crashed,
-                          colour: e.skin.trail.topColour,
+                          trail: e.skin.trail,
                           frame: e.frame || 0
                         },
                         (t) => {
@@ -50010,9 +50009,8 @@ var version = "v1.7.4";
                             (t.playerDir = e.playerDir),
                             (t.paused = e.paused),
                             (t.crashed = e.crashed), 
-                            (t.colour = e.skin.trail.topColour),
+                            (t.trail = e.skin.trail),
                             (t.frame = e.frame || 0);
-                            console.log(e.skin.trail.topColour)
                         }
                       )
                     ]
@@ -50418,13 +50416,14 @@ var version = "v1.7.4";
                       fillGradient: {
                         type: "linearHoriz",
                         width: t.width,
-                        colors: [e.colour, e.colour],
+                        colors: [e.trail.bottomColour, e.trail.topColour],
                         opacities: [0, 1],
                       },
                     },
                     (a) => {
                       (a.x = (e.playerX - t.space * e.playerDir)),
                       (a.path = t.renderPath),
+                      (a.fillGradient.colors = e.playerDir > 0 ? [e.trail.bottomColour, e.trail.topColour] : [e.trail.topColour, e.trail.bottomColour]),
                       (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]),
                       (a.fillGradient.width = Math.abs(t.width));
                     }
@@ -53776,7 +53775,7 @@ var version = "v1.7.4";
           },
           world3BgTable = function () {
             return {
-              "#FF0000": "#a20e05",
+              "#FF0000": "#a20e06",
               "#ffea00": "#ebdc0c",
               "#00FF00": "#65de40",
               "#0000ff": "#2538e0",
