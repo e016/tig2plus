@@ -50365,13 +50365,11 @@ var version = "v1.7.5";
           }),
           universalFlyingTrail = makeSprite({
             init: ({ props: e }) => ({
-              path: Array.from({ length: eg * 2 }, () => ({
+              path: Array.from({ length: eg + 6 + 2 }, () => ({
                 x: 40,
                 y: e.playerY + (e.offset || 0),
-                topY: e.playerY + (e.radius || 8) + (e.offset || 0),
-                bottomY: e.playerY - (e.radius || 8) + (e.offset || 0),
               })),
-              renderPath: Array.from({ length: eg * 2 }, () => [0, 0]),
+              renderPath: Array.from({ length: eg + 6 + 2 }, () => [0, 0]),
               lastPlayerX: e.playerX,
               width: 0,
               // 20.454545454545453 is Sky Fracture's jump frames
@@ -50399,8 +50397,6 @@ var version = "v1.7.5";
                   e.path.push({
                     x: e.space,
                     y: props.playerY + (props.offset || 0),
-                    topY: props.playerY + (props.radius || 8) + (props.offset || 0),
-                    bottomY: props.playerY - (props.radius || 8) + (props.offset || 0),
                   });
                 };
                 
