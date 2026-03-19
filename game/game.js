@@ -49971,54 +49971,62 @@ var version = "v1.7.4";
             render: ({ props: e, getContext }) => { 
               if (!e.isFront) {
                 return [
-                  onChange(() => e.attempt || e.touchingPortals,
+                  onChange(() => e.attempt,
                     () => [
-                      universalFlyingTrail.Single(
-                        {
-                          playerX: e.playerX,
-                          playerY: e.playerY,
-                          radius: 4,
-                          offset: 10.5,
-                          playerDir: e.playerDir,
-                          paused: e.paused,
-                          crashed: e.crashed,
-                          trail: e.skin.trail,
-                          frame: e.frame || 0
-                        },
-                        (t) => {
-                          (t.playerX = e.playerX),
-                            (t.playerY = e.playerY),
-                            (t.playerDir = e.playerDir),
-                            (t.paused = e.paused),
-                            (t.crashed = e.crashed), 
-                            (t.trail = e.skin.trail),
-                            (t.frame = e.frame || 0);
-                        }
+                      onChange( () => e.touchingPortals,
+                        () => [
+                          universalFlyingTrail.Single(
+                            {
+                              playerX: e.playerX,
+                              playerY: e.playerY,
+                              radius: 4,
+                              offset: 10.5,
+                              playerDir: e.playerDir,
+                              paused: e.paused,
+                              crashed: e.crashed,
+                              trail: e.skin.trail,
+                              frame: e.frame || 0,
+                              touchingPortals: e.touchingPortals,
+                            },
+                            (t) => {
+                              (t.playerX = e.playerX),
+                                (t.playerY = e.playerY),
+                                (t.playerDir = e.playerDir),
+                                (t.paused = e.paused),
+                                (t.crashed = e.crashed), 
+                                (t.trail = e.skin.trail),
+                                (t.frame = e.frame || 0),
+                                (t.touchingPortals = e.touchingPortals);
+                            }
+                          ),
+                          universalFlyingTrail.Single(
+                            {
+                              playerX: e.playerX,
+                              playerY: e.playerY,
+                              radius: 4,
+                              offset: -10.5,
+                              playerDir: e.playerDir,
+                              paused: e.paused,
+                              crashed: e.crashed,
+                              trail: e.skin.trail,
+                              frame: e.frame || 0,
+                              touchingPortals: e.touchingPortals
+                            },
+                            (t) => {
+                              (t.playerX = e.playerX),
+                                (t.playerY = e.playerY),
+                                (t.playerDir = e.playerDir),
+                                (t.paused = e.paused),
+                                (t.crashed = e.crashed), 
+                                (t.trail = e.skin.trail),
+                                (t.frame = e.frame || 0),
+                                (t.touchingPortals = e.touchingPortals);
+                            }
+                          )
+                      
+                        ]
                       ),
-                      universalFlyingTrail.Single(
-                        {
-                          playerX: e.playerX,
-                          playerY: e.playerY,
-                          radius: 4,
-                          offset: -10.5,
-                          playerDir: e.playerDir,
-                          paused: e.paused,
-                          crashed: e.crashed,
-                          trail: e.skin.trail,
-                          frame: e.frame || 0
-                        },
-                        (t) => {
-                          (t.playerX = e.playerX),
-                            (t.playerY = e.playerY),
-                            (t.playerDir = e.playerDir),
-                            (t.paused = e.paused),
-                            (t.crashed = e.crashed), 
-                            (t.trail = e.skin.trail),
-                            (t.frame = e.frame || 0);
-                        }
-                      )
-                    ]
-                  )
+                    ])
                 ]
               }
               return [ conditional(
@@ -50366,7 +50374,9 @@ var version = "v1.7.4";
             loop({ state: e, props: props }) {
               let calculatedX = e.path.map(part => part.x),
               width = e.path.length === 0 ? 0 : Math.abs(0 - Math.min(...calculatedX));
-              
+              if (props.touchingPortals && (Math.abs(props.playerX - e.lastPlayerX) / 0.16125) > 5) {
+                  e.lastPlayerX = props.playerX
+              }
               
               if (!props.paused) {
                 if (!props.crashed) {
