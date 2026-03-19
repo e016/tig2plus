@@ -17603,6 +17603,12 @@ var version = "v1.7.3";
             pixelSkull: Lt,
             pixelRobot: Mt,
             pixelCrown: Dt,
+            pixelSpaceship: {
+              name: "Pixel Spaceship",
+              fileName: "pixelspaceship",
+              size: 50,
+              trail: ct({ form: "pixel" }),
+            },
             boss2: jt,
             alien: gt,
             machine: vt,
@@ -50357,8 +50363,8 @@ var version = "v1.7.3";
             }),
             loop({ state: e, props: props }) {
               let calculatedX = e.path.map(part => part.x),
-              width = e.path.length === 0 ? 0 : (0 - Math.min(...calculatedX));
-              e.path.sort((e, t) => e - t);
+              width = e.path.length === 0 ? 0 : Math.abs(0 - Math.min(...calculatedX));
+              
               
               if (!props.paused) {
                 if (!props.crashed) {
@@ -50366,6 +50372,7 @@ var version = "v1.7.3";
                   e.width = width;
                   
                 }
+                e.path.sort((e, t) => (e.x - t.x));
                 e.path.shift();
                 
                 for (let t = 0; t < e.path.length; t++) e.path[t].x -= Math.abs(props.playerX - e.lastPlayerX);
@@ -50377,7 +50384,7 @@ var version = "v1.7.3";
                     bottomY: props.playerY - (props.radius || 8) + (props.offset || 0),
                   });
                 }
-
+                e.path.sort((e, t) => (e.x - t.x) * props.playerDir);
                   (function (renderPath, path) {
                     const a = path.length,
                       i = Math.ceil(a / 2),
@@ -50390,16 +50397,17 @@ var version = "v1.7.3";
                       const { x: pathX, topY: o, bottomY: r } = path[pathIdx];
                       if (pathIdx < i) {
                         const t = n - i + pathIdx;
-                        (renderPath[t][0] = (pathX)), (renderPath[t][1] = o);
+                        (renderPath[t][0] = (pathX * props.playerDir)), (renderPath[t][1] = o);
                       } else {
                         const t = pathIdx - i;
-                        (renderPath[t][0] = (pathX)), (renderPath[t][1] = o);
+                        (renderPath[t][0] = (pathX * props.playerDir)), (renderPath[t][1] = o);
                       }
                       const l = n - 1 - i - pathIdx;
-                      (renderPath[l][0] = (pathX)), (renderPath[l][1] = r);
+                      (renderPath[l][0] = (pathX * props.playerDir)), (renderPath[l][1] = r);
                     }
                   })(e.renderPath, e.path);
                   e.lastPlayerX = props.playerX;
+                  
               }
             },
             render: ({ props: e, state: t, getContext: a }) => {
@@ -50419,7 +50427,7 @@ var version = "v1.7.3";
                     (a) => {
                       (a.x = (e.playerX - t.space * e.playerDir)),
                       (a.path = t.renderPath),
-                      (a.fillGradient.opacities = [Math.min(e.playerDir, 0), Math.max(e.playerDir, 0)]),
+                      (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]),
                       (a.fillGradient.width = Math.abs(t.width));
                     }
                   ),
