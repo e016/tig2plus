@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.7.5";
+var version = "v1.7.6";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -39927,6 +39927,7 @@ var version = "v1.7.5";
                 );
                 (U.switchButtons.on = e.switchesOn),
                   (U.jumpSwitch.on = e.switchesOn),
+                  
                   (U.playerScale = 1),
                   (U.playerScaleX = U.playerScale),
                   (U.playerScaleY = U.playerScale),
@@ -39956,6 +39957,7 @@ var version = "v1.7.5";
                   )
                     ? U.jumping
                     : t.jumping),
+                  (a.justDownInputTimer = 0),
                   (a.playerY = e.y - e.height / 2 + 15),
                   (a.playerGradY = t.playerGradY),
                   (a.playerRot = t.playerRot),
@@ -45061,7 +45063,7 @@ var version = "v1.7.5";
                         x: e,
                         y: t,
                         direction: Wd[a],
-                        multiUse: b === undefined ? false : multUse[b ?? 0],
+                        multiUse: b === undefined ? false : multUse[b || 0],
                         fixSync: 1 == n,
                       })
                     ),
@@ -45204,13 +45206,13 @@ var version = "v1.7.5";
                                 e.y,
                                 1,
                                 0,
-                                +e.steel + +e.isVoid * 2 + +e?.isBoss * 3,
+                                +e.steel + +e.isVoid * 2 + +e.isBoss * 3,
                               ]
                             : [
                                 e.x,
                                 e.y,
                                 0,
-                                +e.steel + +e.isVoid * 2 + +e?.isBoss * 3,
+                                +e.steel + +e.isVoid * 2 + +e.isBoss * 3,
                               ]
                           : e.width === $.miniBlockWidth
                           ? [e.x, e.y, 1]
@@ -52148,7 +52150,7 @@ var version = "v1.7.5";
                             Go.Single(
                         {
                           targetOpacity: 1,
-                          targetColor: bgTable[e?.bgColor] || "#050229",
+                          targetColor: bgTable[e.bgColor] || "#050229",
                           sprite: (s, k) => [
                             p(
             {
@@ -52167,7 +52169,7 @@ var version = "v1.7.5";
                         },
                         (t) => {
                           t.targetOpacity = 1;
-                          t.targetColor = bgTable[e?.bgColor] || t.targetColor || "#050229";
+                          t.targetColor = bgTable[e.bgColor] || t.targetColor || "#050229";
                         }
                       ),
                             rg.Array({
@@ -52208,10 +52210,10 @@ var version = "v1.7.5";
                                 )
                               : Go.Single(
                         {
-                          targetOpacity: bgTable[e?.bgColor] == undefined
+                          targetOpacity: bgTable[e.bgColor] == undefined
                                         ? 0
                                         : 0.6,
-                          targetColor: bgTable[e?.bgColor] || "#050229",
+                          targetColor: bgTable[e.bgColor] || "#050229",
                           sprite: (s, k) => [
                             p(
             {
