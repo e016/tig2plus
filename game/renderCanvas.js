@@ -1450,6 +1450,8 @@ var renderCanvas;
         blue: "#0000ff",
         teal: "#008080",
         aqua: "#00ffff",
+        orange: "#ffa500",
+        beige: "#f5f5dc"
       },
       Z = { r: 0, g: 0, b: 0, a: 1 };
     function calculateRGB(e, t) {

@@ -15434,6 +15434,12 @@ var version = "v1.7.5";
             falseSprites: a,
           }),
           onChange = (e, t) => ({ type: "onChange", value: e, sprites: t }),
+          lineMask = (e) => ({
+            type: "lineMask",
+            path: e.path,
+            x: e.x || 0,
+            y: e.y || 0,
+          }),
           circleMask = (e) => ({
             type: "circleMask",
             radius: e.radius,
@@ -50359,12 +50365,13 @@ var version = "v1.7.5";
           }),
           universalFlyingTrail = makeSprite({
             init: ({ props: e }) => ({
-              path: Array.from({ length: eg }, () => ({
+              path: Array.from({ length: eg * 2 }, () => ({
                 x: 40,
+                y: e.playerY + (e.offset || 0),
                 topY: e.playerY + (e.radius || 8) + (e.offset || 0),
                 bottomY: e.playerY - (e.radius || 8) + (e.offset || 0),
               })),
-              renderPath: Array.from({ length: eg * 2 + 1 }, () => [0, 0]),
+              renderPath: Array.from({ length: eg * 2 }, () => [0, 0]),
               lastPlayerX: e.playerX,
               width: 0,
               // 20.454545454545453 is Sky Fracture's jump frames
@@ -50391,34 +50398,13 @@ var version = "v1.7.5";
                 if (!props.crashed) {
                   e.path.push({
                     x: e.space,
+                    y: props.playerY + (props.offset || 0),
                     topY: props.playerY + (props.radius || 8) + (props.offset || 0),
                     bottomY: props.playerY - (props.radius || 8) + (props.offset || 0),
                   });
-                }
-                  (function (renderPath, path) {
-                    const a = path.length,
-                      i = Math.ceil(a / 2),
-                      n = (2 * a),
-                      s = n,
-                      o = s - renderPath.length - 1;
-                    if (o > 0) for (let t = 0; t < o; t++) renderPath.push([0, 0]);
-                    else o < 0 && (renderPath.length = s + 1);
-                    for (let pathIdx = 0; pathIdx < path.length; pathIdx++) {
-                      const { x: pathX, topY: o, bottomY: r } = path[pathIdx];
-                      if (pathIdx < i) {
-                        const t = n - i + pathIdx;
-                        (renderPath[t][0] = (pathX * props.playerDir)), (renderPath[t][1] = o);
-                      } else {
-                        const t = pathIdx - i;
-                        (renderPath[t][0] = (pathX * props.playerDir)), (renderPath[t][1] = o);
-                      }
-                      const l = n - 1 - i - pathIdx;
-                      (renderPath[l][0] = (pathX * props.playerDir)), (renderPath[l][1] = r);
-                    }
-                    (renderPath[renderPath.length - 1] = [renderPath[0][0], renderPath[0][1]]);
-                    // (renderPath[renderPath.length - 2] = [renderPath[renderPath.length - 1][0], renderPath[renderPath.length - 1][1]]);
-                  })(e.renderPath, e.path);
-                  e.lastPlayerX = props.playerX;
+                };
+                
+                    e.lastPlayerX = props.playerX;
                   
               }
             },
@@ -50427,23 +50413,26 @@ var version = "v1.7.5";
               ifConditional(
                 () => !a(Se).settings.hidePlayerTrail && a(Se).settings.flyingTrail,
                 () => [
-                  m(
-                    {
-                      fillGradient: {
-                        type: "linearHoriz",
-                        width: t.width,
-                        colors: [e.trail.bottomColour, e.trail.topColour],
-                        opacities: [0, 1],
-                      },
-                    },
-                    (a) => {
+                  f({
+                    props: () => ({
+                      thickness: e.radius * 2,
+                      color: e.trail.bottomColour,
+                      opacity: 1,
+                      lineCap: "butt",
+                      path: [
+                        [-15, -15],
+                        [0, 15],
+                        [15, -15],
+                      ],
+                    }),
+                    update: (a, n, index) => {
                       (a.x = (e.playerX - t.space * e.playerDir)),
-                      (a.path = t.renderPath),
-                      (a.fillGradient.colors = e.playerDir > 0 ? [e.trail.bottomColour, e.trail.topColour] : [e.trail.topColour, e.trail.bottomColour]),
-                      (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]),
-                      (a.fillGradient.width = Math.abs(t.width));
-                    }
-                  ),
+                      (a.path = t.path[index + 1] ? [[n.x * e.playerDir, n.y], [t.path[index + 1].x * e.playerDir, t.path[index + 1].y]] : [[n.x * e.playerDir, n.y], [n.x * e.playerDir, n.y]]),
+
+                      (a.opacity = index / t.path.length);
+                    },
+                    array: () => t.path,
+                  }),
                   
                 ]
               ),
