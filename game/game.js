@@ -29911,6 +29911,7 @@ var version = "v1.7.7";
             ],
             getThemeImagesPixel: (e) => [
               "images/themes/world2/drill/ground.png",
+              "images/themes/world2/drill/idle.png",
               "images/themes/punch/ground.png",
               "images/themes/punch/idle.png",
               "images/themes/punch/punch.png",
@@ -32568,7 +32569,7 @@ var version = "v1.7.7";
                       return [
                         y(
                           {
-                            fileName: "images/themes/punch/idle.png",
+                            fileName: "images/themes/world2/drill/idle.png",
                             width: 80,
                             height: 80,
                           },
@@ -32846,9 +32847,10 @@ var version = "v1.7.7";
                         height: 97,
                         df: e.df,
                         hideOnEnd: true,
+                        rotation: 90,
                       },
                       (t) => {
-                        (t.x = e.powerup.x), (t.y = e.powerup.y), (t.df = e.df);
+                        (t.x = e.powerup.x), (t.y = e.powerup.y + 30), (t.df = e.df);
                       }
                     ),
                   ];
