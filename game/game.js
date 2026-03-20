@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.7.7";
+var version = "v1.7.8";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -30096,6 +30096,8 @@ var version = "v1.7.7";
             ],
             levelImages: [
               "images/level/attempt.png",
+              "images/themes/classic/menu-button.png",
+              "images/themes/classic/menu-button-pressed.png",
               "images/level/arrow-up.png",
               "images/level/arrow-down-stroke.png",
               "images/achievement/rewards/autopilot.png",
@@ -39069,7 +39071,7 @@ var version = "v1.7.7";
             };
           },
           menuButtonSprite = makeSprite({
-            render: ({ props: e }) => [
+            render: ({ props: e, device }) => [
               conditional(
                 () => e.hidden,
                 () => [
@@ -39077,14 +39079,14 @@ var version = "v1.7.7";
                     onPress: e.onPress,
                     width: 50,
                     height: 50,
-                    sprites: (e) => [
+                    sprites: (t) => [
                       bgOnly || showcaseOnly
                         ? null
                         : c({
-                            font: { size: 8, style: "italic" },
+                            font: { family: e.theme == "classic" ? "Akashi" : "Montserrat", size: 8, style: "italic" },
                             text: localize("MENU"),
                             rotation: -8,
-                            color: e ? Ae : Be,
+                            color: t ? Ae : Be,
                             strokeColor: Te,
                             strokeThickness: 2,
                             opacity: 0.3,
@@ -39092,14 +39094,38 @@ var version = "v1.7.7";
                     ],
                   }),
                 ],
-                () => [
-                  Je.Single({
+                () => e.theme == "classic" ? ([
+                    _e.Single({
+                      width: 50,
+                      height: 28,
+                      onPress: () => {
+                        device.audio("audio/global/button.wav").play(0), e.onPress();
+                      },
+                      sprites: (t) => [
+                        conditional(() => t, 
+                          () => [
+                            y({
+                              fileName: "images/themes/classic/menu-button-pressed.png",
+                              width: 50,
+                              height: 28
+                            })
+                          ],
+                          () => [
+                            y({
+                              fileName: "images/themes/classic/menu-button.png",
+                              width: 50,
+                              height: 28
+                            })
+                          ])
+                      ],
+                    }),
+                  ]) : [Je.Single({
                     width: 50,
                     height: 50,
                     onPress: e.onPress,
                     text: localize("MENU"),
-                  }),
-                ]
+                  })]
+                
               ),
             ],
           }),
@@ -57017,13 +57043,14 @@ var version = "v1.7.7";
                   {
                     hidden: n.hideUi,
                     onPress: e.onPause,
-                    x: (-a.size.fullWidth / 2 + 50) * (n.mirrorMenuButton ? -1 : 1),
-                    y: a.size.fullHeight / 2 - 50,
+                    x: (-a.size.fullWidth / 2 + (e.theme == "classic" ? 35 : 50)) * (n.mirrorMenuButton ? -1 : 1),
+                    y: a.size.fullHeight / 2 - (e.theme == "classic" ? 25 : 50),
+                    theme: e.theme
                   },
                   (e) => {
                     (e.hidden = i(Se).settings.hideUi),
-                      (e.x = (-a.size.fullWidth / 2 + 50) * (i(Se).settings.mirrorMenuButton ? -1 : 1)),
-                      (e.y = a.size.fullHeight / 2 - 50);
+                      (e.x = (-a.size.fullWidth / 2 + (e.theme == "classic" ? 35 : 50)) * (i(Se).settings.mirrorMenuButton ? -1 : 1)),
+                      (e.y = a.size.fullHeight / 2 - (e.theme == "classic" ? 25 : 50));
                   }
                 ),
                 ifConditional(
@@ -58638,12 +58665,13 @@ var version = "v1.7.7";
                   O,
                   C
                 ));
-              const k =
+              const isClassic = t.bigMutValues.inViewLayout.properties.theme.id == "classic",
+              k =
                   be.pointInBox2(
-                    (-a.size.fullWidth / 2 + 50) * ((n(Se).settings.mirrorMenuButton || (void 0 === e.backToMenu)) ? -1 : 1),
-                    a.size.fullHeight / 2 - 50,
+                    (-a.size.fullWidth / 2 + (isClassic ? 35 : 50)) * ((n(Se).settings.mirrorMenuButton || (void 0 === e.backToMenu)) ? -1 : 1),
+                    a.size.fullHeight / 2 - (isClassic ? 25 : 50),
                     50,
-                    50,
+                    isClassic? 28 : 50,
                     f.pointer.x,
                     f.pointer.y
                   ) ||
@@ -59010,6 +59038,7 @@ var version = "v1.7.7";
                         attempt: t.mutValues.levelState.attempt,
                         frame: t.mutValues.levelState.frame,
                         maxFrame: e.maxFrame,
+                        theme: t.bigMutValues.inViewLayout.properties.theme.id,
                         fadeOutAttempts: Ml(t.mutValues.levelState.bossState) || i(Se).settings.fadeOutAttempts,
                         onResume: () => {
                           if (
@@ -59136,6 +59165,7 @@ var version = "v1.7.7";
                           (a.paused = t.paused),
                           (a.attempt = t.mutValues.levelState.attempt),
                           a.crashed || (a.frame = t.mutValues.levelState.frame),
+                          (a.theme = t.bigMutValues.inViewLayout.properties.theme.id),
                           (a.fadeOutAttempts = Ml(t.mutValues.levelState.bossState) || i(Se).settings.fadeOutAttempts);
                       }
                     ),
