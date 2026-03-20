@@ -41245,6 +41245,12 @@ var version = "v1.7.7";
                 author: "MDK",
                 fileName: "audio/tracks/mdk-critical-hit-extended.mp3",
                 bpm: 130,
+              },
+              mindsOfTheMad: {
+                name: "Minds Of The Mad",
+                author: "Exilelord",
+                fileName: "audio/tracks/exilelord-minds-of-the-mad.mp3",
+                bpm: 150,
               }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -44589,7 +44595,8 @@ var version = "v1.7.7";
             e[(e.Color = 48)] = "Color";
             e[(e.FunkyPunky = 49)] = "FunkyPunky";
             e[(e.OctaneExtended = 50)] = "OctaneExtended";
-            e[(e.CritialHitExtended = 51)] = "CriticalHitExtended";
+            e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
+            e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -44696,7 +44703,8 @@ var version = "v1.7.7";
             e[(e.Color = 48)] = "Color";
             e[(e.FunkyPunky = 49)] = "FunkyPunky";
             e[(e.OctaneExtended = 50)] = "OctaneExtended";
-            e[(e.CritialHitExtended = 51)] = "CriticalHitExtended";
+            e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
+            e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45471,7 +45479,8 @@ var version = "v1.7.7";
             [Nd.Color]: hl.songs.color,
             [Nd.FunkyPunky]: hl.songs.funkyPunky,
             [Nd.OctaneExtended ]: hl.songs.octaneExtended,
-            [Nd.CritialHitExtended]: hl.songs.criticalHitExtended,
+            [Nd.CriticalHitExtended]: hl.songs.criticalHitExtended,
+            [Nd.MindsOfTheMad]: hl.songs.mindsOfTheMad
           },
           Hd = {
             [ld.Rot0]: 0,
