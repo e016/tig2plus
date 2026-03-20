@@ -41279,6 +41279,12 @@ var version = "v1.7.8";
                 author: "Exilelord",
                 fileName: "audio/tracks/exilelord-minds-of-the-mad.mp3",
                 bpm: 150,
+              },
+              electrodynamix: {
+                name: "Electrodynamix",
+                author: "dj-Nate",
+                fileName: "audio/tracks/dj-nate-electrodynamix.mp3",
+                bpm: 127,
               }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -44625,6 +44631,7 @@ var version = "v1.7.8";
             e[(e.OctaneExtended = 50)] = "OctaneExtended";
             e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
             e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
+            e[(e.Electrodynamix = 53)] = "Electrodynamix";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -44733,6 +44740,7 @@ var version = "v1.7.8";
             e[(e.OctaneExtended = 50)] = "OctaneExtended";
             e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
             e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
+            e[(e.Electrodynamix = 53)] = "Electrodynamix";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45506,9 +45514,10 @@ var version = "v1.7.8";
             [Nd.Zenith]: hl.songs.zenith,
             [Nd.Color]: hl.songs.color,
             [Nd.FunkyPunky]: hl.songs.funkyPunky,
-            [Nd.OctaneExtended ]: hl.songs.octaneExtended,
+            [Nd.OctaneExtended]: hl.songs.octaneExtended,
             [Nd.CriticalHitExtended]: hl.songs.criticalHitExtended,
-            [Nd.MindsOfTheMad]: hl.songs.mindsOfTheMad
+            [Nd.MindsOfTheMad]: hl.songs.mindsOfTheMad,
+            [Nd.Electrodynamix]: hl.songs.electrodynamix
           },
           Hd = {
             [ld.Rot0]: 0,
