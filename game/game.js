@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.7.6";
+var version = "v1.7.7";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -31138,7 +31138,7 @@ var version = "v1.7.6";
               ];
             },
           }),
-          oo = (e, t, a) => ({ x: e, y: t, width: 23, height: 12, speed: a, df: 0 }),
+          oo = (e, t, a) => ({ x: e, y: t, width: 23, height: 12, speed: a, frame: 0 }),
           ro = 3 * G.jumpDistance,
           lo = { ref: false },
           co = { ref: 0 };
@@ -41233,6 +41233,19 @@ var version = "v1.7.6";
                 fileName: "audio/tracks/george-antian-rose-funky-punky.mp3",
                 bpm: 128,
               },
+              octaneExtended: {
+                name: "Octane (Full ver.)",
+                author: "Inova",
+                fileName: "audio/tracks/inova-octane-extended.mp3",
+                bpm: 125,
+                label: "Argofox"
+              },
+              criticalHitExtended: {
+                name: "Critical Hit (Extended Cut)",
+                author: "MDK",
+                fileName: "audio/tracks/mdk-critical-hit-extended.mp3",
+                bpm: 130,
+              }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -44575,6 +44588,8 @@ var version = "v1.7.6";
             e[(e.Zenith = 47)] = "Zenith";
             e[(e.Color = 48)] = "Color";
             e[(e.FunkyPunky = 49)] = "FunkyPunky";
+            e[(e.OctaneExtended = 50)] = "OctaneExtended";
+            e[(e.CritialHitExtended = 51)] = "CriticalHitExtended";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -44680,6 +44695,8 @@ var version = "v1.7.6";
             e[(e.Zenith = 47)] = "Zenith";
             e[(e.Color = 48)] = "Color";
             e[(e.FunkyPunky = 49)] = "FunkyPunky";
+            e[(e.OctaneExtended = 50)] = "OctaneExtended";
+            e[(e.CritialHitExtended = 51)] = "CriticalHitExtended";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45452,7 +45469,9 @@ var version = "v1.7.6";
             [Nd.Soulless4]: hl.songs.soulless4,
             [Nd.Zenith]: hl.songs.zenith,
             [Nd.Color]: hl.songs.color,
-            [Nd.FunkyPunky]: hl.songs.funkyPunky
+            [Nd.FunkyPunky]: hl.songs.funkyPunky,
+            [Nd.OctaneExtended ]: hl.songs.octaneExtended,
+            [Nd.CritialHitExtended]: hl.songs.criticalHitExtended,
           },
           Hd = {
             [ld.Rot0]: 0,
