@@ -42957,7 +42957,7 @@ var version = "v1.7.8";
             {
               levelName: "ClutterFunk?",
               levelFileName: "clutterfunk-whaike3",
-              author: "Whaike3",
+              author: "HIimaburger",
               song: hl.songs.clutterfunk,
               unlockedByIndex: null,
               x: 0,
