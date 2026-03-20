@@ -29911,6 +29911,7 @@ var version = "v1.7.8";
             ],
             getThemeImagesPixel: (e) => [
               "images/themes/world2/drill/ground.png",
+              "images/themes/world2/drill/idle.png",
               "images/themes/punch/ground.png",
               "images/themes/punch/idle.png",
               "images/themes/punch/punch.png",
@@ -32570,7 +32571,7 @@ var version = "v1.7.8";
                       return [
                         y(
                           {
-                            fileName: "images/themes/punch/idle.png",
+                            fileName: "images/themes/world2/drill/idle.png",
                             width: 80,
                             height: 80,
                           },
@@ -32848,9 +32849,10 @@ var version = "v1.7.8";
                         height: 97,
                         df: e.df,
                         hideOnEnd: true,
+                        rotation: 90,
                       },
                       (t) => {
-                        (t.x = e.powerup.x), (t.y = e.powerup.y), (t.df = e.df);
+                        (t.x = e.powerup.x), (t.y = e.powerup.y + 30), (t.df = e.df);
                       }
                     ),
                   ];
@@ -41271,6 +41273,12 @@ var version = "v1.7.8";
                 author: "MDK",
                 fileName: "audio/tracks/mdk-critical-hit-extended.mp3",
                 bpm: 130,
+              },
+              mindsOfTheMad: {
+                name: "Minds Of The Mad",
+                author: "Exilelord",
+                fileName: "audio/tracks/exilelord-minds-of-the-mad.mp3",
+                bpm: 150,
               }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -44615,7 +44623,8 @@ var version = "v1.7.8";
             e[(e.Color = 48)] = "Color";
             e[(e.FunkyPunky = 49)] = "FunkyPunky";
             e[(e.OctaneExtended = 50)] = "OctaneExtended";
-            e[(e.CritialHitExtended = 51)] = "CriticalHitExtended";
+            e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
+            e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -44722,7 +44731,8 @@ var version = "v1.7.8";
             e[(e.Color = 48)] = "Color";
             e[(e.FunkyPunky = 49)] = "FunkyPunky";
             e[(e.OctaneExtended = 50)] = "OctaneExtended";
-            e[(e.CritialHitExtended = 51)] = "CriticalHitExtended";
+            e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
+            e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45497,7 +45507,8 @@ var version = "v1.7.8";
             [Nd.Color]: hl.songs.color,
             [Nd.FunkyPunky]: hl.songs.funkyPunky,
             [Nd.OctaneExtended ]: hl.songs.octaneExtended,
-            [Nd.CritialHitExtended]: hl.songs.criticalHitExtended,
+            [Nd.CriticalHitExtended]: hl.songs.criticalHitExtended,
+            [Nd.MindsOfTheMad]: hl.songs.mindsOfTheMad
           },
           Hd = {
             [ld.Rot0]: 0,
