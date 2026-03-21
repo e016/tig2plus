@@ -29895,6 +29895,7 @@ var version = "v1.7.8";
               "images/themes/arrows/arrow-outline.png",
               "images/themes/arrows/arrow-outline-selected.png",
               `images/themes/blank/bottom/block.png`,
+              
               ...Js([e.player], []),
               ...qs(e.background),
               ...("world2" === e.objects.flag
@@ -39164,7 +39165,7 @@ var version = "v1.7.8";
                 state: e.checkpoint.state,
               },
               bossState:
-                t && e.bossState ? t.cloneState(e.bossState) : e.bossState,
+                t && e.bossState ? t.cloneState ? t.cloneState(e.bossState) : Object.assign({}, e.bossState) : e.bossState,
               onObject: e.onObject && {
                 array: e.onObject.array,
                 index: e.onObject.index,
@@ -39422,7 +39423,7 @@ var version = "v1.7.8";
               e.playerBullets,
               (t) => t.x < e.playerX + 950 && t.x > e.playerX - 950
             );
-          }
+          };
           n.boss &&
             e.bossState &&
             (n.boss.loop({
@@ -40988,7 +40989,7 @@ var version = "v1.7.8";
             e,
             t = "noShorten",
             a,
-            i = [Zr(e.layout, null, null, null)],
+            i = [Zr(e.layout, e.boss, null, null)],
             n = 0,
             s = 0
           ) {
@@ -58768,7 +58769,7 @@ var version = "v1.7.8";
               );
             },
             loop({
-              props: e,
+              props: props,
               state: t,
               device: a,
               getInputs: i,
@@ -58780,7 +58781,7 @@ var version = "v1.7.8";
               if (
                 (null ===
                   (o =
-                    null === (s = e.online) || void 0 === s
+                    null === (s = props.online) || void 0 === s
                       ? void 0
                       : s.loop) ||
                   void 0 === o ||
@@ -58788,18 +58789,18 @@ var version = "v1.7.8";
                 !t.hasStarted)
               ) {
                 if (
-                  !(null === (r = e.online) || void 0 === r ? void 0 : r.start)
+                  !(null === (r = props.online) || void 0 === r ? void 0 : r.start)
                 )
                   return;
                 (t.hasStarted = true),
-                  a.audio(e.level.song.fileName).play({
-                    fromPosition: e.level.songStartSecs + y.headphonesDelay,
+                  a.audio(props.level.song.fileName).play({
+                    fromPosition: props.level.songStartSecs + y.headphonesDelay,
                     overwrite: true,
                   });
               }
-              if (e.paused) return void a.audio(e.level.song.fileName).pause();
-              if (t.paused && !e.online) return;
-              const { level: E, editor: b, mockPlayerInput: S } = e,
+              if (props.paused) return void a.audio(props.level.song.fileName).pause();
+              if (t.paused && !props.online) return;
+              const { level: E, editor: b, mockPlayerInput: S } = props,
                 { levelSpeeds: I, df: _ } = t,
                 { speed: v } = I;
               null !== t.tutorial.textState &&
@@ -58861,10 +58862,10 @@ var version = "v1.7.8";
                 !t.mutValues.levelState.finishedLevel
               ) {
                 t.mutValues.levelState.frameCountSinceHistoryPush++;
-                const e = 37.5 / Math.max(v, Math.abs(R));
-                if (t.mutValues.levelState.frameCountSinceHistoryPush >= e) {
+                const newFrameCountSinceHistoryPush = 37.5 / Math.max(v, Math.abs(R));
+                if (t.mutValues.levelState.frameCountSinceHistoryPush >= newFrameCountSinceHistoryPush) {
                   t.mutValues.levelState.frameCountSinceHistoryPush = 0;
-                  const e = tl(t.mutValues.levelState, null);
+                  const e = tl(t.mutValues.levelState, props.level.boss);
                   b.pushRunHistory(e);
                 }
               }
@@ -58882,14 +58883,14 @@ var version = "v1.7.8";
               const isClassic = t.bigMutValues.inViewLayout.properties.theme.id == "classic",
               k =
                   be.pointInBox2(
-                    (-a.size.fullWidth / 2 + (isClassic ? 35 : 50)) * ((n(Se).settings.mirrorMenuButton || (void 0 === e.backToMenu)) ? -1 : 1),
+                    (-a.size.fullWidth / 2 + (isClassic ? 35 : 50)) * ((n(Se).settings.mirrorMenuButton || (void 0 === props.backToMenu)) ? -1 : 1),
                     a.size.fullHeight / 2 - (isClassic ? 25 : 50),
                     50,
                     isClassic? 28 : 50,
                     f.pointer.x,
                     f.pointer.y
                   ) ||
-                  (xm(t.tutorial.boosterPrompt, y.hideUi, e.world) &&
+                  (xm(t.tutorial.boosterPrompt, y.hideUi, props.world) &&
                     be.pointInBox2(
                       (a.size.fullWidth / 2 - 80) * (n(Se).settings.mirrorMenuButton ? -1 : 1),
                       a.size.fullHeight / 2 - 50,
@@ -58919,7 +58920,7 @@ var version = "v1.7.8";
                     : "down"
                   : "up";
               x !== t.playerInputIsDown &&
-                (null === (l = e.online) || void 0 === l || l.onInputChange(x),
+                (null === (l = props.online) || void 0 === l || l.onInputChange(x),
                 (t.playerInputIsDown = x),
                 (t.isAfkTimer = 600)),
                 pf(
@@ -58941,7 +58942,7 @@ var version = "v1.7.8";
                   (t.booster.booster.playerInput = M);
               }
               if (
-                ((null === (d = e.online) || void 0 === d
+                ((null === (d = props.online) || void 0 === d
                   ? void 0
                   : d.eliminated) &&
                   !t.mutValues.levelState.crashed &&
@@ -58959,16 +58960,16 @@ var version = "v1.7.8";
                     "royaleCheckpointKnockout" ===
                       (null ===
                         (h =
-                          null === (u = e.online) || void 0 === u
+                          null === (u = props.online) || void 0 === u
                             ? void 0
                             : u.mode) || void 0 === h
                         ? void 0
-                        : h.type) && true === e.online.checkpointPlayerReached,
+                        : h.type) && true === props.online.checkpointPlayerReached,
                   bottomLineTheme: E.layout.properties.theme.objects.bottom,
                   shouldResetOnCrash:
                     !b &&
                     void 0 === S &&
-                    !(null === (p = e.online) || void 0 === p
+                    !(null === (p = props.online) || void 0 === p
                       ? void 0
                       : p.eliminated),
                   sfx: t.sfx,
@@ -58989,18 +58990,18 @@ var version = "v1.7.8";
                     (t.powerupOut.timer > 0
                       ? t.powerupOut.timer--
                       : (t.powerupOut = null)),
-                null === (g = e.online) ||
+                null === (g = props.online) ||
                   void 0 === g ||
                   g.onPlayerMove(
                     t.mutValues.levelState.playerX,
                     t.mutValues.levelState.playerY
                   ),
-                null === (m = e.online) || void 0 === m
+                null === (m = props.online) || void 0 === m
                   ? void 0
                   : m.serverPlayerPos)
               ) {
-                const a = e.online.serverPlayerPos;
-                e.online.didResync(),
+                const a = props.online.serverPlayerPos;
+                props.online.didResync(),
                   Ca.setInViewLayoutAndState(
                     E.layout,
                     a.mutValues.levelState.frame,
@@ -71425,7 +71426,8 @@ var version = "v1.7.8";
                 false,
                 t,
                 i.timer.start,
-                a.animationContext
+                a.animationContext,
+                a.level.boss ? a.level.boss.fileNames : null
               ).then(
                 ([t, i]) => (
                   (e().spineContext = {
@@ -72165,11 +72167,16 @@ var version = "v1.7.8";
                                   ...Qs.editorImages,
                                   ...Qs.levelImages,
                                   ...Qs.getPlayerImages([o], []),
+                                  ...(e.level.boss ? e.level.boss.fileNames.images ? e.level.boss.fileNames.images : []  : [])
+                                ],
+                                imageFileNamesScaleNearestPixel: [
+                                  ...(e.level.boss ? e.level.boss.fileNames.pixelArtImages ? e.level.boss.fileNames.pixelArtImages : [] : [])
                                 ],
                                 audioFileNames: [
                                   e.level.song.fileName,
                                   ...Qs.levelSfx,
                                   ...Qs.editorSfx,
+                                  ...(e.level.boss ? e.level.boss.fileNames.audio : [])
                                 ],
                               },
                             },
