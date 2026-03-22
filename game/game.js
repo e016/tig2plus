@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.8.0";
+var version = "v1.8.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -17966,7 +17966,7 @@ var version = "v1.8.0";
                 dirChange: "world1",
                 flag: "world1",
                 saw: "world1",
-                bottom: "classic",
+                bottom: "world3",
                 switch: "infinite",
                 speedChange: "speed",
               },
@@ -30135,6 +30135,7 @@ var version = "v1.8.0";
               "audio/levels/speedChange/down5.wav",
             ],
             levelImages: [
+              "images/themes/infinite/attempt.png",
               "images/level/attempt.png",
               "images/themes/classic/menu-button.png",
               "images/themes/classic/menu-button-pressed.png",
@@ -38785,8 +38786,8 @@ var version = "v1.8.0";
               const b = a ? t : e.map((e) => g[e.array][e.index]),
                 S = (m && g[m.array][m.index]) || null,
                 I =
-                  e.some(x=>x.array == "enemies")
-                    ? (e.filter(o => o.array == "enemies").map(x=>x.index))
+                  e.length > 0
+                    ? e.filter(t => t.array === "enemies").map(t => h.enemies.indexOf(g.enemies[t.index]))
                     : [],
                 _ = $.getBorderDimensions(b),
                 { objects: v, player: T } = g.properties.theme,
@@ -56097,6 +56098,40 @@ var version = "v1.8.0";
                           (a.y = e.size.fullHeight / 2 - 70);
                       }
                     ),
+                ] : t.theme == "infinite" ? [
+                  y(
+                    {
+                      fileName: "images/themes/infinite/attempt.png",
+                      width: 110,
+                      height: 110,
+                      y: e.size.fullHeight / 2 - 55,
+                    },
+                    (t) => {
+                      t.y = e.size.fullHeight / 2 - 55;
+                    }
+                  ),
+                  c(
+                    {
+                      text: localize("Attempt"),
+                      color: "#006525",
+                      font: { family: "Poppins", size: 16 },
+                      y: e.size.fullHeight / 2 - 47,
+                    },
+                    (t) => {
+                      t.y = e.size.fullHeight / 2 - 47;
+                    }
+                  ),
+                  c(
+                    {
+                      color: "#006525",
+                      font: { family: "Poppins", size: 16 },
+                      y: e.size.fullHeight / 2 - 71,
+                    },
+                    (a) => {
+                      (a.text = String(t.attempt)),
+                        (a.y = e.size.fullHeight / 2 - 71);
+                    }
+                  ),
                 ] : [
                     y(
                       {
@@ -56113,7 +56148,7 @@ var version = "v1.8.0";
                       {
                         text: localize("ATTEMPT"),
                         color: "white",
-                        font: { size: 15 },
+                        font: { family: "Montserrat", size: 15 },
                         y: e.size.fullHeight / 2 - 50,
                         strokeColor: He,
                         strokeThickness: 4,
@@ -56125,7 +56160,7 @@ var version = "v1.8.0";
                     c(
                       {
                         color: "white",
-                        font: { size: 20 },
+                        font: { family: "Montserrat", size: 20 },
                         y: e.size.fullHeight / 2 - 70,
                         strokeColor: He,
                         strokeThickness: 4,
