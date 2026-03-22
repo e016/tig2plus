@@ -61262,7 +61262,7 @@ var version = "v1.8.0";
                       selected: (null == i ? void 0 : i.levelName) === t,
                       x: o,
                       y: r,
-                      locked: p,
+                      locked: false,//p,
                       onPress: () => a(d),
                     });
                   }
