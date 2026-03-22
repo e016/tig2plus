@@ -6,15 +6,19 @@ Before contributing; read the [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) file.
 
 ### INCLUDES:
 
-* Traducciones al Español!</span></li>
-* Static and Falling Saws</li>
-* Move-On-Switch</li>
-* Switch Blocks</li>
-* Bulk Edit</li>
-* 20+ More Songs!!!!</li>
-* Right-Facing Enemies</li>
-* Speed-retaining Flags</li>
+* ***Traducciones al Español!***
+* **30+ More Songs!!!!**
+* Static and Falling Saws
+* Move-On-Switch
+* Switch Blocks
+* Bulk Edit
+* Steel, Void, and Boss blocks
+* Right-Facing Enemies
+* Speed-retaining Flags
 * "Classic" theme, for those who liked the original _The Impossible Game_
 * Size Button
+* TIG Infinite Orbs
+* Sky Fracture asteroids + Indestructable saws
+* Critical Hit Bombs (more boss stuff soon.)
 * Small tweaks and QoL stuff
 * And much more...

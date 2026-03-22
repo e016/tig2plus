@@ -55617,8 +55617,8 @@ var version = "v1.8.0";
                 ),
                 bulletSprite.Array({
                   props: (t) => ({ x: t.x, y: t.y, bullet: t, isEnemy: false, removeBullet: () => (e.playerBullets && e.playerBullets.splice(e.playerBullets.indexOf(t), 1)) }),
-                  update: (e, t) => {
-                    (e.x = t.x), (e.y = getBlockFallY(t.x, t.y, t.playerX, t.fallTypes, t.playerDir)), (e.bullet = t);
+                  update: (a, t) => {
+                    (a.x = t.x), (a.y = getBlockFallY(t.x, t.y, e.playerX, e.fallTypes, e.playerDir)), (a.bullet = t);
                   },
                   array: () => e.playerBullets,
                   key: (e, t) => t,
