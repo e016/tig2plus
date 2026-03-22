@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.7.8";
+var version = "v1.8.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -16189,7 +16189,9 @@ var version = "v1.7.8";
                     ? s
                     : "movement",
                 color: e == undefined ? "flash" : e?.color || 0,
-                gravity: e == undefined ? 1 : (e?.gravity == null ? 1 : e?.gravity)
+                gravity: e == undefined ? 1 : (e?.gravity == null ? 1 : e?.gravity),
+                up: e ? e.up : false,
+                down: e ? e.down : false,
               };
             },
             newSwitchPlatform: (e) => {
@@ -19595,7 +19597,7 @@ var version = "v1.7.8";
             ],
           }),
           $a = (e, t) => e >= t - 10,
-          getBlockFallY = (x, y, playerX, fallTypes) => {
+          getBlockFallY = (x, y, playerX, fallTypes, playerDir) => {
             if (typeof fallTypes == "undefined" || fallTypes === null) {
               return y;
             }
@@ -19605,7 +19607,13 @@ var version = "v1.7.8";
             let newY = y;
             let playerXOffset
             if (fallTypes[1] === "up") {
-              playerXOffset = playerX + 60 - x;
+              playerXOffset = ((playerX + 270 * playerDir) - x) * 3 * playerDir;
+              if (playerXOffset < 0) {
+                newY += playerXOffset;
+              }
+            }
+            if (fallTypes[0] === "down") {
+              playerXOffset = -((playerX - 60 * playerDir) - x) * playerDir;
               if (playerXOffset < 0) {
                 newY += playerXOffset;
               }
@@ -19645,7 +19653,7 @@ var version = "v1.7.8";
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes));
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, s && s.playerDir));
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -19687,7 +19695,7 @@ var version = "v1.7.8";
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes));
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, s && s.playerDir));
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -19732,7 +19740,7 @@ var version = "v1.7.8";
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i?.midY, s && s.playerX, s && s.fallTypes));
+                          (a.y = getBlockFallY(i.x, i?.midY, s && s.playerX, s && s.fallTypes, s && s.playerDir));
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -19779,7 +19787,7 @@ var version = "v1.7.8";
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i?.midY, s && s.playerX, s && s.fallTypes));
+                          (a.y = getBlockFallY(i.x, i?.midY, s && s.playerX, s && s.fallTypes, s && s.playerDir));
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -19823,7 +19831,7 @@ var version = "v1.7.8";
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes));
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, s && s.playerDir));
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -19871,7 +19879,7 @@ var version = "v1.7.8";
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes));
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, s && s.playerDir));
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -19914,7 +19922,7 @@ var version = "v1.7.8";
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes));
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, s && s.playerDir));
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -19957,7 +19965,7 @@ var version = "v1.7.8";
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes));
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, s && s.playerDir));
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -20002,7 +20010,7 @@ var version = "v1.7.8";
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes));
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, s && s.playerDir));
                       },
                       array: () => e.blocks,
                       testId: (t, a) => {
@@ -20040,7 +20048,7 @@ var version = "v1.7.8";
                               (a.width = i.width * t),
                               (a.height = i.height * t),
                               (a.x = i.x),
-                              (a.y = getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (a.y = getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (a.opacity = n),
                               void (a.show = true)
                             );
@@ -20064,7 +20072,7 @@ var version = "v1.7.8";
                           paused: e.inGame.paused,
                           df: e.inGame.df,
                           x: t.x,
-                          y: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                          y: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                           theme: e.theme,
                         };
                       },
@@ -20239,7 +20247,7 @@ var version = "v1.7.8";
                   props: () => ({ width: t, height: a }),
                   update: (a, t) => {
                     (a.x = t.x),
-                      (a.y = getBlockFallY(t.x, t.midY, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                      (a.y = getBlockFallY(t.x, t.midY, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                       (a.show =
                         "upDown" === t.movement || "downUp" === t.movement);
                   },
@@ -20252,7 +20260,7 @@ var version = "v1.7.8";
                     (a.width = t.width),
                       (a.height = t.height),
                       (a.x = t.x),
-                      (a.y = getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                      (a.y = getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                       (a.show = "rail" !== t.movement);
                   },
                   array: () => e.platforms,
@@ -20262,7 +20270,7 @@ var version = "v1.7.8";
                   props: () => ({ width: 90, height: 20 }),
                   update: (a, t) => {
                     (a.x = t.x),
-                      (a.y = getBlockFallY(t.x, t.y + 2.5, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                      (a.y = getBlockFallY(t.x, t.y + 2.5, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                       (a.show = "rail" === t.movement);
                   },
                   array: () => e.platforms,
@@ -20292,7 +20300,7 @@ var version = "v1.7.8";
                             : s.spikeStates[n];
                         (a.show = (e.theme == "world2" ? i.width : 30) !== $.miniSpikeWidth && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes)),
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
                           (a.width = i.width * t),
                           (a.height = i.height * t);
@@ -20322,7 +20330,7 @@ var version = "v1.7.8";
                             : s.spikeStates[n];
                         (a.show = ((e.theme == "world2" ? i.width : 30) === $.miniSpikeWidth) && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes)),
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
                           (a.width = i.width * t),
                           (a.height = i.height * t);
@@ -20352,7 +20360,7 @@ var version = "v1.7.8";
                             : s.spikeStates[n];
                         (a.show = i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
-                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes)),
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
                           (a.width = i.width),
                           (a.height = i.height);
@@ -20385,7 +20393,7 @@ var version = "v1.7.8";
                           paused: e.inGame.paused,
                           df: e.inGame.df,
                           x: t.x,
-                          y: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                          y: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                           theme: e.theme
                         };
                       },
@@ -20414,7 +20422,7 @@ var version = "v1.7.8";
                         const n = e.inGame.spikeStates[i];
                         return {
                           objectX: a.x,
-                          objectY: getBlockFallY(a.x, a.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                          objectY: getBlockFallY(a.x, a.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                           playerX: e.inGame.playerX,
                           playerY: e.inGame.playerY,
                           getSprite: (i, n) =>
@@ -20425,13 +20433,13 @@ var version = "v1.7.8";
                                     paused: e.inGame.paused,
                                     df: e.inGame.df,
                                     x: n.x,
-                                    y: getBlockFallY(n.x, n.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                    y: getBlockFallY(n.x, n.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                     theme: e.theme,
                                   },
                                   (t) => {
                                     (t.paused = e.inGame.paused),
                                       (t.df = e.inGame.df),
-                                      (t.y = getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes))
+                                      (t.y = getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir))
                                   }
                                 )
                               : y(
@@ -20444,7 +20452,7 @@ var version = "v1.7.8";
                                     rotation: a.rotation,
                                   },
                                   (e) => {
-                                    (e.x = n.x), (e.y = getBlockFallY(n.x, n.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                                    (e.x = n.x), (e.y = getBlockFallY(n.x, n.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                                   }
                                 ),
                           justDestroyed:
@@ -20474,7 +20482,7 @@ var version = "v1.7.8";
                           (t.playerX = e.inGame.playerX),
                           (t.playerY = e.inGame.playerY),
                           (t.objectX = a.x),
-                          (t.objectY = getBlockFallY(a.x, a.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                          (t.objectY = getBlockFallY(a.x, a.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                       },
                     }),
                   ];
@@ -30010,6 +30018,9 @@ var version = "v1.7.8";
               "images/editor/editorOnly/block-switch-button.png",
               "images/editor/editorOnly/size-button.png",
               "images/editor/editorOnly/color-button.png",
+              "images/editor/editorOnly/falling-button.png",
+              "images/editor/editorOnly/falling-none.png",
+              "images/editor/editorOnly/falling-up-down.png",
               "images/editor/objects/miniblock.png",
               "images/editor/objects/block.png",
               "images/editor/objects/platform.png",
@@ -30212,7 +30223,7 @@ var version = "v1.7.8";
                             (t) => {
                               var a;
                               (t.x = e.directionChange.x),
-                                (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                 (t.scaleX = i(e.directionChange)),
                                 (t.width = e.directionChange.width),
                                 (t.height = e.directionChange.height),
@@ -30232,7 +30243,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.directionChange.x),
-                              (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.scaleX = i(e.directionChange));
                           }
                         ),
@@ -30253,7 +30264,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.directionChange.x),
-                              (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.scaleX = i(e.directionChange));
                           }
                         ),
@@ -30278,7 +30289,7 @@ var version = "v1.7.8";
                                     paused: e.paused || false,
                                     height: 0,
                                     x: e.directionChange.x + 22 * n,
-                                    y: getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                    y: getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                     scale: { x: n, y: 1 },
                                     startFromFrame: t.wasAlreadyHit ? 400 : 0,
                                     df:
@@ -30290,7 +30301,7 @@ var version = "v1.7.8";
                                     var a;
                                     (t.paused = e.paused || false),
                                       (t.x = e.directionChange.x + 22 * n),
-                                      (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                      (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                       (t.df =
                                         null !== (a = e.df) && void 0 !== a
                                           ? a
@@ -30313,7 +30324,7 @@ var version = "v1.7.8";
                                     paused: e.paused || false,
                                     height: 0,
                                     x: e.directionChange.x + 22 * n,
-                                    y: getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                    y: getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                     scale: { x: n, y: 1 },
                                     df:
                                       null !== (t = e.df) && void 0 !== t
@@ -30324,7 +30335,7 @@ var version = "v1.7.8";
                                     var a;
                                     (t.paused = e.paused || false),
                                       (t.x = e.directionChange.x + 22 * n),
-                                      (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                      (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                       (t.df =
                                         null !== (a = e.df) && void 0 !== a
                                           ? a
@@ -30358,7 +30369,7 @@ var version = "v1.7.8";
                       fileName: `images/themes/${e.theme}/saw-rail.png`,
                       props: () => ({ width: t, height: a }),
                       update: (n, t) => {
-                        (n.x = t.x), (n.y = getBlockFallY(t.x, t.midY, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                        (n.x = t.x), (n.y = getBlockFallY(t.x, t.midY, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                         n.show =
                           "upDown" === t.movement || "downUp" === t.movement;
                       },
@@ -30387,7 +30398,7 @@ var version = "v1.7.8";
                         (t.width = a.width),
                         (t.height = a.height),
                         (t.x = a.x),
-                        (t.y = getBlockFallY(a.x, a.y, n && n.playerX, n && n.fallTypes));
+                        (t.y = getBlockFallY(a.x, a.y, n && n.playerX, n && n.fallTypes, n && n.playerDir));
                       const l =
                         (null === (o = e.inGame) || void 0 === o
                           ? void 0
@@ -30417,7 +30428,7 @@ var version = "v1.7.8";
                         (t.width = a.width * sawRatio),
                         (t.height = a.height * sawRatio),
                         (t.x = a.x),
-                        (t.y = getBlockFallY(a.x, a.y, n && n.playerX, n && n.fallTypes));
+                        (t.y = getBlockFallY(a.x, a.y, n && n.playerX, n && n.fallTypes, n && n.playerDir));
                       const l =
                         ((null === (o = e.inGame) || void 0 === o
                           ? void 0
@@ -30437,7 +30448,7 @@ var version = "v1.7.8";
                         paused: e.inGame.paused,
                         df: e.inGame.df,
                         x: t.x,
-                        y: getBlockFallY(t.x, t.y, n && n.playerX, n && n.fallTypes),
+                        y: getBlockFallY(t.x, t.y, n && n.playerX, n && n.fallTypes, n && n.playerDir),
                         theme: e.theme
                       };
                     },
@@ -30478,7 +30489,7 @@ var version = "v1.7.8";
                         (t.width = a.width * sawRatio),
                         (t.height = a.height * sawRatio),
                         (t.x = a.x),
-                        (t.y = getBlockFallY(a.x, a.y, n && n.playerX, n && n.fallTypes));
+                        (t.y = getBlockFallY(a.x, a.y, n && n.playerX, n && n.fallTypes, n && n.playerDir));
                       const l =
                         ((null === (o = e.inGame) || void 0 === o
                           ? void 0
@@ -30498,7 +30509,7 @@ var version = "v1.7.8";
                         paused: e.inGame.paused,
                         df: e.inGame.df,
                         x: t.x,
-                        y: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                        y: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                         theme: e.theme
                       };
                     },
@@ -30527,7 +30538,7 @@ var version = "v1.7.8";
                       const i = e.inGame.sawStates[a];
                       return {
                         objectX: t.x,
-                        objectY: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                        objectY: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                         playerX: e.inGame.playerX,
                         playerY: e.inGame.playerY,
                         getSprite: (a, i) =>
@@ -30538,7 +30549,7 @@ var version = "v1.7.8";
                                   paused: e.inGame.paused,
                                   df: e.inGame.df,
                                   x: i.x,
-                                  y: getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                  y: getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                   theme: e.theme,
                                 },
                                 (t) => {
@@ -30553,7 +30564,7 @@ var version = "v1.7.8";
                                   height: t.height,
                                 },
                                 (t) => {
-                                  (t.x = i.x), (e.y = getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                                  (t.x = i.x), (e.y = getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                                 }
                               ),
                         justDestroyed:
@@ -30775,14 +30786,14 @@ var version = "v1.7.8";
                             loop: true,
                             paused: e.inGame.paused,
                             x: e.flag.x,
-                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                             height: 0,
                             df: e.inGame.df,
                           },
                           (t) => {
                             (t.paused = e.inGame.paused),
                               (t.x = e.flag.x),
-                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.df = e.inGame.df);
                           }
                         ),
@@ -30799,14 +30810,14 @@ var version = "v1.7.8";
                             startFromFrame: a.wasAlreadyHit ? 200 : 0,
                             paused: e.inGame.paused,
                             x: e.flag.x,
-                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                             height: 0,
                             df: e.inGame.df,
                           },
                           (t) => {
                             (t.paused = e.inGame.paused),
                               (t.x = e.flag.x),
-                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.df = e.inGame.df);
                           }
                         ),
@@ -30858,14 +30869,14 @@ var version = "v1.7.8";
                                     loop: true,
                                     paused: e.inGame.paused,
                                     x: e.flag.x,
-                                    y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                    y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                     height: e.flag.height,
                                     df: e.inGame.df,
                                   },
                                   (t) => {
                                     (t.paused = e.inGame.paused),
                                       (t.x = e.flag.x),
-                                      (t.y =getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                      (t.y =getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                       (t.df = e.inGame.df);
                                   }
                                 ),
@@ -30895,14 +30906,14 @@ var version = "v1.7.8";
                                           : 0,
                                         paused: e.inGame.paused,
                                         x: e.flag.x,
-                                        y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                        y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                         height: e.flag.height,
                                         df: e.inGame.df,
                                       },
                                       (t) => {
                                         (t.paused = e.inGame.paused),
                                           (t.x = e.flag.x),
-                                          (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                          (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                           (t.df = e.inGame.df);
                                       }
                                     ),
@@ -30919,14 +30930,14 @@ var version = "v1.7.8";
                                         loop: true,
                                         paused: e.inGame.paused,
                                         x: e.flag.x,
-                                        y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                        y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                         height: e.flag.height,
                                         df: e.inGame.df,
                                       },
                                       (t) => {
                                         (t.paused = e.inGame.paused),
                                           (t.x = e.flag.x),
-                                          (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                          (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                           (t.df = e.inGame.df);
                                       }
                                     ),
@@ -30960,7 +30971,7 @@ var version = "v1.7.8";
                               (t) => {
                                 var a;
                                 (t.x = e.flag.x),
-                                  (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                  (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                   (t.frame =
                                     (null === (a = e.inGame) || void 0 === a
                                       ? void 0
@@ -31000,7 +31011,7 @@ var version = "v1.7.8";
                                   (t) => {
                                     var a;
                                     (t.x = e.flag.x),
-                                      (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                      (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                       (t.frame =
                                         (null === (a = e.inGame) || void 0 === a
                                           ? void 0
@@ -31022,7 +31033,7 @@ var version = "v1.7.8";
                                   },
                                   (t) => {
                                     (t.x = e.flag.x),
-                                      (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                      (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                       (t.df = e.inGame.df);
                                   }
                                 ),
@@ -31048,7 +31059,7 @@ var version = "v1.7.8";
                                   (t) => {
                                     var a;
                                     (t.x = e.flag.x),
-                                      (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                      (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                       (t.frame =
                                         (null === (a = e.inGame) || void 0 === a
                                           ? void 0
@@ -31615,7 +31626,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.enemy.x),
-                              (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.justDestroyed = $a(
                                 e.enemyState.destroyed.frame,
                                 e.frame
@@ -31639,7 +31650,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.enemy.x),
-                              (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.justDestroyed = $a(
                                 e.enemyState.destroyed.frame,
                                 e.frame
@@ -31662,7 +31673,8 @@ var version = "v1.7.8";
                             df: e.df,
                             inGame: {
                               playerX: e.playerX,
-                              fallTypes: e.fallTypes
+                              fallTypes: e.fallTypes,
+                              playerDir: e.playerDir
                             }
                           },
                           (t) => {
@@ -31680,7 +31692,8 @@ var version = "v1.7.8";
                               (t.frame = e.frame),
                               (t.df = e.df),
                               (t.inGame.playerX = e.playerX),
-                              (t.inGame.fallTypes = e.fallTypes)
+                              (t.inGame.fallTypes = e.fallTypes),
+                              (t.inGame.playerDir = e.playerDir);
                           }
                         ),
                       ];
@@ -31736,7 +31749,7 @@ var version = "v1.7.8";
                               },
                               (t) => {
                                 (t.x = e.enemy.x),
-                                  (t.y = getBlockFallY(e.enemy.x, e.enemy.y + i, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                  (t.y = getBlockFallY(e.enemy.x, e.enemy.y + i, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                   (t.frame = e.frame || 7),
                                   (t.scaleX =
                                     e.enemyDir || e.enemy.enemyDir || -1);
@@ -31761,7 +31774,7 @@ var version = "v1.7.8";
                               },
                               (t) => {
                                 (t.x = e.enemy.x),
-                                  (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                  (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                   (t.frame = e.frame || 7),
                                   (t.scaleX =
                                     e.enemyDir || e.enemy.enemyDir || -1);
@@ -31779,7 +31792,7 @@ var version = "v1.7.8";
                               },
                               (t) => {
                                 (t.x = e.enemy.x),
-                                (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                 (t.width = e.enemy.width),
                                   (t.height = e.enemy.height),
                                   (t.scaleX = -(e.enemyDir || e.enemy.enemyDir || -1));
@@ -32398,7 +32411,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.powerup.x),
-                              (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.frame = e.frame || 0);
                           }
                         ),
@@ -32416,7 +32429,7 @@ var version = "v1.7.8";
                                 height: 32,
                               },
                               (t) => {
-                                (t.x = e.powerup.x), (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                                (t.x = e.powerup.x), (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                               }
                             ),
                           ],
@@ -32437,7 +32450,7 @@ var version = "v1.7.8";
                                   df:
                                     null !== (a = e.df) && void 0 !== a ? a : 1,
                                   x: e.powerup.x,
-                                  y: getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                  y: getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                   height: 5,
                                 },
                                 (t) => {
@@ -32448,7 +32461,7 @@ var version = "v1.7.8";
                                         ? a
                                         : 1),
                                     (t.x = e.powerup.x),
-                                    (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                                    (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                                 }
                               ),
                             ];
@@ -32470,7 +32483,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.powerup.x),
-                              (t.y =getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y =getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.frame = e.frame || 0);
                           }
                         ),
@@ -32489,7 +32502,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.powerup.x),
-                              (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.frame = e.frame || 0);
                           }
                         ),
@@ -32508,7 +32521,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.powerup.x),
-                              (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.frame = e.frame || 0);
                           }
                         ),
@@ -32527,7 +32540,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.powerup.x),
-                              (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.frame = e.frame || 0);
                           }
                         ),
@@ -32535,13 +32548,13 @@ var version = "v1.7.8";
                     case "playerStack":
                       return [
                         To.Single({ skin: e.skin }, (t) => {
-                          (t.x = e.powerup.x), (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                          (t.x = e.powerup.x), (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                         }),
                       ];
                     case "ghost":
                       return [
                         To.Single({ skin: e.skin }, (t) => {
-                          (t.x = e.powerup.x), (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)), (t.opacity = 0.5);
+                          (t.x = e.powerup.x), (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)), (t.opacity = 0.5);
                         }),
                       ];
                     case "skateboard":
@@ -32554,7 +32567,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.powerup.x),
-                              (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes) - e.powerup.height / 2 + 5);
+                              (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - e.powerup.height / 2 + 5);
                           }
                         ),
                       ];
@@ -32978,7 +32991,7 @@ var version = "v1.7.8";
                             },
                             (t) => {
                               (t.x = e.switchButton.x),
-                                (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                 (t.rotation = e.switchButton.gravity == 0 ? (e.playerDir < 0 ? -90 : 90) : e.switchButton.gravity > 0 ? 180 : 0);
                             }
                           ),
@@ -32995,7 +33008,7 @@ var version = "v1.7.8";
                             },
                             (t) => {
                               (t.x = e.switchButton.x),
-                                (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                                (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                             }
                           ),
                         ];
@@ -33007,13 +33020,17 @@ var version = "v1.7.8";
                           y(
                             {
                               fileName:
-                                "images/editor/editorOnly/color-button.png",
+                                "images/editor/editorOnly/falling-button.png",
                               width: e.switchButton.width,
                               height: e.switchButton.height,
                             },
                             (t) => {
+                              let both = e.switchButton.up && e.switchButton.down,
+                              none = !e.switchButton.up && !e.switchButton.down;
                               (t.x = e.switchButton.x),
-                                (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                                (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
+                                (t.scaleY = e.switchButton.up && !both ? -1 : 1),
+                                (t.fileName = both ? "images/editor/editorOnly/falling-up-down.png" : none ? "images/editor/editorOnly/falling-none.png" : "images/editor/editorOnly/falling-button.png")
                             }
                           ),
                         ];
@@ -33031,7 +33048,7 @@ var version = "v1.7.8";
                             },
                             (t) => {
                               (t.x = e.switchButton.x),
-                                (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                                (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                             }
                           ),
                         ];
@@ -33058,7 +33075,7 @@ var version = "v1.7.8";
                                   startFromFrame: a.justHitTimer > 0 ? 0 : 400,
                                   height: 0,
                                   x: e.switchButton.x,
-                                  y: getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                  y: getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                   df:
                                     a.justHitTimer > 0
                                       ? 1.5 *
@@ -33070,7 +33087,7 @@ var version = "v1.7.8";
                                 (t) => {
                                   var i;
                                   (t.x = e.switchButton.x),
-                                    (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                    (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                     (t.paused = e.paused || false),
                                     (t.df =
                                       a.justHitTimer > 0
@@ -33095,7 +33112,7 @@ var version = "v1.7.8";
                           },
                           (t) => {
                             (t.x = e.switchButton.x),
-                              (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                              (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (t.rotation = e.switchRotation);
                           }
                         ),
@@ -33147,7 +33164,7 @@ var version = "v1.7.8";
                             },
                             (t) => {
                               (t.x = e.switchButton.x),
-                                (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                                (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                             }
                           ),
                         ];
@@ -33173,7 +33190,7 @@ var version = "v1.7.8";
                                   startFromFrame: a.justHitTimer > 0 ? 0 : 400,
                                   height: 0,
                                   x: e.switchButton.x,
-                                  y: getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                  y: getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                   df:
                                     a.justHitTimer > 0
                                       ? 1.5 *
@@ -33185,7 +33202,7 @@ var version = "v1.7.8";
                                 (t) => {
                                   var i;
                                   (t.x = e.switchButton.x),
-                                    (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                    (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                     (t.paused = e.paused || false),
                                     (t.df =
                                       a.justHitTimer > 0
@@ -33215,7 +33232,7 @@ var version = "v1.7.8";
                   const a = -t.width / 2 + t.height / 2;
                   (n.anchorX = a),
                     (n.x = t.x + a),
-                    (n.y = getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                    (n.y = getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                     (n.direction = t.direction);
                   (n.scale = {
                     x: 1,
@@ -33772,6 +33789,7 @@ var version = "v1.7.8";
                     wasPickedUp: i.wasPickedUp,
                     playerX: e.playerX,
                     fallTypes: e.fallTypes,
+                    playerDir: e.playerDir,
                     paused: e.paused,
                     df: e.df,
                     theme: e.theme
@@ -33784,6 +33802,7 @@ var version = "v1.7.8";
                     (t.wasPickedUp = n.wasPickedUp),
                     (t.playerX = e.playerX),
                     (t.fallTypes = e.fallTypes),
+                    (t.playerDir = e.playerDir),
                     (t.paused = e.paused),
                     (t.df = e.df),
                     (t.theme = e.theme);
@@ -33817,7 +33836,7 @@ var version = "v1.7.8";
                                 },
                                 (t) => {
                                   (t.x = e.collectible.x),
-                                    (t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes)),
+                                    (t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir)),
                                     (t.rotation = $.getArrowRotation(
                                       e.collectible.y
                                     ));
@@ -33847,7 +33866,7 @@ var version = "v1.7.8";
                                           loop: false,
                                           paused: e.paused || false,
                                           x: (e.playerX || e.collectible.x) + n,
-                                          y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes),
+                                          y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir),
                                           height: 0,
                                           rotation: $.getArrowRotation(
                                             e.collectible.y
@@ -33863,7 +33882,7 @@ var version = "v1.7.8";
                                           (t.paused = e.paused || false),
                                             (t.x =
                                               e.playerX || e.collectible.x),
-                                            (t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes)),
+                                            (t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir)),
                                             (t.df =
                                               1.5 *
                                               (null !== (a = e.df) &&
@@ -33890,11 +33909,11 @@ var version = "v1.7.8";
                                               font: { size: 12 },
                                               color: ve,
                                               x: e.collectible.x,
-                                              y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes),
+                                              y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir),
                                             },
                                             (a) => {
                                               a.opacity = t.ref;
-                                              a.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes);
+                                              a.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir);
                                             }
                                           ),
                                         ],
@@ -33908,14 +33927,14 @@ var version = "v1.7.8";
                                       width: Vo,
                                       height: Vo,
                                       x: e.collectible.x,
-                                      y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes),
+                                      y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir),
                                       opacity: 0.5,
                                       rotation: $.getArrowRotation(
                                         e.collectible.y
                                       ),
                                     },
                                     (t) => {
-                                      t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes)
+                                      t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir)
                                     }),
                                     jo.Single({
                                       shouldShow: false,
@@ -33928,11 +33947,11 @@ var version = "v1.7.8";
                                             font: { size: 12 },
                                             color: Ve,
                                             x: e.collectible.x,
-                                            y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes) + 30,
+                                            y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir) + 30,
                                           },
                                           (a) => {
                                             a.opacity = t.ref;
-                                            a.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes) + 30
+                                            a.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir) + 30
                                           }
                                         ),
                                       ],
@@ -33949,7 +33968,7 @@ var version = "v1.7.8";
                                   },
                                   (t) => {
                                     (t.x = e.collectible.x),
-                                      (t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes)),
+                                      (t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir)),
                                       (t.rotation = $.getArrowRotation(
                                         e.collectible.y
                                       ));
@@ -33973,14 +33992,14 @@ var version = "v1.7.8";
                                   width: 27,
                                   height: 52,
                                   x: e.collectible.x,
-                                  y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes),
+                                  y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir),
                                   paused: false,
                                   df: 1,
                                   hideOnEnd: true,
                                 },
                                 (t) => {
                                   (t.x = e.collectible.x),
-                                    (t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes));
+                                    (t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir));
                                 }
                               ),
                             ],
@@ -33994,14 +34013,14 @@ var version = "v1.7.8";
                                   columns: 4,
                                   rows: 2,
                                   x: e.collectible.x,
-                                  y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes),
+                                  y: getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir),
                                   scaleX: 1,
                                   frame: 0,
                                   frameRate: 3,
                                 },
                                 (t) => {
                                   (t.x = e.collectible.x),
-                                    (t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes)),
+                                    (t.y = getBlockFallY(e.collectible.x, e.collectible.y, e.playerX, e.fallTypes, e.playerDir)),
                                     (t.scaleX = e.flipX ? -1 : 1),
                                     (t.frame = e.spinFrame || 0);
                                 }
@@ -34029,7 +34048,7 @@ var version = "v1.7.8";
                     },
                     (t) => {
                       (t.x = e.spring.x),
-                        (t.y = getBlockFallY(e.spring.x, e.spring.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                        (t.y = getBlockFallY(e.spring.x, e.spring.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                         (t.height = 15 * e.spring.direction);
                     }
                   ),
@@ -34050,7 +34069,7 @@ var version = "v1.7.8";
                         df: 0 === t.hitCount ? 0 : e.df || 1,
                         paused: e.paused || false,
                         x: e.spring.x,
-                        y: getBlockFallY(e.spring.x, e.spring.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                        y: getBlockFallY(e.spring.x, e.spring.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                         scale: { x: 1, y: e.spring.direction || 1 },
                         height: e.spring.height,
                       },
@@ -34059,7 +34078,7 @@ var version = "v1.7.8";
                           (a.paused = e.paused || false),
                           (a.x = e.spring.x),
                           (a.y =
-                            getBlockFallY(e.spring.x, e.spring.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes) + (e.spring.direction < 0 ? 15 : 0));
+                            getBlockFallY(e.spring.x, e.spring.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) + (e.spring.direction < 0 ? 15 : 0));
                         a.scale = { x: 1, y: e.spring.direction || 1 };
                       }
                     ),
@@ -34076,7 +34095,7 @@ var version = "v1.7.8";
                   Qo.Single({ portal: e.portal, pixel: e.theme == "world2" }, (t) => {
                     (t.portal = e.portal),
                       (t.x = e.portal.x),
-                      (t.y = getBlockFallY(e.portal.x, e.portal.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                      (t.y = getBlockFallY(e.portal.x, e.portal.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                       (t.rotation =
                         "right" === e.portal.direction
                           ? 180
@@ -34120,7 +34139,7 @@ var version = "v1.7.8";
                     df: null !== (a = e.df) && void 0 !== a ? a : 1,
                     scale: { x: l, y: c },
                     x: e.portal.x - o,
-                    y: getBlockFallY(e.portal.x, e.portal.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes) - 3 + r,
+                    y: getBlockFallY(e.portal.x, e.portal.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 3 + r,
                     height: e.portal.height,
                   },
                   (t) => {
@@ -34128,7 +34147,7 @@ var version = "v1.7.8";
                     (t.paused = e.paused || false),
                       (t.df = null !== (a = e.df) && void 0 !== a ? a : 1),
                       (t.x = e.portal.x - o),
-                      (t.y = getBlockFallY(e.portal.x, e.portal.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes) - 3 + r);
+                      (t.y = getBlockFallY(e.portal.x, e.portal.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 3 + r);
                   }
                 ),
               ];
@@ -34171,14 +34190,14 @@ var version = "v1.7.8";
                                   columns: 4,
                                   rows: 2,
                                   x: e.speedChange.x,
-                                  y: getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                                  y: getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                   scaleX: "right" === e.speedChange.direction ? 1 : -1,
                                   frame: 0,
                                   frameRate: 3,
                                 },
                                 (t) => {
                                   (t.x = e.speedChange.x),
-                                    (t.y = getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                    (t.y = getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                     (t.scaleX = "right" === e.speedChange.direction ? 1 : -1),
                                     (t.frame = 0);
                                 }
@@ -34205,7 +34224,7 @@ var version = "v1.7.8";
                               var a;
                               (t.paused = e.paused || false),
                               (t.x = e.speedChange.x),
-                                (t.y = getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                                (t.y = getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                 (t.scaleX = "right" === e.speedChange.direction ? 1 : -1),
                                 (t.width = e.speedChange.width),
                                 (t.height = e.speedChange.height),
@@ -34228,7 +34247,7 @@ var version = "v1.7.8";
                     },
                     (t) => {
                       (t.x = e.speedChange.x),
-                        (t.y = getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes)),
+                        (t.y = getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                         (t.scaleX =
                           "right" === e.speedChange.direction ? 1 : -1);
                     }
@@ -34251,7 +34270,7 @@ var version = "v1.7.8";
                         startFromFrame: 2,
                         paused: e.paused || false,
                         x: e.speedChange.x,
-                        y: getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes),
+                        y: getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                         scale: {
                           x: "right" === e.speedChange.direction ? 1 : -1,
                           y: 1,
@@ -34262,7 +34281,7 @@ var version = "v1.7.8";
                         (a.df = (0 === t.hitCount ? 0 : e.df || 1) / 1.2),
                           (a.paused = e.paused || false),
                           (a.x = e.speedChange.x),
-                          (a.y = getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes));
+                          (a.y = getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                       }
                     ),
                   ]
@@ -35366,7 +35385,7 @@ var version = "v1.7.8";
                                   });
                                 },
                               },
-                              /*{
+                              {
                                 name: "Fall",
                                 selected: "falling" === t.affects,
                                 onPress: () => {
@@ -35382,7 +35401,7 @@ var version = "v1.7.8";
                                     });
                                   });
                                 },
-                              },*/
+                              },
                               {
                                 name: "Gravity",
                                 selected: "gravity" === t.affects,
@@ -39033,21 +39052,21 @@ var version = "v1.7.8";
               document.removeEventListener("wheel", e.onScroll, false);
             },
           }),
-          Zr = function (e, t, a, i, n, s) {
-            return i
-              ? t
-                ? Object.assign(Object.assign({}, i), {
+          Zr = function (layout, boss, assets, state, playSound, pauseSound) {
+            return state
+              ? boss
+                ? Object.assign(Object.assign({}, state), {
                     bossState:
-                      t.mutatesState || !i.bossState
-                        ? t.initState({
-                            assets: a,
-                            checkpointState: i,
-                            playSound: n,
-                            pauseSound: s,
+                      boss.mutatesState || !state.bossState
+                        ? boss.initState({
+                            assets: assets,
+                            checkpointState: state,
+                            playSound: playSound,
+                            pauseSound: pauseSound,
                           })
-                        : i.bossState,
+                        : state.bossState,
                   })
-                : i
+                : state
               : {
                   frame: 0,
                   attempt: 1,
@@ -39082,13 +39101,13 @@ var version = "v1.7.8";
                   skateboardJumpCharge: 0,
                   checkpoint: { index: 0, state: null },
                   bossState:
-                    (null == t
+                    (null == boss
                       ? void 0
-                      : t.initState({
-                          assets: a,
+                      : boss.initState({
+                          assets: assets,
                           checkpointState: null,
-                          playSound: n,
-                          pauseSound: s,
+                          playSound: playSound,
+                          pauseSound: pauseSound,
                         })) || null,
                   onObject: null,
                   cameraXOffset: 0,
@@ -39096,7 +39115,7 @@ var version = "v1.7.8";
                   crashed: false,
                   finishedLevel: false,
                   frameCountSinceHistoryPush: 0,
-                  layoutState: xa.getInitState(e),
+                  layoutState: xa.getInitState(layout),
                   playerScale: 1,
                   bgColor: "#00FFFF",
                   flash: 0,
@@ -39183,7 +39202,7 @@ var version = "v1.7.8";
               gravity: e.gravity,
               dashing: e.dashing,
               isGravity: e.isGravity,
-              fallTypes: e.fallTypes
+              fallTypes: [e.fallTypes[0], e.fallTypes[1]]
             };
           },
           menuButtonSprite = makeSprite({
@@ -40166,7 +40185,7 @@ var version = "v1.7.8";
                   : ((U.fallTypes[0] = e.down ? "down" : null), (U.fallTypes[1] = e.up ? "up" : null)),
                 null == v || v.hitSwitch(),
                 (U.justHitObject = { array: "switchButtons", index: ie });
-            }
+            };
             U.flash > 0 ? (U.flash -= 0.01) : (U.flash = 0);
             for (let e = 0; e < inViewLayoutState.switchButtons.length; e++) {
               const t = inViewLayoutState.switchButtons[e];
@@ -44980,7 +44999,7 @@ var version = "v1.7.8";
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum6, nd.enum10]), Gc([fc, fc, nd.enum6])])
+                  Bc([Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2]), Gc([fc, fc, nd.enum6, nd.enum10]), Gc([fc, fc, nd.enum6])])
                 ),
                 Oc(
                   Bc([
@@ -45089,7 +45108,7 @@ var version = "v1.7.8";
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum5, nd.enum10]), Gc([fc, fc, nd.enum5])])
+                  Bc([Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2]), Gc([fc, fc, nd.enum6, nd.enum10]), Gc([fc, fc, nd.enum6])])
                 ),
                 Oc(
                   Bc([
@@ -45308,13 +45327,15 @@ var version = "v1.7.8";
                     ),
                     switchButtons: m.map(
                       (j) => {
-                        const [e, t, a, n] = j;
+                        const [e, t, a, n, i] = j;
                         return $.newSwitchButton({
                           x: e,
                           y: t,
                           affects: eu[a],
                           color: clrs[n] || 0,
-                          gravity: n > 1 ? 0 : n > 0 ? -1 : 1
+                          gravity: n > 1 ? 0 : n > 0 ? -1 : 1,
+                          up: !!n,
+                          down: !!i,
                         });
                       } //color: clrs[n] }))
                     ),
@@ -45500,7 +45521,7 @@ var version = "v1.7.8";
                     ),
                     i.switchButtons.map((e) =>
                       //console.log(clrs, e.color),
-                      e.affects == "gravity" ? [e.x, e.y, ru(e.affects, eu), e.gravity == 0 ? 2 : e.gravity > 0 ? 0 : 1] : e.affects == "color"
+                      e.affects == "falling" ? [e.x, e.y, ru(e.affects, eu), +e.up, +e.down] : e.affects == "gravity" ? [e.x, e.y, ru(e.affects, eu), e.gravity == 0 ? 2 : e.gravity > 0 ? 0 : 1] : e.affects == "color"
                         ? [e.x, e.y, ru(e.affects, eu), ru(e.color, clrs)]
                         : [e.x, e.y, ru(e.affects, eu)]
                     ),
@@ -55100,6 +55121,7 @@ var version = "v1.7.8";
           dm = makeSprite({
             render({ props: e }) {
               const t = [];
+              
               return [
                 ifConditional(
                   () => void 0 !== e.otherPlayersInfo,
@@ -55136,7 +55158,8 @@ var version = "v1.7.8";
                       df: e.df,
                       playerX: e.playerX,
                       gravity: e.gravity,
-                      fallTypes: e.fallTypes
+                      fallTypes: e.fallTypes,
+
                     },
                     indexes: e.layoutStateIndex.blocks,
                   },
@@ -55150,6 +55173,7 @@ var version = "v1.7.8";
                       (t.inGame.df = e.df),
                       (t.inGame.playerX = e.playerX),
                       (t.inGame.fallTypes = e.fallTypes),
+                      (t.inGame.playerDir = e.playerDir),
                       (t.inGame.gravity = e.gravity);
                       (t.indexes = e.layoutStateIndex.blocks);
                   }
@@ -55180,6 +55204,7 @@ var version = "v1.7.8";
                       (t.inGame.playerX = e.playerX),
                       (t.inGame.playerY = e.playerY),
                       (t.inGame.fallTypes = e.fallTypes),
+                      (t.inGame.playerDir = e.playerDir),
                       (t.inGame.gravity = e.gravity);
                   }
                 ),
@@ -55198,7 +55223,8 @@ var version = "v1.7.8";
                       (t.theme = e.layout.properties.theme.objects.platform),
                       (t.indexes = e.layoutStateIndex.platforms),
                       (t.inGame.playerX = e.playerX),
-                      (t.inGame.fallTypes = e.fallTypes);
+                      (t.inGame.fallTypes = e.fallTypes),
+                      (t.inGame.playerDir = e.playerDir);
                   }
                 ),
                 xo.Array({
@@ -55210,10 +55236,10 @@ var version = "v1.7.8";
                     df: e.df,
                     justHit: false,
                     theme: e.layout.properties.theme.objects.switch,
-                    playerDir: e.playerDir,
                     inGame: {
                       playerX: e.playerX,
                       fallTypes: e.fallTypes,
+                      playerDir: e.playerDir,
                     }
                   }),
                   update: (t, a) => {
@@ -55226,7 +55252,7 @@ var version = "v1.7.8";
                       (t.justHit =
                         null !== e.justHitObject &&
                         "switchButtons" === e.justHitObject.array);
-                        (t.playerDir = e.playerDir),
+                        (t.inGame.playerDir = e.playerDir),
                         (t.inGame.playerX = e.playerX),
                         (t.inGame.fallTypes = e.fallTypes);
                   },
@@ -55248,7 +55274,8 @@ var version = "v1.7.8";
                       (t.indexes = e.layoutStateIndex.switchPlatforms);
                       (t.theme = e.layout.properties.theme.objects.switch),
                       (t.inGame.playerX = e.playerX),
-                      (t.inGame.fallTypes = e.fallTypes);
+                      (t.inGame.fallTypes = e.fallTypes),
+                      (t.inGame.playerDir = e.playerDir);
                   }
                 ),
                 $o.Array({
@@ -55271,7 +55298,8 @@ var version = "v1.7.8";
                       (t.df = e.df),
                       (t.paused = e.paused),
                       (t.inGame.playerX = e.playerX),
-                      (t.inGame.fallTypes = e.fallTypes);
+                      (t.inGame.fallTypes = e.fallTypes),
+                      (t.inGame.playerDir = e.playerDir);
                   },
                   array: () => e.layout.springs,
                   key: (t, a) => e.layoutStateIndex.springs[a],
@@ -55283,7 +55311,8 @@ var version = "v1.7.8";
                     theme: e.layout.properties.theme.objects.switch,
                     inGame: {
                       playerX: e.playerX,
-                      fallTypes: e.fallTypes
+                      fallTypes: e.fallTypes,
+                      playerDir: e.playerDirm
                     } }),
                   update: (t, a) => {
                     (t.portal = a), 
@@ -55291,7 +55320,8 @@ var version = "v1.7.8";
                     (t.paused = e.paused), 
                     (t.theme = e.layout.properties.theme.objects.switch),
                     (t.inGame.playerX = e.playerX),
-                    (t.inGame.fallTypes = e.fallTypes);
+                    (t.inGame.fallTypes = e.fallTypes),
+                    (t.inGame.playerDir = e.playerDir);
                   },
                   key: (t, a) => e.layoutStateIndex.portals[a],
                   array: () => e.layout.portals,
@@ -55315,7 +55345,8 @@ var version = "v1.7.8";
                       (t.theme = e.layout.properties.theme.objects.dirChange),
                       (t.wasHit = e.layoutState.directionChanges[i].wasHit),
                       (t.inGame.playerX = e.playerX),
-                      (t.inGame.fallTypes = e.fallTypes);
+                      (t.inGame.fallTypes = e.fallTypes),
+                      (t.inGame.playerDir = e.playerDir);
                   },
                   key: (t, a) => e.layoutStateIndex.directionChanges[a],
                   array: () => e.layout.directionChanges,
@@ -55346,7 +55377,8 @@ var version = "v1.7.8";
                       t.df = e.df;
                       t.paused = e.paused;
                       (t.inGame.playerX = e.playerX),
-                      (t.inGame.fallTypes = e.fallTypes);
+                      (t.inGame.fallTypes = e.fallTypes),
+                      (t.inGame.playerDir = e.playerDir);
                   },
                   array: () => e.layout.speedChanges,
                   key: (t, a) => e.layoutStateIndex.speedChanges[a],
@@ -55376,7 +55408,8 @@ var version = "v1.7.8";
                       (t.inGame.paused = e.paused),
                       (t.inGame.df = e.df),
                       (t.inGame.playerX = e.playerX),
-                      (t.inGame.fallTypes = e.fallTypes);
+                      (t.inGame.fallTypes = e.fallTypes),
+                      (t.inGame.playerDir = e.playerDir);
                   }
                 ),
                 ao.Array({
@@ -55403,7 +55436,8 @@ var version = "v1.7.8";
                       (t.inGame.paused = e.paused && !e.finishedLevel),
                       (t.inGame.df = e.df),
                       (t.inGame.playerX = e.playerX),
-                      (t.inGame.fallTypes = e.fallTypes);
+                      (t.inGame.fallTypes = e.fallTypes),
+                      (t.inGame.playerDir = e.playerDir);
                   },
                   key: (t, a) => e.layoutStateIndex.flags[a],
                 }),
@@ -55430,7 +55464,8 @@ var version = "v1.7.8";
                       (t.theme = e.layout.properties.theme.objects.speedChange),
                       (t.skin = e.playerSkin),
                       (t.inGame.playerX = e.playerX),
-                      (t.inGame.fallTypes = e.fallTypes);
+                      (t.inGame.fallTypes = e.fallTypes),
+                      (t.inGame.playerDir = e.playerDir);
                   },
                   key: (t, a) => e.layoutStateIndex.powerups[a],
                 }),
@@ -55468,6 +55503,7 @@ var version = "v1.7.8";
                     paused: e.paused,
                     playerX: e.playerX,
                     playerY: e.playerY,
+                    playerDir: e.playerDir,
                     fallTypes: e.fallTypes
                   }),
                   update: (t, a, i) => {
@@ -55479,6 +55515,7 @@ var version = "v1.7.8";
                       (t.paused = e.paused),
                       (t.playerX = e.playerX),
                       (t.playerY = e.playerY),
+                      (t.playerDir = e.playerDir),
                       (t.fallTypes = e.fallTypes);
                   },
                   array: () => e.layout.enemies,
@@ -55581,7 +55618,7 @@ var version = "v1.7.8";
                 bulletSprite.Array({
                   props: (t) => ({ x: t.x, y: t.y, bullet: t, isEnemy: false, removeBullet: () => (e.playerBullets && e.playerBullets.splice(e.playerBullets.indexOf(t), 1)) }),
                   update: (e, t) => {
-                    (e.x = t.x), (e.y = t.y), (e.bullet = t);
+                    (e.x = t.x), (e.y = getBlockFallY(t.x, t.y, t.playerX, t.fallTypes, t.playerDir)), (e.bullet = t);
                   },
                   array: () => e.playerBullets,
                   key: (e, t) => t,
@@ -55902,6 +55939,7 @@ var version = "v1.7.8";
                     frame: e.frame,
                     playerX: e.playerX,
                     fallTypes: e.fallTypes,
+                    playerDir: e.playerDir,
                     paused: e.paused,
                     df: e.df,
                     theme: e.layout.properties.theme.objects.switch
@@ -55913,6 +55951,7 @@ var version = "v1.7.8";
                       (t.frame = e.frame),
                       (t.playerX = e.playerX),
                       (t.fallTypes = e.fallTypes),
+                      (t.playerDir = e.playerDir),
                       (t.paused = e.paused),
                       (t.df = e.df),
                       (t.theme = e.layout.properties.theme.objects.switch);
@@ -58865,7 +58904,7 @@ var version = "v1.7.8";
                 const newFrameCountSinceHistoryPush = 37.5 / Math.max(v, Math.abs(R));
                 if (t.mutValues.levelState.frameCountSinceHistoryPush >= newFrameCountSinceHistoryPush) {
                   t.mutValues.levelState.frameCountSinceHistoryPush = 0;
-                  const e = tl(t.mutValues.levelState, props.level.boss);
+                  const e = tl(t.mutValues.levelState, props.level.boss || null);
                   b.pushRunHistory(e);
                 }
               }
@@ -67565,7 +67604,6 @@ var version = "v1.7.8";
                       { fileName: "images/level/arrow-up.png", width: 14, height: 8, x: 200, y: h, rotation: -90 },
                       (a) => {
                         a.x = 200 + Math.abs(t.arrowY);
-                        console.log(t.arrowY);
                       }
                     ),
                     n({
