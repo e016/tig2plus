@@ -16701,7 +16701,10 @@ var version = "v1.8.0";
                       (le.points[4].y = p),
                       le.setPoints(le.points),
                       le)
-                    : "walker" === obj.kind
+                    : "minion" === obj.kind 
+                    // width: 15, height: 20
+                    ? te(obj.x, obj.y, 15, 20 - 2 * inset)
+                    : "shooter" !== obj.kind
                     ? te(obj.x, obj.y, obj.width, obj.height - 2 * inset)
                     : te(obj.x, obj.y, obj.width, obj.height);
                 case "directionChange":
@@ -31392,12 +31395,12 @@ var version = "v1.8.0";
         }
 
         function minionEnemyKind(e, t, a, i, n, s, o, levelSpeed, jumpFrames, df, d, u, h, p, g, speed) {
-          
-          
+          // overdrive levelSpeed is 6.45
+          console.log(levelSpeed);
           return (
             Object.assign(Object.assign({}, a), {
               framesSeen: a.framesSeen + df,
-              offsetX: a.offsetX + 1 * df * a.direction,
+              offsetX: a.offsetX + levelSpeed / 6.45 * df * a.direction,
               offsetY: a.offsetY,
               direction: a.direction,
             })
@@ -31688,6 +31691,7 @@ var version = "v1.8.0";
                             aboutToShoot: false,
                             frame: e.frame,
                             df: e.df,
+                            paused: e.paused,
                             inGame: {
                               playerX: e.playerX,
                               fallTypes: e.fallTypes,
@@ -31708,6 +31712,7 @@ var version = "v1.8.0";
                                 )),
                               (t.frame = e.frame),
                               (t.df = e.df),
+                              (t.paused = e.paused),
                               (t.inGame.playerX = e.playerX),
                               (t.inGame.fallTypes = e.fallTypes),
                               (t.inGame.playerDir = e.playerDir);
@@ -31892,12 +31897,15 @@ var version = "v1.8.0";
                                 x: e.enemy.x,
                                 y: e.enemy.y - 5,
                                 height: 10,
-                                scaleX: -(e.enemyDir || e.enemy.enemyDir || -1)
+                                scale: {
+                                  x: -(e.enemyDir || e.enemy.enemyDir || -1),
+                                  y: 1
+                                }
                               },
                               (t) => {
                                 (t.paused = e.paused),
                                   (t.df = e.df),
-                                  (t.scaleX = -(e.enemyDir || e.enemy.enemyDir || -1)),
+                                  (t.scale.x = -(e.enemyDir || e.enemy.enemyDir || -1)),
                                   (t.x = e.enemy.x),
                                   (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 5);
                               }
@@ -36095,7 +36103,7 @@ var version = "v1.8.0";
                           });
                         },
                       });
-                      /*s.push({
+                      s.push({
                         name: "Minion",
                         selected: "minion" === t.kind,
                         onPress: () => {
@@ -36109,7 +36117,7 @@ var version = "v1.8.0";
                             });
                           });
                         },
-                      });*/
+                      });
                   const o = [{ name: "Kind", options: s }];
                   return (
                     ("shooter" !== t.kind) &&
