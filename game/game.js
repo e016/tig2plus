@@ -30021,6 +30021,7 @@ var version = "v1.8.0";
               "images/editor/editorOnly/falling-button.png",
               "images/editor/editorOnly/falling-none.png",
               "images/editor/editorOnly/falling-up-down.png",
+              "images/editor/editorOnly/minion.png",
               "images/editor/objects/miniblock.png",
               "images/editor/objects/block.png",
               "images/editor/objects/platform.png",
@@ -30159,6 +30160,7 @@ var version = "v1.8.0";
                 Ks.arrow,
                 Ks.blockSwitchButton,
                 Ks.sizeButton,
+                Ks.world4BossMinion
               ];
               switch (e.id) {
                 case "world2":
@@ -31388,6 +31390,19 @@ var version = "v1.8.0";
                 speedY: null === edge ? Math.min(a.speedY + (l * (0.4 / 4.875)), df * l * 2) * df : 0,
               });
         }
+
+        function minionEnemyKind(e, t, a, i, n, s, o, levelSpeed, jumpFrames, df, d, u, h, p, g, speed) {
+          
+          
+          return (
+            Object.assign(Object.assign({}, a), {
+              framesSeen: a.framesSeen + df,
+              offsetX: a.offsetX + 1 * df * a.direction,
+              offsetY: a.offsetY,
+              direction: a.direction,
+            })
+          );
+        }
         
         function ho(e, t) {
           return (
@@ -31462,7 +31477,7 @@ var version = "v1.8.0";
               d,
               levelSpeed,
               jumpFrames,
-              p,
+              df,
               g,
               m,
               f,
@@ -31485,18 +31500,20 @@ var version = "v1.8.0";
                   }))
                   .filter(
                     ({ destroyed: e, object: t }) =>
-                      ("shooter" !== t.kind) && !e
+                      ("shooter" !== t.kind && "minion" !== t.kind) && !e
                   ),
               ];
               for (let t = 0; t < n.length; t++) {
                 const I = n[t],
                   _ = i[t],
                   v =
-                    "bomb" === I.kind
-                      ? bombEnemyKind(frame, I, _, t, S, a, s, o, levelSpeed, p, bottom, springs, jumpHeight)
+                    "minion" === I.kind ? 
+                    minionEnemyKind(frame, I, _, r, l, c, d, levelSpeed, jumpFrames, df, g, m, f, co, lo, speed)
+                    : "bomb" === I.kind
+                      ? bombEnemyKind(frame, I, _, t, S, a, s, o, levelSpeed, df, bottom, springs, jumpHeight)
                       : "shooter" === I.kind
-                      ? po(frame, I, _, r, l, c, d, levelSpeed, jumpFrames, p, g, m, f, co, lo, speed)
-                      : uo(frame, I, _, t, S, a, s, o, levelSpeed, p, bottom);
+                      ? po(frame, I, _, r, l, c, d, levelSpeed, jumpFrames, df, g, m, f, co, lo, speed)
+                      : uo(frame, I, _, t, S, a, s, o, levelSpeed, df, bottom);
                 xa.updateLayoutStateField("enemies", t, v, y, E, b, false);
               }
               return lo.ref;
@@ -31707,7 +31724,9 @@ var version = "v1.8.0";
             loop({ state: e, props: t }) {
               t.aboutToShoot && (e.shooting = true);
             },
-            render: ({ props: e, state: t }) => [
+            render: ({ props: e, state: t, getContext }) => {
+              let {animationRenderer: ar, animationAssets: aa} = e.inGame ? getContext(Ws) : {}
+              return [
               ifConditional(
                 () => true === e.showArea,
                 () => [
@@ -31858,12 +31877,52 @@ var version = "v1.8.0";
                               ]
                             ),
                           ];
+                        case "minion" :
+                          return [
+                            e.inGame ? Hs(
+                              {
+                                id: "Minion",
+                                animationAssets: aa,
+                                animationRenderer: ar,
+                                animationName: "animation",
+                                fileNames: Qs.spineFiles.world4BossMinion,
+                                loop: true,
+                                paused: e.paused,
+                                df: e.df,
+                                x: e.enemy.x,
+                                y: e.enemy.y - 5,
+                                height: 10,
+                                scaleX: -(e.enemyDir || e.enemy.enemyDir || -1)
+                              },
+                              (t) => {
+                                (t.paused = e.paused),
+                                  (t.df = e.df),
+                                  (t.scaleX = -(e.enemyDir || e.enemy.enemyDir || -1)),
+                                  (t.x = e.enemy.x),
+                                  (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 5);
+                              }
+                            ) : 
+                            y(
+                              {
+                                fileName: `images/editor/editorOnly/minion.png`,
+                                width: e.enemy.width,
+                                height: e.enemy.height,
+                              },
+                              (t) => {
+                                (t.x = e.enemy.x),
+                                (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
+                                (t.width = e.enemy.width),
+                                  (t.height = e.enemy.height),
+                                  (t.scaleX = -(e.enemyDir || e.enemy.enemyDir || -1));
+                              }
+                            ),
+                          ];
                       }
                     }
                   ),
                 ]
               ),
-            ],
+            ]},
           }),
           Eo = makeSprite({
             init({ props: e, device: t, getContext: a }) {
@@ -36036,12 +36095,27 @@ var version = "v1.8.0";
                           });
                         },
                       });
+                      /*s.push({
+                        name: "Minion",
+                        selected: "minion" === t.kind,
+                        onPress: () => {
+                          i.map((j) => {
+                            e({
+                              type: "setProperty",
+                              array: "enemies",
+                              index: j,
+                              set: (e, t) =>
+                                n($.changeEnemyKind(e, "minion"), t),
+                            });
+                          });
+                        },
+                      });*/
                   const o = [{ name: "Kind", options: s }];
                   return (
-                    ("walker" === t.kind || "walkerHelmet" === t.kind || "bomb" === t.kind) &&
+                    ("shooter" !== t.kind) &&
                       a.includes("giantEnemy") &&
                       a.includes("walkingEnemy") &&
-                      ("bomb" !== t.kind && (o.push({
+                      ("bomb" !== t.kind && "minion" !== t.kind && (o.push({
                         name: "Giant",
                         options: [
                           {
@@ -44673,6 +44747,7 @@ var version = "v1.8.0";
               (e[(e.Walker = 1)] = "Walker"),
               (e[(e.WalkerHelmet = 2)] = "WalkerHelmet");
               (e[(e.Bomb = 3)] = "Bomb");
+              (e[(e.Minion = 4)] = "Minion")
           })(fd || (fd = {})),
           (function (e) {
             (e[(e.Up = 0)] = "Up"), (e[(e.Right = 1)] = "Right");
@@ -44990,12 +45065,12 @@ var version = "v1.8.0";
                 ),
                 Oc(
                   Bc([
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum4, nd.enum2]),
-                    Gc([fc, fc, nd.enum4, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2]),
                   ])
                 ),
                 Oc(
@@ -45099,12 +45174,12 @@ var version = "v1.8.0";
                 ),
                 Oc(
                   Bc([
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum4, nd.enum2]),
-                    Gc([fc, fc, nd.enum4, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2]),
+                    Gc([fc, fc, nd.enum5, nd.enum2]),
                   ])
                 ),
                 Oc(
@@ -45704,6 +45779,7 @@ var version = "v1.8.0";
             [fd.Walker]: "walker",
             [fd.WalkerHelmet]: "walkerHelmet",
             [fd.Bomb]: "bomb",
+            [fd.Minion]: "minion"
           },
           eu = {
             [wd.Movement]: "movement",
