@@ -72390,7 +72390,7 @@ var version = "v1.8.0";
               Gf({
                 id: "LevelEditorAssets",
                 withContext: {
-                  spineFiles: Qs.getThemeSpine(ca.world1),
+                  spineFiles: [...Qs.getThemeSpine(ca.world1), ...(e.view.level.level.boss ? e.view.level.level.boss.fileNames.spine : [])],
                   globalContext: e.globalContextVal,
                   animationContext: e.animationContext,
                   animationRenderer: e.animationRenderer,
