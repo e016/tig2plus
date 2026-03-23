@@ -6,14 +6,14 @@ var renderCanvas;
         for (var n in r)
           e.o(r, n) &&
             !e.o(t, n) &&
-            Object.defineProperty(t, n, { enumerable: !0, get: r[n] });
+            Object.defineProperty(t, n, { enumerable: true, get: r[n] });
       },
       o: (e, t) => Object.prototype.hasOwnProperty.call(e, t),
       r: (e) => {
         "undefined" != typeof Symbol &&
           Symbol.toStringTag &&
           Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }),
-          Object.defineProperty(e, "__esModule", { value: !0 });
+          Object.defineProperty(e, "__esModule", { value: true });
       },
     },
     t = {};
@@ -22,10 +22,10 @@ var renderCanvas;
       await Promise.all([
         ...n(e, t.audioFileNames || [], r.audioElements, r.loadAudioFile),
         ...n(e, t.imageFileNames || [], r.imageElements, (e) =>
-          r.loadImageFile(e, !1)
+          r.loadImageFile(e, false)
         ),
         ...n(e, t.imageFileNamesScaleNearestPixel || [], r.imageElements, (e) =>
-          r.loadImageFile(e, !0)
+          r.loadImageFile(e, true)
         ),
       ]);
     }
@@ -71,7 +71,7 @@ var renderCanvas;
         anchorX: e.anchorX || 0,
         anchorY: e.anchorY || 0,
         mask: e.mask || null,
-        show: e.show || !0,
+        show: e.show || true,
       };
     }
     function s(e, t) {
@@ -423,11 +423,11 @@ var renderCanvas;
               F(e, g.props, n, r.size, u.nativeSpriteUtils.didResize, a, d);
           } else if ("custom" === g.type) {
             m(g.props.id);
-            let e = !1,
+            let e = false,
               c = t.childContainers[g.props.id];
             const h = `${l}--${g.props.id}`;
             (c && "custom" === c.type) ||
-              ((e = !0),
+              ((e = true),
               (c = E(g, r, i, o, n, t.prevTime, h, f)),
               (t.childContainers[g.props.id] = c)),
               _(c, g.props, r, n, i, o, e, a, s, h, u, d, p, f);
@@ -439,10 +439,10 @@ var renderCanvas;
             m(g.props.id);
             let e = t.childContainers[g.props.id];
             const a = `${l}--${g.props.id}`;
-            let s = !1;
+            let s = false;
             if (!e || "mutable" !== e.type) {
               if (
-                ((s = !0),
+                ((s = true),
                 (e = R(g, r, n, i, o, t.prevTime, a, [], d, p, u)),
                 "mutable" !== e.type)
               )
@@ -562,10 +562,10 @@ var renderCanvas;
     function w(e, t) {
       const r = e.deviceHeight > e.deviceWidth;
       let n,
-        i = !1;
+        i = false;
       return (
         "portrait" in t
-          ? ((n = r ? t.portrait : t.landscape), (i = !0))
+          ? ((n = r ? t.portrait : t.landscape), (i = true))
           : (n = t),
         (n.minHeightXL && e.deviceHeight >= n.minHeightXL) ||
         (n.minWidthXL && e.deviceWidth >= n.minWidthXL)
@@ -635,7 +635,7 @@ var renderCanvas;
     }
     function R(e, t, n, o, a, u, d, p, f, m, h) {
       var g, v;
-      if (null === e) return null;
+      if (null === e || typeof e === "undefined") return null;
       switch (e.type) {
         case "text":
         case "circle":
@@ -727,7 +727,7 @@ var renderCanvas;
                     R(e, t, n, o, a, u, `${d}--${r}-${i}`, p, f, m, h)
                   )
                   .filter(k)),
-                !0)
+                true)
               );
             },
             cleanup() {
@@ -754,7 +754,7 @@ var renderCanvas;
             updateOnChange() {
               const r = e.condition();
               return !this.value && r
-                ? ((this.value = !0),
+                ? ((this.value = true),
                   this.cleanup(),
                   (this.containers = e
                     .trueSprites()
@@ -762,11 +762,11 @@ var renderCanvas;
                       R(e, t, n, o, a, u, `${d}--true-${r}`, p, f, m, h)
                     )
                     .filter(k)),
-                  !0)
+                  true)
                 : !(
                     !this.value ||
                     r ||
-                    ((this.value = !1),
+                    ((this.value = false),
                     this.cleanup(),
                     (this.containers = e
                       .falseSprites()
@@ -859,8 +859,8 @@ var renderCanvas;
             key: e.key,
             prevIdsA: c,
             prevIdsB: c,
-            isOnSamePrevIdRef: !0,
-            onPrevIdA: !0,
+            isOnSamePrevIdRef: true,
+            onPrevIdA: true,
             containersArray: e
               .array()
               .map((t, r) => (void 0 === e.filter || e.filter(t, r) ? t : null))
@@ -882,7 +882,7 @@ var renderCanvas;
               for (let v = 0; v < c.length; v++) {
                 const _ = c[v];
                 if (
-                  !1 ===
+                  false ===
                   (null === (r = this.filter) || void 0 === r
                     ? void 0
                     : r.call(this, _, v))
@@ -916,7 +916,7 @@ var renderCanvas;
               }
               (this.onPrevIdA = !this.onPrevIdA),
                 this.isOnSamePrevIdRef &&
-                  ((this.isOnSamePrevIdRef = !1),
+                  ((this.isOnSamePrevIdRef = false),
                   (this.prevIdsB = [...this.prevIdsB]));
             },
             cleanup() {
@@ -1119,10 +1119,10 @@ var renderCanvas;
       keysDown: {},
       keysJustPressed: {},
       pointer: {
-        pressed: !1,
+        pressed: false,
         numberPressed: 0,
-        justPressed: !1,
-        justReleased: !1,
+        justPressed: false,
+        justReleased: false,
         x: 0,
         y: 0,
       },
@@ -1147,10 +1147,10 @@ var renderCanvas;
         keysDown: {},
         keysJustPressed: {},
         pointer: {
-          pressed: !1,
+          pressed: false,
           numberPressed: 0,
-          justPressed: !1,
-          justReleased: !1,
+          justPressed: false,
+          justReleased: false,
           x: 0,
           y: 0,
         },
@@ -1165,17 +1165,17 @@ var renderCanvas;
           e.target instanceof HTMLInputElement
         ) &&
         e.preventDefault(),
-        (L.keysDown[e.key] = !0),
-        (L.keysJustPressed[e.key] = !0);
+        (L.keysDown[e.key] = true),
+        (L.keysJustPressed[e.key] = true);
     }
     function B(e) {
       L.keysDown[e.key] = void 0;
     }
     function O(e, t, r) {
       M.includes(r) || (M = [...M, r]),
-        (L.pointer.pressed = !0),
+        (L.pointer.pressed = true),
         (L.pointer.numberPressed = M.length),
-        (L.pointer.justPressed = !0),
+        (L.pointer.justPressed = true),
         (L.pointer.x = e),
         (L.pointer.y = t);
     }
@@ -1185,9 +1185,9 @@ var renderCanvas;
     function V(e, t, r) {
       (M = M.filter((e) => e !== r)),
         0 === M.length &&
-          ((L.pointer.justPressed = !1), (L.pointer.pressed = !1)),
+          ((L.pointer.justPressed = false), (L.pointer.pressed = false)),
         (L.pointer.numberPressed = M.length),
-        (L.pointer.justReleased = !0),
+        (L.pointer.justReleased = true),
         (L.pointer.x = e),
         (L.pointer.y = t);
     }
@@ -1195,11 +1195,11 @@ var renderCanvas;
       (M = M.filter((t) => t !== e)),
         (L.pointer.numberPressed = M.length),
         0 === M.length &&
-          ((L.pointer.justPressed = !1), (L.pointer.pressed = !1));
+          ((L.pointer.justPressed = false), (L.pointer.pressed = false));
     }
     function X() {
       for (const e in L.keysJustPressed) L.keysJustPressed[e] = void 0;
-      (L.pointer.justPressed = !1), (L.pointer.justReleased = !1);
+      (L.pointer.justPressed = false), (L.pointer.justReleased = false);
     }
     function z(e, t, r, n) {
       let i;
@@ -1271,7 +1271,7 @@ var renderCanvas;
               callback: t,
               timeStartedMs: Date.now(),
               timeRemainingMs: r,
-              isPaused: !1,
+              isPaused: false,
             }),
             i
           );
@@ -1281,13 +1281,13 @@ var renderCanvas;
           if (!r || r.isPaused) return;
           const n = Date.now() - r.timeStartedMs;
           (r.timeRemainingMs -= n),
-            (r.isPaused = !0),
+            (r.isPaused = true),
             window.clearTimeout(r.timeoutId);
         },
         resume: (t) => {
           const r = e[t];
           if (!r || !r.isPaused) return;
-          (r.timeStartedMs = Date.now()), (r.isPaused = !1);
+          (r.timeStartedMs = Date.now()), (r.isPaused = false);
           const n = window.setTimeout(() => {
             delete e[t], r.callback();
           }, r.timeRemainingMs);
@@ -1312,8 +1312,8 @@ var renderCanvas;
           getPosition: () => j(e, i.playState),
           play: (s) => {
             let l,
-              c = !1,
-              u = !1,
+              c = false,
+              u = false,
               d = 1;
             "number" == typeof s
               ? (l = s)
@@ -1342,7 +1342,7 @@ var renderCanvas;
                 if (!r[n]) return;
                 const { data: t } = r[n];
                 "then" in t ||
-                  !1 !==
+                  false !==
                     (null === (e = t.playState) || void 0 === e
                       ? void 0
                       : e.isPaused) ||
@@ -1355,7 +1355,7 @@ var renderCanvas;
                 playTime: e.currentTime,
                 sample: p,
                 alreadyPlayedTime: m,
-                isPaused: !1,
+                isPaused: false,
                 gainNode: f,
                 volume: 1,
               }));
@@ -1368,11 +1368,11 @@ var renderCanvas;
               (i.playState = {
                 ...a,
                 alreadyPlayedTime: j(e, a),
-                isPaused: !0,
+                isPaused: true,
               }));
           },
           getStatus: () =>
-            i.playState && !1 === i.playState.isPaused ? "playing" : "paused",
+            i.playState && false === i.playState.isPaused ? "playing" : "paused",
           getDuration: () => o.duration,
           getVolume: () => (i.playState ? i.playState.volume : 1),
           setVolume: (r) => {
@@ -1588,7 +1588,7 @@ var renderCanvas;
             p = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, p),
             e.enableVertexAttribArray(o),
-            e.vertexAttribPointer(o, 2, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(o, 2, e.FLOAT, false, 0, 0),
             e.bufferData(
               e.ARRAY_BUFFER,
               new Float32Array([
@@ -1600,7 +1600,7 @@ var renderCanvas;
           const f = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, f),
             e.enableVertexAttribArray(a),
-            e.vertexAttribPointer(a, 2, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(a, 2, e.FLOAT, false, 0, 0),
             e.bufferData(
               e.ARRAY_BUFFER,
               new Float32Array([0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1]),
@@ -1615,7 +1615,7 @@ var renderCanvas;
               n !== r.program &&
                 (e.useProgram(n), (r.program = n), t.bindVertexArrayOES(i)),
               c.scaleToUniform3fvMut(a, p, f, m),
-              e.uniformMatrix3fv(s, !1, m),
+              e.uniformMatrix3fv(s, false, m),
               (function (e, t) {
                 if (!e) return void c.toUniform3fvMut(c.identityMatrix, t);
                 const { columns: r, rows: n, index: i } = e,
@@ -1627,7 +1627,7 @@ var renderCanvas;
                   );
                 c.toUniform3fvMut(s, t);
               })(v, h),
-              e.uniformMatrix3fv(l, !1, h),
+              e.uniformMatrix3fv(l, false, h),
               e.uniform1i(u, 0),
               e.uniform1f(d, g),
               e.drawArrays(e.TRIANGLES, 0, 6);
@@ -1649,7 +1649,7 @@ var renderCanvas;
             d = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, d),
             e.enableVertexAttribArray(a),
-            e.vertexAttribPointer(a, 2, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(a, 2, e.FLOAT, false, 0, 0),
             e.bufferData(
               e.ARRAY_BUFFER,
               new Float32Array([
@@ -1661,7 +1661,7 @@ var renderCanvas;
           const p = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, p),
             e.enableVertexAttribArray(s),
-            e.vertexAttribPointer(s, 2, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(s, 2, e.FLOAT, false, 0, 0),
             e.bufferData(
               e.ARRAY_BUFFER,
               new Float32Array([0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1]),
@@ -1670,16 +1670,16 @@ var renderCanvas;
           const f = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, f),
             e.enableVertexAttribArray(l),
-            e.vertexAttribPointer(l, 4, e.FLOAT, !1, 24, 0),
+            e.vertexAttribPointer(l, 4, e.FLOAT, false, 24, 0),
             t.vertexAttribDivisorANGLE(l, 1),
             e.enableVertexAttribArray(c),
-            e.vertexAttribPointer(c, 2, e.FLOAT, !1, 24, 16),
+            e.vertexAttribPointer(c, 2, e.FLOAT, false, 24, 16),
             t.vertexAttribDivisorANGLE(c, 1);
           const m = e.createBuffer();
           return (
             e.bindBuffer(e.ARRAY_BUFFER, m),
             e.enableVertexAttribArray(u),
-            e.vertexAttribPointer(u, 1, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(u, 1, e.FLOAT, false, 0, 0),
             t.vertexAttribDivisorANGLE(u, 1),
             r.bindVertexArrayOES(null),
             function (a, s, l, c, u) {
@@ -1731,7 +1731,7 @@ var renderCanvas;
             l = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, l),
             e.enableVertexAttribArray(o),
-            e.vertexAttribPointer(o, 2, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(o, 2, e.FLOAT, false, 0, 0),
             e.bufferData(
               e.ARRAY_BUFFER,
               new Float32Array([
@@ -1746,7 +1746,7 @@ var renderCanvas;
             n !== r.program &&
               (e.useProgram(n), (r.program = n), t.bindVertexArrayOES(i));
             const m = c.multiplyPooled(o, c.getScaleMatrixPooled(d, p));
-            c.toUniform3fvMut(m, u), e.uniformMatrix3fv(a, !1, u);
+            c.toUniform3fvMut(m, u), e.uniformMatrix3fv(a, false, u);
             const { r: h, g, b: v, a: alpha} = calculateRGB(l, f);
             e.uniform4f(s, h, g, v, f * alpha), e.drawArrays(e.TRIANGLES, 0, 6);
           };
@@ -1766,7 +1766,7 @@ var renderCanvas;
             u = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, u),
             e.enableVertexAttribArray(a),
-            e.vertexAttribPointer(a, 2, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(a, 2, e.FLOAT, false, 0, 0),
             e.bufferData(
               e.ARRAY_BUFFER,
               new Float32Array([
@@ -1778,16 +1778,16 @@ var renderCanvas;
           const d = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, d),
             e.enableVertexAttribArray(s),
-            e.vertexAttribPointer(s, 4, e.FLOAT, !1, 24, 0),
+            e.vertexAttribPointer(s, 4, e.FLOAT, false, 24, 0),
             t.vertexAttribDivisorANGLE(s, 1),
             e.enableVertexAttribArray(l),
-            e.vertexAttribPointer(l, 2, e.FLOAT, !1, 24, 16),
+            e.vertexAttribPointer(l, 2, e.FLOAT, false, 24, 16),
             t.vertexAttribDivisorANGLE(l, 1);
           const p = e.createBuffer();
           return (
             e.bindBuffer(e.ARRAY_BUFFER, p),
             e.enableVertexAttribArray(c),
-            e.vertexAttribPointer(c, 4, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(c, 4, e.FLOAT, false, 0, 0),
             t.vertexAttribDivisorANGLE(c, 1),
             r.bindVertexArrayOES(null),
             function (a, s, l, c) {
@@ -1842,7 +1842,7 @@ var renderCanvas;
             f = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, f),
             e.enableVertexAttribArray(o),
-            e.vertexAttribPointer(o, 2, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(o, 2, e.FLOAT, false, 0, 0),
             e.bufferData(
               e.ARRAY_BUFFER,
               new Float32Array([
@@ -1860,7 +1860,7 @@ var renderCanvas;
                 (e.useProgram(n), (r.program = n), t.bindVertexArrayOES(i));
             const x = c.multiplyPooled(o, c.getScaleMatrixPooled(g, v));
             c.toUniform3fvMut(x, m),
-              e.uniformMatrix3fv(a, !1, m),
+              e.uniformMatrix3fv(a, false, m),
               e.uniform1f(p, y),
               te(e, h, s, l, u, d, g, v),
               e.drawArrays(e.TRIANGLES, 0, 6);
@@ -1884,15 +1884,15 @@ var renderCanvas;
           t.bindVertexArrayOES(i),
             e.bindBuffer(e.ARRAY_BUFFER, f),
             e.enableVertexAttribArray(a),
-            e.vertexAttribPointer(a, 2, e.FLOAT, !1, 24, 8),
+            e.vertexAttribPointer(a, 2, e.FLOAT, false, 24, 8),
             e.enableVertexAttribArray(s),
-            e.vertexAttribPointer(s, 2, e.FLOAT, !1, 24, 16),
+            e.vertexAttribPointer(s, 2, e.FLOAT, false, 24, 16),
             e.enableVertexAttribArray(l),
-            e.vertexAttribPointer(l, 2, e.FLOAT, !1, 24, 0),
+            e.vertexAttribPointer(l, 2, e.FLOAT, false, 24, 0),
             t.bindVertexArrayOES(o),
             e.bindBuffer(e.ARRAY_BUFFER, f),
             e.enableVertexAttribArray(l),
-            e.vertexAttribPointer(l, 2, e.FLOAT, !1, 96, 0),
+            e.vertexAttribPointer(l, 2, e.FLOAT, false, 96, 0),
             e.disableVertexAttribArray(a),
             e.disableVertexAttribArray(s),
             t.bindVertexArrayOES(null);
@@ -1950,7 +1950,7 @@ var renderCanvas;
                 })(s, l),
                 e.bufferData(e.ARRAY_BUFFER, s.strokePath, e.DYNAMIC_DRAW),
                 c.toUniform3fvMut(a, m),
-                e.uniformMatrix3fv(u, !1, m),
+                e.uniformMatrix3fv(u, false, m),
                 e.uniform1f(d, h / 2),
                 v)
               ) {
@@ -2017,7 +2017,7 @@ var renderCanvas;
             f = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, f),
             e.enableVertexAttribArray(o),
-            e.vertexAttribPointer(o, 2, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(o, 2, e.FLOAT, false, 0, 0),
             t.bindVertexArrayOES(null);
           const m = c.getNewIdentity3fv();
           return function (o, h, g, v, y, x) {
@@ -2041,7 +2041,7 @@ var renderCanvas;
               })(v, h),
               e.bufferData(e.ARRAY_BUFFER, h.linePath, e.DYNAMIC_DRAW),
               c.toUniform3fvMut(o, m),
-              e.uniformMatrix3fv(a, !1, m),
+              e.uniformMatrix3fv(a, false, m),
               e.uniform1f(p, x),
               te(e, y, s, l, u, d, 1, 1),
               e.drawArrays(e.TRIANGLE_FAN, 0, v.length));
@@ -2064,7 +2064,7 @@ var renderCanvas;
             p = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, p),
             e.enableVertexAttribArray(o),
-            e.vertexAttribPointer(o, 1, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(o, 1, e.FLOAT, false, 0, 0),
             t.bindVertexArrayOES(null);
           const f = c.getNewIdentity3fv();
           return function (o, m, h, g, v, y, x, _, A) {
@@ -2085,7 +2085,7 @@ var renderCanvas;
             })(m, w),
               e.bufferData(e.ARRAY_BUFFER, m.points, e.DYNAMIC_DRAW),
               c.toUniform3fvMut(o, f),
-              e.uniformMatrix3fv(u, !1, f);
+              e.uniformMatrix3fv(u, false, f);
             const { r: T, g: R, b: P, a: alpha } = calculateRGB(h, _);
             e.uniform4f(d, T, R, P, _ * alpha),
               e.uniform1f(a, w),
@@ -2110,7 +2110,7 @@ var renderCanvas;
             d = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, d),
             e.enableVertexAttribArray(o),
-            e.vertexAttribPointer(o, 2, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(o, 2, e.FLOAT, false, 0, 0),
             e.bufferData(
               e.ARRAY_BUFFER,
               new Float32Array([
@@ -2122,7 +2122,7 @@ var renderCanvas;
           const p = e.createBuffer();
           e.bindBuffer(e.ARRAY_BUFFER, p),
             e.enableVertexAttribArray(a),
-            e.vertexAttribPointer(a, 2, e.FLOAT, !1, 0, 0),
+            e.vertexAttribPointer(a, 2, e.FLOAT, false, 0, 0),
             e.bufferData(
               e.ARRAY_BUFFER,
               new Float32Array([0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1]),
@@ -2137,7 +2137,7 @@ var renderCanvas;
                 (e.useProgram(n), (r.program = n), t.bindVertexArrayOES(i));
             const g = c.multiplyPooled(a, c.getScaleMatrixPooled(d / h, p / h));
             c.toUniform3fvMut(g, f),
-              e.uniformMatrix3fv(s, !1, f),
+              e.uniformMatrix3fv(s, false, f),
               e.uniform1i(l, 0),
               e.uniform1f(u, m),
               e.drawArrays(e.TRIANGLES, 0, 6);
@@ -2158,13 +2158,13 @@ var renderCanvas;
             : c.multiply(n, c.getTranslateMatrix(a, s)),
           c.getTranslateMatrix(t.x, t.y)
         );
-        switch ((e.colorMask(!1, !1, !1, !1), t.type)) {
+        switch ((e.colorMask(false, false, false, false), t.type)) {
           case "circleMask":
             null === r && (r = { value: null }),
               "circleMask" !==
                 (null === (l = r.value) || void 0 === l ? void 0 : l.type) &&
                 (r.value = { type: "circleMask", points: new Float32Array() }),
-              w(p, r.value, "", t.radius, i, o, u, 1, !1);
+              w(p, r.value, "", t.radius, i, o, u, 1, false);
             break;
           case "lineMask":
             null === r && (r = { value: null }),
@@ -2181,7 +2181,7 @@ var renderCanvas;
           case "rectangleMask":
             _(p, "", t.width, t.height, 1);
         }
-        e.colorMask(!0, !0, !0, !0),
+        e.colorMask(true, true, true, true),
           e.stencilFunc(e.EQUAL, 1, 255),
           e.stencilOp(e.KEEP, e.KEEP, e.KEEP);
       }
@@ -2238,7 +2238,7 @@ var renderCanvas;
                 o,
                 f,
                 t.opacity * r,
-                !0
+                true
               );
             }
         }
@@ -2430,7 +2430,7 @@ var renderCanvas;
                         o,
                         f,
                         r.props.opacity * t.opacity,
-                        !1
+                        false
                       );
                       break;
                     case "text":
@@ -2485,7 +2485,7 @@ var renderCanvas;
                     o,
                     f,
                     a.opacity * t.opacity,
-                    !1
+                    false
                   ));
               }
               r.mask && P();
@@ -2632,7 +2632,7 @@ var renderCanvas;
               h = window.PointerEvent ? "pointermove" : "touchmove",
               v = window.PointerEvent ? "pointerup" : "touchend",
               y = window.PointerEvent ? "pointercancel" : "touchcancel",
-              x = p.getContext("webgl", { stencil: !0 });
+              x = p.getContext("webgl", { stencil: true });
             if (!x) return Error("WebGL not supported");
             const A = x,
               b = A.getExtension("ANGLE_instanced_arrays");
@@ -2643,7 +2643,7 @@ var renderCanvas;
             const P = R;
             A.enable(A.BLEND),
               A.blendFunc(A.ONE, A.ONE_MINUS_SRC_ALPHA),
-              A.pixelStorei(A.UNPACK_PREMULTIPLY_ALPHA_WEBGL, !0);
+              A.pixelStorei(A.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
             const F = new (window.AudioContext || window.webkitAudioContext)(),
               I = {
                 volume: 1,
@@ -2670,17 +2670,17 @@ var renderCanvas;
                 },
               };
             let k,
-              L = !0,
-              M = !0,
+              L = true,
+              M = true,
               C = 0,
-              j = !1,
+              j = false,
               K = 0,
               q = 0;
             const Q = () => {
               document.hidden && M && ((K = C), F.suspend()),
                 document.hidden ||
                   M ||
-                  ((j = !0),
+                  ((j = true),
                   setTimeout(() => {
                     F.suspend(),
                       setTimeout(() => {
@@ -2694,18 +2694,18 @@ var renderCanvas;
               (e) => {
                 L && !e.repeat && D(e);
               },
-              !1
+              false
             ),
               document.addEventListener(
                 "keyup",
                 (e) => {
                   L && B(e);
                 },
-                !1
+                false
               ),
-              document.addEventListener("visibilitychange", Q, !1),
-              window.addEventListener("resize", ae, !1);
-            const Z = () => ae({ didScroll: !0 });
+              document.addEventListener("visibilitychange", Q, false),
+              window.addEventListener("resize", ae, false);
+            const Z = () => ae({ didScroll: true });
             let ee, te, re, ne, ie;
             function ae(t) {
               const r = Boolean(t && "cleanup" in t && t.cleanup),
@@ -2787,7 +2787,7 @@ var renderCanvas;
                   heightMargin: he.size.heightMargin,
                   scale: R,
                 })),
-                (ve.didResize = !0),
+                (ve.didResize = true),
                 (ve.scale = R),
                 (ve.size = he.size);
               const F = (
@@ -2831,18 +2831,18 @@ var renderCanvas;
                   t < -he.size.height / 2 - he.size.heightMargin;
               (te = (e) => {
                 if ("changedTouches" in e) {
-                  L = !1;
+                  L = false;
                   for (let t = 0; t < e.changedTouches.length; t++) {
                     const r = e.changedTouches[t],
                       n = F(r.screenX),
                       i = I(r.screenY);
-                    k(n, i) || ((L = !0), O(n, i, r.identifier));
+                    k(n, i) || ((L = true), O(n, i, r.identifier));
                   }
                   return;
                 }
                 const t = F(e.clientX),
                   r = I(e.clientY);
-                k(t, r) ? (L = !1) : ((L = !0), O(t, r, e.pointerId));
+                k(t, r) ? (L = false) : ((L = true), O(t, r, e.pointerId));
               }),
                 (re = (e) => {
                   if ("changedTouches" in e) {
@@ -2878,13 +2878,13 @@ var renderCanvas;
                       G(e.changedTouches[t].identifier);
                   else G(e.pointerId);
                 }),
-                document.addEventListener(m, te, !1),
-                document.addEventListener(h, re, !1),
-                document.addEventListener(v, ne, !1),
-                document.addEventListener(y, ie, !1),
+                document.addEventListener(m, te, false),
+                document.addEventListener(h, re, false),
+                document.addEventListener(v, ne, false),
+                document.addEventListener(y, ie, false),
                 (ee = he.size);
             }
-            window.addEventListener("scroll", Z, !1),
+            window.addEventListener("scroll", Z, false),
               document.addEventListener("contextmenu", (e) => {
                 e.preventDefault();
               });
@@ -2985,13 +2985,13 @@ var renderCanvas;
               },
               me = {
                 resolution: 1,
-                hasSet: !1,
+                hasSet: false,
                 get() {
                   return this.resolution;
                 },
                 set(e) {
                   (this.resolution = e),
-                    (this.hasSet = !0),
+                    (this.hasSet = true),
                     ae(),
                     he.storage.setItem(H, String(e));
                 },
@@ -3090,12 +3090,12 @@ var renderCanvas;
                 (null == r ? void 0 : r.device) || {
                   alert: {
                     ok: (e, t) => {
-                      (K = C), alert(e), (j = !0), null == t || t();
+                      (K = C), alert(e), (j = true), null == t || t();
                     },
                     okCancel: (e, t) => {
                       K = C;
                       const r = confirm(e);
-                      (j = !0), t(r);
+                      (j = true), t(r);
                     },
                   },
                 },
@@ -3118,28 +3118,28 @@ var renderCanvas;
                 getInputs: U,
                 newInputs: N,
                 render: fe,
-                isTestPlatform: !1,
+                isTestPlatform: false,
               },
               ve = {
-                isLastFrame: !0,
-                didResize: !1,
+                isLastFrame: true,
+                didResize: false,
                 scale: 1,
                 gameXToPlatformX: (e) => e,
                 gameYToPlatformY: (e) => e,
                 size: he.size,
               };
-            let ye = !1;
+            let ye = false;
             const xe = () => {
-              document.removeEventListener("keydown", xe, !1),
-                document.removeEventListener(m, xe, !1),
+              document.removeEventListener("keydown", xe, false),
+                document.removeEventListener(m, xe, false),
                 "suspended" === F.state && F.resume(),
                 (F.onstatechange = () => {
                   "suspended" !== F.state || document.hidden || F.resume();
                 });
             };
             return (
-              document.addEventListener("keydown", xe, !1),
-              document.addEventListener(m, xe, !1),
+              document.addEventListener("keydown", xe, false),
+              document.addEventListener(m, xe, false),
               (function t() {
                 const r = (null == a ? void 0 : a.width) || window.innerWidth,
                   n = (null == a ? void 0 : a.height) || window.innerHeight;
@@ -3162,7 +3162,7 @@ var renderCanvas;
                             2 / i.size.fullHeight
                           ),
                           transformationGameCoords: [...c.identityMatrix],
-                          hasMask: !1,
+                          hasMask: false,
                         },
                       ],
                     },
@@ -3210,7 +3210,7 @@ var renderCanvas;
                   let v = 0,
                     y = 0;
                   const x = {
-                    isEmpty: !1,
+                    isEmpty: false,
                     newFrame: e.render.newFrame,
                     endFrame: e.render.endFrame,
                     startRenderSprite: e.render.startRenderSprite,
@@ -3229,7 +3229,7 @@ var renderCanvas;
                       p,
                       o,
                       a,
-                      !0,
+                      true,
                       h,
                       0,
                       r.props.id,
@@ -3268,7 +3268,7 @@ var renderCanvas;
                             l = w(i.size, m),
                             c = 0 === h;
                           c && x.isEmpty
-                            ? ((x.isEmpty = !1),
+                            ? ((x.isEmpty = false),
                               (x.newFrame = e.render.newFrame),
                               (x.endFrame = e.render.endFrame),
                               (x.startRenderSprite =
@@ -3280,7 +3280,7 @@ var renderCanvas;
                               (x.endNativeSprite = e.render.endNativeSprite))
                             : c ||
                               x.isEmpty ||
-                              ((x.isEmpty = !0),
+                              ((x.isEmpty = true),
                               (x.newFrame = A),
                               (x.endFrame = b),
                               (x.startRenderSprite = T),
@@ -3297,7 +3297,7 @@ var renderCanvas;
                               p,
                               o,
                               a,
-                              !1,
+                              false,
                               l,
                               n,
                               r.props.id,
@@ -3307,7 +3307,7 @@ var renderCanvas;
                               []
                             ),
                             x.endFrame(),
-                            (t.nativeSpriteUtils.didResize = !1),
+                            (t.nativeSpriteUtils.didResize = false),
                             u();
                         }
                       },
@@ -3323,7 +3323,7 @@ var renderCanvas;
                     (null == s || s(),
                     null === u && (u = e - 1 / 60),
                     M
-                      ? (j && ((j = !1), (q += e - K)),
+                      ? (j && ((j = false), (q += e - K)),
                         (C = e),
                         d(),
                         i(e - u - q, X))
@@ -3335,13 +3335,13 @@ var renderCanvas;
                 cleanup: function () {
                   (p.width = p.width),
                     i || document.body.removeChild(p),
-                    (ye = !0),
-                    document.removeEventListener("keydown", D, !1),
-                    document.removeEventListener("keyup", B, !1),
-                    document.removeEventListener("visibilitychange", Q, !1),
-                    window.removeEventListener("resize", ae, !1),
-                    window.removeEventListener("scroll", Z, !1),
-                    ae({ cleanup: !0 });
+                    (ye = true),
+                    document.removeEventListener("keydown", D, false),
+                    document.removeEventListener("keyup", B, false),
+                    document.removeEventListener("visibilitychange", Q, false),
+                    window.removeEventListener("resize", ae, false),
+                    window.removeEventListener("scroll", Z, false),
+                    ae({ cleanup: true });
                 },
                 audioElements: le,
                 imageElements: ce,

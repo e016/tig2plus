@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.8.1";
+var version = "v1.8.3";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -40136,8 +40136,11 @@ var version = "v1.8.1";
                   U.justHitObject = { array: "speedChanges", index: index };
               }
             }
-            const ae = inViewLayout.flags.findIndex((e) => {
+            const ae = inViewLayout.flags.findIndex((e, a) => {
               const t = e.x - U.playerX;
+              if (inViewLayoutState.flags[a].wasHit) {
+                return false;
+              }
               return (
                 (Z(e)  || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(e, U.playerX, U.playerStacks))) &&
                 ((1 === U.playerDir && t <= 15) ||
@@ -40308,7 +40311,7 @@ var version = "v1.8.1";
                       (null === (u = U.playerPowerup) || void 0 === u
                         ? void 0
                         : u.item) &&
-                      be.hitStack(t, U.playerX, U.playerStacks))) &&
+                      be.hitStack(t, U.playerX, U.playerStacks))) && !inViewLayoutState.collectibles[e].wasPickedUp &&
                   (ne = e);
             }
             -1 !== ne &&
@@ -40391,10 +40394,10 @@ var version = "v1.8.1";
                   K
                 )),
                 null == v || v.hitPortal());
-            const re = inViewLayout.powerups.findIndex((e) => {
+            const re = inViewLayout.powerups.findIndex((e, t) => {
               return (
                 Z(e) ||
-                ("playerStack" === (U.playerPowerup?.item)) &&
+                ("playerStack" === (U.playerPowerup?.item)) && (!e.compatible || !U.isCompatible ? !inViewLayoutState.powerups[t].wasPickedUp : true) &&
                   be.hitStack(e, U.playerX, U.playerStacks))
             });
             if (-1 !== re && !inViewLayoutState.powerups[re].wasPickedUp) {
@@ -43183,6 +43186,18 @@ var version = "v1.8.1";
               pathToLevel: [],
               maxFrames: 9420,
               difficulty: 7,
+            },
+            {
+              levelName: "Another World",
+              levelFileName: "another-world",
+              author: "Mincofficial",
+              song: hl.songs.heaven,
+              unlockedByIndex: null,
+              x: 0,
+              y: 0,
+              pathToLevel: [],
+              maxFrames: 9420,
+              difficulty: 6,
             },
           ],
           jl = [Dl, Bl, Fl, Yl, world5levels],
@@ -46230,12 +46245,12 @@ var version = "v1.8.1";
                 ])
               ),
               fc,
-              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
+              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
               Oc(Gc([mc, mc])),
             ]),
             uncompress: (e) => {
               console.warn(e)
-              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror, att, glow, flying], d] = e;
+              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror, att, glow, flying, debug], d] = e;
               return {
                 levelsProgress: t.map(
                   ([e, t, a, [i, n, s], [o, r], l, c, d]) => {
@@ -46270,7 +46285,8 @@ var version = "v1.8.1";
                   mirrorMenuButton: mirror || false,
                   fadeOutAttempts: att || false,
                   hidePlayerGlow: glow || false,
-                  flyingTrail: flying || false
+                  flyingTrail: flying || false,
+                  showDebug: debug || false
                 },
                 friendRequests: d.map(([e, t]) => ({
                   playerName: t,
@@ -46311,7 +46327,8 @@ var version = "v1.8.1";
                 e.settings.mirrorMenuButton || false,
                 e.settings.fadeOutAttempts || false,
                 e.settings.hidePlayerGlow || false,
-                e.settings.flyingTrail || false
+                e.settings.flyingTrail || false,
+                e.settings.showDebug || false,
               ],
               e.friendRequests.map((e) => [e.profileId, e.playerName]),
             ],
@@ -54872,7 +54889,9 @@ var version = "v1.8.1";
             ],
           }),
           cm = makeSprite({
-            render: ({ device: e, props: t, getContext: a }) => [
+            render: ({ device: e, props: t, getContext: a }) => {
+              let lastFrame = t.frame;
+              return [
               xg.Single(
                 {
                   theme: t.layout.properties.theme,
@@ -55201,10 +55220,85 @@ var version = "v1.8.1";
                     }
                   )
                 : null,
-            ],
+                ifConditional(
+                  () => a(Se).settings.showDebug,
+                  () => [
+                    onChange(() => t.frame,
+                      () => [
+                        ((lastFrame = t.crashed || t.finishedLevel ? lastFrame : t.frame), null),
+                        c(
+                          {
+                            color: "white",
+                            font: { weight: 500, align: "left"},
+                            opacity: 0.5,
+                            text: `${lastFrame}`
+                          },
+                          (i) => {
+                              (t.text = `${lastFrame}`),
+                              (i.x = e.size.fullWidth / -2 + 14),
+                              (i.y = e.size.fullHeight / 2 - 100);
+                          }
+                        ),
+                        c(
+                          {
+                            color: "white",
+                            font: { weight: 500, align: "left"},
+                            opacity: 0.5,
+                            text: `${t.justDownInputTimer}`
+                          },
+                          (i) => {
+                              (t.text = `${t.justDownInputTimer}`),
+                              (i.x = e.size.fullWidth / -2 + 14),
+                              (i.y = e.size.fullHeight / 2 - 120);
+                          }
+                        ),
+                        c(
+                          {
+                            color: "white",
+                            font: { weight: 500, align: "left"},
+                            opacity: 0.5,
+                            text: `${t.jumping}`
+                          },
+                          (i) => {
+                              (t.text = `${t.jumping}`),
+                              (i.x = e.size.fullWidth / -2 + 14),
+                              (i.y = e.size.fullHeight / 2 - 140);
+                          }
+                        ),
+                        c(
+                          {
+                            color: "white",
+                            font: { weight: 500, align: "left"},
+                            opacity: 0.5,
+                            text: `${t.playerSpeedMultiplier}`
+                          },
+                          (i) => {
+                              (t.text = `${t.playerSpeedMultiplier}`),
+                              (i.x = e.size.fullWidth / -2 + 14),
+                              (i.y = e.size.fullHeight / 2 - 160);
+                          }
+                        ),
+                        c(
+                          {
+                            color: "white",
+                            font: { weight: 500, align: "left"},
+                            opacity: 0.5,
+                            text: `jumpFrames: ${t.levelSpeeds.jumpFrames}, speed: ${t.levelSpeeds.speed}`
+                          },
+                          (i) => {
+                              (t.text = `jumpFrames: ${t.levelSpeeds.jumpFrames}, speed: ${t.levelSpeeds.speed}`),
+                              (i.x = e.size.fullWidth / -2 + 14),
+                              (i.y = e.size.fullHeight / 2 - 180);
+                          }
+                        ),
+                    ]
+                  )
+                  ]
+                )
+            ]},
           }),
           dm = makeSprite({
-            render({ props: e }) {
+            render({ props: e, device }) {
               const t = [];
               
               return [
@@ -56078,7 +56172,7 @@ var version = "v1.8.1";
                       }
                     ),
                   ]
-                ),
+                )
               ];
             },
           }),
@@ -56838,7 +56932,7 @@ var version = "v1.8.1";
                     {
                       containerHeight: a.size.fullHeight - 70 + 50,
                       containerWidth: a.size.fullWidth,
-                      contentHeight: 800,
+                      contentHeight: 850,
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
@@ -57246,6 +57340,25 @@ var version = "v1.8.1";
                           (e) => {
                             const { settings: a } = t(Se);
                             (e.selected = a.flyingTrail),
+                              (e.noPress = o.ref);
+                          }
+                        ),
+                        Rm.Single(
+                          {
+                            text: "SHOW DEBUG INFO",
+                            selected: false,
+                            onPress: () => {
+                              var a;
+                              const { settings: i, updateSettings: n } = t(Se);
+                              n({ showDebug: !i.showDebug });
+                            },
+                            width: 250,
+                            height: 40,
+                            y: -800,
+                          },
+                          (e) => {
+                            const { settings: a } = t(Se);
+                            (e.selected = a.showDebug),
                               (e.noPress = o.ref);
                           }
                         ),
@@ -59266,11 +59379,17 @@ var version = "v1.8.1";
                     gravity: t.gravity,
                     dashing: t.dashing,
                     isGravity: t.isGravity,
-                    fallTypes: t.mutValues.levelState.fallTypes
+                    fallTypes: t.mutValues.levelState.fallTypes,
+                    justDownInputTimer: t.mutValues.levelState.justDownInputTimer,
+                    jumping: t.mutValues.levelState.jumping,
+                    levelSpeeds: t.levelSpeeds
                   },
                   
                   (a) => {
                     var i, n, s, o, r;
+                    (a.justDownInputTimer = t.mutValues.levelState.justDownInputTimer),
+                    (a.levelSpeeds = t.levelSpeeds),
+                    (a.jumping = t.mutValues.levelState.jumping),
                     (a.isGravity = t.mutValues.levelState.isGravity),
                     (a.dashing = t.mutValues.levelState.dashing),
                     (a.frame = t.mutValues.levelState.frame),
@@ -59757,7 +59876,7 @@ var version = "v1.8.1";
               );
             },
           }),
-          Of = makePureSprite({
+          ScreenBounds = makePureSprite({
             shouldRerender: () => false,
             render: ({
               size: { width: e, height: t, widthMargin: a, heightMargin: i },
@@ -60637,7 +60756,7 @@ var version = "v1.8.1";
                     );
                   },
                 }),
-                Of({ id: "ScreenBounds" }),
+                ScreenBounds({ id: "ScreenBounds" }),
                 Ke({
                   id: "PlayButton",
                   type: "edit",
