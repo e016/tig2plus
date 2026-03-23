@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.8.4";
+var version = "v1.8.5";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -18021,7 +18021,7 @@ var version = "v1.8.4";
               if (!("trueY" in obj)) {
                 obj.trueY = obj.y;
               }
-              if (!("inSwitch" in obj)) {
+              if (obj.init && !("inSwitch" in obj)) {
                 obj.inSwitch = false;
               }
               var trueY = obj.trueY,
@@ -18034,7 +18034,7 @@ var version = "v1.8.4";
                   trueY = stateOff
                 }
               };
-              if ("init" in obj) {
+              if (obj.init) {
                 if (obj.trigger == "beat") {
                   toggleOn((frame / maxBeat) % 2 < 1)
                 } else {
@@ -18073,7 +18073,7 @@ var version = "v1.8.4";
                   (updated.isVoid = obj.isVoid),
                   (updated.isBoss = obj.isBoss),
                   (updated.trigger = obj.trigger),
-                  ("init" in obj ? (updated.init = obj.init) : void 0),
+                  (updated.init = obj.init),
                   updated)
                 : Object.assign(Object.assign({}, obj), { y: trueY });
             }
@@ -18666,20 +18666,16 @@ var version = "v1.8.4";
               if (i?.atIndex) {
                 i = { ...i };
                 i.index = i.atIndex;
-              }
+              };
               var block = {
                 type: "blockSpikeState",
-                isVoid: t == undefined ? false : t.blocks[i.index]?.isVoid,
-                steel: t == undefined ? false : t.blocks[i.index]?.steel,
-                isBoss: t == undefined ? false : t.blocks[i.index]?.isBoss,
+                isVoid: t?.blocks?.[i.index]?.isVoid,
+                steel: t?.blocks?.[i.index]?.steel,
+                isBoss: t?.blocks?.[i.index]?.isBoss,
+                init: t?.blocks?.[i.index]?.init,
+                off: t?.blocks?.[i.index]?.off
               };
-
-              if (t == undefined ? undefined : t.blocks[i.index]?.init) {
-                Object.assign(block, {
-                  init: t == undefined ? undefined : t.blocks[i.index]?.init,
-                  off: t == undefined ? false : t.blocks[i.index]?.off,
-                });
-              }
+              //t && t.blocks[i.index]?.init && console.warn(t.blocks[i.index], block);
               return block;
             case "spikes":
               return { type: "blockSpikeState" };
@@ -19649,7 +19645,7 @@ var version = "v1.8.4";
                             !(e.inGame ? r?.steel : i?.steel) &&
                           !((e.inGame ? r : i) == undefined
                             ? false
-                            : "init" in (e.inGame ? r : i))) &&
+                            : (e.inGame ? r : i).init)) &&
                           !(e.inGame ? r.isVoid : i.isVoid) &&
                           !(e.inGame ? r.isBoss : i.isBoss) &&
                           !(null == r ? void 0 : r.destroyed) && !r?.off),
@@ -19690,7 +19686,7 @@ var version = "v1.8.4";
                           e.theme == "world2" && i.width === $.miniBlockWidth && !(e.inGame ? r?.steel : i?.steel) &&
                           !((e.inGame ? r : i) == undefined
                             ? false
-                            : "init" in (e.inGame ? r : i)) &&
+                            : (e.inGame ? r : i).init) &&
                           !(e.inGame ? r?.isVoid : i?.isVoid) &&
                           !(e.inGame ? r?.isBoss : i?.isBoss) &&
                           !(null == r ? void 0 : r.destroyed) &&
@@ -31914,13 +31910,13 @@ var version = "v1.8.4";
                             y(
                               {
                                 fileName: `images/editor/editorOnly/minion.png`,
-                                width: e.enemy.width,
+                                width: e.enemy.width * 1.6,
                                 height: e.enemy.height,
                               },
                               (t) => {
                                 (t.x = e.enemy.x),
                                 (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
-                                (t.width = e.enemy.width),
+                                (t.width = e.enemy.width * 1.6),
                                   (t.height = e.enemy.height),
                                   (t.scaleX = -(e.enemyDir || e.enemy.enemyDir || -1));
                               }
@@ -35768,7 +35764,7 @@ var version = "v1.8.4";
                 })(e, t, a, i);
               case "block":
                 return (function (e, t, a) {
-                  if ("init" in t) {
+                  if (t.init) {
                     return [
                       {
                         name: "Color",
@@ -38455,11 +38451,10 @@ var version = "v1.8.4";
                     selectedObjects[0].array == "blocks"
                   ) {
                     if (
-                      "init" in
-                        m[selectedObjects[$o].array][
+                      m[selectedObjects[$o].array][
                           selectedObjects[$o].index
-                        ] &&
-                      !("init" in b)
+                        ].init &&
+                      !(b.init)
                     ) {
                       sameType = false;
                       break;
@@ -43200,6 +43195,17 @@ var version = "v1.8.4";
               maxFrames: 9420,
               difficulty: 6,
             },
+            {
+              levelName: "Switch Block Test",
+              levelFileName: "switch-test",
+              song: hl.songs.zenith,
+              unlockedByIndex: null,
+              x: 0,
+              y: 0,
+              pathToLevel: [],
+              maxFrames: 643,
+              difficulty: 1,
+            },
           ],
           jl = [Dl, Bl, Fl, Yl, world5levels],
           Gl = Dl[0].levelName,
@@ -45499,7 +45505,7 @@ var version = "v1.8.4";
                       Ud(
                         ru(i.properties.theme.id, Gd),
                         i.blocks.filter((b) => {
-                          return !("init" in b);
+                          return !(b.init);
                         }).length +
                           i.platforms.length +
                           i.switchPlatforms.length
@@ -45507,7 +45513,7 @@ var version = "v1.8.4";
                     ],
                     i.blocks
                       .filter((b) => {
-                        return !("init" in b);
+                        return !(b.init);
                       })
                       .map((e) =>
                         e.steel || e.isVoid || e.isBoss
@@ -45655,7 +45661,7 @@ var version = "v1.8.4";
                     i.speedChanges.map((e) => [e.x, e.y, ru(e.direction, tu)]),
                     i.blocks
                       .filter((b) => {
-                        return "init" in b;
+                        return !!b.init;
                       })
                       .map((e) => [
                         e.x,
@@ -46251,7 +46257,6 @@ var version = "v1.8.4";
               Oc(Gc([mc, mc])),
             ]),
             uncompress: (e) => {
-              console.warn(e)
               const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror, att, glow, flying, debug, release], d] = e;
               return {
                 levelsProgress: t.map(
