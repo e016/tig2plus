@@ -17965,7 +17965,7 @@ var version = "v1.8.5";
                 platform: "infinite",
                 dirChange: "world1",
                 flag: "world1",
-                saw: "world1",
+                saw: "infinite",
                 bottom: "world3",
                 switch: "infinite",
                 speedChange: "speed",
