@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.8.3";
+var version = "v1.8.4";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -39598,6 +39598,7 @@ var version = "v1.8.3";
                 bigMutValues: D,
                 animationAssets: F,
                 bottomLineTheme,
+                disableReleaseBuffer,
               } = e,
               { levelState: U } = L;
             U.frame += df;
@@ -39613,7 +39614,7 @@ var version = "v1.8.3";
               (null === (t = U.playerPowerup) || void 0 === t
                 ? void 0
                 : t.item);
-            U.justDownInputTimer > 0 && U.justDownInputTimer--,
+            U.justDownInputTimer > 0 && (disableReleaseBuffer ? ("up" == playerInput && (U.justDownInputTimer = 0), "up" !== playerInput) : true) && U.justDownInputTimer--,
               "justDown" !== playerInput || skating || (U.justDownInputTimer = 10);
             const inViewLayout =
                 (null == D ? void 0 : D.inViewLayout) ||
@@ -46230,6 +46231,7 @@ var version = "v1.8.3";
               (e) => [e[0], e[1], [...e[2], 0], e[3]],
               (e) => [e[0], e[1], [...e[2], false, false], e[3]],
               (e) => [e[0], e[1], [...e[2], false], e[3]],
+              (e) => [e[0], e[1], [...e[2], false], e[3]],
             ],
             finalSchema: Gc([
               Oc(
@@ -46245,12 +46247,12 @@ var version = "v1.8.3";
                 ])
               ),
               fc,
-              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
+              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
               Oc(Gc([mc, mc])),
             ]),
             uncompress: (e) => {
               console.warn(e)
-              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror, att, glow, flying, debug], d] = e;
+              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror, att, glow, flying, debug, release], d] = e;
               return {
                 levelsProgress: t.map(
                   ([e, t, a, [i, n, s], [o, r], l, c, d]) => {
@@ -46286,7 +46288,8 @@ var version = "v1.8.3";
                   fadeOutAttempts: att || false,
                   hidePlayerGlow: glow || false,
                   flyingTrail: flying || false,
-                  showDebug: debug || false
+                  showDebug: debug || false,
+                  disableReleaseBuffer: release || false,
                 },
                 friendRequests: d.map(([e, t]) => ({
                   playerName: t,
@@ -46329,6 +46332,7 @@ var version = "v1.8.3";
                 e.settings.hidePlayerGlow || false,
                 e.settings.flyingTrail || false,
                 e.settings.showDebug || false,
+                e.settings.disableReleaseBuffer || false,
               ],
               e.friendRequests.map((e) => [e.profileId, e.playerName]),
             ],
@@ -56932,7 +56936,7 @@ var version = "v1.8.3";
                     {
                       containerHeight: a.size.fullHeight - 70 + 50,
                       containerWidth: a.size.fullWidth,
-                      contentHeight: 850,
+                      contentHeight: 900,
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
@@ -57359,6 +57363,25 @@ var version = "v1.8.3";
                           (e) => {
                             const { settings: a } = t(Se);
                             (e.selected = a.showDebug),
+                              (e.noPress = o.ref);
+                          }
+                        ),
+                        Rm.Single(
+                          {
+                            text: "DISABLE RELEASE BUFFER",
+                            selected: false,
+                            onPress: () => {
+                              var a;
+                              const { settings: i, updateSettings: n } = t(Se);
+                              n({ disableReleaseBuffer: !i.disableReleaseBuffer });
+                            },
+                            width: 250,
+                            height: 40,
+                            y: -850,
+                          },
+                          (e) => {
+                            const { settings: a } = t(Se);
+                            (e.selected = a.disableReleaseBuffer),
                               (e.noPress = o.ref);
                           }
                         ),
@@ -59247,6 +59270,7 @@ var version = "v1.8.3";
                   onReachedCheckpoint: t.onReachedCheckpoint,
                   onCrash: t.onCrash,
                   onReset: t.onReset,
+                  disableReleaseBuffer: y.disableReleaseBuffer,
                 }),
                 null !== t.mutValues.levelState.playerPowerup
                   ? t.powerupOut
