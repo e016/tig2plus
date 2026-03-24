@@ -55040,7 +55040,7 @@ var version = "v1.9.0";
                     }
                   )
                 : null,
-              t.layout.properties.useGround ? renderGround.Single({
+              t.layout.properties.useGround && isSpecialTheme(t.layout.properties.theme.id) ? renderGround.Single({
                 cameraY: t.cameraY,
                 theme: t.layout.properties.theme.id
               }, (a) => {
