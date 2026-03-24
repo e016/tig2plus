@@ -41202,11 +41202,25 @@ var version = "v1.9.2";
                 label: "Wolf Beats",
                 isBonusSong: false,
               },
+              stardust: {
+                name: "Stardust",
+                author: "Geoxor",
+                fileName: "audio/tracks/geoxor-stardust.mp3",
+                bpm: 110,
+                isBonusSong: false,
+              },
               solace: {
                 name: "Solace",
                 author: "Avenza",
                 fileName: "audio/tracks/avenza-solace.mp3",
                 bpm: 115,
+                isBonusSong: false,
+              },
+              solarAbyss: {
+                name: "Solar Abyss",
+                author: "Lchvasse",
+                fileName: "audio/tracks/lchvasse-solar-abyss.mp3",
+                bpm: 150,
                 isBonusSong: false,
               },
               thinkDifferent: {
@@ -41222,6 +41236,72 @@ var version = "v1.9.2";
                 fileName: "audio/tracks/aaro-indestructable.mp3",
                 bpm: 128,
                 label: "Tasty",
+                isBonusSong: false,
+              },
+              
+              eightBitAdventure: {
+                name: "8 Bit Adventure",
+                author: "AdhesiveWombat",
+                fileName: "audio/tracks/adhesive-wombat-8-bit-adventure.mp3",
+                bpm: 153,
+                isBonusSong: false,
+              },
+              eightBitShuffle: {
+                name: "8 Bit Shuffle",
+                author: "Inova",
+                fileName: "audio/tracks/inova-8-bit-shuffle.mp3",
+                bpm: 133,
+                label: "Argofox",
+                isBonusSong: false,
+              },
+              octane: {
+                name: "Octane",
+                author: "Inova",
+                fileName: "audio/tracks/inova-octane.mp3",
+                bpm: 125,
+                label: "Argofox",
+                isBonusSong: false,
+              },
+              
+              superUltra: {
+                name: "Super Ultra",
+                author: "MDK",
+                fileName: "audio/tracks/mdk-super-ultra.mp3",
+                bpm: 172,
+                isBonusSong: false,
+              },
+              darkSheep: {
+                name: "Dark Sheep",
+                author: "Chroma",
+                fileName: "audio/tracks/chroma-dark-sheep.mp3",
+                bpm: 177,
+                isBonusSong: false,
+              },
+              daydreamer: {
+                name: "Daydreamer",
+                author: "Meganeko",
+                fileName: "audio/tracks/meganeko-daydreamer.mp3",
+                bpm: 135,
+                isBonusSong: false,
+              },
+              breathe: {
+                name: "Breathe",
+                author: "meganeko & RoccoW",
+                fileName: "audio/tracks/meganeko-breathe.mp3",
+                bpm: 155,
+                isBonusSong: false,
+              },
+              criticalHitExtended: {
+                name: "Critical Hit (Extended Cut)",
+                author: "MDK",
+                fileName: "audio/tracks/mdk-critical-hit-extended.mp3",
+                bpm: 130,
+              },
+              criticalHit: {
+                name: "Critical Hit",
+                author: "MDK",
+                fileName: "audio/tracks/mdk-critical-hit.mp3",
+                bpm: 130,
                 isBonusSong: false,
               },
               lighthouse: {
@@ -41240,56 +41320,17 @@ var version = "v1.9.2";
                 label: "Argofox",
                 isBonusSong: false,
               },
-              awake: {
-                name: "Awake",
-                author: "Amidst",
-                fileName: "audio/tracks/amidst-awake.mp3",
-                bpm: 130,
-                label: "Argofox",
-                isBonusSong: false,
-              },
-              octane: {
-                name: "Octane",
-                author: "Inova",
-                fileName: "audio/tracks/inova-octane.mp3",
-                bpm: 125,
-                label: "Argofox",
-                isBonusSong: false,
-              },
-              eightBitShuffle: {
-                name: "8 Bit Shuffle",
-                author: "Inova",
-                fileName: "audio/tracks/inova-8-bit-shuffle.mp3",
-                bpm: 133,
-                label: "Argofox",
-                isBonusSong: false,
-              },
-              stardust: {
-                name: "Stardust",
-                author: "Geoxor",
-                fileName: "audio/tracks/geoxor-stardust.mp3",
-                bpm: 110,
-                isBonusSong: false,
-              },
-
-              blythe: {
-                name: "Blythe",
-                author: "Aika (feat. TOFIE)",
-                fileName: "audio/tracks/aika-blythe.mp3",
-                bpm: 105,
-                isBonusSong: false,
-              },
-              aura: {
-                name: "Aura",
-                author: "Creo",
-                fileName: "audio/tracks/creo-aura.mp3",
-                bpm: 128,
+              toe3: {
+                name: "Theory Of Everything 3",
+                author: "dj-Nate",
+                fileName: "audio/tracks/dj-nate-theory-of-everything-3.mp3",
+                bpm: 140,
                 isBonusSong: true,
               },
-              mutant: {
-                name: "Mutant",
-                author: "Evilwave & Teminite (ft. Prey For Me)",
-                fileName: "audio/tracks/evilwave-mutant.mp3",
+              polymorph: {
+                name: "Polymorph",
+                author: "The Brig",
+                fileName: "audio/tracks/the-brig-polymorph.mp3",
                 bpm: 150,
                 isBonusSong: false,
               },
@@ -41300,29 +41341,6 @@ var version = "v1.9.2";
                 bpm: 130,
                 isBonusSong: false,
               },
-
-              polymorph: {
-                name: "Polymorph",
-                author: "The Brig",
-                fileName: "audio/tracks/the-brig-polymorph.mp3",
-                bpm: 150,
-                isBonusSong: false,
-              },
-              darkSheep: {
-                name: "Dark Sheep",
-                author: "Chroma",
-                fileName: "audio/tracks/chroma-dark-sheep.mp3",
-                bpm: 177,
-                isBonusSong: false,
-              },
-              eightBitAdventure: {
-                name: "8 Bit Adventure",
-                author: "AdhesiveWombat",
-                fileName: "audio/tracks/adhesive-wombat-8-bit-adventure.mp3",
-                bpm: 153,
-                isBonusSong: false,
-              },
-
               skyFracture: {
                 name: "Sky Fracture",
                 author: "Getsix",
@@ -41330,20 +41348,35 @@ var version = "v1.9.2";
                 bpm: 176,
                 isBonusSong: false,
               },
-              criticalHit: {
-                name: "Critical Hit",
-                author: "MDK",
-                fileName: "audio/tracks/mdk-critical-hit.mp3",
+              truecolors: {
+                name: "True Colors",
+                author: "Geoxor",
+                fileName: "audio/tracks/geoxor-true-colors.mp3",
+                bpm: 128,
+                isBonusSong: true,
+              },
+              blythe: {
+                name: "Blythe",
+                author: "Aika (feat. TOFIE)",
+                fileName: "audio/tracks/aika-blythe.mp3",
+                bpm: 105,
+                isBonusSong: false,
+              },
+              awake: {
+                name: "Awake",
+                author: "Amidst",
+                fileName: "audio/tracks/amidst-awake.mp3",
                 bpm: 130,
+                label: "Argofox",
                 isBonusSong: false,
               },
-              breathe: {
-                name: "Breathe",
-                author: "meganeko & RoccoW",
-                fileName: "audio/tracks/meganeko-breathe.mp3",
-                bpm: 155,
-                isBonusSong: false,
+              color: {
+                name: "Color",
+                author: "Amidst",
+                fileName: "audio/tracks/amidst-color.mp3",
+                bpm: 130,
               },
+              
               coincidence: {
                 name: "Coincidence",
                 author: "3b",
@@ -41352,12 +41385,12 @@ var version = "v1.9.2";
                 label: "Wolf Beats",
                 isBonusSong: false,
               },
-              coolFriends: {
-                name: "Cool Friends",
-                author: "Silva Hound (Murtagh & Veschell Remix)",
-                fileName: "audio/tracks/silva-hound-cool-friends.mp3",
-                bpm: 115,
-                isBonusSong: true,
+              mutant: {
+                name: "Mutant",
+                author: "Evilwave & Teminite (ft. Prey For Me)",
+                fileName: "audio/tracks/evilwave-mutant.mp3",
+                bpm: 150,
+                isBonusSong: false,
               },
               overdrive: {
                 name: "Overdrive",
@@ -41365,28 +41398,6 @@ var version = "v1.9.2";
                 fileName: "audio/tracks/far-out-overdrive.mp3",
                 bpm: 172,
                 isBonusSong: false,
-              },
-              cloud9: {
-                name: "Cloud 9",
-                author: "Valesco",
-                fileName: "audio/tracks/valesco-cloud-9.mp3",
-                bpm: 140,
-                label: "Argofox",
-                isBonusSong: true,
-              },
-              nacreousSnowmelt: {
-                name: "Nacreous Snowmelt",
-                author: "Camellia",
-                fileName: "audio/tracks/camellia-nacreous-snowmelt.mp3",
-                bpm: 201,
-                isBonusSong: true,
-              },
-              forYou: {
-                name: "For You",
-                author: "ColBreakz & EXODIE",
-                fileName: "audio/tracks/colbreakz-for-you.mp3",
-                bpm: 145,
-                isBonusSong: true,
               },
               fireAura: {
                 name: "Fire Aura",
@@ -41416,6 +41427,44 @@ var version = "v1.9.2";
                 bpm: 165,
                 isBonusSong: true,
               },
+              cloud9: {
+                name: "Cloud 9",
+                author: "Valesco",
+                fileName: "audio/tracks/valesco-cloud-9.mp3",
+                bpm: 140,
+                label: "Argofox",
+                isBonusSong: true,
+              },
+              aura: {
+                name: "Aura",
+                author: "Creo",
+                fileName: "audio/tracks/creo-aura.mp3",
+                bpm: 128,
+                isBonusSong: true,
+              },
+              coolFriends: {
+                name: "Cool Friends",
+                author: "Silva Hound (Murtagh & Veschell Remix)",
+                fileName: "audio/tracks/silva-hound-cool-friends.mp3",
+                bpm: 115,
+                isBonusSong: true,
+              },
+              
+              nacreousSnowmelt: {
+                name: "Nacreous Snowmelt",
+                author: "Camellia",
+                fileName: "audio/tracks/camellia-nacreous-snowmelt.mp3",
+                bpm: 201,
+                isBonusSong: true,
+              },
+              forYou: {
+                name: "For You",
+                author: "ColBreakz & EXODIE",
+                fileName: "audio/tracks/colbreakz-for-you.mp3",
+                bpm: 145,
+                isBonusSong: true,
+              },
+              
               virtual: {
                 name: "Virtual",
                 author: "Geoxor",
@@ -41423,20 +41472,8 @@ var version = "v1.9.2";
                 bpm: 128,
                 isBonusSong: true,
               },
-              solarAbyss: {
-                name: "Solar Abyss",
-                author: "Lchvasse",
-                fileName: "audio/tracks/lchvasse-solar-abyss.mp3",
-                bpm: 150,
-                isBonusSong: false,
-              },
-              toe3: {
-                name: "Theory Of Everything 3",
-                author: "dj-Nate",
-                fileName: "audio/tracks/dj-nate-theory-of-everything-3.mp3",
-                bpm: 140,
-                isBonusSong: true,
-              },
+              
+              
               finalTheory: {
                 name: "Final Theory",
                 author: "dj-Nate",
@@ -41451,13 +41488,7 @@ var version = "v1.9.2";
                 bpm: 140,
                 isBonusSong: true,
               },
-              truecolors: {
-                name: "True Colors",
-                author: "Geoxor",
-                fileName: "audio/tracks/geoxor-true-colors.mp3",
-                bpm: 128,
-                isBonusSong: true,
-              },
+              
               soulless2: {
                 name: "Mechanical Machine (Soulless 2)",
                 author: "Exilelord",
@@ -41473,13 +41504,7 @@ var version = "v1.9.2";
                 bpm: 116,
                 isBonusSong: false,
               },
-              superUltra: {
-                name: "Super Ultra",
-                author: "MDK",
-                fileName: "audio/tracks/mdk-super-ultra.mp3",
-                bpm: 172,
-                isBonusSong: false,
-              },
+              
               rummy: {
                 name: "Rum n Bass",
                 author: "BoomKitty",
@@ -41487,13 +41512,7 @@ var version = "v1.9.2";
                 bpm: 132,
                 isBonusSong: true,
               },
-              daydreamer: {
-                name: "Daydreamer",
-                author: "Meganeko",
-                fileName: "audio/tracks/meganeko-daydreamer.mp3",
-                bpm: 135,
-                isBonusSong: false,
-              },
+              
               orientalSwing: {
                 name: "Oriental Swing",
                 author: "Xe & cYsmix",
@@ -41539,12 +41558,7 @@ var version = "v1.9.2";
                 fileName: "audio/tracks/geoxor-zenith.mp3",
                 bpm: 128,
               },
-              color: {
-                name: "Color",
-                author: "Amidst",
-                fileName: "audio/tracks/amidst-color.mp3",
-                bpm: 130,
-              },
+              
               funkyPunky: {
                 name: "Funky Punky",
                 author: "Grge & Antian Rose",
@@ -41558,12 +41572,7 @@ var version = "v1.9.2";
                 bpm: 125,
                 label: "Argofox"
               },
-              criticalHitExtended: {
-                name: "Critical Hit (Extended Cut)",
-                author: "MDK",
-                fileName: "audio/tracks/mdk-critical-hit-extended.mp3",
-                bpm: 130,
-              },
+              
               mindsOfTheMad: {
                 name: "Minds Of The Mad",
                 author: "Exilelord",
@@ -42909,9 +42918,9 @@ var version = "v1.9.2";
               difficulty: 4,
             },
             {
-              levelName: "Dark Sheep",
-              levelFileName: "dark-sheep",
-              song: hl.songs.darkSheep,
+              levelName: "Super Ultra",
+              levelFileName: "super-ultra",
+              song: hl.songs.superUltra,
               unlockedByIndex: 1,
               x: -110,
               y: -100,
@@ -42921,6 +42930,7 @@ var version = "v1.9.2";
               ],
               maxFrames: 11246,
               difficulty: 9,
+              comingSoon: true,
             },
             {
               levelName: "Breathe",
