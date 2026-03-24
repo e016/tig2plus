@@ -18075,6 +18075,7 @@ var version = "v1.9.1";
                   (updated.isBoss = obj.isBoss),
                   (updated.trigger = obj.trigger),
                   (updated.init = obj.init),
+                  (updated.pastTrigger = obj.pastTrigger),
                   updated)
                 : Object.assign(Object.assign({}, obj), { y: trueY });
             }
@@ -18182,7 +18183,11 @@ var version = "v1.9.1";
           }
         }
         // sort by position
-        const sBP = (e, t) => e.x - t.x || e.y - t.y;
+        const sBP = (e, t) => {
+          const y1 = isNaN(e.y) ? e.midY : e.y,
+          y2 = isNaN(t.y) ? t.midY : t.y;
+          return e.x - t.x || y1 - y2
+        };
         function ma(e) {
           /*
           e.blocks.concat(
@@ -18395,26 +18400,26 @@ var version = "v1.9.1";
             ) {
               // const floorStates = inViewLayoutState.blocks.filter(e => e.isGround),
               const p = layoutFirstIndexes;
-              for (const l in layout) {
-                if ("properties" === l) continue;
-                const g = l,
-                  m = layout[g],
+              for (const layoutKey in layout) {
+                if ("properties" === layoutKey) continue;
+                const g = layoutKey,
+                  layoutValue = layout[g],
                   isEnemies = "enemies" === g;
-                let y = layoutFirstIndexes[g];
-                if (y > 0)
-                  if (isEnemies) y = 0;
+                let firstIndexes = layoutFirstIndexes[g];
+                if (firstIndexes > 0)
+                  if (isEnemies) firstIndexes = 0;
                   else {
-                    const e = m[y],
-                      t = y >= m.length - 1 ? void 0 : m[y + 1];
+                    const e = layoutValue[firstIndexes],
+                      t = firstIndexes >= layoutValue.length - 1 ? void 0 : layoutValue[firstIndexes + 1];
                     if (ha(e, playerX) || (t && ha(t, playerX)))
-                      for (; y > 0 && ha(m[y - 1], playerX); ) y--;
-                    else y = 0;
+                      for (; firstIndexes > 0 && ha(layoutValue[firstIndexes - 1], playerX); ) firstIndexes--;
+                    else firstIndexes = 0;
                   }
                 let E = null,
                   b = 0,
-                  S = y;
-                for (; S < m.length; ) {
-                  const e = m[S],
+                  S = firstIndexes;
+                for (; S < layoutValue.length; ) {
+                  const e = layoutValue[S],
                     l = pa(
                       e,
                       inViewLayout[g][b],
@@ -18436,14 +18441,14 @@ var version = "v1.9.1";
                       (inViewLayoutState[g][b] = layoutState[g][S]),
                       b++;
                   else if (!isEnemies && e.x > playerX && !ha(e, playerX))
-                    break;
+                    if (layoutKey !== "blocks") break; // ugh.
                   S++;
                 }
                 b < fullLayoutStateIndexes[g].length &&
                   ((fullLayoutStateIndexes[g].length = b),
                   (inViewLayout[g].length = b),
                   (inViewLayoutState[g].length = b)),
-                  (p[g] = null != E ? E : y);
+                  (p[g] = null != E ? E : firstIndexes);
               }
               // !
               if (switchBlockSpikes) {
@@ -18704,7 +18709,7 @@ var version = "v1.9.1";
                 steel: t?.blocks?.[i.index]?.steel,
                 isBoss: t?.blocks?.[i.index]?.isBoss,
                 init: t?.blocks?.[i.index]?.init,
-                off: t?.blocks?.[i.index]?.off
+                off: false//t?.blocks?.[i.index]?.off
               };
               //t && t.blocks[i.index]?.init && console.warn(t.blocks[i.index], block);
               return block;
@@ -42401,21 +42406,21 @@ var version = "v1.9.1";
                   "audio/levels/boss3/shoot.mp3",
                 ],
               },
-              overrideMovement: (e, t, a, i, n) => {
-                let { playerX: s, playerY: o, jumping: r } = e;
+              overrideMovement: (e, df, levelSpeed, playerInput, frame) => {
+                let { playerX: playerX, playerY: playerY, jumping: jumping } = e;
                 return (
-                  "justDown" === i && (r = !r),
-                  r
-                    ? o > Sl
-                      ? ((o += 2 * t * ((-5 + Sl - o) / a)),
-                        (o = B.clamp2(Sl, bl, o)))
-                      : (o = Sl)
-                    : o < bl
-                    ? ((o += 2 * t * ((5 + bl - o) / a)),
-                      (o = B.clamp2(Sl, bl, o)))
-                    : (o = bl),
-                  n > 2600 && (s += a * t),
-                  { playerX: s, playerY: o, jumping: r }
+                  "justDown" === playerInput && (jumping = !jumping),
+                  jumping
+                    ? playerY > Sl
+                      ? ((playerY += 2 * df * ((-5 + Sl - playerY) / levelSpeed)),
+                        (playerY = B.clamp2(Sl, bl, playerY)))
+                      : (playerY = Sl)
+                    : playerY < bl
+                    ? ((playerY += 2 * df * ((5 + bl - playerY) / levelSpeed)),
+                      (playerY = B.clamp2(Sl, bl, playerY)))
+                    : (playerY = bl),
+                  frame > 2600 && (playerX += levelSpeed * df),
+                  { playerX: playerX, playerY: playerY, jumping: jumping }
                 );
               },
               initState: () => ({
@@ -43260,18 +43265,18 @@ var version = "v1.9.1";
               x: 0,
               y: 0,
               pathToLevel: [],
-              maxFrames: 9420,
+              maxFrames: 5697,
               difficulty: 6,
             },
             {
-              levelName: "Switch Block Test",
-              levelFileName: "switch-test",
-              song: hl.songs.zenith,
+              levelName: "Switch Block Test 2",
+              levelFileName: "switch-test-2",
+              song: hl.songs.mindsOfTheMad,
               unlockedByIndex: null,
               x: 0,
               y: 0,
               pathToLevel: [],
-              maxFrames: 643,
+              maxFrames: 213,
               difficulty: 1,
             },
           ],
@@ -54203,7 +54208,6 @@ var version = "v1.9.1";
           Hg = makeSprite({
             render({ props: e, device: t }) {
               const darker = (col, amt) => {
-                console.warn(col)
                 var num = parseInt(col.substring(1), 16);
                 var r = (num >> 16) / amt;
                 var b = ((num >> 8) & 0x00ff) / amt;
@@ -67214,7 +67218,7 @@ var version = "v1.9.1";
                 ["CREATED BY", ["ED BENTLEY"]],
                 ["MODDED BY", ["d016"]],
                 ["INSPIRED BY", ["Alfredo/Outline Gamer"]],
-                ["SPECIAL THANKS TO", ["GatoNegro", "mikhael", "Jfour Robs", "WaterFire"]],
+                ["SPECIAL THANKS TO", ["GatoNegro", "mikhael", "Jfour Robs", "WaterFire", "BroodingAcorn (GD)", "Mincofficial"]],
                 ["GAME ARTIST", ["ŁUKASZ WIŚNIEWSKI"]],
                 ["UI ARTIST", ["SYLWIA GAWEL"]],
                 ["PIXEL ARTIST", ["NICO NOWAK"]],
