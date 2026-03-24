@@ -183,6 +183,7 @@ Translator["es"] = {
   "Shooter": "Disparador",
   "Bomb": "Bomba",
   "Minion": "Murciélago",
+  "USE GROUND": "USA PISO",
   EQUIP: "USA",
   EQUIPPING: "USANDO",
   EQUIPPED: "USADO",

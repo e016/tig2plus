@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.8.5";
+var version = "v1.9.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -15852,6 +15852,7 @@ var version = "v1.8.5";
                 steel: e == null ? false : e.steel || false,
                 isVoid: e == null ? false : e.isVoid || false,
                 isBoss: e == null ? false : e.isBoss || false,
+                isGround: e == null ? false : e.isGround || false,
                 rotation: 0,
                 skipMissiles: false,
                 snapSize: null == e ? void 0 : e.snapSize,
@@ -18183,6 +18184,17 @@ var version = "v1.8.5";
         // sort by position
         const sBP = (e, t) => e.x - t.x || e.y - t.y;
         function ma(e) {
+          /*
+          e.blocks.concat(
+            Array.from({ length: Math.ceil(a / M) + 40 }).map(
+              (e, t) =>
+                $.newBlock({
+                  x: et.initialPosition.x + (t - 15) * M,
+                  y: et.initialPosition.y - M,
+                })
+            )
+          ),
+          */
           return {
             properties: e.properties,
             blocks: [...e.blocks].sort(sBP),
@@ -18377,10 +18389,11 @@ var version = "v1.8.5";
               switchBlockSpikes,
               layoutFirstIndexes,
               inViewLayout,
-              isViewLayoutState,
+              inViewLayoutState,
               fullLayoutStateIndexes, // optional?
               fallTypes
             ) {
+              // const floorStates = inViewLayoutState.blocks.filter(e => e.isGround),
               const p = layoutFirstIndexes;
               for (const l in layout) {
                 if ("properties" === l) continue;
@@ -18420,7 +18433,7 @@ var version = "v1.8.5";
                     null === E && (E = S),
                       (fullLayoutStateIndexes[g][b] = S),
                       (inViewLayout[g][b] = l),
-                      (isViewLayoutState[g][b] = layoutState[g][S]),
+                      (inViewLayoutState[g][b] = layoutState[g][S]),
                       b++;
                   else if (!isEnemies && e.x > playerX && !ha(e, playerX))
                     break;
@@ -18429,20 +18442,31 @@ var version = "v1.8.5";
                 b < fullLayoutStateIndexes[g].length &&
                   ((fullLayoutStateIndexes[g].length = b),
                   (inViewLayout[g].length = b),
-                  (isViewLayoutState[g].length = b)),
+                  (inViewLayoutState[g].length = b)),
                   (p[g] = null != E ? E : y);
               }
               // !
               if (switchBlockSpikes) {
                 const { blocks: e, spikes: t } = inViewLayout,
-                  { blocks: a, spikes: i } = isViewLayoutState,
+                  { blocks: a, spikes: i } = inViewLayoutState,
                   { blocks: n, spikes: s } = fullLayoutStateIndexes;
                 (inViewLayout.blocks = t),
                   (inViewLayout.spikes = e),
-                  (isViewLayoutState.blocks = i),
-                  (isViewLayoutState.spikes = a),
+                  (inViewLayoutState.blocks = i),
+                  (inViewLayoutState.spikes = a),
                   (fullLayoutStateIndexes.blocks = s),
                   (fullLayoutStateIndexes.spikes = n);
+              }
+              if (layout.properties.useGround) {
+                const { blocks: inViewLayoutBlocks} = inViewLayout,
+                  { blocks: inViewLayoutStateBlocks } = inViewLayoutState,
+                  { blocks: fullLayoutStateIndexesBlocks } = fullLayoutStateIndexes;
+                for (let i = 0; i < 44; i++) {
+                  inViewLayoutBlocks.push($.newBlock({ x: (i * M - 660) + Math.floor(playerX / M) * M, y: et.initialPosition.y - M, isBoss: true, isGround: true }))
+                  inViewLayoutStateBlocks.push({type: "blockSpikeState", isBoss: true, isGround: true});
+                  fullLayoutStateIndexesBlocks.push(Math.max(...fullLayoutStateIndexesBlocks) + 1)
+                }
+
               }
             },
             getEmptyLayout: function (e) {
@@ -18580,6 +18604,13 @@ var version = "v1.8.5";
               return Object.assign(Object.assign({}, e), {
                 properties: Object.assign(Object.assign({}, e.properties), {
                   theme: t,
+                }),
+              });
+            },
+            updateGround: function (e, t) {
+              return Object.assign(Object.assign({}, e), {
+                properties: Object.assign(Object.assign({}, e.properties), {
+                  useGround: t,
                 }),
               });
             },
@@ -19245,7 +19276,7 @@ var version = "v1.8.5";
             }
             case "changeTheme":
               return {
-                layout: Ca.updateTheme(t, e.theme),
+                layout: Ca.updateGround(Ca.updateTheme(t, e.theme), e.useGround),
                 runHistory: a,
                 newAssets: e.theme.id !== t.properties.theme.id,
               };
@@ -19286,7 +19317,7 @@ var version = "v1.8.5";
                 object: t[e.array][e.index],
               };
             case "changeTheme":
-              return { type: "undoChangeTheme", theme: t.properties.theme };
+              return { type: "undoChangeTheme", theme: t.properties.theme, useGround: t.properties.useGround };
           }
         }
         const loopingSpriteSheet = makeSprite({
@@ -19619,6 +19650,7 @@ var version = "v1.8.5";
             }
             return newY
           },
+          isSpecialTheme = (e) => e === "classic" || e === "infinite",
           Ja = makeSprite({
             render: ({ props: e }) => [
               onChange(
@@ -19626,6 +19658,7 @@ var version = "v1.8.5";
                 () => {
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
+                    
                     imageArray({
                       fileName: `images/themes/${e.theme}/block.png`,
                       props: () => ({}),
@@ -20005,7 +20038,7 @@ var version = "v1.8.5";
                           !(e.inGame ? r?.steel : i?.steel) &&
                           (e.inGame ? r?.isBoss : i?.isBoss) &&
                           !(e.inGame ? r?.isVoid : i?.isVoid) &&
-                          !(null == r ? void 0 : r.destroyed)),
+                          !(null == r ? void 0 : r.destroyed) && !(null == r ? void 0 : (r.isGround && isSpecialTheme(e.theme)))),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
@@ -29842,6 +29875,8 @@ var version = "v1.8.5";
               `images/themes/${e.objects.spike}/spike.png`,
               `images/themes/${e.objects.switch}/switch-platform.png`,
               `images/themes/${e.objects.switch}/switch-button.png`,
+              "images/themes/classic/ground.png",
+              "images/themes/infinite/ground.png",
               "images/themes/world2/block-small.png",
               "images/themes/world2/spike-small.png",
               "images/themes/world3/bottom/laser-line.png",
@@ -30135,6 +30170,8 @@ var version = "v1.8.5";
               "images/level/attempt.png",
               "images/themes/classic/menu-button.png",
               "images/themes/classic/menu-button-pressed.png",
+              "images/themes/infinite/menu-button.png",
+              "images/themes/infinite/menu-button-pressed.png",
               "images/level/arrow-up.png",
               "images/level/arrow-down-stroke.png",
               "images/achievement/rewards/autopilot.png",
@@ -34449,12 +34486,14 @@ var version = "v1.8.5";
                     y: 10,
                   })
                 : "theme" === e.menuView
-                ? or({
+                ? themeMenu({
                     id: "ThemeMenu",
                     theme: e.theme,
                     themes: e.themes,
+                    useGround: e.useGround,
                     isLoading: e.isLoading,
                     selectTheme: e.selectTheme,
+                    toggleGround: e.toggleGround,
                     closeMenu: () => {
                       e.setMenuOpen("closed");
                     },
@@ -34848,7 +34887,7 @@ var version = "v1.8.5";
               ];
             },
           }),
-          or = makeCustomSprite({
+          themeMenu = makeCustomSprite({
             render: ({ props: e }) => [
               Ie({
                 id: "ClickOutside",
@@ -34877,11 +34916,24 @@ var version = "v1.8.5";
                 x: -10,
                 y: 150,
                 sprites: (t) => [
+                  Tm({
+                    id: "UseGroundCheckbox",
+                    text: localize("USE GROUND"),
+                    fontSize: 10,
+                    selected: e.useGround,
+                    width: ar - 40,
+                    height: 30,
+                    y: -20,
+                    onPress: () => {
+                      e.toggleGround();
+                    },
+                    strokeColor: Ye,
+                  }),
                   n({
                     text: localize("THEME"),
                     color: Be,
                     x: -ar / 2 + 25,
-                    y: -20,
+                    y: -50,
                     font: { align: "left", weight: 800 },
                   }),
                   ...e.themes.map((a, i) =>
@@ -34893,7 +34945,7 @@ var version = "v1.8.5";
                       height: 30,
                       noPress: t,
                       disabled: e.isLoading,
-                      y: -40 * i - 50,
+                      y: -40 * i - 80,
                       onPress: () => {
                         e.selectTheme(a);
                       },
@@ -38439,6 +38491,7 @@ var version = "v1.8.5";
               let m = e.level.layout,
                 { inViewLayout: f, inViewLayoutAtTime: y } = e;
               const E = m.properties.theme,
+                usingGround = m.properties.useGround,
                 b =
                   selectedObjects.length > 0
                     ? m[selectedObjects[0].array][selectedObjects[0].index]
@@ -38564,13 +38617,17 @@ var version = "v1.8.5";
                   y: -45,
                   menuView: t.toolsMenuView,
                   theme: E,
+                  useGround: usingGround,
+                  toggleGround: (e) => {
+                    h({ type: "changeTheme", theme: E, useGround: !usingGround });
+                  },
                   setMenuOpen: (e) => {
                     a((t) =>
                       Object.assign(Object.assign({}, t), { toolsMenuView: e })
                     );
                   },
                   selectTheme: (e) => {
-                    h({ type: "changeTheme", theme: e });
+                    h({ type: "changeTheme", theme: e, useGround: usingGround });
                   },
                 }),
                 selectedObjects.length > 0
@@ -38762,6 +38819,9 @@ var version = "v1.8.5";
                 noSpace: f,
                 isLoading: y,
                 playerSkin: E,
+                x: propsX,
+                y: propsY,
+                scaleY: propsScale,
               },
               getContext
             }) {
@@ -38790,6 +38850,14 @@ var version = "v1.8.5";
                 overlapObjects = getContext(Se).settings.overlapObjects;
               return [
                 Xr.Single({ id: "GridLines", parentOffset: o }),
+                g.properties.useGround 
+                ? renderGround.Single({
+                  id: "Ground", 
+                  theme: isSpecialTheme(g.properties.theme.id) ? g.properties.theme.id : v.block, 
+                  x: -propsX / propsScale, 
+                  cameraY: 0, 
+                  scaleX: 1 / propsScale,
+                  opacity: isSpecialTheme(g.properties.theme.id) ? 1 : 0.5}) : null,
                 Ja.Single({ id: "Blocks", blocks: h.blocks, theme: v.block }),
                 Za.Single({ id: "Spikes", spikes: h.spikes, theme: v.spike }),
                 Qa.Single({
@@ -39307,7 +39375,7 @@ var version = "v1.8.5";
                     ],
                   }),
                 ],
-                () => e.theme == "classic" ? ([
+                () => isSpecialTheme(e.theme) ? ([
                     _e.Single({
                       width: 50,
                       height: 28,
@@ -39318,14 +39386,14 @@ var version = "v1.8.5";
                         conditional(() => t, 
                           () => [
                             y({
-                              fileName: "images/themes/classic/menu-button-pressed.png",
+                              fileName: `images/themes/${e.theme}/menu-button-pressed.png`,
                               width: 50,
                               height: 28
                             })
                           ],
                           () => [
                             y({
-                              fileName: "images/themes/classic/menu-button.png",
+                              fileName: `images/themes/${e.theme}/menu-button.png`,
                               width: 50,
                               height: 28
                             })
@@ -40525,7 +40593,7 @@ var version = "v1.8.5";
                 const a = inViewLayout.blocks[t];
                 if (e(a)) {
                   const e = inViewLayoutState.blocks[t];
-                  (!e?.hitFrame || e?.hitFrame < U.frame - 60) &&
+                  (!e?.hitFrame || e?.hitFrame < U.frame - 60) && !e.isGround &&
                     xa.updateLayoutStateField(
                       "blocks",
                       t,
@@ -45011,7 +45079,7 @@ var version = "v1.8.5";
             Bc([Gc(mc, fc, mc, mc), fc]),
             Bc([
               nd.tuple([
-                Gc([mc]),
+                Bc([Gc([mc, fc]), Gc([mc])]),
                 Oc(
                   Bc([
                     Gc([fc, fc, _c(1), _c(0), nd.enum4]),
@@ -45120,7 +45188,7 @@ var version = "v1.8.5";
                 Oc(Gc([fc, fc, nd.enum2, nd.enum3])),
               ]),
               nd.tuple([
-                Gc([mc]),
+                Bc([Gc([mc, fc]), Gc([mc])]),
                 Oc(
                   Bc([
                     Gc([fc, fc, _c(1), _c(0), nd.enum4]),
@@ -45285,7 +45353,7 @@ var version = "v1.8.5";
               e.map((e) => {
                 const [t, a, i, n, s] = e,
                   [
-                    [o],
+                    [o, useGround],
                     r,
                     l,
                     c,
@@ -45316,6 +45384,7 @@ var version = "v1.8.5";
                     properties: {
                       minY: { minYsByXDiv1000: [], minX: 0, minY: 0 },
                       theme: ca[Gd[v] || "world1"],
+                      useGround: !!useGround,
                     },
                     blocks: r
                       .map(([e, t, a, g, s]) => {
@@ -45491,7 +45560,15 @@ var version = "v1.8.5";
                   layout: i,
                   song: n,
                   songStartSecs: s,
-                } = e;
+                } = e,
+                theme = Ud(
+                        ru(i.properties.theme.id, Gd),
+                        i.blocks.filter((b) => {
+                          return !(b.init);
+                        }).length +
+                          i.platforms.length +
+                          i.switchPlatforms.length
+                      );
                 return [
                   t,
                   a,
@@ -45501,16 +45578,7 @@ var version = "v1.8.5";
                     ])[0]
                   ),
                   [
-                    [
-                      Ud(
-                        ru(i.properties.theme.id, Gd),
-                        i.blocks.filter((b) => {
-                          return !(b.init);
-                        }).length +
-                          i.platforms.length +
-                          i.switchPlatforms.length
-                      ),
-                    ],
+                    i.properties.useGround ? [theme, 1] : [theme],
                     i.blocks
                       .filter((b) => {
                         return !(b.init);
@@ -54897,6 +54965,32 @@ var version = "v1.8.5";
               ),
             ],
           }),
+          renderGround = makeSprite({
+            render({props: e}) {
+              return [
+                e.theme == "classic" ? y({
+                  fileName: "images/themes/classic/ground.png",
+                  width: 500,
+                  height: 2,
+                }, (a) => {
+                  a.y = (et.initialPosition.y - M / 2) - e.cameraY - 1;
+                }) : e.theme == "infinite" ? y({
+                  fileName: "images/themes/infinite/ground.png",
+                  width: 660 * 2,
+                  height: 30,
+                }, (a) => {
+                  a.y = (et.initialPosition.y - M / 2) - e.cameraY - 15;
+                }) : y({
+                  fileName: `images/themes/${e.theme}/boss.png`,
+                  width: 660 * 2,
+                  height: 30,
+                }, (a) => {
+                  a.y = (et.initialPosition.y - M / 2) - e.cameraY - 15;
+                }),
+              ]
+            }
+
+          }),
           cm = makeSprite({
             render: ({ device: e, props: t, getContext: a }) => {
               let lastFrame = t.frame;
@@ -54946,6 +55040,14 @@ var version = "v1.8.5";
                     }
                   )
                 : null,
+              t.layout.properties.useGround ? renderGround.Single({
+                cameraY: t.cameraY,
+                theme: t.layout.properties.theme.id
+              }, (a) => {
+                a.cameraY = t.cameraY;
+                a.theme = t.layout.properties.theme.id;
+              }) : null,
+              
               dm.Single(
                 {
                   frame: t.frame,
@@ -56771,6 +56873,7 @@ var version = "v1.8.5";
                 fontSize: d = 15,
                 onPress: u,
                 noPress: h,
+                strokeColor: strokeColor = Me
               },
               device: p,
             }) => [
@@ -56785,6 +56888,7 @@ var version = "v1.8.5";
                 sprites: (u) => {
                   const h = u ? Ae : l ? Ue : Be;
                   return [
+                    // 5e01ff
                     So({
                       id: "RaisedRects",
                       width: a,
@@ -56794,7 +56898,7 @@ var version = "v1.8.5";
                       bottomColour: c ? Be : ve,
                       topColour: s ? Xe : u ? ke : Re,
                       isPressed: u,
-                      stroke: { colour: s ? ze : c ? Ye : Me, thickness: 2 },
+                      stroke: { colour: s ? ze : c ? Ye : strokeColor, thickness: 2 },
                       sprites: (i) => [
                         o({
                           color: ve,
@@ -57556,14 +57660,14 @@ var version = "v1.8.5";
                   {
                     hidden: n.hideUi,
                     onPress: e.onPause,
-                    x: (-a.size.fullWidth / 2 + (e.theme == "classic" ? 35 : 50)) * (n.mirrorMenuButton ? -1 : 1),
-                    y: a.size.fullHeight / 2 - (e.theme == "classic" ? 25 : 50),
+                    x: (-a.size.fullWidth / 2 + (isSpecialTheme(e.theme) ? 35 : 50)) * (n.mirrorMenuButton ? -1 : 1),
+                    y: a.size.fullHeight / 2 - (isSpecialTheme(e.theme) ? 25 : 50),
                     theme: e.theme
                   },
                   (e) => {
                     (e.hidden = i(Se).settings.hideUi),
-                      (e.x = (-a.size.fullWidth / 2 + (e.theme == "classic" ? 35 : 50)) * (i(Se).settings.mirrorMenuButton ? -1 : 1)),
-                      (e.y = a.size.fullHeight / 2 - (e.theme == "classic" ? 25 : 50));
+                      (e.x = (-a.size.fullWidth / 2 + (isSpecialTheme(e.theme) ? 35 : 50)) * (i(Se).settings.mirrorMenuButton ? -1 : 1)),
+                      (e.y = a.size.fullHeight / 2 - (isSpecialTheme(e.theme) ? 25 : 50));
                   }
                 ),
                 ifConditional(
@@ -59179,7 +59283,7 @@ var version = "v1.8.5";
                   O,
                   C
                 ));
-              const isClassic = t.bigMutValues.inViewLayout.properties.theme.id == "classic",
+              const isClassic = isSpecialTheme(t.bigMutValues.inViewLayout.properties.theme.id),
               k =
                   be.pointInBox2(
                     (-a.size.fullWidth / 2 + (isClassic ? 35 : 50)) * ((n(Se).settings.mirrorMenuButton || (void 0 === props.backToMenu)) ? -1 : 1),
