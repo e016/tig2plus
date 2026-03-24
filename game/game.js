@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.9.1";
+var version = "v1.9.2";
 (() => {
   var e = {
       8465: (e, t, a) => {
