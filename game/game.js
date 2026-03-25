@@ -31434,13 +31434,30 @@ var version = "v1.9.2";
         }
 
         function minionEnemyKind(e, t, a, i, n, s, o, levelSpeed, jumpFrames, df, d, u, h, p, g, speed) {
+          if (a.destroyed) {
+            return a
+          }
           // overdrive levelSpeed is 6.45
-          console.log(levelSpeed);
           return (
             Object.assign(Object.assign({}, a), {
               framesSeen: a.framesSeen + df,
               offsetX: a.offsetX + levelSpeed / 6.45 * df * a.direction,
               offsetY: a.offsetY,
+              direction: a.direction,
+            })
+          );
+        }
+
+        function fireballEnemyKind(e, t, a, i, n, s, o, levelSpeed, jumpFrames, df, d, u, h, p, g, speed) {
+          if (a.destroyed) {
+            return a
+          }
+          // overdrive levelSpeed is 6.45
+          return (
+            Object.assign(Object.assign({}, a), {
+              framesSeen: a.framesSeen + df,
+              offsetX: a.offsetX,
+              offsetY: a.offsetY - levelSpeed / 6.45 * df * 1.5,
               direction: a.direction,
             })
           );
@@ -31549,7 +31566,9 @@ var version = "v1.9.2";
                 const I = n[t],
                   _ = i[t],
                   v =
-                    "minion" === I.kind ? 
+                    "fireball" === I.kind ? 
+                    fireballEnemyKind(frame, I, _, r, l, c, d, levelSpeed, jumpFrames, df, g, m, f, co, lo, speed)
+                    : "minion" === I.kind ? 
                     minionEnemyKind(frame, I, _, r, l, c, d, levelSpeed, jumpFrames, df, g, m, f, co, lo, speed)
                     : "bomb" === I.kind
                       ? bombEnemyKind(frame, I, _, t, S, a, s, o, levelSpeed, df, bottom, springs, jumpHeight)
@@ -67913,7 +67932,7 @@ var version = "v1.9.2";
                   }),
                   l({
                     fileName: "images/mainMenu/logo.png",
-                    width: 211,
+                    width: 221,
                     height: 94,
                     y: u,
                   }),
