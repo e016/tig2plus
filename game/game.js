@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.9.2";
+var version = "v1.9.3";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -18440,8 +18440,11 @@ var version = "v1.9.2";
                       (inViewLayout[g][b] = l),
                       (inViewLayoutState[g][b] = layoutState[g][S]),
                       b++;
-                  else if (!isEnemies && e.x > playerX && !ha(e, playerX))
-                    if (layoutKey !== "blocks") break; // ugh.
+                  else if (!isEnemies && e.x > playerX && !ha(e, playerX)) {
+                    if (layoutKey !== "blocks") {
+                      break; // ugh.
+                    }
+                  }
                   S++;
                 }
                 b < fullLayoutStateIndexes[g].length &&
@@ -67493,6 +67496,18 @@ var version = "v1.9.2";
                     localStorage.setItem("lang", LANG);
                   },
                   y: s - 200,
+                }),
+                Fo({
+                  id: "deleteRunHistory",
+                  width: 200,
+                  height: 40,
+                  text: localize("ERASE RUN HISTORY"),
+                  onPress: () => {
+                    if (window.confirm("This PERMANENTLY erases the run history from your created levels. Do you want to do this?")) {
+                      localStorage.removeItem("savedLevelsSettings")
+                    }
+                  },
+                  y: s - 250,
                 }),
                 Fo({
                   id: "BackButton",
