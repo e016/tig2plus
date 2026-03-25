@@ -18159,6 +18159,9 @@ var version = "v1.9.3";
               );
             }
             case "enemy": {
+              if (!enemies[i]) {
+                throw new Error("Could not find enemy state. Please use the \"Delete Run History\" button in the \"More\" section of the main menu.");
+              }
               const o = obj,
                 r = o.x + enemies[i].offsetX,
                 l = o.y + enemies[i].offsetY;
