@@ -67506,7 +67506,7 @@ var version = "v1.9.3";
                   height: 40,
                   text: localize("ERASE RUN HISTORY"),
                   onPress: () => {
-                    if (window.confirm("This PERMANENTLY erases the run history from your created levels. Do you want to do this?")) {
+                    if (window.confirm("This PERMANENTLY erases the run history from your created levels. ONLY DO THIS if you are running out of storage or have corrupted levels.")) {
                       localStorage.removeItem("savedLevelsSettings")
                     }
                   },
