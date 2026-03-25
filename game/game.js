@@ -50727,7 +50727,7 @@ var version = "v1.9.2";
             loop({ state: e, props: t }) {
               if (!t.paused) {
                 e.path.shift();
-                for (let i = 0; i < e.path.length; i++) e.path[i].x -= 10 * t.playerDir;
+                for (let i = 0; i < e.path.length; i++) e.path[i].x -= 10 * t.playerDir * t.df;
                 t.crashed ||
                   e.path.push({
                     x: 40,
@@ -50765,14 +50765,14 @@ var version = "v1.9.2";
                     {
                       fillGradient: {
                         type: "linearHoriz",
-                        width: 80,
+                        width: 80 * e.df,
                         colors: [e.colour, e.colour],
                         opacities: [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0],
                       },
                       y: -5,
                     },
                     (a) => {
-                      (a.path = t.renderPath), (a.x = e.playerX - 40), (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]);
+                      (a.fillGradient.width = 80 * e.df), (a.path = t.renderPath), (a.x = e.playerX - 40), (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]);
                     }
                   ),
                 ]
@@ -51333,6 +51333,7 @@ var version = "v1.9.2";
                         paused: e.paused,
                         frame: e.frame,
                         colour: "#C50202",
+                        df: e.df,
                       },
                       (t) => {
                         const a = e.bossState;
@@ -51340,7 +51341,8 @@ var version = "v1.9.2";
                           (t.playerY = a.bossY),
                           (t.crashed = a.destroyed),
                           (t.paused = e.paused),
-                          (t.frame = e.frame);
+                          (t.frame = e.frame),
+                          (t.df = e.df);
                       }
                     ),
                     conditional(
@@ -55940,6 +55942,7 @@ var version = "v1.9.2";
                             paused: e.paused,
                             colour: "#FCDA45",
                             frame: e.frame,
+                            df: e.df,
                           },
                           (t) => {
                             (t.playerX = e.playerX),
@@ -55947,7 +55950,9 @@ var version = "v1.9.2";
                               (t.playerDir = e.playerDir),
                               (t.crashed = e.crashed),
                               (t.paused = e.paused),
-                              (t.frame = e.frame);
+                              (t.frame = e.frame),
+                              (t.df = e.df);
+
                           }
                         ),
                       ]
