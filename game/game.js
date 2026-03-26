@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.9.3";
+var version = "v1.9.4";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -43040,9 +43040,8 @@ var version = "v1.9.3";
                 [-120, -20],
                 [-100, -80],
               ],
-              maxFrames: 8782,
+              maxFrames: 9156,
               difficulty: 8,
-              comingSoon: true,
             },
             {
               levelName: "Accelerated",
