@@ -60675,7 +60675,7 @@ var version = "v1.9.4";
                                   ),
                                   void i.log(n)
                                 );
-                              i.alert.ok("Level JSON copied to clipboard");
+                              i.alert.ok("Level JSON copied to clipboard. (Upload your levels to userlevels.com)");
                             }),
                             true
                           );
