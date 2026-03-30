@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.9.4";
+var version = "v1.9.6";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -16055,8 +16055,11 @@ var version = "v1.9.4";
               };
             },
             newSaw: (e) => {
-              var t, a, i, n, s, o, r, l;
-              var diameter = (e?.shape == "large" ? 90 : e?.shape == "small" ? 60 : 30);
+              var t, a, i, n, s, o, r, l,
+              shape = e?.shape || "rail",
+              diameter = (shape == "bar" ? 120 : shape == "large" ? 90 : shape == "small" ? 60 : 30),
+              width = diameter,
+              height = shape == "bar" ? 20 : diameter;
               return {
                 type: "saw",
                 array: "saws",
@@ -16078,15 +16081,15 @@ var version = "v1.9.4";
                         : e.y) && void 0 !== n
                     ? n
                     : 0,
-                shape: e?.shape || "rail",
+                shape: shape,
                 width:
                   null !== (s = null == e ? void 0 : e.width) && void 0 !== s
                     ? s
-                    : diameter,
+                    : width,
                 height:
                   null !== (o = null == e ? void 0 : e.height) && void 0 !== o
                     ? o
-                    : diameter,
+                    : height,
                 movement:
                   null !== (r = null == e ? void 0 : e.movement) && void 0 !== r
                     ? r
@@ -16736,7 +16739,25 @@ var version = "v1.9.4";
                   );
                 }
                 case "saw":
-                  return Z(obj.x, obj.y, obj.width / 2);
+                  let top = obj.y + obj.height / 2,
+                  bottom = obj.y - obj.height / 2,
+                  left = obj.x - obj.width / 2,
+                  right = obj.x + obj.width / 2;
+
+                  return obj.shape == "bar" ? (
+                    (ee.pos.x = obj.x),
+                    (ee.pos.y = obj.y),
+                    (ee.points[0].x = right),
+                    (ee.points[0].y = top),
+                    (ee.points[1].x = right),
+                    (ee.points[1].y = bottom),
+                    (ee.points[2].x = left),
+                    (ee.points[2].y = bottom),
+                    (ee.points[3].x = left),
+                    (ee.points[3].y = top),
+                    ee.setAngle(B.toRad(-obj.rotation)),
+                    ee
+                  ) : Z(obj.x, obj.y, obj.width / 2);
               }
               var i, n, s, o, r, l, c, d, u, h, p;
             },
@@ -29900,6 +29921,7 @@ var version = "v1.9.4";
               "images/themes/world2/double-jump.png",
               `images/themes/${e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
               `images/themes/${e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
+              "images/themes/infinite/saw-bar.png",
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
               "images/themes/world2/red.png",
@@ -30302,7 +30324,7 @@ var version = "v1.9.4";
                   ],
                   () => [
                     conditional(
-                      () => void 0 !== e.isEditor || bgOnly,
+                      () => (void 0 !== e.isEditor && !e.spineContext) || bgOnly,
                       () => [
                         y(
                           {
@@ -30320,8 +30342,8 @@ var version = "v1.9.4";
                         ),
                       ],
                       () => {
-                        const n = i(e.directionChange),
-                          { animationAssets: s, animationRenderer: o } = a(Ws);
+                        let n = i(e.directionChange),
+                          { animationAssets: s, animationRenderer: o } = e.spineContext || a(Ws);
                         return [
                           conditional(
                             () => true === e.wasHit,
@@ -30383,6 +30405,8 @@ var version = "v1.9.4";
                                   },
                                   (t) => {
                                     var a;
+                                    n = i(e.directionChange);
+                                    (t.scale = {x: n * (e.scale || 1), y: e.scale || 1}),
                                     (t.paused = e.paused || false),
                                       (t.x = e.directionChange.x + 22 * n),
                                       (t.y = getBlockFallY(e.directionChange.x, e.directionChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
@@ -30484,6 +30508,33 @@ var version = "v1.9.4";
                           ? void 0
                           : o.frame) || 0) / sawSpeed;
                       t.rotation = ((r?.inverse ? -3 : 3) * l) % 360;
+                    },
+                    array: () => e.saws,
+                    testId: (e, t) => `Saw-${t}`,
+                  }),
+                  imageArray({
+                    fileName: `images/themes/infinite/saw-bar.png`,
+                    props: () => ({}),
+                    update: (t, a, i) => {
+                      var n, s, o;
+                      const r =
+                        null ===
+                          (s =
+                            null === (n = e.inGame) || void 0 === n
+                              ? void 0
+                              : n.sawStates) || void 0 === s
+                          ? void 0
+                          : s[i];
+                      (t.show = (r?.shape == undefined ? false : r?.shape == "bar") && !(null == r ? void 0 : r.destroyed)),
+                        (t.width = a.height),
+                        (t.height = a.width),
+                        (t.x = a.x),
+                        (t.y = getBlockFallY(a.x, a.y, n && n.playerX, n && n.fallTypes, n && n.playerDir));
+                      const l =
+                        ((null === (o = e.inGame) || void 0 === o
+                          ? void 0
+                          : o.frame) || 0) / 2;
+                      t.rotation = ((3) * l) % 360;
                     },
                     array: () => e.saws,
                     testId: (e, t) => `Saw-${t}`,
@@ -30880,7 +30931,7 @@ var version = "v1.9.4";
                     () => "world1" === e.theme,
                     () => [
                       conditional(
-                        () => void 0 === e.inGame,
+                        () => void 0 === e.inGame && !e.spineContext,
                         () => [
                           onChange(
                             () => e.flag.role,
@@ -30904,7 +30955,7 @@ var version = "v1.9.4";
                         ],
                         () => {
                           const { animationAssets: i, animationRenderer: n } =
-                            t(Ws);
+                            e.spineContext || t(Ws);
                           return [
                             conditional(
                               () => "endOfLevel" === e.flag.role,
@@ -30917,17 +30968,18 @@ var version = "v1.9.4";
                                     animationName: "animation",
                                     fileNames: Qs.spineFiles.checkpointEnd,
                                     loop: true,
-                                    paused: e.inGame.paused,
+                                    paused: e.paused || (e.inGame && e.inGame.paused),
                                     x: e.flag.x,
                                     y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                     height: e.flag.height,
-                                    df: e.inGame.df,
+                                    df: e.inGame ? e.inGame.df || 1 : 1,
                                   },
                                   (t) => {
-                                    (t.paused = e.inGame.paused),
+                                    (t.scale = {x: e.scale || 1, y: e.scale || 1}),
+                                    (t.paused = e.paused || (e.inGame && e.inGame.paused)),
                                       (t.x = e.flag.x),
                                       (t.y =getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
-                                      (t.df = e.inGame.df);
+                                      (t.df = e.inGame ? e.inGame.df || 1 : 1);
                                   }
                                 ),
                               ],
@@ -30954,17 +31006,17 @@ var version = "v1.9.4";
                                         startFromFrame: a.wasAlreadyHit
                                           ? 200
                                           : 0,
-                                        paused: e.inGame.paused,
+                                        paused: e.paused || (e.inGame && e.inGame.paused),
                                         x: e.flag.x,
                                         y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                         height: e.flag.height,
-                                        df: e.inGame.df,
+                                        df: e.inGame ? e.inGame.df : 1,
                                       },
                                       (t) => {
-                                        (t.paused = e.inGame.paused),
+                                        (t.paused = e.paused || (e.inGame && e.inGame.paused)),
                                           (t.x = e.flag.x),
                                           (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
-                                          (t.df = e.inGame.df);
+                                          (t.df = e.inGame ? e.inGame.df : 1);
                                       }
                                     ),
                                   ],
@@ -30978,17 +31030,19 @@ var version = "v1.9.4";
                                         fileNames:
                                           Qs.spineFiles.checkpointBasic,
                                         loop: true,
-                                        paused: e.inGame.paused,
+                                        paused: e.paused || (e.inGame && e.inGame.paused),
                                         x: e.flag.x,
                                         y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                         height: e.flag.height,
-                                        df: e.inGame.df,
+                                        df: e.inGame ? e.inGame.df : 1,
+                                        startFromFrame: e.spineContext ? 80 : 0
                                       },
                                       (t) => {
-                                        (t.paused = e.inGame.paused),
+                                        (t.scale = {x: e.scale || 1, y: e.scale || 1}),
+                                        (t.paused = e.paused || (e.inGame && e.inGame.paused)),
                                           (t.x = e.flag.x),
                                           (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
-                                          (t.df = e.inGame.df);
+                                          (t.df = e.inGame ? e.inGame.df : 1);
                                       }
                                     ),
                                   ]
@@ -31794,7 +31848,7 @@ var version = "v1.9.4";
               t.aboutToShoot && (e.shooting = true);
             },
             render: ({ props: e, state: t, getContext }) => {
-              let {animationRenderer: ar, animationAssets: aa} = e.inGame ? getContext(Ws) : {}
+              let {animationRenderer: ar, animationAssets: aa} = (e.spineContext ? e.spineContext : (e.inGame ? getContext(Ws) : {}))
               return [
               ifConditional(
                 () => true === e.showArea,
@@ -31948,7 +32002,7 @@ var version = "v1.9.4";
                           ];
                         case "minion" :
                           return [
-                            e.inGame ? Hs(
+                            e.inGame || e.spineContext ? Hs(
                               {
                                 id: "Minion",
                                 animationAssets: aa,
@@ -31957,7 +32011,7 @@ var version = "v1.9.4";
                                 fileNames: Qs.spineFiles.world4BossMinion,
                                 loop: true,
                                 paused: e.paused,
-                                df: e.df,
+                                df: e.df || 1,
                                 x: e.enemy.x,
                                 y: e.enemy.y - 5,
                                 height: 10,
@@ -31968,8 +32022,9 @@ var version = "v1.9.4";
                               },
                               (t) => {
                                 (t.paused = e.paused),
-                                  (t.df = e.df),
-                                  (t.scale.x = -(e.enemyDir || e.enemy.enemyDir || -1)),
+                                  (t.df = e.df || 1),
+                                  (t.scale.x = -(e.enemyDir || e.enemy.enemyDir || -1) * (e.scale || 1)),
+                                  (t.scale.y = (e.scale || 1)),
                                   (t.x = e.enemy.x),
                                   (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 5);
                               }
@@ -32550,7 +32605,7 @@ var version = "v1.9.4";
                       
                         ()=>[
                           conditional(
-                          () => void 0 !== e.isEditor,
+                          () => void 0 !== e.isEditor && !e.spineContext,
                           () => [
                             y(
                               {
@@ -32567,7 +32622,7 @@ var version = "v1.9.4";
                           () => {
                             var a;
                             const { animationAssets: i, animationRenderer: n } =
-                              t(Ws);
+                              e.spineContext || t(Ws);
                             return [
                               Hs(
                                 {
@@ -32586,6 +32641,7 @@ var version = "v1.9.4";
                                 },
                                 (t) => {
                                   var a;
+                                  (t.scale = {x: (e.scale || 1), y: (e.scale || 1)}),
                                   (t.paused = e.paused || false),
                                     (t.df =
                                       null !== (a = e.df) && void 0 !== a
@@ -33168,7 +33224,7 @@ var version = "v1.9.4";
                       }
                       return [];
                     case "size":
-                      if (e.isEditor)
+                      if (e.isEditor && !e.spineContext)
                         return [
                           y(
                             {
@@ -33184,7 +33240,7 @@ var version = "v1.9.4";
                           ),
                         ];
                       const { animationAssets: i, animationRenderer: n } =
-                        t(Ws);
+                        e.spineContext || t(Ws);
                       return [
                         onChange(
                           () => e.switchBlockSpikes,
@@ -33217,6 +33273,7 @@ var version = "v1.9.4";
                                 },
                                 (t) => {
                                   var i;
+                                  (t.scale = {x: (e.scale || 1), y: (e.scale || 1)}),
                                   (t.x = e.switchButton.x),
                                     (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                     (t.paused = e.paused || false),
@@ -33284,7 +33341,7 @@ var version = "v1.9.4";
                     ),])
                         ]
                       }
-                      if (e.isEditor)
+                      if (e.isEditor && !e.spineContext)
                         return [
                           y(
                             {
@@ -33300,7 +33357,7 @@ var version = "v1.9.4";
                           ),
                         ];
                       const { animationAssets: i, animationRenderer: n } =
-                        t(Ws);
+                        e.spineContext || t(Ws);
                       return [
                         onChange(
                           () => e.switchBlockSpikes,
@@ -33332,6 +33389,7 @@ var version = "v1.9.4";
                                 },
                                 (t) => {
                                   var i;
+                                  (t.scale = {x: (e.scale || 1), y: (e.scale || 1)}),
                                   (t.x = e.switchButton.x),
                                     (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                     (t.paused = e.paused || false),
@@ -34169,7 +34227,7 @@ var version = "v1.9.4";
               e.justHit && t.hitCount++;
             },
             render({ props: e, state: t, getContext: a }) {
-              if (e.isEditor)
+              if (e.isEditor && !e.spineContext)
                 return [
                   y(
                     {
@@ -34184,7 +34242,7 @@ var version = "v1.9.4";
                     }
                   ),
                 ];
-              const { animationAssets: i, animationRenderer: n } = a(Ws);
+              const { animationAssets: i, animationRenderer: n } = e.spineContext || a(Ws);
               return [
                 onChange(
                   () => t.hitCount,
@@ -34210,7 +34268,7 @@ var version = "v1.9.4";
                           (a.x = e.spring.x),
                           (a.y =
                             getBlockFallY(e.spring.x, e.spring.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) + (e.spring.direction < 0 ? 15 : 0));
-                        a.scale = { x: 1, y: e.spring.direction || 1 };
+                        a.scale = { x: e.scale || 1, y: (e.spring.direction || 1) * (e.scale || 1) };
                       }
                     ),
                   ]
@@ -34221,7 +34279,7 @@ var version = "v1.9.4";
           Jo = makeSprite({
             render({ props: e, getContext: t }) {
               var a;
-              if (e.isEditor)
+              if (e.isEditor && !e.spineContext)
                 return [
                   Qo.Single({ portal: e.portal, pixel: e.theme == "world2" }, (t) => {
                     (t.portal = e.portal),
@@ -34237,7 +34295,7 @@ var version = "v1.9.4";
                           : 0);
                   }),
                 ];
-              const { animationAssets: i, animationRenderer: n } = t(Ws),
+              const { animationAssets: i, animationRenderer: n } = e.spineContext || t(Ws),
                 s = Ko[e.portal.pairId % Ko.length];
               let o = 0,
                 r = 0,
@@ -34258,7 +34316,10 @@ var version = "v1.9.4";
                   (d = "horizontal"), (c = -1), (r = 52);
               }
               return [
-                Hs(
+                onChange(
+                  () => `${d}_${s}`,
+                  () => [
+                    Hs(
                   {
                     id: "Portal",
                     animationAssets: i,
@@ -34275,12 +34336,34 @@ var version = "v1.9.4";
                   },
                   (t) => {
                     var a;
+                    o = 0,
+                    r = 0,
+                    l = 1,
+                    c = 1,
+                    d = "";
+                    switch (e.portal.direction) {
+                      case "left":
+                        (d = "vertical"), (o = 1);
+                        break;
+                      case "right":
+                        (d = "vertical"), (l = -1), (o = -1);
+                        break;
+                      case "up":
+                        (d = "horizontal"), (r = 44);
+                        break;
+                      case "down":
+                        (d = "horizontal"), (c = -1), (r = 52);
+                    };
+                    (t.animationName = `${d}_${s}`),
+                    (t.scale = { x: l * (e.scale || 1), y: c  * (e.scale || 1)}),
                     (t.paused = e.paused || false),
                       (t.df = null !== (a = e.df) && void 0 !== a ? a : 1),
                       (t.x = e.portal.x - o),
                       (t.y = getBlockFallY(e.portal.x, e.portal.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 3 + r);
                   }
                 ),
+                  ]
+                )
               ];
             },
           }),
@@ -34540,6 +34623,7 @@ var version = "v1.9.4";
                 features: e,
                 theme: { objects: t, player: a },
               },
+              getContext
             }) {
               const i = $.newBlock(),
                 n = $.newMiniBlock(),
@@ -34661,6 +34745,7 @@ var version = "v1.9.4";
                       directionChange: l,
                       theme: t.dirChange,
                       isEditor: true,
+                      spineContext: getContext(Ws)
                     }),
                     unlocked: true,
                   },
@@ -34668,7 +34753,7 @@ var version = "v1.9.4";
                     name: localize(Zo(d.type)),
                     object: d,
                     iconName: "images/editor/objects/flag.png",
-                    sprite: ao.Single({ id: "Flag", flag: d, theme: t.flag }),
+                    sprite: ao.Single({ id: "Flag", flag: d, theme: t.flag, spineContext: getContext(Ws) }),
                     unlocked: true,
                   },
                   {
@@ -34693,6 +34778,7 @@ var version = "v1.9.4";
                       skin: a,
                       isEditor: true,
                       theme: t.speedChange,
+                      spineContext: getContext(Ws)
                     }),
                     unlocked:
                       e.includes("gun") ||
@@ -34706,7 +34792,7 @@ var version = "v1.9.4";
                     name: localize(Zo(p.type)),
                     object: p,
                     iconName: "images/editor/objects/enemy.png",
-                    sprite: yo.Single({ id: "Enemy", enemy: p }),
+                    sprite: yo.Single({ id: "Enemy", enemy: p, spineContext: getContext(Ws), }),
                     unlocked:
                       e.includes("walkingEnemy") ||
                       e.includes("giantEnemy") ||
@@ -34742,6 +34828,7 @@ var version = "v1.9.4";
                       isEditor: true,
                       justHit: false,
                       theme: t.switch,
+                      spineContext: getContext(Ws)
                     }),
                     unlocked:
                       e.includes("switchButton") ||
@@ -34769,6 +34856,7 @@ var version = "v1.9.4";
                       spring: y,
                       justHit: false,
                       isEditor: true,
+                      spineContext: getContext(Ws)
                     }),
                     unlocked: e.includes("spring"),
                   },
@@ -34781,6 +34869,7 @@ var version = "v1.9.4";
                       portal: E,
                       isEditor: true,
                       theme: t.switch,
+                      spineContext: getContext(Ws)
                     }),
                     unlocked: e.includes("portals"),
                   },
@@ -34793,7 +34882,8 @@ var version = "v1.9.4";
                       speedChange: c,
                       isEditor: true,
                       justHit: false,
-                      theme: t.speedChange
+                      theme: t.speedChange,
+                      spineContext: getContext(Ws)
                     }),
                     unlocked: e.includes("speedChange"),
                   },
@@ -36705,6 +36795,25 @@ var version = "v1.9.4";
                       ]),
                       t.movement == "static" &&
                       (n = [
+                        /*{
+                          name: "Bar",
+                          selected: t?.shape == "bar",
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    shape: "bar",
+                                    width: 120,
+                                    height: 20,
+                                  }),
+                              });
+                            });
+                          },
+                        },*/
                         {
                           name: "Large",
                           selected: t?.shape == "large",
@@ -38099,6 +38208,7 @@ var version = "v1.9.4";
               toolsMenuView: "closed",
               levelSpeeds: _r(e.level),
               canMoveSelectedObjects: false,
+              frame: 0,
             }),
             loop({
               props: e,
@@ -38495,6 +38605,7 @@ var version = "v1.9.4";
                   canMoveSelectedObjects: v,
                   selectedTool: T,
                   toolsMenuView: R,
+                  frame: s(Se).settings.animateEditor ? t.frame + 1 : 0
                 })
               );
             },
@@ -38554,7 +38665,7 @@ var version = "v1.9.4";
                 _ = [],
                 v = false;
               if (selectedObjects.length > 0 && t.isDraggingSelected) {
-                const t = m;
+                const layout = m;
                 m = Ca.removeObjects(m, selectedObjects);
                 const a = selectedObjects
                   .map((t) =>
@@ -38576,10 +38687,10 @@ var version = "v1.9.4";
                     )
                   )),
                   (_ = selectedObjects.map((e) =>
-                    $.updateXY(t[e.array][e.index], e.draggingX, e.draggingY)
+                    $.updateXY(layout[e.array][e.index], e.draggingX, e.draggingY)
                   )),
                   (v = !g),
-                  (S = _.flatMap((e, t) => $r(e, m, t, false)));
+                  (S = _.flatMap((e, a) => $r(e, m, a, false, t.frame, getContext(Ws), !getContext(Se).settings.animateEditor, d.scale)));
               }
               const T = {
                 x: (r.pointer.x - d.x) / d.scale,
@@ -38593,7 +38704,7 @@ var version = "v1.9.4";
                       t.selectedTool.object.snapSize
                     ),
                     a = $.updateXY(t.selectedTool.object, e.x, e.y);
-                  (v = !Da.canPlaceLevelObjects(m, [a])), (S = $r(a, m, 0, v));
+                  (v = !Da.canPlaceLevelObjects(m, [a])), (S = $r(a, m, 0, v, t.frame, getContext(Ws), !getContext(Se).settings.animateEditor, d.scale));
                 }
               return [
                 Wr({
@@ -38619,6 +38730,7 @@ var version = "v1.9.4";
                   noSpace: v,
                   isLoading: e.isLoading,
                   playerSkin: e.playerSkin,
+                  frame: t.frame,
                 }),
                 I
                   ? n({ text: I, font: { size: 20 }, color: ve, y: c / 2 - 20 })
@@ -38837,13 +38949,13 @@ var version = "v1.9.4";
                 isDragging: a,
                 runHistoryIndex: i,
                 placingItem: s,
-                parentOffset: o,
+                parentOffset: parentOffset,
                 runHistory: r,
                 waveformData: l,
                 level: { song: c, songStartSecs: d },
                 levelSpeeds: u,
                 inViewLayout: h,
-                inViewLayoutAtTime: p,
+                inViewLayoutAtTime: inViewLayoutAtTime,
                 fullLayout: g,
                 justPlacedObject: m,
                 noSpace: f,
@@ -38852,20 +38964,23 @@ var version = "v1.9.4";
                 x: propsX,
                 y: propsY,
                 scaleY: propsScale,
+                frame: frame,
               },
+              state,
               getContext
             }) {
+              let pauseAnimations = !getContext(Se).settings.animateEditor;
               if (y)
                 return [
-                  Xr.Single({ id: "GridLines", parentOffset: o }),
+                  Xr.Single({ id: "GridLines", parentOffset: parentOffset }),
                   n({
                     text: `${localize('LOADING')}...`,
                     font: { size: 15 },
                     color: ve,
-                    scaleX: 1 / o.scale,
-                    scaleY: 1 / o.scale,
-                    x: -o.x / o.scale,
-                    y: -o.y / o.scale,
+                    scaleX: 1 / parentOffset.scale,
+                    scaleY: 1 / parentOffset.scale,
+                    x: -parentOffset.x / parentOffset.scale,
+                    y: -parentOffset.y / parentOffset.scale,
                   }),
                 ];
               const b = a ? t : e.map((e) => g[e.array][e.index]),
@@ -38879,7 +38994,7 @@ var version = "v1.9.4";
                 R = "default" === E.fileName ? T : E;
                 overlapObjects = getContext(Se).settings.overlapObjects;
               return [
-                Xr.Single({ id: "GridLines", parentOffset: o }),
+                Xr.Single({ id: "GridLines", parentOffset: parentOffset }),
                 g.properties.useGround 
                 ? renderGround.Single({
                   id: "Ground", 
@@ -38894,14 +39009,18 @@ var version = "v1.9.4";
                   id: "Platforms",
                   platforms: h.platforms,
                   theme: v.platform,
-                  editor: { previewYs: p.platforms.map((e) => e.y) },
+                  editor: { previewYs: inViewLayoutAtTime.platforms.map((e) => e.y) },
                 }),
+                
                 ...h.directionChanges.map((e, t) =>
                   Zs.Single({
                     id: `DirectionChange-${t}`,
                     directionChange: e,
                     theme: v.dirChange,
                     isEditor: true,
+                    spineContext: getContext(Ws),
+                    paused: pauseAnimations,
+                    scale: propsScale,
                   })
                 ),
                 ...h.speedChanges.map((e, t) =>
@@ -38911,10 +39030,13 @@ var version = "v1.9.4";
                     isEditor: true,
                     justHit: false,
                     theme: v.speedChange,
+                    spineContext: getContext(Ws),
+                    paused: pauseAnimations,
+                    scale: propsScale,
                   })
                 ),
                 ...h.flags.map((e, t) =>
-                  ao.Single({ id: `Flag-${t}`, flag: e, theme: v.flag })
+                  ao.Single({ id: `Flag-${t}`, flag: e, theme: v.flag, spineContext: getContext(Ws), paused: pauseAnimations, scale: propsScale,})
                 ),
                 ...h.powerups.map((e, t) =>
                   Co.Single({
@@ -38923,13 +39045,17 @@ var version = "v1.9.4";
                     skin: R,
                     isEditor: true,
                     theme: v.speedChange,
+                    frame: frame,
+                    spineContext: getContext(Ws),
+                    paused: pauseAnimations,
+                    scale: propsScale,
                   })
                 ),
                 eo.Single({
                   id: "Saws",
                   saws: h.saws,
                   theme: v.saw,
-                  editor: { previewYs: p.saws.map((e) => e.y) },
+                  editor: { previewYs: inViewLayoutAtTime.saws.map((e) => e.y) },
                   bigTheme: v.spike
                 }),
                 ...h.enemies.map((e, t) =>
@@ -38937,6 +39063,10 @@ var version = "v1.9.4";
                     id: `Enemy-${t}`,
                     enemy: e,
                     showArea: !a && I.includes(t),
+                    frame: frame,
+                    spineContext: getContext(Ws),
+                    paused: pauseAnimations,
+                    scale: propsScale,
                   })
                 ),
                 ...h.switchButtons.map((e, t) =>
@@ -38948,13 +39078,16 @@ var version = "v1.9.4";
                     isEditor: true,
                     justHit: false,
                     theme: v.switch,
+                    spineContext: getContext(Ws),
+                    paused: pauseAnimations,
+                    scale: propsScale,
                   })
                 ),
                 Po.Single({
                   id: "SwitchPlatforms",
                   switchPlatforms: h.switchPlatforms,
                   editor: {
-                    previewRots: p.switchPlatforms.map((e) => e.rotation + e.direction),
+                    previewRots: inViewLayoutAtTime.switchPlatforms.map((e) => e.rotation + e.direction),
                   },
                   theme: v.switch
                 }),
@@ -38964,10 +39097,13 @@ var version = "v1.9.4";
                     spring: e,
                     justHit: false,
                     isEditor: true,
+                    spineContext: getContext(Ws),
+                    paused: pauseAnimations,
+                    scale: propsScale,
                   })
                 ),
                 ...h.portals.map((e, t) =>
-                  Jo.Single({ id: `Portal-${t}`, portal: e, isEditor: true, theme: v.switch })
+                  Jo.Single({ id: `Portal-${t}`, portal: e, paused: pauseAnimations, isEditor: true, theme: v.switch, spineContext: getContext(Ws), scale: propsScale,})
                 ),
                 ...h.collectibles.map((e, t) =>
                   qo.Single({
@@ -38975,7 +39111,7 @@ var version = "v1.9.4";
                     collectible: e,
                     wasPickedUp: false,
                     isEditor: true,
-                    theme: v.switch
+                    theme: v.switch,
                   })
                 ),
                 ...s,
@@ -39053,7 +39189,7 @@ var version = "v1.9.4";
               var n;
             },
           });
-        function $r(e, t, a, i) {
+        function $r(e, t, a, i, frame, spineContext, paused, scale) {
           const { objects: n } = t.properties.theme,
             s = t.properties.theme.player,
             r = i
@@ -39094,6 +39230,9 @@ var version = "v1.9.4";
                     directionChange: e,
                     theme: n.dirChange,
                     isEditor: true,
+                    spineContext: spineContext,
+                    paused: paused,
+                    scale: scale,
                   });
                 case "speedChange":
                   return er.Single({
@@ -39101,7 +39240,10 @@ var version = "v1.9.4";
                     speedChange: e,
                     isEditor: true,
                     justHit: false,
-                    theme: n.speedChange
+                    theme: n.speedChange,
+                    spineContext: spineContext,
+                    paused: paused,
+                    scale: scale,
                   });
                 case "saw":
                   return eo.Single({
@@ -39116,6 +39258,9 @@ var version = "v1.9.4";
                     id: `PlacingFlag-${a}`,
                     flag: e,
                     theme: n.flag,
+                    spineContext: spineContext,
+                    paused: paused,
+                    scale: scale,
                   });
                 case "powerup":
                   return Co.Single({
@@ -39123,10 +39268,14 @@ var version = "v1.9.4";
                     powerup: e,
                     skin: s,
                     isEditor: true,
-                    theme: n.speedChange
+                    theme: n.speedChange,
+                    frame: frame,
+                    spineContext: spineContext,
+                    paused: paused,
+                    scale: scale,
                   });
                 case "enemy":
-                  return yo.Single({ id: `PlacingEnemy-${a}`, enemy: e });
+                  return yo.Single({ id: `PlacingEnemy-${a}`, enemy: e, spineContext: spineContext, frame: frame, paused: paused, scale: scale });
                 case "switchButton":
                   return xo.Single({
                     id: `PlacingSwitchButton-${a}`,
@@ -39136,6 +39285,9 @@ var version = "v1.9.4";
                     isEditor: true,
                     justHit: false,
                     theme: n.switch,
+                    paused: paused,
+                    spineContext: spineContext,
+                    scale: scale,
                   });
                 case "switchPlatform":
                   return Po.Single({
@@ -39158,13 +39310,19 @@ var version = "v1.9.4";
                     spring: e,
                     justHit: false,
                     isEditor: true,
+                    spineContext: spineContext,
+                    paused: paused,
+                    scale: scale,
                   });
                 case "portal":
                   return Jo.Single({
                     id: `PlacingPortal-${a}`,
                     portal: e,
                     isEditor: true,
-                    theme: n.switch
+                    theme: n.switch,
+                    spineContext: spineContext,
+                    paused: paused,
+                    scale: scale,
                   });
               }
             })(),
@@ -45174,7 +45332,7 @@ var version = "v1.9.4";
                       _c(1),
                       _c(2),
                     ]),
-                    nd.enum3,
+                    nd.enum4,
                   ]),
                   Gc([
                     fc,
@@ -45283,7 +45441,7 @@ var version = "v1.9.4";
                       _c(1),
                       _c(2),
                     ]),
-                    nd.enum3,
+                    nd.enum4,
                   ]),
                   Gc([
                     fc,
@@ -45497,7 +45655,7 @@ var version = "v1.9.4";
                         movement: $d[a],
                         movementTrigger: Jd[i],
                         multiplier: i,
-                        shape: n == 2 ? "large" : n == 1 ? "small" : "rail"
+                        shape: n == 3 ? "bar" : n == 2 ? "large" : n == 1 ? "small" : "rail"
                       })
                     ),
                     flags: h.map(([e, t, a, i, b]) =>
@@ -45688,7 +45846,7 @@ var version = "v1.9.4";
                       e.movement == "falling"
                         ? e.multiplier
                         : ru(e.movementTrigger, Jd),
-                      e.shape == "large" ? 2 : 1
+                      e.shape == "bar" ? 3 : e.shape == "large" ? 2 : 1
                     ] : [
                       e.x,
                       e.y,
@@ -46345,6 +46503,7 @@ var version = "v1.9.4";
               (e) => [e[0], e[1], [...e[2], false, false], e[3]],
               (e) => [e[0], e[1], [...e[2], false], e[3]],
               (e) => [e[0], e[1], [...e[2], false], e[3]],
+              (e) => [e[0], e[1], [...e[2], false, false], e[3]],
             ],
             finalSchema: Gc([
               Oc(
@@ -46360,11 +46519,11 @@ var version = "v1.9.4";
                 ])
               ),
               fc,
-              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
+              Bc([nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc, yc, yc, yc, yc, yc, yc]), nd.tuple([yc, yc, yc, yc, yc, yc, fc])]),
               Oc(Gc([mc, mc])),
             ]),
             uncompress: (e) => {
-              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror, att, glow, flying, debug, release], d] = e;
+              const [t, a, [i, n, s, o, r, l, c, overlap, tm, mirror, att, glow, flying, debug, release, animate], d] = e;
               return {
                 levelsProgress: t.map(
                   ([e, t, a, [i, n, s], [o, r], l, c, d]) => {
@@ -46402,6 +46561,7 @@ var version = "v1.9.4";
                   flyingTrail: flying || false,
                   showDebug: debug || false,
                   disableReleaseBuffer: release || false,
+                  animateEditor: animate || false,
                 },
                 friendRequests: d.map(([e, t]) => ({
                   playerName: t,
@@ -46445,6 +46605,8 @@ var version = "v1.9.4";
                 e.settings.flyingTrail || false,
                 e.settings.showDebug || false,
                 e.settings.disableReleaseBuffer || false,
+                e.settings.animateEditor || false,
+                false
               ],
               e.friendRequests.map((e) => [e.profileId, e.playerName]),
             ],
@@ -55642,7 +55804,7 @@ var version = "v1.9.4";
                     inGame: {
                       playerX: e.playerX,
                       fallTypes: e.fallTypes,
-                      playerDir: e.playerDirm
+                      playerDir: e.playerDir
                     } }),
                   update: (t, a) => {
                     (t.portal = a), 
@@ -57088,7 +57250,7 @@ var version = "v1.9.4";
                     {
                       containerHeight: a.size.fullHeight - 70 + 50,
                       containerWidth: a.size.fullWidth,
-                      contentHeight: 900,
+                      contentHeight: 950,
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
@@ -57406,6 +57568,25 @@ var version = "v1.9.4";
                         ),
                         Rm.Single(
                           {
+                            text: "SHOW EDITOR ANIMATIONS",
+                            selected: false,
+                            onPress: () => {
+                              var a;
+                              const { settings: i, updateSettings: n } = t(Se);
+                              n({ animateEditor: !i.animateEditor });
+                            },
+                            width: 250,
+                            height: 40,
+                            y: -550,
+                          },
+                          (e) => {
+                            const { settings: a } = t(Se);
+                            (e.selected = a.animateEditor),
+                              (e.noPress = o.ref);
+                          }
+                        ),
+                        Rm.Single(
+                          {
                             text: "TIG1 MENU MUSIC",
                             selected: false,
                             onPress: () => {
@@ -57414,7 +57595,7 @@ var version = "v1.9.4";
                             },
                             width: 250,
                             height: 40,
-                            y: -550,
+                            y: -600,
                           },
                           (e) => {
                             (e.selected = alternativeMenuMusic),
@@ -57433,7 +57614,7 @@ var version = "v1.9.4";
                             },
                             width: 250,
                             height: 40,
-                            y: -600,
+                            y: -650,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -57453,7 +57634,7 @@ var version = "v1.9.4";
                             },
                             width: 250,
                             height: 40,
-                            y: -650,
+                            y: -700,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -57472,7 +57653,7 @@ var version = "v1.9.4";
                             },
                             width: 250,
                             height: 40,
-                            y: -700,
+                            y: -750,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -57491,7 +57672,7 @@ var version = "v1.9.4";
                             },
                             width: 250,
                             height: 40,
-                            y: -750,
+                            y: -800,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -57510,7 +57691,7 @@ var version = "v1.9.4";
                             },
                             width: 250,
                             height: 40,
-                            y: -800,
+                            y: -850,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -57529,7 +57710,7 @@ var version = "v1.9.4";
                             },
                             width: 250,
                             height: 40,
-                            y: -850,
+                            y: -900,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
