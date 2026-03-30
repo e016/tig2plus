@@ -32638,6 +32638,7 @@ var version = "v1.9.6";
                                   x: e.powerup.x,
                                   y: getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                                   height: 5,
+                                  startFromFrame: e.paused ? 7 : 0,
                                 },
                                 (t) => {
                                   var a;
@@ -33243,7 +33244,7 @@ var version = "v1.9.6";
                         e.spineContext || t(Ws);
                       return [
                         onChange(
-                          () => e.switchBlockSpikes,
+                          () => e.playerScale,
                           () => {
                             var t;
                             return [
@@ -33254,7 +33255,7 @@ var version = "v1.9.6";
                                   animationRenderer: n,
                                   fileNames: Qs.spineFiles.sizeButton,
                                   animationName:
-                                    globalPlayerScale === 1
+                                    (e.playerScale) === 1
                                       ? "switch_1"
                                       : "switch_2",
                                   loop: false,
@@ -34828,7 +34829,8 @@ var version = "v1.9.6";
                       isEditor: true,
                       justHit: false,
                       theme: t.switch,
-                      spineContext: getContext(Ws)
+                      spineContext: getContext(Ws),
+                      playerScale: 1,
                     }),
                     unlocked:
                       e.includes("switchButton") ||
@@ -38630,7 +38632,7 @@ var version = "v1.9.6";
                   canMoveSelectedObjects: g,
                 } = t;
               let m = e.level.layout,
-                { inViewLayout: f, inViewLayoutAtTime: y } = e;
+                { inViewLayout: f, inViewLayoutAtTime: inViewLayoutAtTime } = e;
               const E = m.properties.theme,
                 usingGround = m.properties.useGround,
                 b =
@@ -38677,8 +38679,8 @@ var version = "v1.9.6";
                   )
                   .filter((e) => e.index >= 0);
                 (f = Ca.removeObjects(f, a)),
-                  (y = Ca.removeObjects(
-                    y,
+                  (inViewLayoutAtTime = Ca.removeObjects(
+                    inViewLayoutAtTime,
                     a.filter(
                       (e) =>
                         "saws" === e.array ||
@@ -38725,7 +38727,7 @@ var version = "v1.9.6";
                   levelSpeeds: t.levelSpeeds,
                   fullLayout: m,
                   inViewLayout: f,
-                  inViewLayoutAtTime: y,
+                  inViewLayoutAtTime: inViewLayoutAtTime,
                   justPlacedObject: t.justPlacedObject,
                   noSpace: v,
                   isLoading: e.isLoading,
@@ -38948,10 +38950,10 @@ var version = "v1.9.6";
                 draggingObjects: t,
                 isDragging: a,
                 runHistoryIndex: i,
-                placingItem: s,
+                placingItem: placingItem,
                 parentOffset: parentOffset,
-                runHistory: r,
-                waveformData: l,
+                runHistory: runHistory,
+                waveformData: waveformData,
                 level: { song: c, songStartSecs: d },
                 levelSpeeds: u,
                 inViewLayout: h,
@@ -39069,12 +39071,14 @@ var version = "v1.9.6";
                     scale: propsScale,
                   })
                 ),
+                
                 ...h.switchButtons.map((e, t) =>
                   xo.Single({
                     id: `SwitchButton-${t}`,
                     switchButton: e,
-                    switchRotation: 0,
-                    switchBlockSpikes: false,
+                    switchRotation: runHistory[i].switchButtons.rot,
+                    switchBlockSpikes: runHistory[i].switchBlockSpikes,
+                    playerScale: runHistory[i].playerScale,
                     isEditor: true,
                     justHit: false,
                     theme: v.switch,
@@ -39114,28 +39118,38 @@ var version = "v1.9.6";
                     theme: v.switch,
                   })
                 ),
-                ...s,
+                ...runHistory[i].playerBullets.map((e) => 
+                  e.frame == 0 ? l({
+                    fileName: "images/themes/world2/gun/bullet.png",
+                    x: e.x,
+                    y: e.y,
+                    width: e.width * Math.sign(e.speed),
+                    height: e.height,
+                    opacity: 0.5
+                  }) : null
+                ),
+                ...placingItem,
                 qr({
                   id: "RunHistory",
                   playerSkin: R,
-                  runHistory: r,
+                  runHistory: runHistory,
                   runHistoryIndex: i,
                 }),
                 Dr({
                   id: "Waveform",
                   song: c,
-                  x: r[i].playerX,
-                  y: r[i].playerY,
-                  startFrame: r[i].frame + 60 * d,
-                  direction: r[i].playerDir,
-                  waveformData: l,
+                  x: runHistory[i].playerX,
+                  y: runHistory[i].playerY,
+                  startFrame: runHistory[i].frame + 60 * d,
+                  direction: runHistory[i].playerDir,
+                  waveformData: waveformData,
                   waveformLengthInBeats: 10,
-                  speedMultiplier: r[i].playerSpeedMultiplier,
+                  speedMultiplier: runHistory[i].playerSpeedMultiplier,
                 }),
                 _ &&
                   Er(
                     Object.assign(Object.assign({ id: "SelectedBorder" }, _), {
-                      noSpace: f && (!s || a),
+                      noSpace: f && (!placingItem || a),
                     })
                   ),
                 S && "block" === S.type
@@ -39288,6 +39302,7 @@ var version = "v1.9.6";
                     paused: paused,
                     spineContext: spineContext,
                     scale: scale,
+                    playerScale: 1,
                   });
                 case "switchPlatform":
                   return Po.Single({
@@ -55728,6 +55743,7 @@ var version = "v1.9.6";
                     df: e.df,
                     justHit: false,
                     theme: e.layout.properties.theme.objects.switch,
+                    playerScale: e.playerScale,
                     inGame: {
                       playerX: e.playerX,
                       fallTypes: e.fallTypes,
@@ -55735,6 +55751,7 @@ var version = "v1.9.6";
                     }
                   }),
                   update: (t, a) => {
+                    (t.playerScale = e.playerScale),
                     (t.switchButton = a),
                       (t.switchRotation = e.switchRotation),
                       (t.switchBlockSpikes = e.switchBlockSpikes),
@@ -59915,6 +59932,10 @@ var version = "v1.9.6";
                                   .play({
                                     overwrite: true,
                                     playbackRate: t.df,
+                                    fromPosition:
+                                      (1 / 60) * t.mutValues.levelState.frame +
+                                      e.level.songStartSecs +
+                                      i(Se).settings.headphonesDelay
                                   });
                           }
                         },
