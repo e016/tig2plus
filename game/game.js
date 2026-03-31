@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.9.6";
+var version = "v1.9.7";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -15708,6 +15708,8 @@ var version = "v1.9.6";
                   },
                 ];
               })(e);
+            case "enemy":
+              return [{ x: e.x, y: e.y, width: Math.max(e.width, 30), height: Math.max(e.height, 30) }];
             default:
               return [{ x: e.x, y: e.y, width: e.width, height: e.height }];
           }
@@ -15715,11 +15717,11 @@ var version = "v1.9.6";
         const X = 90,
           z = 90;
         function W(e) {
-          let t = "walkerHelmet" === (null == e ? void 0 : e.kind) ? 45 : 30,
-            a = 30;
+          let height = "walkerHelmet" === (null == e ? void 0 : e.kind) ? 45 : "fireball" === (null == e ? void 0 : e.kind) ? 15 : 30,
+            a = "fireball" === (null == e ? void 0 : e.kind) ? 15 : 30;
           return (
-            (null == e ? void 0 : e.giant) && q(e.kind) && ((t *= 3), (a *= 3)),
-            { width: a, height: t }
+            (null == e ? void 0 : e.giant) && q(e.kind) && ((height *= 3), (a *= 3)),
+            { width: a, height: height }
           );
         }
         function q(e) {
@@ -16708,6 +16710,8 @@ var version = "v1.9.6";
                     : "minion" === obj.kind 
                     // width: 15, height: 20
                     ? te(obj.x, obj.y, 15, 20 - 2 * inset)
+                    : "fireball" === obj.kind 
+                    ? Z(obj.x, obj.y, 5)
                     : "shooter" !== obj.kind
                     ? te(obj.x, obj.y, obj.width, obj.height - 2 * inset)
                     : te(obj.x, obj.y, obj.width, obj.height);
@@ -30230,7 +30234,8 @@ var version = "v1.9.6";
                 Ks.arrow,
                 Ks.blockSwitchButton,
                 Ks.sizeButton,
-                Ks.world4BossMinion
+                Ks.world4BossMinion,
+                Ks.world4BossFireBall,
               ];
               switch (e.id) {
                 case "world2":
@@ -31619,7 +31624,7 @@ var version = "v1.9.6";
                   }))
                   .filter(
                     ({ destroyed: e, object: t }) =>
-                      ("shooter" !== t.kind && "minion" !== t.kind) && !e
+                      ("shooter" !== t.kind && "minion" !== t.kind && "fireball" !== t.kind) && !e
                   ),
               ];
               for (let t = 0; t < n.length; t++) {
@@ -32044,6 +32049,34 @@ var version = "v1.9.6";
                               }
                             ),
                           ];
+                        case "fireball":
+                          return [Hs(
+                            {
+                              id: "Fireball",
+                              animationAssets: aa,
+                              animationRenderer: ar,
+                              animationName: "animation",
+                              fileNames: Qs.spineFiles.world4BossFireBall,
+                              loop: true,
+                              paused: e.paused,
+                              df: e.df || 1,
+                              x: e.enemy.x,
+                              y: e.enemy.y + 3,
+                              height: 10,
+                              scale: {
+                                x: 1,
+                                y: 1,
+                              }
+                            },
+                            (t) => {
+                              (t.scale.x = (e.scale || 1)),
+                              (t.scale.y = (e.scale || 1)),
+                              (t.paused = e.paused),
+                                (t.df = e.df || 1),
+                                (t.x = e.enemy.x),
+                                (t.y = getBlockFallY(e.enemy.x, e.enemy.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) + 3);
+                            }
+                          )]
                       }
                     }
                   ),
@@ -36289,9 +36322,24 @@ var version = "v1.9.6";
                           });
                         },
                       });
+                      s.push({
+                        name: "Fireball",
+                        selected: "fireball" === t.kind,
+                        onPress: () => {
+                          i.map((j) => {
+                            e({
+                              type: "setProperty",
+                              array: "enemies",
+                              index: j,
+                              set: (e, t) =>
+                                n($.changeEnemyKind(e, "fireball"), t),
+                            });
+                          });
+                        },
+                      });
                   const o = [{ name: "Kind", options: s }];
                   return (
-                    ("shooter" !== t.kind) &&
+                    ("shooter" !== t.kind) && ("fireball" !== t.kind) &&
                       a.includes("giantEnemy") &&
                       a.includes("walkingEnemy") &&
                       ("bomb" !== t.kind && "minion" !== t.kind && (o.push({
@@ -39060,6 +39108,16 @@ var version = "v1.9.6";
                   editor: { previewYs: inViewLayoutAtTime.saws.map((e) => e.y) },
                   bigTheme: v.spike
                 }),
+                ...inViewLayoutAtTime.enemies.map((e, t) =>
+                  runHistory[i].layoutState.enemies[t].destroyed ? null : o({
+                    width: e.width,
+                    height: e.height,
+                    x: e.x,
+                    y: e.y,
+                    color: "red",
+                    opacity: 0.5
+                  })
+                ),
                 ...h.enemies.map((e, t) =>
                   yo.Single({
                     id: `Enemy-${t}`,
@@ -45058,7 +45116,8 @@ var version = "v1.9.6";
               (e[(e.Walker = 1)] = "Walker"),
               (e[(e.WalkerHelmet = 2)] = "WalkerHelmet");
               (e[(e.Bomb = 3)] = "Bomb");
-              (e[(e.Minion = 4)] = "Minion")
+              (e[(e.Minion = 4)] = "Minion");
+              (e[(e.Fireball = 5)] = "Fireball");
           })(fd || (fd = {})),
           (function (e) {
             (e[(e.Up = 0)] = "Up"), (e[(e.Right = 1)] = "Right");
@@ -45376,12 +45435,12 @@ var version = "v1.9.6";
                 ),
                 Oc(
                   Bc([
-                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum5, nd.enum2]),
-                    Gc([fc, fc, nd.enum5, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2]),
                   ])
                 ),
                 Oc(
@@ -45485,12 +45544,12 @@ var version = "v1.9.6";
                 ),
                 Oc(
                   Bc([
-                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum5, nd.enum2, nd.enum2]),
-                    Gc([fc, fc, nd.enum5, nd.enum2]),
-                    Gc([fc, fc, nd.enum5, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2]),
+                    Gc([fc, fc, nd.enum6, nd.enum2]),
                   ])
                 ),
                 Oc(
@@ -46090,7 +46149,8 @@ var version = "v1.9.6";
             [fd.Walker]: "walker",
             [fd.WalkerHelmet]: "walkerHelmet",
             [fd.Bomb]: "bomb",
-            [fd.Minion]: "minion"
+            [fd.Minion]: "minion",
+            [fd.Fireball]: "fireball"
           },
           eu = {
             [wd.Movement]: "movement",
@@ -60628,7 +60688,7 @@ var version = "v1.9.6";
               saws: e.saws.filter(o),
               flags: e.flags.filter(o),
               powerups: e.powerups.filter(o),
-              enemies: e.enemies.filter(o),
+              enemies: [...e.enemies],
               switchButtons: e.switchButtons.filter(o),
               switchPlatforms: e.switchPlatforms.filter(o),
               springs: e.springs.filter(o),
