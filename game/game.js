@@ -47235,7 +47235,7 @@ var version = "v1.9.7";
           secureStorage: {
             getItem: (e) =>
               Vu(void 0, void 0, void 0, function* () {
-                return localStorage.getItem(`SecureStorage`);
+                return localStorage.getItem(`SecureStorage-${e}`);
               }),
             setItem: (e, t) =>
               Vu(void 0, void 0, void 0, function* () {
@@ -67292,21 +67292,12 @@ var version = "v1.9.7";
         i, // defId
         n = 1 //usesLeft
                                  */
-                          var s = await Jp.getEncryptedStorage(),
-                            items = [
-                              ...s.ownedItems,
-                              ...e.rewards.items.map((r) =>
-                                bp.getItemFromResponse(
-                                  r.itemId,
-                                  r.version || 1,
-                                  r.defId,
-                                  r.quantity || 1
-                                )
-                              ),
-                            ];
-                          Jp.saveEncryptedStorage(u.now, {
-                            ownedItems: items,
-                          });
+                          console.warn(e);
+                          e.rewards.items.map(item => Jp.addPurchasedItems([{
+                            usesLeft: null,
+                            defId: item.defId,
+                            version: 1,
+                          }], u.now));
                           u.audio("audio/achievement/rewards-collect.wav").play(
                             0
                           );
@@ -68250,6 +68241,18 @@ var version = "v1.9.7";
                     beatSize: b,
                   }),
                   Fo({
+                    id: "AchievementsButton",
+                    text: localize("ACHIEVEMENTS"),
+                    width: 170,
+                    height: 40,
+                    darkText: true,
+                    onPress: () => {
+                      r({ type: "achievements" });
+                    },
+                    x: -200,
+                    y: h,
+                  }),
+                  Fo({
                     id: "MoreButton",
                     text: localize("MORE"),
                     width: 170,
@@ -68258,7 +68261,7 @@ var version = "v1.9.7";
                     onPress: () => {
                       r({ type: "more" });
                     },
-                    x: -100,
+                    x: 0,
                     y: h,
                   }),
                   Fo({
@@ -68270,52 +68273,41 @@ var version = "v1.9.7";
                     onPress: () => {
                       r({ type: "news" });
                     },
-                    x: 100,
+                    x: 200,
                     y: h,
                   }),
                   
                   ...(localStorage.getItem("news") == newsID ? [] : [s({
                     radius: 13,
                     color: Ve,
-                    x: 185,
+                    x: 285,
                     y: h + 20,
                     opacity: 0.9,
                   }),
                   s({
                     radius: 2,
                     color: ve,
-                    x: 185,
+                    x: 285,
                     y: h + 20,
                   }),
                   ...(newsID == 5 ? [
                     y(
-                      { fileName: "images/level/arrow-up.png", width: 14, height: 8, x: 200, y: h, rotation: -90 },
+                      { fileName: "images/level/arrow-up.png", width: 14, height: 8, x: 300, y: h, rotation: -90 },
                       (a) => {
-                        a.x = 200 + Math.abs(t.arrowY);
+                        a.x = 300 + Math.abs(t.arrowY);
                       }
                     ),
                     n({
                       text: localize("IMPORTANT!"),
                       font: { align: "left", size: 13 },
                       color: ve,
-                      x: 220,
+                      x: 320,
                       y: h,
                     }),
                   ] : [])
                 
                 ]),
-                  /*Fo({
-                    id: "AchievementsButton",
-                    text: localize("ACHIEVEMENTS"),
-                    width: 170,
-                    height: 40,
-                    darkText: true,
-                    onPress: () => {
-                      r({ type: "achievements" });
-                    },
-                    x: -100,
-                    y: h,
-                  }),*/
+                  
                   n({
                     text: localize(currentJoke),
                     font: { align: "center", size: 13 },
