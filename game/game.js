@@ -30898,14 +30898,14 @@ var version = "v1.9.8";
                             loop: true,
                             paused: (e.inGame && e.inGame.paused) || e.paused,
                             x: e.flag.x,
-                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
+                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5,
                             height: 0,
                             df: !e.inGame ? 1 : e.inGame.df,
                           },
                           (t) => {
                             (t.paused = (e.inGame && e.inGame.paused) || e.paused),
                               (t.x = e.flag.x),
-                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
+                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5),
                               (t.df = !e.inGame ? 1 : e.inGame.df);
                           }
                         ),
@@ -30922,14 +30922,14 @@ var version = "v1.9.8";
                             startFromFrame: a.wasAlreadyHit ? 200 : 0,
                             paused: e.inGame.paused,
                             x: e.flag.x,
-                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
+                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5,
                             height: 0,
                             df: e.inGame.df,
                           },
                           (t) => {
                             (t.paused = e.inGame.paused),
                               (t.x = e.flag.x),
-                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
+                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5),
                               (t.df = e.inGame.df);
                           }
                         ),
