@@ -39840,6 +39840,7 @@ var version = "v1.9.8";
                 playerDir: n,
                 gravity: gravity,
                 dashing: dashing,
+                portalY: p.y
               }),
               il
             );
@@ -40816,6 +40817,8 @@ var version = "v1.9.8";
                 ((U.cameraXOffset += U.playerX - oe.teleport.playerX),
                 (U.playerX = oe.teleport.playerX),
                 (U.playerY = oe.teleport.playerY),
+                (U.flyingAnchor = U.flyingAnchor ? oe.teleport.portalY : null),
+                (U.jumping = U.flyingAnchor ? (U.playerGradY !== oe.teleport.playerGradY ? oe.teleport.playerGradY <= 0 : U.jumping ) : U.jumping),
                 (U.playerGradY = oe.teleport.playerGradY),
                 (U.playerDir = oe.teleport.playerDir),
                 (U.gravity = oe.teleport.gravity),
