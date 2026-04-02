@@ -40449,11 +40449,11 @@ var version = "v1.9.8";
                       "justDown" === playerInput && (U.jumping = !U.jumping),
                       U.jumping
                         ? U.playerY > low
-                          ? ((U.playerY += 2 * df * ((-5 + low - U.playerY) / w)),
+                          ? ((U.playerY += 2 * df * ((-5 + low - U.playerY) / 6.6) * (w / 6.6)),
                             (U.playerY = B.clamp2(low, high, U.playerY)))
                           : (U.playerY = low)
                         : U.playerY < high
-                        ? ((U.playerY += 2 * df * ((5 + high - U.playerY) / w)),
+                        ? ((U.playerY += 2 * df * ((5 + high - U.playerY) / 6.6) * (w / 6.6)),
                           (U.playerY = B.clamp2(low, high, U.playerY)))
                         : (U.playerY = high),
                       (U.playerGradY = 0)
