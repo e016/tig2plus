@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.9.7";
+var version = "v1.9.8";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -16050,6 +16050,7 @@ var version = "v1.9.7";
                   null !== (b = null == e ? void 0 : e.retainSpeed) &&
                   void 0 !== b &&
                   b,
+                isFlying: e ? e.isFlying : false,
                 snapSize:
                   null !== (r = null == e ? void 0 : e.snapSize) && void 0 !== r
                     ? r
@@ -29958,6 +29959,10 @@ var version = "v1.9.7";
               "images/level/boss2/bomb.png",
               "images/level/boss2/bulletHell.png",
               "images/level/boss2/bulletHellBig.png",
+              "images/themes/world3/player-ship.png",
+              "images/level/boss3/player-ship.png",
+              "images/level/boss3/star-line.png",
+              "images/level/boss3/star-line-stars.png",
               "images/editor/editorOnly/size-button.png",
               "images/editor/editorOnly/color-button.png",
               "images/themes/skater/rail.png",
@@ -30236,6 +30241,7 @@ var version = "v1.9.7";
                 Ks.sizeButton,
                 Ks.world4BossMinion,
                 Ks.world4BossFireBall,
+                Ks.flyingFlag,
               ];
               switch (e.id) {
                 case "world2":
@@ -30874,13 +30880,13 @@ var version = "v1.9.7";
                     (null === (t = e.inGame) || void 0 === t
                       ? void 0
                       : t.isFlying)
-                  );
+                  ) || e.flag.isFlying;
                 },
                 () => {
-                  const { animationAssets: i, animationRenderer: n } = t(Ws);
+                  const { animationAssets: i, animationRenderer: n } = e.spineContext || t(Ws);
                   return [
                     conditional(
-                      () => !e.inGame.wasHit,
+                      () => e.inGame ? !e.inGame.wasHit : true,
                       () => [
                         Hs(
                           {
@@ -30890,17 +30896,21 @@ var version = "v1.9.7";
                             fileNames: Qs.spineFiles.flyingFlag,
                             animationName: "idle",
                             loop: true,
-                            paused: e.inGame.paused,
+                            paused: (e.inGame && e.inGame.paused) || e.paused,
                             x: e.flag.x,
-                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
+                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5,
                             height: 0,
-                            df: e.inGame.df,
+                            df: !e.inGame ? 1 : e.inGame.df,
                           },
                           (t) => {
-                            (t.paused = e.inGame.paused),
+                            (t.paused = (e.inGame && e.inGame.paused) || e.paused),
                               (t.x = e.flag.x),
-                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
-                              (t.df = e.inGame.df);
+                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5),
+                              (t.df = !e.inGame ? 1 : e.inGame.df),
+                              (t.scale = {
+                                x: e.scale || 1,
+                                y: e.scale || 1,
+                              })
                           }
                         ),
                       ],
@@ -30916,14 +30926,14 @@ var version = "v1.9.7";
                             startFromFrame: a.wasAlreadyHit ? 200 : 0,
                             paused: e.inGame.paused,
                             x: e.flag.x,
-                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
+                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5,
                             height: 0,
                             df: e.inGame.df,
                           },
                           (t) => {
                             (t.paused = e.inGame.paused),
                               (t.x = e.flag.x),
-                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
+                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5),
                               (t.df = e.inGame.df);
                           }
                         ),
@@ -32778,6 +32788,21 @@ var version = "v1.9.7";
                           (t.x = e.powerup.x), (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)), (t.opacity = 0.5);
                         }),
                       ];
+                    case "spaceship":
+                      return [
+                        y(
+                          {
+                            fileName:
+                              "images/themes/world3/player-ship.png",
+                            width: 40,
+                            height: 30,
+                          },
+                          (t) => {
+                            (t.x = e.powerup.x),
+                              (t.y = e.powerup.y);
+                          }
+                        )
+                      ]
                     case "skateboard":
                       return [
                         y(
@@ -32888,6 +32913,7 @@ var version = "v1.9.7";
                     case "playerStack":
                     case "skateboard":
                     case "ghost":
+                    case "spaceship":
                       return [];
                   }
                 }
@@ -33161,6 +33187,7 @@ var version = "v1.9.7";
                 case "playerStack":
                 case "skateboard":
                 case "ghost":
+                case "spaceship":
                   return [];
               }
             },
@@ -34483,7 +34510,7 @@ var version = "v1.9.7";
                         ])])
                 ]
               }
-              if (bgOnly || e.isEditor)
+              if (bgOnly)
                 return [
                   y(
                     {
@@ -34501,7 +34528,7 @@ var version = "v1.9.7";
                     }
                   ),
                 ];
-              const { animationAssets: i, animationRenderer: n } = a(Ws);
+              const { animationAssets: i, animationRenderer: n } = e.spineContext || a(Ws);
               return [
                 onChange(
                   () => t.hitCount,
@@ -34520,13 +34547,17 @@ var version = "v1.9.7";
                         x: e.speedChange.x,
                         y: getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                         scale: {
-                          x: "right" === e.speedChange.direction ? 1 : -1,
-                          y: 1,
+                          x: ("right" === e.speedChange.direction ? 1 : -1) * (e.scale || 1),
+                          y: e.scale || 1,
                         },
                         height: 0,
                       },
                       (a) => {
                         (a.df = (0 === t.hitCount ? 0 : e.df || 1) / 1.2),
+                        (a.scale = {
+                          x: ("right" === e.speedChange.direction ? 1 : -1) * (e.scale || 1),
+                          y: e.scale || 1,
+                        }),
                           (a.paused = e.paused || false),
                           (a.x = e.speedChange.x),
                           (a.y = getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
@@ -37300,6 +37331,45 @@ var version = "v1.9.7";
                         ],
                       },
                     ]);
+                    j.push({
+                      name: "Shape",
+                      options: [
+                        {
+                          name: "Normal",
+                          selected: !t.isFlying,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "flags",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    isFlying: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Flying",
+                          selected: t.isFlying,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "flags",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    isFlying: true
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                      ],
+                    },)
                   return j;
                 })(e, t, i);
               case "powerup":
@@ -37410,6 +37480,23 @@ var version = "v1.9.7";
                               set: (e) =>
                                 Object.assign(Object.assign({}, e), {
                                   item: "punch",
+                                }),
+                            });
+                          });
+                        },
+                      }),
+                      n.push({
+                        name: "Spaceship",
+                        selected: "spaceship" === t.item,
+                        onPress: () => {
+                          i.map((j) => {
+                            e({
+                              type: "setProperty",
+                              array: "powerups",
+                              index: j,
+                              set: (e) =>
+                                Object.assign(Object.assign({}, e), {
+                                  item: "spaceship",
                                 }),
                             });
                           });
@@ -39529,7 +39616,8 @@ var version = "v1.9.7";
                   gravity: 1,
                   dashing: false,
                   isGravity: false,
-                  fallTypes: [null, null]
+                  fallTypes: [null, null],
+                  flyingAnchor: null,
                 };
           },
           el = function (e, t) {
@@ -39609,7 +39697,8 @@ var version = "v1.9.7";
               gravity: e.gravity,
               dashing: e.dashing,
               isGravity: e.isGravity,
-              fallTypes: [e.fallTypes[0], e.fallTypes[1]]
+              fallTypes: [e.fallTypes[0], e.fallTypes[1]],
+              flyingAnchor: e.flyingAnchor
             };
           },
           menuButtonSprite = makeSprite({
@@ -39751,6 +39840,7 @@ var version = "v1.9.7";
                 playerDir: n,
                 gravity: gravity,
                 dashing: dashing,
+                portalY: p.y
               }),
               il
             );
@@ -40061,6 +40151,7 @@ var version = "v1.9.7";
                 (U.playerX = e.playerX),
                 (U.jumping = e.jumping);
             } else {
+              
               if (isDown) {
                 const e = U.justDownInputTimer > 0,
                   t = e
@@ -40269,6 +40360,8 @@ var version = "v1.9.7";
                   (isDown = false),
                   (U.justDownInputTimer = 0);
                   }
+                } else if (U.playerPowerup?.item === "spaceship") {
+                  
                 } else {
                   if (U.dashing) {
                     U.dashing && e && ((U.dashing = false),
@@ -40320,10 +40413,9 @@ var version = "v1.9.7";
               )
                 U.playerRot = B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir;
               else if (
-                ("playerStack" ===
-                (null === (l = U.playerPowerup) || void 0 === l
+                (["playerStack", "spaceship"].includes(null === (l = U.playerPowerup) || void 0 === l
                   ? void 0
-                  : l.item)) & !U.dashing
+                  : l.item)) && !U.dashing
               )
                 U.playerRot = 0;
               
@@ -40342,6 +40434,7 @@ var version = "v1.9.7";
                 } else U.playerRot = 0;
               else if (U.isGravity)
                 (U.playerRot % 90) > 89 || (U.playerRot % 90) < 1 ? (U.playerRot = et.closestFlatAngle(U.playerRot)) : (U.playerRot += (et.closestFlatAngle(U.playerRot) - U.playerRot) / 5)
+              
               else
                 (J && !U.dashing) ||
                   ((U.playerRot += (90 * U.playerDir * df) / C * U.gravity * (U.dashing ? 2 : 1)),
@@ -40349,7 +40442,23 @@ var version = "v1.9.7";
                     ? (U.playerRot += 360)
                     : U.playerRot > 360 && (U.playerRot -= 360));
               const e = U.dashing ? {y: U.playerY, gradY: 0} : G.stepY(U.playerY, U.playerGradY, j, df, U.gravity);
-              (U.playerY = e.y), (U.playerGradY = e.gradY);
+              const low = U.flyingAnchor - 45,
+              high = U.flyingAnchor + 45;
+              U.playerPowerup?.item === "spaceship" ? 
+                    (
+                      "justDown" === playerInput && (U.jumping = !U.jumping),
+                      U.jumping
+                        ? U.playerY > low
+                          ? ((U.playerY += 2 * df * ((-5 + low - U.playerY) / w)),
+                            (U.playerY = B.clamp2(low, high, U.playerY)))
+                          : (U.playerY = low)
+                        : U.playerY < high
+                        ? ((U.playerY += 2 * df * ((5 + high - U.playerY) / w)),
+                          (U.playerY = B.clamp2(low, high, U.playerY)))
+                        : (U.playerY = high),
+                      (U.playerGradY = 0)
+                    ) : 
+              ((U.playerY = e.y), (U.playerGradY = e.gradY));
               if (("ghost" ===
                 (null === (l = U.playerPowerup) || void 0 === l
                   ? void 0
@@ -40508,6 +40617,9 @@ var version = "v1.9.7";
                   (U.switchBlockSpikes = false),
                   !e?.retainSpeed && (U.playerSpeedMultiplier = 1),
                   "skateboard" !==
+                    (null === (c = U.playerPowerup) || void 0 === c
+                      ? void 0
+                      : c.item) && "spaceship" !==
                     (null === (c = U.playerPowerup) || void 0 === c
                       ? void 0
                       : c.item) && (U.playerPowerup = null),
@@ -40705,6 +40817,8 @@ var version = "v1.9.7";
                 ((U.cameraXOffset += U.playerX - oe.teleport.playerX),
                 (U.playerX = oe.teleport.playerX),
                 (U.playerY = oe.teleport.playerY),
+                (U.flyingAnchor = U.flyingAnchor ? oe.teleport.portalY : null),
+                (U.jumping = U.flyingAnchor ? (U.playerGradY !== oe.teleport.playerGradY ? oe.teleport.playerGradY <= 0 : U.jumping ) : U.jumping),
                 (U.playerGradY = oe.teleport.playerGradY),
                 (U.playerDir = oe.teleport.playerDir),
                 (U.gravity = oe.teleport.gravity),
@@ -40731,6 +40845,7 @@ var version = "v1.9.7";
 
               }
               U.isCompatible = e.compatible;
+              U.flyingAnchor = null;
               if (
                 (xa.updateLayoutStateField(
                   "powerups",
@@ -40766,6 +40881,10 @@ var version = "v1.9.7";
                   });
                 }
                 //console.log(U.playerStackIndex)
+              } else if (e.item === "spaceship") {
+                U.flyingAnchor = e.y;
+                U.jumping = U.playerGradY <= 0;
+                U.playerRot = 0;
               } else "skateboard" === e.item && (U.playerRot = 0);
               // set powerup
               U.playerPowerup = Object.assign(Object.assign({}, e), {
@@ -41380,8 +41499,8 @@ var version = "v1.9.7";
                     U.playerStacks.splice(U.playerStackIndex, 1),
                     (U.crashed = false),
                     0 === U.playerStacks.length && (U.playerPowerup = null))
-                  : ("skateboard" !==
-                      (null === (S = U.playerPowerup) || void 0 === S
+                  : (!["skateboard", "spaceship"].includes(
+                    null === (S = U.playerPowerup) || void 0 === S
                         ? void 0
                         : S.item) && (U.playerPowerup = null),
                     onCrash(U.checkpoint.index),
@@ -41840,6 +41959,12 @@ var version = "v1.9.7";
                 author: "dj-Nate",
                 fileName: "audio/tracks/dj-nate-electrodynamix.mp3",
                 bpm: 127,
+              },
+              skyFractureExtended: {
+                name: "Sky Fracture (extended)",
+                author: "Getsix",
+                fileName: "audio/tracks/getsix-sky-fracture-extended.mp3",
+                bpm: 176,
               }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -45142,7 +45267,8 @@ var version = "v1.9.7";
               (e[(e.Skateboard = 4)] = "Skateboard"),
               (e[(e.Punch = 5)] = "Punch");
               (e[(e.Drill = 6)] = "Drill");
-              (e[(e.Ghost = 7)] = "Drill");
+              (e[(e.Ghost = 7)] = "Ghost");
+              (e[(e.Spaceship = 8)] = "Spaceship")
           })(Id || (Id = {})),
           (function (e) {
             (e[(e.Movement = 0)] = "Movement"),
@@ -45213,6 +45339,7 @@ var version = "v1.9.7";
             e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
             e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
             e[(e.Electrodynamix = 53)] = "Electrodynamix";
+            e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45243,6 +45370,7 @@ var version = "v1.9.7";
               (e[(e.Punch = 5)] = "Punch");
               (e[(e.Drill = 6)] = "Drill");
               (e[(e.Ghost = 7)] = "Ghost");
+              (e[(e.Spaceship = 8)] = "Spaceship")
           })(Cd || (Cd = {})),
           (function (e) {
             (e[(e.Movement = 0)] = "Movement"),
@@ -45323,6 +45451,7 @@ var version = "v1.9.7";
             e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
             e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
             e[(e.Electrodynamix = 53)] = "Electrodynamix";
+             e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45426,12 +45555,13 @@ var version = "v1.9.7";
                 ),
                 Oc(
                   Bc([
+                    Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum2, nd.enum2]),
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum8, nd.enum2]), Gc([fc, fc, nd.enum8])])
+                  Bc([Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
                 ),
                 Oc(
                   Bc([
@@ -45535,12 +45665,13 @@ var version = "v1.9.7";
                 ),
                 Oc(
                   Bc([
+                    Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum2, nd.enum2]),
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum8, nd.enum2]), Gc([fc, fc, nd.enum8])])
+                  Bc([Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
                 ),
                 Oc(
                   Bc([
@@ -45732,13 +45863,14 @@ var version = "v1.9.7";
                         shape: n == 3 ? "bar" : n == 2 ? "large" : n == 1 ? "small" : "rail"
                       })
                     ),
-                    flags: h.map(([e, t, a, i, b]) =>
+                    flags: h.map(([e, t, a, i, b, o]) =>
                       $.newFlag({
                         x: e,
                         y: t,
                         role: Kd[a],
                         switchesOn: ou[i],
                         retainSpeed: ou[b] || false,
+                        isFlying: ou[o] || false
                       })
                     ),
                     powerups: p.map(([e, t, a, n]) =>
@@ -45930,7 +46062,16 @@ var version = "v1.9.7";
                         : ru(e.movementTrigger, Jd),
                     ]),
                     i.flags.map((e) =>
-                      e.retainSpeed
+                      e.isFlying ? 
+                      [
+                        e.x,
+                        e.y,
+                        ru(e.role, Kd),
+                        ru(e.switchesOn, ou),
+                        ru(e.retainSpeed, ou),
+                        ru(e.isFlying, ou),
+                      ]
+                      : e.retainSpeed
                         ? [
                             e.x,
                             e.y,
@@ -46101,7 +46242,8 @@ var version = "v1.9.7";
             [Nd.OctaneExtended]: hl.songs.octaneExtended,
             [Nd.CriticalHitExtended]: hl.songs.criticalHitExtended,
             [Nd.MindsOfTheMad]: hl.songs.mindsOfTheMad,
-            [Nd.Electrodynamix]: hl.songs.electrodynamix
+            [Nd.Electrodynamix]: hl.songs.electrodynamix,
+            [Nd.SkyFractureExtended]: hl.songs.skyFractureExtended
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -46142,7 +46284,8 @@ var version = "v1.9.7";
             [Cd.Skateboard]: "skateboard",
             [Cd.Punch]: "punch",
             [Cd.Drill]: "drill",
-            [Cd.Ghost]: "ghost"
+            [Cd.Ghost]: "ghost",
+            [Cd.Spaceship]: "spaceship",
           },
           Zd = {
             [fd.Shooter]: "shooter",
@@ -46198,7 +46341,8 @@ var version = "v1.9.7";
                 _c("skateboard"),
                 _c("punch"),
                 _c("drill"),
-                _c("ghost")
+                _c("ghost"),
+                _c("spaceship"),
               ]),
             }),
             xc({ snapSize: lu }),
@@ -46446,7 +46590,7 @@ var version = "v1.9.7";
                   isGravity: false,
                   bullets: e.bullets.map((bullet)=>({...bullet, frame: 0})),
                 }),
-              (e) => Object.assign(Object.assign({}, e), {
+                (e) => Object.assign(Object.assign({}, e), {
                   playerStacks: e.playerStacks.map(stack => Object.assign(Object.assign({}, stack), {onObject: null}))
                 }),
                 (e) => Object.assign(Object.assign({}, e), {
@@ -46454,6 +46598,9 @@ var version = "v1.9.7";
                 }),
                 (e) => Object.assign(Object.assign({}, e), {
                   fallTypes: [null, null]
+                }),
+                (e) => Object.assign(Object.assign({}, e), {
+                  flyingAnchor: null
                 }),
             ],
             finalSchema: kc({
@@ -46521,7 +46668,8 @@ var version = "v1.9.7";
               gravity: fc,
               dashing: yc,
               isGravity: Bc([Hc, yc, hc]),
-              fallTypes: Hc//kc(Bc([hc, mc]), Bc([hc, mc]))
+              fallTypes: Hc,//kc(Bc([hc, mc]), Bc([hc, mc]))
+              flyingAnchor: Bc([fc, hc]),
             }),
             uncompress: (e) => e,
             compress: (e) =>
@@ -51793,7 +51941,7 @@ var version = "v1.9.7";
                       fileName: "images/level/boss3/star-line.png",
                       width: 950,
                       height: 50,
-                      y: et.initialPosition.y,
+                      y: et.initialPosition.y - t.cameraX,
                     }),
                     y({
                       fileName: "images/level/boss3/star-line.png",
@@ -54757,6 +54905,7 @@ var version = "v1.9.7";
                   landTimer: e.landTimer,
                   onSkateboard: e.onSkateboard,
                   playerScale: e.isCompatible ? 1 : e.playerScale,
+                  isFlying: e.isFlying,
                 },
                 (t) => {
                   (t.playerRot = e.playerRot),
@@ -54782,6 +54931,7 @@ var version = "v1.9.7";
                   landTimer: e.landTimer,
                   onSkateboard: e.onSkateboard,
                   playerScale: e.isCompatible ? 1 : e.playerScale,
+                  isFlying: e.isFlying
                 },
                 (a) => {
                   (a.x = t.player2X),
@@ -54807,7 +54957,21 @@ var version = "v1.9.7";
           }),
           Qg = makeSprite({
             render: ({ props: e }) => [
-              To.Single(
+              e.isFlying ? 
+              y(
+                {
+                  fileName:
+                    "images/level/boss3/player-ship.png",
+                  width: 40,
+                  height: 30,
+                },
+                (t) => {
+                    (t.rotation = e.playerRot),
+                    (t.scaleX = e.playerScaleX * e.playerDir),
+                    (t.scaleY = e.playerScaleY);
+                }
+              )
+              : To.Single(
                 {
                   skin: e.skin,
                   landTimer: e.landTimer,
@@ -55309,6 +55473,54 @@ var version = "v1.9.7";
                     (e.crashed = t.crashed);
                 }
               ),
+              ifConditional(
+                () => (t.playerPowerup?.item === "spaceship"),
+                () => [
+                    y({
+                      fileName: "images/level/boss3/star-line.png",
+                      width: 950,
+                      height: 50,
+                      y: t.flyingAnchor - 45 - t.cameraY,
+                    },
+                    (e) => {
+                      e.y = t.flyingAnchor - 45 - t.cameraY
+                    }),
+                    y({
+                      fileName: "images/level/boss3/star-line.png",
+                      width: 950,
+                      height: 50,
+                      y: t.flyingAnchor + 45 - t.cameraY,
+                    }, (e) => {
+                      e.y = t.flyingAnchor + 45 - t.cameraY
+                    }),
+                    dg.Single(
+                      {
+                        fileName: "images/level/boss3/star-line-stars.png",
+                        playerX: t.playerX,
+                        playerY: 0,
+                        height: 50,
+                        y: t.flyingAnchor - 45 - t.cameraY,
+                      },
+                      (e) => {
+                        e.playerX = t.playerX;
+                        e.y = t.flyingAnchor - 45 - t.cameraY;
+                      }
+                    ),
+                    dg.Single(
+                      {
+                        fileName: "images/level/boss3/star-line-stars.png",
+                        playerX: e.playerX,
+                        playerY: 0,
+                        height: 50,
+                        y: t.flyingAnchor + 45 - t.cameraY,
+                      },
+                      (e) => {
+                        e.playerX = t.playerX;
+                        e.y = t.flyingAnchor + 45 - t.cameraY;
+                      }
+                    ),
+                ]
+              ),
               t.bossState
                 ? hg.Single(
                     { bossState: t.bossState, playerX: t.playerX },
@@ -55382,12 +55594,14 @@ var version = "v1.9.7";
                   cameraY: t.cameraY,
                   cameraXOffset: t.cameraXOffset,
                   fallTypes: t.fallTypes,
+                  flyingAnchor: t.flyingAnchor
                 },
                 (e) => {
                   (e.cameraX = t.cameraX),
                   (e.cameraXOffset = t.cameraXOffset),
                   (e.cameraY = t.cameraY),
                   (e.isGravity = t.isGravity),
+                  (e.flyingAnchor = t.flyingAnchor),
                   (e.dashing = t.dashing),
                   (e.frame = t.frame),
                     (e.df = t.df),
@@ -56192,8 +56406,10 @@ var version = "v1.9.7";
                   array: () => e.playerBullets,
                   key: (e, t) => t,
                 }),
-                e.isFlyingLevel
-                  ? onChange(
+                conditional(
+                  () => e.isFlyingLevel || e.playerPowerup?.item === "spaceship",
+                  () => [
+                    onChange(
                       () => e.attempt,
                       () => [
                         flyingTrail.Single(
@@ -56220,7 +56436,9 @@ var version = "v1.9.7";
                         ),
                       ]
                     )
-                  : playerTrail.Single(
+                  ],
+                  () => [
+                    playerTrail.Single(
                       {
                         playerX: e.playerX,
                         playerY: e.playerY,
@@ -56243,6 +56461,8 @@ var version = "v1.9.7";
                           (t.touchingPortals = null !== e.touchingPortals);
                       }
                     ),
+                  ]
+                ),
                 ifConditional(
                   () => !e.hidePlayer,
                   () => [
@@ -56283,6 +56503,7 @@ var version = "v1.9.7";
                                 playerScale: e.playerScale,
                                 onSkateboard: false,
                                 touchingPortals: e.touchingPortals,
+                                isFlying: e.playerPowerup?.item === "spaceship"
                               },
                               (t) => {
                                 var a;
@@ -56308,8 +56529,10 @@ var version = "v1.9.7";
                             ),
                           ],
                           () => [
-                            e.isFlyingLevel
-                              ? y(
+                            conditional(
+                              () => e.isFlyingLevel || e.playerPowerup?.item === "spaceship",
+                              () => [
+                                y(
                                   {
                                     fileName:
                                       "images/level/boss3/player-ship.png",
@@ -56324,7 +56547,9 @@ var version = "v1.9.7";
                                       (t.scaleY = e.playerScaleY);
                                   }
                                 )
-                              : To.Single({ skin: e.playerSkin }, (t) => {
+                              ],
+                              () => [
+                                To.Single({ skin: e.playerSkin }, (t) => {
                                   var a;
                                   (t.x = e.playerX),
                                     (t.y = e.playerY),
@@ -56342,6 +56567,8 @@ var version = "v1.9.7";
                                       : a.item);
                                   t.onSkateboard = i;
                                 }),
+                              ]
+                            )
                           ]
                         ),
                         conditional(
@@ -56480,9 +56707,10 @@ var version = "v1.9.7";
                     ),
                   ]
                 ),
-                e.isFlyingLevel
-                  ? null
-                  : playerTrail.Single(
+                ifConditional(
+                  () => !(e.isFlyingLevel || e.playerPowerup?.item === "spaceship"),
+                  () => [
+                    playerTrail.Single(
                       {
                         playerX: e.playerX,
                         playerY: e.playerY,
@@ -56503,6 +56731,8 @@ var version = "v1.9.7";
                           (t.touchingPortals = null !== e.touchingPortals);
                       }
                     ),
+                  ]
+                ),
                 Wo.Single(
                   {
                     collectibles: e.layout.collectibles,
@@ -59814,6 +60044,7 @@ var version = "v1.9.7";
                     dashing: t.dashing,
                     isGravity: t.isGravity,
                     fallTypes: t.mutValues.levelState.fallTypes,
+                    flyingAnchor: t.mutValues.levelState.flyingAnchor,
                     justDownInputTimer: t.mutValues.levelState.justDownInputTimer,
                     jumping: t.mutValues.levelState.jumping,
                     levelSpeeds: t.levelSpeeds
@@ -59825,6 +60056,7 @@ var version = "v1.9.7";
                     (a.levelSpeeds = t.levelSpeeds),
                     (a.jumping = t.mutValues.levelState.jumping),
                     (a.isGravity = t.mutValues.levelState.isGravity),
+                    (a.flyingAnchor = t.mutValues.levelState.flyingAnchor),
                     (a.dashing = t.mutValues.levelState.dashing),
                     (a.frame = t.mutValues.levelState.frame),
                     (a.fallTypes = t.mutValues.levelState.fallTypes),
@@ -69218,7 +69450,8 @@ var version = "v1.9.7";
                     gravity: t.gravity,
                     dashing: t.dashing,
                     isGravity: t.isGravity,
-                    fallTypes: t.fallTypes
+                    fallTypes: t.fallTypes,
+                    flyingAnchor: t.flyingAnchor
                   },
                   (a) => {
                     var i;
@@ -69240,6 +69473,7 @@ var version = "v1.9.7";
                       otherPlayersInfo: p,
                     } = e;
                     (a.isGravity = r.isGravity),
+                    (a.flyingAnchor = r.flyingAnchor),
                     (a.dashing = r.dashing),
                     (a.fallTypes = r.fallTypes),
                     (a.playerName = o),
