@@ -41959,6 +41959,12 @@ var version = "v1.9.8";
                 author: "dj-Nate",
                 fileName: "audio/tracks/dj-nate-electrodynamix.mp3",
                 bpm: 127,
+              },
+              skyFractureExtended: {
+                name: "Sky Fracture (extended)",
+                author: "Getsix",
+                fileName: "audio/tracks/getsix-sky-fracture-extended.mp3",
+                bpm: 176,
               }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -45333,6 +45339,7 @@ var version = "v1.9.8";
             e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
             e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
             e[(e.Electrodynamix = 53)] = "Electrodynamix";
+            e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45444,6 +45451,7 @@ var version = "v1.9.8";
             e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
             e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
             e[(e.Electrodynamix = 53)] = "Electrodynamix";
+             e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -46234,7 +46242,8 @@ var version = "v1.9.8";
             [Nd.OctaneExtended]: hl.songs.octaneExtended,
             [Nd.CriticalHitExtended]: hl.songs.criticalHitExtended,
             [Nd.MindsOfTheMad]: hl.songs.mindsOfTheMad,
-            [Nd.Electrodynamix]: hl.songs.electrodynamix
+            [Nd.Electrodynamix]: hl.songs.electrodynamix,
+            [Nd.SkyFractureExtended]: hl.songs.skyFractureExtended
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -54896,6 +54905,7 @@ var version = "v1.9.8";
                   landTimer: e.landTimer,
                   onSkateboard: e.onSkateboard,
                   playerScale: e.isCompatible ? 1 : e.playerScale,
+                  isFlying: e.isFlying,
                 },
                 (t) => {
                   (t.playerRot = e.playerRot),
@@ -54921,6 +54931,7 @@ var version = "v1.9.8";
                   landTimer: e.landTimer,
                   onSkateboard: e.onSkateboard,
                   playerScale: e.isCompatible ? 1 : e.playerScale,
+                  isFlying: e.isFlying
                 },
                 (a) => {
                   (a.x = t.player2X),
@@ -54946,7 +54957,21 @@ var version = "v1.9.8";
           }),
           Qg = makeSprite({
             render: ({ props: e }) => [
-              To.Single(
+              e.isFlying ? 
+              y(
+                {
+                  fileName:
+                    "images/level/boss3/player-ship.png",
+                  width: 40,
+                  height: 30,
+                },
+                (t) => {
+                    (t.rotation = e.playerRot),
+                    (t.scaleX = e.playerScaleX * e.playerDir),
+                    (t.scaleY = e.playerScaleY);
+                }
+              )
+              : To.Single(
                 {
                   skin: e.skin,
                   landTimer: e.landTimer,
@@ -56478,6 +56503,7 @@ var version = "v1.9.8";
                                 playerScale: e.playerScale,
                                 onSkateboard: false,
                                 touchingPortals: e.touchingPortals,
+                                isFlying: e.playerPowerup?.item === "spaceship"
                               },
                               (t) => {
                                 var a;
