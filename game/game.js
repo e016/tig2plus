@@ -40443,7 +40443,8 @@ var version = "v1.9.8";
                     : U.playerRot > 360 && (U.playerRot -= 360));
               const e = U.dashing ? {y: U.playerY, gradY: 0} : G.stepY(U.playerY, U.playerGradY, j, df, U.gravity);
               const low = U.flyingAnchor - 45,
-              high = U.flyingAnchor + 45;
+              high = U.flyingAnchor + 45,
+              oldY = U.playerY;
               U.playerPowerup?.item === "spaceship" ? 
                     (
                       "justDown" === playerInput && (U.jumping = !U.jumping),
@@ -40774,7 +40775,7 @@ var version = "v1.9.8";
               var gradY = stack ? stack.gradY : (U.isGravity ? G.initGrad(V) : U.playerGradY);
               if (-1 !== idx) {
                 const spring = inViewLayout.springs[idx];
-                (stack || (U.jumping = true)),
+                (stack || (U.jumping = U.playerPowerup?.item === "spaceship" ? spring.direction < 0 : true)),
                 (stack || (U.gravity = 1)),
                 (setGradY((spring.direction > 0
                       ? Math.max(1.5 * G.initGrad(V), Math.abs((gradY)))
