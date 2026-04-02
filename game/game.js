@@ -30906,7 +30906,11 @@ var version = "v1.9.8";
                             (t.paused = (e.inGame && e.inGame.paused) || e.paused),
                               (t.x = e.flag.x),
                               (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5),
-                              (t.df = !e.inGame ? 1 : e.inGame.df);
+                              (t.df = !e.inGame ? 1 : e.inGame.df),
+                              (t.scale = {
+                                x: e.scale || 1,
+                                y: e.scale || 1,
+                              })
                           }
                         ),
                       ],
