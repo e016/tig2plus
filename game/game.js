@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.9.8";
+var version = "v1.9.9";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -32319,6 +32319,7 @@ var version = "v1.9.8";
           _o = makeCustomSprite({
             render: ({
               props: {
+                isFullScreen: fullScreen,
                 iconName: e,
                 iconWidth: t,
                 iconHeight: a,
@@ -32326,7 +32327,7 @@ var version = "v1.9.8";
                 height: n,
                 noSound: s = false,
                 disabled: o = false,
-                testId: r,
+                testId: testId,
                 onPress: c,
               },
               device: d,
@@ -32349,9 +32350,46 @@ var version = "v1.9.8";
                     isPressed: s,
                     topColour: o ? Xe : s ? ke : Re,
                     bottomColour: ve,
-                    sprites: (i) => [
-                      l({ testId: r, fileName: e, width: t, height: a, y: i }),
-                    ],
+                    stroke: fullScreen ? {thickness: 2, colour: Me} : null,
+                    sprites: (i) => 
+                      fullScreen ? [
+                        r({ 
+                          testId: testId, 
+                          path: [[-10, 3], [-10, 10], [-3, 10]], 
+                          width: t, 
+                          height: a, 
+                          color: Be, 
+                          thickness: 3,
+                          lineCap: "round", y: i 
+                        }),
+                        r({ 
+                          testId: testId, 
+                          path: [[10, 3], [10, 10], [3, 10]], 
+                          width: t, 
+                          height: a, 
+                          color: Be, 
+                          thickness: 3,
+                          lineCap: "round", y: i 
+                        }),
+                        r({ 
+                          testId: testId, 
+                          path: [[-10, -3], [-10, -10], [-3, -10]], 
+                          width: t, 
+                          height: a, 
+                          color: Be, 
+                          thickness: 3,
+                          lineCap: "round", y: i 
+                        }),
+                        r({ 
+                          testId: testId, 
+                          path: [[10, -3], [10, -10], [3, -10]], 
+                          width: t, 
+                          height: a, 
+                          color: Be, 
+                          thickness: 3,
+                          lineCap: "round", y: i 
+                        }),
+                      ] : [l({ testId: testId, fileName: e, width: t, height: a, y: i })],
                   }),
                 ],
               }),
@@ -32373,6 +32411,7 @@ var version = "v1.9.8";
                   disabled: e.disabled,
                   noSound: e.noSound,
                   iconName: e.fileName,
+                  isFullScreen: e.fullScreen,
                   iconWidth: 25 * t,
                   iconHeight: 25 * t,
                 }),
@@ -68573,6 +68612,21 @@ var version = "v1.9.8";
                     x: 0,
                     y: u - 50,
                   }),
+                  document.fullscreenEnabled ? vo({
+                    id: "FullScreen",
+                    fullScreen: true,
+                    onPress: () => {
+                      if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                      } else {
+                        document.documentElement.requestFullscreen().catch((e) => {
+                          throw e
+                        });
+                      }
+                    },
+                    x: mostLeft / 2 - 40,
+                    y: f / 2 - 40,
+                  }) : null,
                   //Fo({
                   //  id: "Account",
                   //    text: a ? "..." : o ? "ACCOUNT" : "LOG IN",
