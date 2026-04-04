@@ -51241,7 +51241,7 @@ var version = "v1.9.9";
           universalFlyingTrail = makeSprite({
             init: ({ props: e }) => ({
               path: Array.from({ length: eg + 6 + 2 }, () => ({
-                x: 40,
+                x: 0,// 40,
                 y: e.playerY + (e.offset || 0),
               })),
               renderPath: Array.from({ length: eg + 6 + 2 }, () => [0, 0]),
@@ -51270,7 +51270,7 @@ var version = "v1.9.9";
 
                 if (!props.crashed) {
                   e.path.push({
-                    x: e.space,
+                    x: 0, //e.space,
                     y: props.playerY + (props.offset || 0),
                   });
                 };
@@ -51287,7 +51287,7 @@ var version = "v1.9.9";
                   f({
                     props: () => ({
                       thickness: e.radius * 2,
-                      color: e.trail.bottomColour,
+                      color: e.trail.topColour,
                       opacity: 1,
                       lineCap: "butt",
                       path: [
@@ -51297,7 +51297,7 @@ var version = "v1.9.9";
                       ],
                     }),
                     update: (a, n, index) => {
-                      (a.x = (e.playerX - t.space * e.playerDir)),
+                      (a.x = (e.playerX * e.playerDir)),// - t.space * e.playerDir)),
                       (a.path = t.path[index + 1] ? [[n.x * e.playerDir, n.y], [t.path[index + 1].x * e.playerDir, t.path[index + 1].y]] : [[n.x * e.playerDir, n.y], [n.x * e.playerDir, n.y]]),
 
                       (a.opacity = index / t.path.length);
