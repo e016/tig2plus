@@ -40355,7 +40355,7 @@ var version = "v1.9.8";
                     U.dashing = false;
                   U.gravity = 1;
                   U.isGravity = false;
-                  U.jumping = true;
+                  U.jumping = U.flyingAnchor === null ? true : U.jumping;
                   U.playerGradY = -1;
                   (L.blockJumpUntilReleased = true),
                   (isDown = false),
@@ -40450,6 +40450,8 @@ var version = "v1.9.8";
                     (
                       "justDown" === playerInput && !L.blockJumpUntilReleased && (
                         (U.jumping = !U.jumping),
+                        (U.jumpSwitch.on = !U.jumpSwitch.on),
+                        (U.jumpSwitch.delay = 0),
                         (L.blockJumpUntilReleased = true),
                         (isDown = false),
                         (U.justDownInputTimer = 0)),
