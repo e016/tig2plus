@@ -17379,9 +17379,10 @@ var version = "v1.9.8";
               playerScaleX: sx,
               playerScaleY: sy,
               playerScale: ps,
-              isGravity
+              isGravity,
+              playerPowerup,
             } = e;
-            gy = isGravity ? 0 : gy;
+            gy = isGravity || playerPowerup?.item === "spaceship" ? 0 : gy;
             globalPlayerScale = ps;
             sx = sx / ps;
             sy = sy / ps;
@@ -40447,8 +40448,12 @@ var version = "v1.9.8";
               oldY = U.playerY;
               U.playerPowerup?.item === "spaceship" ? 
                     (
-                      "justDown" === playerInput && (U.jumping = !U.jumping),
-                      U.jumping
+                      "justDown" === playerInput && !L.blockJumpUntilReleased && (
+                        (U.jumping = !U.jumping),
+                        (L.blockJumpUntilReleased = true),
+                        (isDown = false),
+                        (U.justDownInputTimer = 0)),
+                      U.dashing || (U.jumping
                         ? U.playerY > low
                           ? ((U.playerY += 2 * df * ((-5 + low - U.playerY) / 6.6) * (w / 6.6)),
                             (U.playerY = B.clamp2(low, high, U.playerY)))
@@ -40456,8 +40461,8 @@ var version = "v1.9.8";
                         : U.playerY < high
                         ? ((U.playerY += 2 * df * ((5 + high - U.playerY) / 6.6) * (w / 6.6)),
                           (U.playerY = B.clamp2(low, high, U.playerY)))
-                        : (U.playerY = high),
-                      (U.playerGradY = 0)
+                        : (U.playerY = high)),
+                      (U.playerGradY = U.playerY - oldY)
                     ) : 
               ((U.playerY = e.y), (U.playerGradY = e.gradY));
               if (("ghost" ===
@@ -40913,7 +40918,7 @@ var version = "v1.9.8";
                 U.gravityHitObject,
                 U.playerPowerup ? U.playerPowerup.item == "ghost" : false
               );
-            (U.crashed = ce.crashed), (Q = ce.onGroundY);
+            (U.crashed = U.playerPowerup?.item == "spaceship" && ce.hitObject && !ce.hitObject.object.canJumpThrough ? true : ce.crashed), (Q = ce.onGroundY);
             var de = U.gravityHitObject || ce.hitObject;
             if (U.gravity < 0 && Math.abs(U.playerGradY) < 2) {
               
@@ -41014,7 +41019,7 @@ var version = "v1.9.8";
               if (
                 (Math.abs(U.playerGradY) > w &&
                   (L.landTimer = et.landTimerLimit),
-                (U.jumping = U.gravity > 0 ? (isDown && !skating) : false),
+                U.flyingAnchor === null && (U.jumping = U.gravity > 0 ? (isDown && !skating) : false),
                 (U.playerY = Q),
                 (U.playerGradY = 0),
                 U.jumping &&
@@ -41506,6 +41511,7 @@ var version = "v1.9.8";
                         : S.item) && (U.playerPowerup = null),
                     onCrash(U.checkpoint.index),
                     N && (L.resetTimer = 60)));
+            U.playerOnGroundY = U.flyingAnchor === null ? U.playerOnGroundY : U.flyingAnchor;
             let ge = U.explosions.length;
             ge > 0 &&
               ((U.explosions = U.explosions.map(
@@ -51140,7 +51146,7 @@ var version = "v1.9.8";
                 for (let i = 0; i < e.path.length; i++) e.path[i].x -= 10 * t.playerDir * t.df;
                 t.crashed ||
                   e.path.push({
-                    x: 40,
+                    x: 40 * t.playerDir,
                     topY: t.playerY + 8,
                     bottomY: t.playerY - 8,
                   }),
@@ -51182,7 +51188,7 @@ var version = "v1.9.8";
                       y: -5,
                     },
                     (a) => {
-                      (a.fillGradient.width = 80 * e.df), (a.path = t.renderPath), (a.x = e.playerX - 40), (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]);
+                      (a.fillGradient.width = 80 * e.df), (a.path = t.renderPath), (a.x = e.playerX - 40 * e.playerDir), (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]);
                     }
                   ),
                 ]
@@ -51942,7 +51948,7 @@ var version = "v1.9.8";
                       fileName: "images/level/boss3/star-line.png",
                       width: 950,
                       height: 50,
-                      y: et.initialPosition.y - t.cameraX,
+                      y: et.initialPosition.y,
                     }),
                     y({
                       fileName: "images/level/boss3/star-line.png",
@@ -55497,26 +55503,26 @@ var version = "v1.9.8";
                     dg.Single(
                       {
                         fileName: "images/level/boss3/star-line-stars.png",
-                        playerX: t.playerX,
+                        playerX: t.cameraX,
                         playerY: 0,
                         height: 50,
                         y: t.flyingAnchor - 45 - t.cameraY,
                       },
                       (e) => {
-                        e.playerX = t.playerX;
+                        e.playerX = t.cameraX;
                         e.y = t.flyingAnchor - 45 - t.cameraY;
                       }
                     ),
                     dg.Single(
                       {
                         fileName: "images/level/boss3/star-line-stars.png",
-                        playerX: e.playerX,
+                        playerX: e.cameraX,
                         playerY: 0,
                         height: 50,
                         y: t.flyingAnchor + 45 - t.cameraY,
                       },
                       (e) => {
-                        e.playerX = t.playerX;
+                        e.playerX = t.cameraX;
                         e.y = t.flyingAnchor + 45 - t.cameraY;
                       }
                     ),
@@ -56027,6 +56033,7 @@ var version = "v1.9.8";
                   }),
                   update: (t, a) => {
                     (t.playerScale = e.playerScale),
+                    (t.playerDir = e.playerDir),
                     (t.switchButton = a),
                       (t.switchRotation = e.switchRotation),
                       (t.switchBlockSpikes = e.switchBlockSpikes),
@@ -56890,15 +56897,18 @@ var version = "v1.9.8";
                     ),
                   ],
           }),
-          hm = (e, t, a) => {
-            if (a) return t + (e - t) / 10;
+          hm = (y, cameraY, finished, anchor) => {
+            if (anchor) {
+              return cameraY + (anchor - cameraY) / 5;
+            }
+            if (finished) return cameraY + (y - cameraY) / 10;
             const i = et.initialPosition.y + 105,
               n = et.initialPosition.y;
-            return e - t > i
-              ? t + (5 + e - t - i) / 4
-              : e - t < n
-              ? t + (-5 + e - t - n) / 4
-              : t;
+            return y - cameraY > i
+              ? cameraY + (5 + y - cameraY - i) / 4
+              : y - cameraY < n
+              ? cameraY + (-5 + y - cameraY - n) / 4
+              : cameraY;
           },
           pm = (e, t, a) => {
             const i = a
@@ -59784,12 +59794,13 @@ var version = "v1.9.8";
                 )),
                 t.isAfkTimer--;
               const {
-                playerY: T,
+                playerY: playerY,
                 playerGradY: R,
                 playerDir: O,
-                finishedLevel: C,
+                finishedLevel: finishedLevel,
                 bossState: w,
                 frame: A,
+                flyingAnchor,
               } = t.mutValues.levelState;
               if (
                 b &&
@@ -59806,14 +59817,15 @@ var version = "v1.9.8";
               }
               t.isFlyingLevel ||
                 (t.mutValues.levelState.cameraY = hm(
-                  T,
+                  playerY,
                   t.mutValues.levelState.cameraY,
-                  C
+                  finishedLevel,
+                  flyingAnchor,
                 )),
                 (t.mutValues.levelState.cameraXOffset = pm(
                   t.mutValues.levelState.cameraXOffset,
                   O,
-                  C
+                  finishedLevel
                 ));
               const isClassic = isSpecialTheme(t.bigMutValues.inViewLayout.properties.theme.id),
               k =
@@ -59843,7 +59855,7 @@ var version = "v1.9.8";
                     f.keysDown.ArrowUp ||
                     "down" === S ||
                     "justDown" === S) &&
-                  !C &&
+                  !finishedLevel &&
                   !N,
                 P = x
                   ? f.pointer.justPressed ||
@@ -69339,7 +69351,8 @@ var version = "v1.9.8";
                 (e.cameraY = hm(
                   t.viewingPlayer.state.mutValues.levelState.playerY,
                   e.cameraY,
-                  false
+                  false,
+                  t.viewingPlayer.state.mutValues.levelState.flyingAnchor
                 )),
                 (e.cameraScale = 2),
                 (e.cameraXOffset = pm(
