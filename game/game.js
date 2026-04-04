@@ -15919,6 +15919,7 @@ var version = "v1.9.9";
                   null !== (o = null == e ? void 0 : e.skipMissiles) &&
                   void 0 !== o &&
                   o,
+                isLaser: e == null ? false : e.isLaser,
                 snapSize: { offsetX: 7.5, offsetY: 7.5 },
               };
             },
@@ -52811,11 +52812,11 @@ var version = "v1.9.9";
         const dreamySprite = makeNativeSprite("ShaderBg"),
           createShaderBg = {
             create: ({ props: props }) => {
-              const ctx = document
+              const gl = document
                 .getElementById("replay-canvas")
                 .getContext("webgl");
-              if (!ctx) return null;
-              const a = ctx.getExtension("OES_vertex_array_object");
+              if (!gl) return null;
+              const a = gl.getExtension("OES_vertex_array_object");
               if (!a) return null;
               const i = (function (e, t, a) {
                   const i = Og(e, e.VERTEX_SHADER, t),
@@ -52829,28 +52830,28 @@ var version = "v1.9.9";
                   )
                     return s;
                   throw Error(e.getProgramInfoLog(s) || "");
-                })(ctx, kg, Ng),
+                })(gl, kg, Ng),
                 n = a.createVertexArrayOES();
               if (!n) return null;
               a.bindVertexArrayOES(n);
-              const s = ctx.getAttribLocation(i, "a_position"),
-                o = ctx.createBuffer();
-              ctx.bindBuffer(ctx.ARRAY_BUFFER, o),
-                ctx.enableVertexAttribArray(s),
-                ctx.vertexAttribPointer(s, 2, ctx.FLOAT, false, 0, 0),
-                ctx.bufferData(
-                  ctx.ARRAY_BUFFER,
+              const s = gl.getAttribLocation(i, "a_position"),
+                o = gl.createBuffer();
+              gl.bindBuffer(gl.ARRAY_BUFFER, o),
+                gl.enableVertexAttribArray(s),
+                gl.vertexAttribPointer(s, 2, gl.FLOAT, false, 0, 0),
+                gl.bufferData(
+                  gl.ARRAY_BUFFER,
                   new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
-                  ctx.STATIC_DRAW
+                  gl.STATIC_DRAW
                 );
-              const r = ctx.getUniformLocation(i, "u_resolution"),
-                l = ctx.getUniformLocation(i, "u_time"),
-                c = ctx.getUniformLocation(i, "u_ct"),
-                d = ctx.getUniformLocation(i, "u_xboost"),
-                u = ctx.getUniformLocation(i, "u_yboost"),
-                h = ctx.getUniformLocation(i, "u_col0"),
-                p = ctx.getUniformLocation(i, "u_col1"),
-                g = ctx.getUniformLocation(i, "u_col2");
+              const r = gl.getUniformLocation(i, "u_resolution"),
+                l = gl.getUniformLocation(i, "u_time"),
+                c = gl.getUniformLocation(i, "u_ct"),
+                d = gl.getUniformLocation(i, "u_xboost"),
+                u = gl.getUniformLocation(i, "u_yboost"),
+                h = gl.getUniformLocation(i, "u_col0"),
+                p = gl.getUniformLocation(i, "u_col1"),
+                g = gl.getUniformLocation(i, "u_col2");
               a.bindVertexArrayOES(null);
               const m = [0.43, 0.04, 0.64],
                 f = [0.08, 0.02, 0.61],
@@ -52866,26 +52867,26 @@ var version = "v1.9.9";
               }
               return {
                 render: (frame, bgSwitchTimer) => {
-                  ctx.useProgram(i),
+                  gl.useProgram(i),
                     a.bindVertexArrayOES(n),
-                    ctx.uniform2f(r, ctx.canvas.width, ctx.canvas.height);
+                    gl.uniform2f(r, gl.canvas.width, gl.canvas.height);
                   const o = (frame / 20) * 1.25;
-                  ctx.uniform1f(l, o),
-                    ctx.uniform1f(c, T(5 * o, 3, 1.1)),
-                    ctx.uniform1f(d, T(0.2 * o, 5, 5)),
-                    ctx.uniform1f(u, T(0.1 * o, 10, 5)),
+                  gl.uniform1f(l, o),
+                    gl.uniform1f(c, T(5 * o, 3, 1.1)),
+                    gl.uniform1f(d, T(0.2 * o, 5, 5)),
+                    gl.uniform1f(u, T(0.1 * o, 10, 5)),
                     Ag(f, E, bgSwitchTimer, finish1),
                     Ag(m, S, bgSwitchTimer, finish2),
                     Ag(y, b, bgSwitchTimer, finish3),
-                    ctx.uniform3f(h, ...finish1),
-                    ctx.uniform3f(p, ...finish2),
-                    ctx.uniform3f(g, ...finish3),
-                    ctx.drawArrays(ctx.TRIANGLES, 0, 6);
+                    gl.uniform3f(h, ...finish1),
+                    gl.uniform3f(p, ...finish2),
+                    gl.uniform3f(g, ...finish3),
+                    gl.drawArrays(gl.TRIANGLES, 0, 6);
                 },
                 bgSwitchTimer: props.bgSwitch ? 1 : 0,
                 cleanup: () => {
-                  ctx.deleteBuffer(o),
-                    ctx.deleteProgram(i),
+                  gl.deleteBuffer(o),
+                    gl.deleteProgram(i),
                     a.deleteVertexArrayOES(n);
                 },
               };
