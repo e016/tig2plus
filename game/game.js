@@ -34357,7 +34357,7 @@ var version = "v1.9.8";
                           : 0);
                   }),
                 ];
-              const { animationAssets: i, animationRenderer: n } = e.spineContext || t(Ws),
+              let { animationAssets: i, animationRenderer: n } = e.spineContext || t(Ws),
                 s = Ko[e.portal.pairId % Ko.length];
               let o = 0,
                 r = 0,
@@ -34397,6 +34397,7 @@ var version = "v1.9.8";
                     height: e.portal.height,
                   },
                   (t) => {
+                    s = Ko[e.portal.pairId % Ko.length];
                     var a;
                     o = 0,
                     r = 0,
@@ -43451,9 +43452,9 @@ var version = "v1.9.8";
               difficulty: 3,
             },
             {
-              levelName: "Awake",
-              levelFileName: "awake",
-              song: hl.songs.awake,
+              levelName: "Color",
+              levelFileName: "color",
+              song: hl.songs.color,
               unlockedByIndex: 0,
               x: -100,
               y: 0,
@@ -43463,6 +43464,7 @@ var version = "v1.9.8";
               ],
               maxFrames: 10991,
               difficulty: 4,
+              comingSoon: true,
             },
             {
               levelName: "Coincidence",
