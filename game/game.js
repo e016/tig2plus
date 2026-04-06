@@ -41719,7 +41719,7 @@ var version = "v1.10.1";
               )),
               0 === ge && (U.explosions.length = 0)),
               L.landTimer > 0 && L.landTimer--,
-              U.flyingAnchor === null || (U.playerOnGroundY = null != Q ? Q : U.playerOnGroundY),
+              U.flyingAnchor === null && (U.playerOnGroundY = null != Q ? Q : U.playerOnGroundY),
               (U.playerWasOnGroundCooldown = Math.max(
                 0,
                 U.playerWasOnGroundCooldown - df
