@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.9.9";
+var version = "v1.10.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -15267,7 +15267,7 @@ var version = "v1.9.9";
             update: t,
             isMut: true,
           }),
-          h = ({ props: e, mask: t, update: a, array: i, testId: n }) => ({
+          circleArray = ({ props: e, mask: t, update: a, array: i, testId: n }) => ({
             type: "circleArray",
             mask: t || null,
             props: [],
@@ -16103,6 +16103,8 @@ var version = "v1.9.9";
                     ? l
                     : "beat",
                 multiplier: e == undefined ? 1 : e?.multiplier || 1,
+                rotation: e == null ? 0 : e.rotation || 0,
+                offset: e == null ? 0 : e.offset || 0,
               };
             },
             newEnemy: (e) => {
@@ -16614,18 +16616,18 @@ var version = "v1.9.9";
                 return () => false;
               }
             },
-            getPlayerPoly: (e, t, a, i, n, s, o) => {
-              const r = i * (s ? M + $.skateboardHeight : M),
-                l = a * M;
+            getPlayerPoly: (playerX, playerY, scaleX, scaleY, n, skating, o) => {
+              const r = scaleY * (skating ? M + $.skateboardHeight : M),
+                l = scaleX * M;
               return (
-                (o.pos.x = e),
-                (o.pos.y = t),
+                (o.pos.x = playerX),
+                (o.pos.y = playerY),
                 (o.points[1].x = l),
                 (o.points[2].x = l),
                 (o.points[2].y = r),
                 (o.points[3].y = r),
-                (o.offset.x = -15 * a),
-                (o.offset.y = -15 * i),
+                (o.offset.x = -15 * scaleX),
+                (o.offset.y = -15 * scaleY),
                 o.setAngle(B.toRad(-n)),
                 o
               );
@@ -16682,10 +16684,10 @@ var version = "v1.9.9";
                     : te(obj.x, obj.y, obj.width, obj.height);
                 case "enemy":
                   return "walkerHelmet" === obj.kind
-                    ? ((i = obj.x),
-                      (n = obj.y),
-                      (s = -obj.width / 2),
-                      (o = -obj.height / 2),
+                    ? ((left = obj.x),
+                      (right = obj.y),
+                      (bottom = -obj.width / 2),
+                      (top = -obj.height / 2),
                       (r = obj.width / 2),
                       (l = -obj.height / 2),
                       (c = obj.width / 2),
@@ -16694,10 +16696,10 @@ var version = "v1.9.9";
                       (u = obj.height / 2 - 1),
                       (h = -obj.width / 2),
                       (p = -obj.height / 2 + M),
-                      (le.pos.x = i),
-                      (le.pos.y = n),
-                      (le.points[0].x = s),
-                      (le.points[0].y = o),
+                      (le.pos.x = left),
+                      (le.pos.y = right),
+                      (le.points[0].x = bottom),
+                      (le.points[0].y = top),
                       (le.points[1].x = r),
                       (le.points[1].y = l),
                       (le.points[2].x = c),
@@ -16744,20 +16746,21 @@ var version = "v1.9.9";
                   );
                 }
                 case "saw":
-                  let top = obj.y + obj.height / 2,
-                  bottom = obj.y - obj.height / 2,
-                  left = obj.x - obj.width / 2,
-                  right = obj.x + obj.width / 2;
+                  let left = -(obj.width / 2) + inset,
+                    right = obj.width / 2 - inset,
+                    bottom = -obj.height / 2 + inset,
+                    top = obj.height / 2 - inset;
+                  console.log(obj.rotation);
 
                   return obj.shape == "bar" ? (
                     (ee.pos.x = obj.x),
                     (ee.pos.y = obj.y),
-                    (ee.points[0].x = right),
-                    (ee.points[0].y = top),
+                    (ee.points[0].x = left),
+                    (ee.points[0].y = bottom),
                     (ee.points[1].x = right),
                     (ee.points[1].y = bottom),
-                    (ee.points[2].x = left),
-                    (ee.points[2].y = bottom),
+                    (ee.points[2].x = right),
+                    (ee.points[2].y = top),
                     (ee.points[3].x = left),
                     (ee.points[3].y = top),
                     ee.setAngle(B.toRad(-obj.rotation)),
@@ -16903,6 +16906,17 @@ var version = "v1.9.9";
             pointInCircle: (e) => (t) =>
               de.pointInCircle(e.x, e.y, e.radius, t.x, t.y),
             rectTouchesRect: (e) => (t) => {
+              if (t.type === "saw" && t.shape === "bar") {
+                return be.hitObject(
+                  e.x,
+                  e.y,
+                  e.width / 30,
+                  e.height / 30,
+                  0,
+                  false,
+                  false
+                )(t);
+              }
               const a = e.x - e.width / 2,
                 i = t.x - t.width / 2,
                 n = e.x + e.width / 2,
@@ -18108,7 +18122,7 @@ var version = "v1.9.9";
             }
             case "saw": {
               const a = obj;
-
+              a.rotation = ((a.x - playerX) / 2) + a.offset;
               const i =
                 "static" === a.movement
                   ? a.y
@@ -18129,6 +18143,7 @@ var version = "v1.9.9";
                   (updated.height = a.height),
                   (updated.movement = a.movement),
                   (updated.movementTrigger = a.movementTrigger),
+                  (updated.rotation = a.rotation),
                   updated)
                 : Object.assign(Object.assign({}, a), { y: i });
             }
@@ -29925,9 +29940,9 @@ var version = "v1.9.9";
               "images/themes/world2/arrow.png",
               "images/themes/infinite/arrow.png",
               "images/themes/world2/double-jump.png",
-              `images/themes/${e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
-              `images/themes/${e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
-              "images/themes/infinite/saw-bar.png",
+              `images/themes/${e.objects.spike == "classic" ? "classic" : e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
+              `images/themes/${e.objects.spike == "classic" ? "classic" : e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
+              `images/themes/${e.objects.saw == "classic" ? "classic" : "infinite"}/saw-bar.png`,
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
               "images/themes/world2/red.png",
@@ -30498,7 +30513,7 @@ var version = "v1.9.9";
                   
                     
                   imageArray({
-                    fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                    fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30525,7 +30540,7 @@ var version = "v1.9.9";
                     testId: (e, t) => `Saw-${t}`,
                   }),
                   imageArray({
-                    fileName: `images/themes/infinite/saw-bar.png`,
+                    fileName: `images/themes/${e.theme == "classic" ? "classic" : "infinite"}/saw-bar.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30546,7 +30561,7 @@ var version = "v1.9.9";
                         ((null === (o = e.inGame) || void 0 === o
                           ? void 0
                           : o.frame) || 0) / 2;
-                      t.rotation = ((3) * l) % 360;
+                      t.rotation = a.rotation - 90;
                     },
                     array: () => e.saws,
                     testId: (e, t) => `Saw-${t}`,
@@ -30586,7 +30601,7 @@ var version = "v1.9.9";
                     },
                   }),
                   imageArray({
-                    fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                    fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30765,7 +30780,7 @@ var version = "v1.9.9";
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       imageArray({
-                        fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                        fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                         props: () => ({}),
                         update: (e, t) => {
                           (e.width = t.width * sawRatio),
@@ -30782,7 +30797,7 @@ var version = "v1.9.9";
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       imageArray({
-                        fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                        fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                         props: () => ({}),
                         update: (e, t) => {
                           (e.width = t.width * sawRatio),
@@ -30798,27 +30813,64 @@ var version = "v1.9.9";
                         array: () => e.saws,
                         testId: (e, t) => `Saw-${t}`,
                       }),
+                      imageArray({
+                        fileName: `images/themes/${e.theme == "classic" ? "classic" : "infinite"}/saw-bar.png`,
+                        props: () => ({}),
+                        update: (e, t) => {
+                          (e.width = t.height),
+                            (e.height = t.width),
+                            (e.x = t.x),
+                            (e.y = t.y),
+                            (e.rotation = t.offset - 90),
+                            (e.opacity = "downUp" === t.movement
+                                ? 0
+                                : "upDown" === t.movement
+                                ? 0
+                                : t.shape == "bar" ? 1 : 0);
+                        },
+                        array: () => e.saws,
+                        testId: (e, t) => `Saw-${t}`,
+                      }),
                       ifConditional(
                         () => {
                           var t;
                           return (
-                            void 0 !==
+                            (void 0 !==
                             (null === (t = e.editor) || void 0 === t
                               ? void 0
-                              : t.previewYs)
+                              : t.previewYs)) && void 0 !==
+                            (null === (t = e.editor) || void 0 === t
+                              ? void 0
+                              : t.previewRots)
                           );
                         },
                         () => [
-                          h({
+                          circleArray({
                             props: () => ({
                               radius: 15,
                               color: "red",
                               opacity: 0.5,
                             }),
                             update: (t, a, i) => {
-                              (t.x = e.saws[i].x), (t.y = a), (t.radius = e.saws[i].width / 2);
+                              (t.x = e.saws[i].x), (t.y = a), (t.radius = e.saws[i].width / 2), (t.opacity = e.saws[i].shape == "bar" ? 0 : 0.5);
                             },
                             array: () => e.editor.previewYs,
+                          }),
+                          g({
+                            props: () => ({
+                              
+                              color: "red",
+                              opacity: 0.5,
+                            }),
+                            update: (t, a, i) => {
+                              (t.x = e.saws[i].x), 
+                              (t.y = e.saws[i].y), 
+                              (t.width = e.saws[i].width), 
+                              (t.height = e.saws[i].height),
+                              (t.rotation = a),
+                              (t.opacity = e.saws[i].shape == "bar" ? 0.5 : 0);
+                            },
+                            array: () => e.editor.previewRots,
                           }),
                         ]
                       ),
@@ -31376,7 +31428,21 @@ var version = "v1.9.9";
               direction: f,
             });
           for (const { object: i } of [...s, ...((bottom || []).map(x=>({index: 0, object: x})))])
-            if ("enemy" !== i?.type && d(i))
+            if ("saw" === i?.type && i?.shape === "bar") {
+              if (be.hitObject(
+                p,
+                g,
+                t.width / 30,
+                t.height / 30,
+                0,
+                false,
+                false
+              )(i)) {
+                return Object.assign(Object.assign({}, a), {
+                destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
+              });
+              }
+            } else if ("enemy" !== i?.type && d(i))
               return Object.assign(Object.assign({}, a), {
                 destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
               });
@@ -31492,7 +31558,21 @@ var version = "v1.9.9";
               direction: newDirection,
             });
           for (const { object: i } of [...s, ...((bottom || []).map(x=>({index: 0, object: x})))])
-            if ("enemy" !== i?.type && d(i))
+            if ("saw" === i?.type && i?.shape === "bar") {
+              if (be.hitObject(
+                newX,
+                newY,
+                t.width / 30,
+                t.height / 30,
+                0,
+                false,
+                false
+              )(i)) {
+                return Object.assign(Object.assign({}, a), {
+                destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
+              });
+              }
+            } else if ("enemy" !== i?.type && d(i))
               return Object.assign(Object.assign({}, a), {
                 destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
               });
@@ -36790,6 +36870,91 @@ var version = "v1.9.9";
                         });
                       },
                     },
+                  ],
+                  j = [
+                    {
+                        name: "Movement",
+                        options: [
+                          {
+                            name: "Static",
+                            selected: "static" === t.movement,
+                            onPress: () => {
+                              i.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "saws",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      movement: "static",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Up-Down",
+                            selected: "upDown" === t.movement,
+                            onPress: () => {
+                              i.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "saws",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      movement: "upDown",
+                                      shape: "rail",
+                                    width: 30,
+                                    height: 30,
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Down-Up",
+                            selected: "downUp" === t.movement,
+                            onPress: () => {
+                              i.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "saws",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      movement: "downUp",
+                                      shape: "rail",
+                                    width: 30,
+                                    height: 30,
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Falling",
+                            selected: "falling" === t.movement,
+                            onPress: () => {
+                              i.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "saws",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      movement: "falling",
+                                      shape: "rail",
+                                    width: 30,
+                                    height: 30,
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                        ],
+                      },
+                      
                   ];
                   return (
                     a.includes("moveOnJump") &&
@@ -36917,7 +37082,7 @@ var version = "v1.9.9";
                       ]),
                       t.movement == "static" &&
                       (n = [
-                        /*{
+                        {
                           name: "Bar",
                           selected: t?.shape == "bar",
                           onPress: () => {
@@ -36935,7 +37100,7 @@ var version = "v1.9.9";
                               });
                             });
                           },
-                        },*/
+                        },
                         {
                           name: "Large",
                           selected: t?.shape == "large",
@@ -36994,91 +37159,81 @@ var version = "v1.9.9";
                           },
                         },
                       ]),
-                    [
-                      {
-                        name: "Movement",
-                        options: [
-                          {
-                            name: "Static",
-                            selected: "static" === t.movement,
-                            onPress: () => {
-                              i.map((j) => {
-                                e({
-                                  type: "setProperty",
-                                  array: "saws",
-                                  index: j,
-                                  set: (e) =>
-                                    Object.assign(Object.assign({}, e), {
-                                      movement: "static",
-                                    }),
-                                });
+                    j.push({ name: t.movement == "falling" ? "Multiplier" : t.movement == "static" ? "Shape" : "Trigger", options: n }),
+                    t.shape === "bar" && j.push({ 
+                      name: "Offset", 
+                      options: [
+                        {
+                          name: "0",
+                          selected: t.offset === 0,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    offset: 0
+                                  }),
                               });
-                            },
+                            });
                           },
-                          {
-                            name: "Up-Down",
-                            selected: "upDown" === t.movement,
-                            onPress: () => {
-                              i.map((j) => {
-                                e({
-                                  type: "setProperty",
-                                  array: "saws",
-                                  index: j,
-                                  set: (e) =>
-                                    Object.assign(Object.assign({}, e), {
-                                      movement: "upDown",
-                                      shape: "rail",
-                                    width: 30,
-                                    height: 30,
-                                    }),
-                                });
+                        },
+                        {
+                          name: "30",
+                          selected: t.offset === 30,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    offset: 30
+                                  }),
                               });
-                            },
+                            });
                           },
-                          {
-                            name: "Down-Up",
-                            selected: "downUp" === t.movement,
-                            onPress: () => {
-                              i.map((j) => {
-                                e({
-                                  type: "setProperty",
-                                  array: "saws",
-                                  index: j,
-                                  set: (e) =>
-                                    Object.assign(Object.assign({}, e), {
-                                      movement: "downUp",
-                                      shape: "rail",
-                                    width: 30,
-                                    height: 30,
-                                    }),
-                                });
+                        },
+                        {
+                          name: "60",
+                          selected: t.offset === 60,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    offset: 60
+                                  }),
                               });
-                            },
+                            });
                           },
-                          {
-                            name: "Falling",
-                            selected: "falling" === t.movement,
-                            onPress: () => {
-                              i.map((j) => {
-                                e({
-                                  type: "setProperty",
-                                  array: "saws",
-                                  index: j,
-                                  set: (e) =>
-                                    Object.assign(Object.assign({}, e), {
-                                      movement: "falling",
-                                      shape: "rail",
-                                    width: 30,
-                                    height: 30,
-                                    }),
-                                });
+                        },
+                        {
+                          name: "90",
+                          selected: t.offset === 90,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    offset: 90
+                                  }),
                               });
-                            },
+                            });
                           },
-                        ],
-                      },
-                      { name: t.movement == "falling" ? "Multiplier" : t.movement == "static" ? "Shape" : "Trigger", options: n },
-                    ]
+                        },
+                      ]
+                      }),
+                    j
                   );
                 })(e, t, a, i);
               case "directionChange":
@@ -39233,7 +39388,7 @@ var version = "v1.9.9";
                   id: "Saws",
                   saws: h.saws,
                   theme: v.saw,
-                  editor: { previewYs: inViewLayoutAtTime.saws.map((e) => e.y) },
+                  editor: { previewYs: inViewLayoutAtTime.saws.map((e) => e.y), previewRots: inViewLayoutAtTime.saws.map((e) => e.rotation)},
                   bigTheme: v.spike
                 }),
                 ...inViewLayoutAtTime.enemies.map((e, t) =>
@@ -45586,6 +45741,22 @@ var version = "v1.9.9";
                       _c(2),
                     ]),
                     nd.enum4,
+                    nd.enum4
+                  ]),
+                  Gc([
+                    fc,
+                    fc,
+                    Bc([_c(-1), _c(0), _c(1), _c(2)]),
+                    Bc([
+                      _c(-2),
+                      _c(-1),
+                      _c(-0.5),
+                      _c(0),
+                      _c(0.5),
+                      _c(1),
+                      _c(2),
+                    ]),
+                    nd.enum4,
                   ]),
                   Gc([
                     fc,
@@ -45682,6 +45853,22 @@ var version = "v1.9.9";
                 ),
                 Oc(
                   Bc([
+                  Gc([
+                    fc,
+                    fc,
+                    Bc([_c(-1), _c(0), _c(1), _c(2)]),
+                    Bc([
+                      _c(-2),
+                      _c(-1),
+                      _c(-0.5),
+                      _c(0),
+                      _c(0.5),
+                      _c(1),
+                      _c(2),
+                    ]),
+                    nd.enum4,
+                    nd.enum4
+                  ]),
                   Gc([
                     fc,
                     fc,
@@ -45903,14 +46090,15 @@ var version = "v1.9.9";
                         fixSync: 1 == n,
                       })
                     ),
-                    saws: u.map(([e, t, a, i, n]) =>
+                    saws: u.map(([e, t, a, i, n, o]) =>
                       $.newSaw({
                         x: e,
                         y: t,
                         movement: $d[a],
                         movementTrigger: Jd[i],
                         multiplier: i,
-                        shape: n == 3 ? "bar" : n == 2 ? "large" : n == 1 ? "small" : "rail"
+                        shape: n == 3 ? "bar" : n == 2 ? "large" : n == 1 ? "small" : "rail",
+                        offset: (o || 0) * 30,
                       })
                     ),
                     flags: h.map(([e, t, a, i, b, o]) =>
@@ -46095,7 +46283,16 @@ var version = "v1.9.9";
 
                       return j;
                     }),
-                    i.saws.map((e) => e.shape != "rail" ? [
+                    i.saws.map((e) => e.shape === "bar" ? [
+                      e.x,
+                      e.y,
+                      ru(e.movement, $d),
+                      e.movement == "falling"
+                        ? e.multiplier
+                        : ru(e.movementTrigger, Jd),
+                      3,
+                      e.offset / 30
+                    ] :  e.shape != "rail" ? [
                       e.x,
                       e.y,
                       ru(e.movement, $d),
