@@ -51710,6 +51710,43 @@ var version = "v1.10.1";
               }),
             ],
           }),
+          tileSprite = makeSprite({
+            init: ({ props: { playerX, playerY } }) =>
+              ({
+                x: playerX,
+                y: playerY,
+                max: 950
+              }),
+            loop({ state: e, props: { playerX: t, playerY: a } }) {
+              e.x = t;
+              e.y = a;
+              if (e.x < -e.max) {
+                while (e.x < -e.max) {
+                  e.x += e.max * 2;
+                }
+              } else if (e.x > e.max) {
+                while (e.x > e.max) {
+                  e.x -= e.max * 2;
+                }
+              };
+              if (e.y < -e.max) {
+                while (e.y < -e.max) {
+                  e.y += e.max * 2;
+                }
+              } else if (e.y > e.max) {
+                while (e.y > e.max) {
+                  e.y -= e.max * 2;
+                }
+              };
+            },
+            render: ({ props: e, state: t }) => [
+              p({ color: e.color, width: e.width, height: e.height }, (a) => {
+                a.color = e.color;
+                a.x = t.x;
+                a.y = t.y;
+              }),
+            ],
+          }),
           ug = makeSprite({
             render({ props: e, getContext: t }) {
               switch (e.bossState.type) {
@@ -53132,6 +53169,8 @@ var version = "v1.10.1";
                           t.targetColor = e.bgColor || "#00FFFF";
                         }
                       )),
+          rangeAsArray = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i),
+          infiniteTiles = rangeAsArray(-12, 12).map(y => rangeAsArray(-12, 12).map(e => [e * 60, y * 60])),
           xg = makeSprite({
             render({ props: e, device: t }) {
               const a = (() => {
@@ -54098,20 +54137,43 @@ var version = "v1.10.1";
                             ),
                           ];
                         case "infinite":
-                          return [
-                            dg.Single(
+                          let infiniteBgTable = [{
+                            "#FF0000": "#e18989",
+                            "#ffea00": "#dee189",
+                            "#00FF00": "#89e193",
+                            "#0000ff": "#898ce1",
+                            "#8000ff": "#c889e1",
+                            "#ff00ff": "#e189da",
+                            "#ffFFff": "#FFFFFF",
+                            "#000000": "#000000",
+                          },
+                        {
+                            "#FF0000": "#d77676",
+                            "#ffea00": "#d7cd76",
+                            "#00FF00": "#65de40",
+                            "#0000ff": "#7b76d7",
+                            "#8000ff": "#9f40de",
+                            "#ff00ff": "#de40d1",
+                            "#ffFFff": "#FFFFFF",
+                            "#000000": "#000000",
+                          },],
+                          infiniteTileSprites = [];
+                          infiniteTiles.map(tiles => tiles.map((tile) => (
+                            infiniteTileSprites.push(tileSprite.Single(
                               {
-                                fileName:
-                                  "images/themes/infinite/background/tile.png",
-                                height: cg,
-                                playerX: 0.03 * e.cameraX,
-                                playerY: 0
+                                color: (tile[0] / 60 + tile[1] / 60) % 2 === 0 ? infiniteBgTable[0][e.bgColor] || "#89dde1" : infiniteBgTable[1][e.bgColor] ||"#76d7d6",
+                                width: 60,
+                                height: 60,
+                                playerX: -0.05 * e.cameraX + tile[0],
+                                playerY: -0.05 * e.cameraY + tile[1]
                               },
                               (t) => {
-                                (t.playerX = 0.03 * e.cameraX), (t.playerY = 0);
+                                (t.colour = (tile[0] / 60 + tile[1] / 60) % 2 === 0 ? infiniteBgTable[0][e.bgColor] || "#89dde1" : infiniteBgTable[1][e.bgColor] || "#76d7d6"),
+                                (t.playerX = -0.05 * e.cameraX + tile[0]), (t.playerY = -0.05 * e.cameraY + tile[1]);
                               }
-                            )
-                          ];
+                            ))
+                          ) ));
+                          return infiniteTileSprites;
                         case "fighter":
                           return [
                             p(
