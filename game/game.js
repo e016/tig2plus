@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.10.0";
+var version = "v1.10.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -16651,10 +16651,10 @@ var version = "v1.10.0";
               ae.setAngle(0),
               ae
             ),
-            getObjectPolygon: (obj, t, inset = 3) => {
+            getObjectPolygon: (obj, switchBlockSpike, inset = 3) => {
               switch (obj.type) {
                 case "spike":
-                  return obj.isLaser ? laserHitbox(obj, inset) : t
+                  return obj.isLaser ? laserHitbox(obj, inset) : switchBlockSpike
                     ? te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset)
                     : ce(obj, inset);
                 case "powerup":
@@ -16674,7 +16674,7 @@ var version = "v1.10.0";
                   return te(obj.x, obj.y, t, a);
                 }
                 case "block":
-                  return t
+                  return switchBlockSpike
                     ? ce(obj, inset)
                     : te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset);
                 case "platform":
@@ -16685,10 +16685,7 @@ var version = "v1.10.0";
                     : te(obj.x, obj.y, obj.width, obj.height);
                 case "enemy":
                   return "walkerHelmet" === obj.kind
-                    ? ((left = obj.x),
-                      (right = obj.y),
-                      (bottom = -obj.width / 2),
-                      (top = -obj.height / 2),
+                    ? (
                       (r = obj.width / 2),
                       (l = -obj.height / 2),
                       (c = obj.width / 2),
@@ -16697,10 +16694,10 @@ var version = "v1.10.0";
                       (u = obj.height / 2 - 1),
                       (h = -obj.width / 2),
                       (p = -obj.height / 2 + M),
-                      (le.pos.x = left),
-                      (le.pos.y = right),
-                      (le.points[0].x = bottom),
-                      (le.points[0].y = top),
+                      (le.pos.x = obj.x),
+                      (le.pos.y = obj.y),
+                      (le.points[0].x = -obj.width / 2),
+                      (le.points[0].y = -obj.height / 2),
                       (le.points[1].x = r),
                       (le.points[1].y = l),
                       (le.points[2].x = c),
