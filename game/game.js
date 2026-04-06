@@ -41116,8 +41116,8 @@ var version = "v1.10.0";
                 U.gravityHitObject,
                 U.playerPowerup ? U.playerPowerup.item == "ghost" : false
               );
-            (U.crashed = U.playerPowerup?.item == "spaceship" && ce.hitObject && !ce.hitObject.object.canJumpThrough ? true : ce.crashed), (Q = ce.onGroundY);
-            var de = U.gravityHitObject || ce.hitObject;
+            (U.crashed = U.playerPowerup?.item == "spaceship" && ce.hitObject && !ce.hitObject.object.canJumpThrough ? ((U.playerGradY < -2) || ce.crashed) : ce.crashed), (Q = U.flyingAnchor === null ? ce.onGroundY : null);
+            var de = U.flyingAnchor === null ? (U.gravityHitObject || ce.hitObject) : null;
             if (U.gravity < 0 && Math.abs(U.playerGradY) < 2) {
               
               (U.crashed = U.crashed || rl(
@@ -41722,7 +41722,7 @@ var version = "v1.10.0";
               )),
               0 === ge && (U.explosions.length = 0)),
               L.landTimer > 0 && L.landTimer--,
-              (U.playerOnGroundY = null != Q ? Q : U.playerOnGroundY),
+              U.flyingAnchor === null || (U.playerOnGroundY = null != Q ? Q : U.playerOnGroundY),
               (U.playerWasOnGroundCooldown = Math.max(
                 0,
                 U.playerWasOnGroundCooldown - df
@@ -56724,7 +56724,11 @@ var version = "v1.10.0";
                             y: e.playerY,
                             justDestroyed: true,
                             paused: e.paused,
-                            trail: e.playerSkin.trail,
+                            trail: e.flyingAnchor === null && !e.isFlyingLevel ? e.playerSkin.trail : {
+                              form: "default",
+                              topColour: "#FCDA45",
+                              bottomColour: "#FCDA45",
+                            }, // for now, hehehe...
                             playerRot: e.playerRot,
                             df: e.df,
                           },
