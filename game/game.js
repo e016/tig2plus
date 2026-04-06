@@ -40907,7 +40907,7 @@ var version = "v1.10.1";
                   : "blockSpike" === e.affects
                   ? (U.switchBlockSpikes = !U.switchBlockSpikes)
                   : ((U.fallTypes[0] = e.down ? "down" : null), (U.fallTypes[1] = e.up ? "up" : null)),
-                null == v || v.hitSwitch(),
+                null == v || "color" === e.affects || v.hitSwitch(),
                 (U.justHitObject = { array: "switchButtons", index: ie });
             };
             U.flash > 0 ? (U.flash -= 0.01) : (U.flash = 0);
@@ -54168,7 +54168,7 @@ var version = "v1.10.1";
                                 playerY: -0.05 * e.cameraY + tile[1]
                               },
                               (t) => {
-                                (t.colour = (tile[0] / 60 + tile[1] / 60) % 2 === 0 ? infiniteBgTable[0][e.bgColor] || "#89dde1" : infiniteBgTable[1][e.bgColor] || "#76d7d6"),
+                                (t.color = (tile[0] / 60 + tile[1] / 60) % 2 === 0 ? infiniteBgTable[0][e.bgColor] || "#89dde1" : infiniteBgTable[1][e.bgColor] || "#76d7d6"),
                                 (t.playerX = -0.05 * e.cameraX + tile[0]), (t.playerY = -0.05 * e.cameraY + tile[1]);
                               }
                             ))
