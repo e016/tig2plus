@@ -1,6 +1,6 @@
 # How to contribute
 
-last updated 3/26/2026
+last updated 4/6/2026
 
 *The Impossible Game 2+* is a mod of The Impossible Game 2.
 
