@@ -41113,7 +41113,7 @@ var version = "v1.10.1";
                 U.gravityHitObject,
                 U.playerPowerup ? U.playerPowerup.item == "ghost" : false
               );
-            (U.crashed = U.playerPowerup?.item == "spaceship" && ce.hitObject && !ce.hitObject.object.canJumpThrough ? ((U.playerGradY < -2) || ce.crashed) : ce.crashed), (Q = U.flyingAnchor === null ? ce.onGroundY : null);
+            (U.crashed = U.playerPowerup?.item == "spaceship" && ce.hitObject && !ce.hitObject.object.canJumpThrough ? ((U.playerGradY < -3) || ce.crashed) : ce.crashed), (Q = U.flyingAnchor === null ? ce.onGroundY : null);
             var de = U.flyingAnchor === null ? (U.gravityHitObject || ce.hitObject) : null;
             if (U.gravity < 0 && Math.abs(U.playerGradY) < 2) {
               
