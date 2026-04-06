@@ -144,9 +144,16 @@
       window.Android.bridge = function () {
         console.log("bridge!", arguments);
       };
-      String.prototype.contains = function (x) {
-        return !(this.indexOf(x) < 0);
-      };
+      if (!String.prototype.includes) {
+        String.prototype.includes = function (x) {
+          return this.indexOf(x) > -1;
+        };
+      }
+      if (!Array.prototype.includes) {
+        Array.prototype.includes = function (x) {
+          return this.indexOf(x) > -1;
+        };
+      }
       if ("username" in localStorage) {
         localStorage.setItem("username", "Player");
       }
