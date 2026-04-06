@@ -16748,7 +16748,6 @@ var version = "v1.10.1";
                     right = obj.width / 2 - inset,
                     bottom = -obj.height / 2 + inset,
                     top = obj.height / 2 - inset;
-                  console.log(obj.rotation);
 
                   return obj.shape == "bar" ? (
                     (ee.pos.x = obj.x),
@@ -42167,6 +42166,12 @@ var version = "v1.10.1";
                 author: "Getsix",
                 fileName: "audio/tracks/getsix-sky-fracture-extended.mp3",
                 bpm: 176,
+              },
+              plummet: {
+                name: "Plümmet",
+                author: "Onefin & Stardew",
+                fileName: "audio/tracks/onefin-stardew-plummet.mp3",
+                bpm: 134,
               }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -45543,6 +45548,7 @@ var version = "v1.10.1";
             e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
             e[(e.Electrodynamix = 53)] = "Electrodynamix";
             e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
+            e[(e.Plummet = 55)] = "Plummet";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45655,6 +45661,7 @@ var version = "v1.10.1";
             e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
             e[(e.Electrodynamix = 53)] = "Electrodynamix";
              e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
+             e[(e.Plummet = 55)] = "Plummet";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -46488,7 +46495,8 @@ var version = "v1.10.1";
             [Nd.CriticalHitExtended]: hl.songs.criticalHitExtended,
             [Nd.MindsOfTheMad]: hl.songs.mindsOfTheMad,
             [Nd.Electrodynamix]: hl.songs.electrodynamix,
-            [Nd.SkyFractureExtended]: hl.songs.skyFractureExtended
+            [Nd.SkyFractureExtended]: hl.songs.skyFractureExtended,
+            [Nd.Plummet]: hl.songs.plummet
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -51715,7 +51723,7 @@ var version = "v1.10.1";
               ({
                 x: playerX,
                 y: playerY,
-                max: 950
+                max: 960
               }),
             loop({ state: e, props: { playerX: t, playerY: a } }) {
               e.x = t;
@@ -53170,7 +53178,7 @@ var version = "v1.10.1";
                         }
                       )),
           rangeAsArray = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i),
-          infiniteTiles = rangeAsArray(-12, 12).map(y => rangeAsArray(-12, 12).map(e => [e * 60, y * 60])),
+          infiniteTiles = rangeAsArray(-16, 17).map(y => rangeAsArray(-16, 17).map(e => [e * 60, y * 60])),
           xg = makeSprite({
             render({ props: e, device: t }) {
               const a = (() => {
@@ -54147,7 +54155,7 @@ var version = "v1.10.1";
                             "#ffFFff": "#FFFFFF",
                             "#000000": "#282828",
                           },
-                        {
+                          {
                             "#FF0000": "#d77676",
                             "#ffea00": "#d7cd76",
                             "#00FF00": "#88d776",
@@ -54156,24 +54164,52 @@ var version = "v1.10.1";
                             "#ff00ff": "#d776d1",
                             "#ffFFff": "#e7e7e7",
                             "#000000": "#000000",
-                          },],
+                          }],
                           infiniteTileSprites = [];
-                          infiniteTiles.map(tiles => tiles.map((tile) => (
-                            infiniteTileSprites.push(tileSprite.Single(
+                          return [
+                            Go.Single(
                               {
-                                color: (tile[0] / 60 + tile[1] / 60) % 2 === 0 ? infiniteBgTable[0][e.bgColor] || "#89dde1" : infiniteBgTable[1][e.bgColor] ||"#76d7d6",
-                                width: 60,
-                                height: 60,
-                                playerX: -0.05 * e.cameraX + tile[0],
-                                playerY: -0.05 * e.cameraY + tile[1]
+                                targetOpacity: 1,
+                                targetColor: infiniteBgTable[0][e.bgColor] || "#89dde1",
+                                sprite: (s, l) => [
+                                  Go.Single(
+                                    {
+                                      targetOpacity: 1,
+                                      targetColor: infiniteBgTable[1][e.bgColor] || "#76d7d6",
+                                      sprite: (s, d) => {
+                                        infiniteTileSprites = [];
+                                        infiniteTiles.map(tiles => tiles.map((tile) => (
+                                          infiniteTileSprites.push(tileSprite.Single(
+                                            {
+                                              color: (tile[0] / 60 + tile[1] / 60) % 2 === 0 ? l.ref : d.ref,
+                                              width: 60,
+                                              height: 60,
+                                              playerX: -0.05 * e.cameraX + tile[0],
+                                              playerY: -0.05 * e.cameraY + tile[1]
+                                            },
+                                            (t) => {
+                                              (t.color = (tile[0] / 60 + tile[1] / 60) % 2 === 0 ? l.ref : d.ref),
+                                              (t.playerX = -0.05 * e.cameraX + tile[0]), (t.playerY = -0.05 * e.cameraY + tile[1]);
+                                            }
+                                          ))
+                                        ) ));
+                                        return infiniteTileSprites
+                                      },
+                                    },
+                                    (t) => {
+                                      t.targetOpacity = 1;
+                                      t.targetColor = infiniteBgTable[1][e.bgColor] ||"#76d7d6";
+                                    }
+                                  ),
+                                ],
                               },
                               (t) => {
-                                (t.color = (tile[0] / 60 + tile[1] / 60) % 2 === 0 ? infiniteBgTable[0][e.bgColor] || "#89dde1" : infiniteBgTable[1][e.bgColor] || "#76d7d6"),
-                                (t.playerX = -0.05 * e.cameraX + tile[0]), (t.playerY = -0.05 * e.cameraY + tile[1]);
+                                t.targetOpacity = 1;
+                                t.targetColor = infiniteBgTable[0][e.bgColor] || "#89dde1";
                               }
-                            ))
-                          ) ));
-                          return infiniteTileSprites;
+                            ), 
+                            
+                          ];
                         case "fighter":
                           return [
                             p(
