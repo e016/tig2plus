@@ -43428,9 +43428,9 @@ var version = "v1.10.2";
               difficulty: 2,
             },
             {
-              levelName: "Solace",
-              levelFileName: "solace",
-              song: hl.songs.solace,
+              levelName: "Solar Wind",
+              levelFileName: "solar-wind",
+              song: hl.songs.solarWind,
               unlockedByIndex: 0,
               x: -100,
               y: 70,
@@ -43440,6 +43440,7 @@ var version = "v1.10.2";
               ],
               maxFrames: 8762,
               difficulty: 3,
+              comingSoon: true,
             },
             {
               levelName: "Think Different",
