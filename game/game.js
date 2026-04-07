@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.10.1";
+var version = "v1.10.2";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -33656,20 +33656,21 @@ var version = "v1.10.1";
           Lo = makeSprite({ render: ({ props: { sprites: e } }) => e }),
           ScrollContainer = makeCustomSprite({
             init({
-              props: {
-                initScrollY: e = 0,
-                containerHeight: t,
-                contentHeight: a,
-              },
+              props,
               updateState: i,
               getContext
             }) {
+              let {
+                initScrollY: e = 0,
+                containerHeight: t,
+                contentHeight: a,
+              } = props
               const { addToOnScrollQueue } = getContext(Se),
               n = (e) => addToOnScrollQueue(() => 
                 (0 === e.deltaMode &&
                   i((t) =>
                     Object.assign(Object.assign({}, t), {
-                      scrollY: B.clamp([0, s])(t.scrollY + e.deltaY),
+                      scrollY: B.clamp([0, props.contentHeight - props.containerHeight])(t.scrollY + e.deltaY),
                     })
                   ))
                 );
@@ -42172,6 +42173,12 @@ var version = "v1.10.1";
                 author: "Onefin & Stardew",
                 fileName: "audio/tracks/onefin-stardew-plummet.mp3",
                 bpm: 134,
+              },
+              solarWind: {
+                name: "Solar Wind",
+                author: "Jumper",
+                fileName: "audio/tracks/jumper-solar-wind.mp3",
+                bpm: 130,
               }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -45549,6 +45556,7 @@ var version = "v1.10.1";
             e[(e.Electrodynamix = 53)] = "Electrodynamix";
             e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
             e[(e.Plummet = 55)] = "Plummet";
+            e[(e.SolarWind = 56)] = "SolarWind";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45662,6 +45670,7 @@ var version = "v1.10.1";
             e[(e.Electrodynamix = 53)] = "Electrodynamix";
              e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
              e[(e.Plummet = 55)] = "Plummet";
+             e[(e.SolarWind = 56)] = "SolarWind";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -46496,7 +46505,8 @@ var version = "v1.10.1";
             [Nd.MindsOfTheMad]: hl.songs.mindsOfTheMad,
             [Nd.Electrodynamix]: hl.songs.electrodynamix,
             [Nd.SkyFractureExtended]: hl.songs.skyFractureExtended,
-            [Nd.Plummet]: hl.songs.plummet
+            [Nd.Plummet]: hl.songs.plummet,
+            [Nd.SolarWind]: hl.songs.solarWind
           },
           Hd = {
             [ld.Rot0]: 0,
