@@ -42179,6 +42179,12 @@ var version = "v1.10.2";
                 author: "Jumper",
                 fileName: "audio/tracks/jumper-solar-wind.mp3",
                 bpm: 130,
+              },
+              glitchedOut: {
+                name: "Glitched Out",
+                author: "FantomenK",
+                fileName: "audio/tracks/fantomenk-glitched-out.mp3  ",
+                bpm: 140,
               }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -43489,20 +43495,21 @@ var version = "v1.10.2";
           ],
           Bl = [
             {
-              levelName: "8 Bit Adventure",
-              levelFileName: "8-bit-adventure",
-              song: hl.songs.eightBitAdventure,
+              levelName: "Glitched Out",
+              levelFileName: "glitched-out",
+              song: hl.songs.glitchedOut,
               unlockedByIndex: null,
               x: -250,
               y: 30,
               pathToLevel: [],
               maxFrames: 8705,
               difficulty: 4,
+              comingSoon: true,
             },
             {
-              levelName: "Octane",
-              levelFileName: "octane",
-              song: hl.songs.octane,
+              levelName: "8 Bit Shuffle",
+              levelFileName: "8-bit-shuffle",
+              song: hl.songs.eightBitShuffle,
               unlockedByIndex: 0,
               x: -50,
               y: 50,
@@ -43512,6 +43519,7 @@ var version = "v1.10.2";
               ],
               maxFrames: 8407,
               difficulty: 4,
+              comingSoon: true,
             },
             {
               levelName: "Super Ultra",
@@ -43529,9 +43537,9 @@ var version = "v1.10.2";
               comingSoon: true,
             },
             {
-              levelName: "Breathe",
-              levelFileName: "breathe",
-              song: hl.songs.breathe,
+              levelName: "Daydreamer",
+              levelFileName: "daydreamer",
+              song: hl.songs.daydreamer,
               unlockedByIndex: 1,
               x: 90,
               y: -20,
@@ -43541,27 +43549,12 @@ var version = "v1.10.2";
               ],
               maxFrames: 7477,
               difficulty: 5,
+              comingSoon: true,
             },
             {
-              levelName: "Clonebreaker",
-              levelFileName: "clonebreaker",
-              author: "Alfredo Gamer",
-              song: hl.songs.coincidence,
-              unlockedByIndex: 3,
-              x: 100,
-              y: 60,
-              pathToLevel: [
-                [-20, 50],
-                [60, 0],
-              ],
-              maxFrames: 7477,
-              difficulty: 5,
-            },
-
-            {
-              levelName: "Critical Hit",
+              levelName: "Critical Hit (Extended)",
               levelFileName: "critical-hit",
-              song: hl.songs.criticalHit,
+              song: hl.songs.criticalHitExtended,
               unlockedByIndex: 3,
               x: 250,
               y: 50,
@@ -43572,6 +43565,7 @@ var version = "v1.10.2";
               maxFrames: 5343,
               difficulty: 5,
               boss: kl(),
+              comingSoon: true,
             },
           ],
           Fl = [
@@ -45558,6 +45552,7 @@ var version = "v1.10.2";
             e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
             e[(e.Plummet = 55)] = "Plummet";
             e[(e.SolarWind = 56)] = "SolarWind";
+            e[(e.GlitchedOut = 57)] = "GlitchedOut";
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45672,6 +45667,7 @@ var version = "v1.10.2";
              e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
              e[(e.Plummet = 55)] = "Plummet";
              e[(e.SolarWind = 56)] = "SolarWind";
+             e[(e.GlitchedOut = 57)] = "GlitchedOut";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -46507,7 +46503,8 @@ var version = "v1.10.2";
             [Nd.Electrodynamix]: hl.songs.electrodynamix,
             [Nd.SkyFractureExtended]: hl.songs.skyFractureExtended,
             [Nd.Plummet]: hl.songs.plummet,
-            [Nd.SolarWind]: hl.songs.solarWind
+            [Nd.SolarWind]: hl.songs.solarWind,
+            [Nd.GlitchedOut]: hl.songs.glitchedOut,
           },
           Hd = {
             [ld.Rot0]: 0,
