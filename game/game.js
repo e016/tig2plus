@@ -54098,6 +54098,16 @@ var version = "v1.10.2";
                           ];
                         case "dreamy":
                           return [
+                            p(
+                              {
+                                color: e.theme.colour,
+                                width: t.size.fullWidth,
+                                height: t.size.fullHeight,
+                              },
+                              (j) => 
+                                ((j.width = t.size.fullWidth),
+                                  (j.height = t.size.fullHeight))
+                            ),
                             dreamySprite(
                               {
                                 id: "ShaderBg",
