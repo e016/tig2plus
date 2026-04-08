@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.10.2";
+var version = "v1.10.3";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -31342,7 +31342,28 @@ var version = "v1.10.2";
                         width: 7,
                         height: 7,
                       })
-                    : y(
+                    : conditional(
+                    () => e.bullet.destroyed,
+                    () => [
+                      triggerableSpriteSheet.Single(
+                      {
+                        fileName: "images/themes/world2/enemy-explosion.png",
+                        columns: 4,
+                        rows: 2,
+                        frameRate: 3,
+                        width: 100,
+                        height: 100,
+                        paused: e.paused,
+                        df: e.df,
+                        hideOnEnd: true
+                      },
+                      (t) => {
+                        (t.paused = e.paused), (t.df = e.df);
+                      }
+                    ),
+                    ],
+                    () => [
+                      y(
                         {
                           fileName: `images/level/boss2/${e.bullet.type}.png`,
                           width: e.bullet.width,
@@ -31352,7 +31373,8 @@ var version = "v1.10.2";
                           (t.width = e.bullet.width),
                             (t.height = e.bullet.height);
                         }
-                      ),
+                      )
+                    ]),
                 ]
               ),
             ],
@@ -42260,7 +42282,7 @@ var version = "v1.10.2";
                 width: 30,
                 height: 30,
                 speedX: 0,
-                speedY: 10,
+                speedY: i,
                 gradY: -0.4,
                 destroyed: false,
               };
@@ -42315,11 +42337,11 @@ var version = "v1.10.2";
             "bomb" === e.type || "cannonbomb" === e.type)
           ) {
             const t = et.initialPosition.y - 15 + e.height / 2;
-            if (e.y < t && !e.speedY > 0) {
+            if (e.y < t && !(e.speedY > 0)) {
               if ("cannonbomb" === e.type) {
                 e.destroyed = true;
                 e.speedY = 0;
-                e.y = t + (t - e.y);
+                e.y = t;
               } else { 
                 e.speedY *= -0.25;
                 e.y = t + (t - e.y);
@@ -42881,10 +42903,11 @@ var version = "v1.10.2";
                 bullets: [],
                 allButtons: [
                   {x: 26370, y: 0, pressed: false}, 
-                  {x: 26880, y: -15, pressed: false}
+                  {x: 26880, y: -15, pressed: false},
+                  {x: 27420, y: -15, pressed: false}
                 ],
-                pressedButtons: [],
                 destroyed: false,
+                mutatesState: false,
               }),
               cloneState: (e) =>
                 Object.assign(Object.assign({}, e), {
@@ -42901,6 +42924,7 @@ var version = "v1.10.2";
                 playSound: s,
                 crashed: o,
               }) => {
+                e.mutatesState = false;
                 e.isShootingFrames > 0 && (e.isShootingFrames -= n);
                 for (const a of e.bullets) fl(a, n, o, playerX);
                 lt(e.bullets, (t) => t.x > e.bossX - 1e3);
@@ -42912,8 +42936,12 @@ var version = "v1.10.2";
                     })
                   );
                   if (button.pressed && !lastPressed) {
-                    e.bullets.push(ml("cannonbomb", 26370, -90, 0));
-                    e.bullets.push(ml("cannonbomb", 26550, -90, 0));
+                    e.bullets.push(ml("cannonbomb", 26370, -90, 10));
+                    e.bullets.push(ml("cannonbomb", 26550, -90, 10));
+                    e.bullets.push(ml("cannonbomb", 26790, -90, 11));
+                    e.bullets.push(ml("cannonbomb", 26970, -90, 12));
+                    e.bullets.push(ml("cannonbomb", 27120, -90, 10));
+                    e.bullets.push(ml("cannonbomb", 27255, -90, 15.2));
                   }
                 });
                 console.warn(e.allButtons);
@@ -42973,7 +43001,7 @@ var version = "v1.10.2";
                       t.x > e.bossX - 80 &&
                         ((e.view = "chargeLaserDamage"),
                         (e.startChargeFrame = null),
-                        (e.health -= 0.5),
+                        (e.health -= 1),
                         (a.length = 0),
                         (e.takingDamageTimeout = 30));
                   0 === e.health && ((e.view = "death"), (e.destroyed = true)),
@@ -43040,7 +43068,8 @@ var version = "v1.10.2";
                         ));
                   }
                 } else if (i > 5269) {
-                  (l = 2 * Math.abs((i % (2 * gl)) - gl) - 0);
+                  (l = 0.5 * Math.abs((i % (2 * gl)) - gl));
+                  l += 150;
                 } else if (!e.destroyed) {
                   const t = 50;
                   (l = 2 * Math.abs((i % (2 * t)) - t) - 80),
@@ -46803,6 +46832,7 @@ var version = "v1.10.2";
               y: fc,
               pressed: yc,
             })),
+            mutatesState: yc,
             destroyed: yc,
           }),
           mu = kc({
@@ -51816,43 +51846,7 @@ var version = "v1.10.2";
               }),
             ],
           }),
-          tileSprite = makeSprite({
-            init: ({ props: { playerX, playerY } }) =>
-              ({
-                x: playerX,
-                y: playerY,
-                max: 960
-              }),
-            loop({ state: e, props: { playerX: t, playerY: a } }) {
-              e.x = t;
-              e.y = a;
-              if (e.x < -e.max) {
-                while (e.x < -e.max) {
-                  e.x += e.max * 2;
-                }
-              } else if (e.x > e.max) {
-                while (e.x > e.max) {
-                  e.x -= e.max * 2;
-                }
-              };
-              if (e.y < -e.max) {
-                while (e.y < -e.max) {
-                  e.y += e.max * 2;
-                }
-              } else if (e.y > e.max) {
-                while (e.y > e.max) {
-                  e.y -= e.max * 2;
-                }
-              };
-            },
-            render: ({ props: e, state: t }) => [
-              p({ color: e.color, width: e.width, height: e.height }, (a) => {
-                a.color = e.color;
-                a.x = t.x;
-                a.y = t.y;
-              }),
-            ],
-          }),
+          
           ug = makeSprite({
             render({ props: e, getContext: t }) {
               switch (e.bossState.type) {
@@ -52092,8 +52086,8 @@ var version = "v1.10.2";
                     ),
                     no.Array({
                       props: (e) => ({ bullet: e }),
-                      update: (e, t) => {
-                        (e.bullet = t), (e.x = t.x), (e.y = t.y);
+                      update: (a, t) => {
+                        (a.bullet = t), (a.x = t.x), (a.y = t.y), (a.paused = e.paused), (a.df = e.df);
                       },
                       array: () => e.bossState.bullets,
                       key: (e, t) => t,
@@ -52402,7 +52396,7 @@ var version = "v1.10.2";
                           () => {
                             const t =
                               15 +
-                              (Math.max(0, e.bossState.health - 0.8) / 4.2) *
+                              (Math.max(0, (e.bossState.health / 2) - 0.8) / 4.2) *
                                 298;
                             return [
                               y({
@@ -53011,6 +53005,7 @@ var version = "v1.10.2";
               "#000000": "#000000",
             };
           },
+
           //arrows
           arrowTheme = makeSprite({
             init({ device: e }) {
@@ -53116,6 +53111,64 @@ var version = "v1.10.2";
                   e.opacity = t.fade;
                 },
                 array: () => t.fadeRects,
+              }),
+            ],
+          }),
+          tileSprite = makeSprite({
+            init: ({ props: { playerX, playerY }, device: { random } }) =>
+              {
+                const a = random() < 0.5;
+                return {
+                  x: playerX,
+                  y: playerY,
+                  max: 960,
+                  fade: a ? 0 : 1,
+                  fadeIn: a,
+                  timeout: Math.round(300 * random())
+                }
+              },
+            loop({ state: e, props: { playerX: t, playerY: a }, device: {random} }) {
+              e.x = t;
+              e.y = a;
+              if (e.x < -e.max) {
+                while (e.x < -e.max) {
+                  e.x += e.max * 2;
+                }
+              } else if (e.x > e.max) {
+                while (e.x > e.max) {
+                  e.x -= e.max * 2;
+                }
+              };
+              if (e.y < -e.max) {
+                while (e.y < -e.max) {
+                  e.y += e.max * 2;
+                }
+              } else if (e.y > e.max) {
+                while (e.y > e.max) {
+                  e.y -= e.max * 2;
+                }
+              };
+              e.paused ||
+                e.timeout > 0
+                    ? e.timeout--
+                    : e.fadeIn
+                    ? e.fade < 1
+                      ? (e.fade += 0.01)
+                      : ((e.fade = 1),
+                        (e.fadeIn = !1),
+                        (e.timeout = Math.round(300 * random())))
+                    : e.fade > 0
+                    ? (e.fade -= 0.01)
+                    : ((e.fade = 0),
+                      (e.fadeIn = !0),
+                      (e.timeout = Math.round(300 * random())));
+            },
+            render: ({ props: e, state: t }) => [
+              p({ color: e.color, width: e.width, height: e.height }, (a) => {
+                a.color = e.color;
+                a.x = t.x;
+                a.y = t.y;
+                a.opacity = t.fade;
               }),
             ],
           }),
@@ -54297,19 +54350,32 @@ var version = "v1.10.2";
                                         infiniteTiles.map(tiles => tiles.map((tile) => (
                                           infiniteTileSprites.push(tileSprite.Single(
                                             {
-                                              color: (tile[0] / 60 + tile[1] / 60) % 2 === 0 ? l.ref : d.ref,
+                                              color: d.ref,
                                               width: 60,
                                               height: 60,
                                               playerX: -0.05 * e.cameraX + tile[0],
                                               playerY: -0.05 * e.cameraY + tile[1]
                                             },
                                             (t) => {
-                                              (t.color = (tile[0] / 60 + tile[1] / 60) % 2 === 0 ? l.ref : d.ref),
+                                              (t.color = d.ref),
                                               (t.playerX = -0.05 * e.cameraX + tile[0]), (t.playerY = -0.05 * e.cameraY + tile[1]);
                                             }
                                           ))
                                         ) ));
-                                        return infiniteTileSprites
+                                        return [
+                                          p(
+                                            {
+                                              color: l.ref,
+                                              width: t.size.fullWidth,
+                                              height: t.size.fullHeight,
+                                            },
+                                            (e) => {
+                                              (e.width = t.size.fullWidth),
+                                                (e.height = t.size.fullHeight),
+                                                (e.color = l.ref);
+                                            }
+                                          ),
+                                          ...infiniteTileSprites]
                                       },
                                     },
                                     (t) => {
