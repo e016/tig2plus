@@ -31135,7 +31135,7 @@ var version = "v1.10.3";
                                 frame:
                                   (null === (t = e.inGame) || void 0 === t
                                     ? void 0
-                                    : t.frame) || 0,
+                                    : t.frame) || e.frame || 0,
                               },
                               (t) => {
                                 var a;
@@ -31144,7 +31144,7 @@ var version = "v1.10.3";
                                   (t.frame =
                                     (null === (a = e.inGame) || void 0 === a
                                       ? void 0
-                                      : a.frame) || 0);
+                                      : a.frame) || e.frame || 0);
                               }
                             ),
                           ];
@@ -31175,7 +31175,7 @@ var version = "v1.10.3";
                                     frame:
                                       (null === (t = e.inGame) || void 0 === t
                                         ? void 0
-                                        : t.frame) || 0,
+                                        : t.frame) || e.frame || 0,
                                   },
                                   (t) => {
                                     var a;
@@ -31184,7 +31184,7 @@ var version = "v1.10.3";
                                       (t.frame =
                                         (null === (a = e.inGame) || void 0 === a
                                           ? void 0
-                                          : a.frame) || 0);
+                                          : a.frame) || e.frame || 0);
                                   }
                                 ),
                                 triggerableSpriteSheet.Single(
@@ -31223,7 +31223,7 @@ var version = "v1.10.3";
                                     frame:
                                       (null === (t = e.inGame) || void 0 === t
                                         ? void 0
-                                        : t.frame) || 0,
+                                        : t.frame) || e.frame || 0,
                                   },
                                   (t) => {
                                     var a;
@@ -31232,7 +31232,7 @@ var version = "v1.10.3";
                                       (t.frame =
                                         (null === (a = e.inGame) || void 0 === a
                                           ? void 0
-                                          : a.frame) || 0);
+                                          : a.frame) || e.frame || 0);
                                   }
                                 ),
                               ];
@@ -39423,7 +39423,7 @@ var version = "v1.10.3";
                   })
                 ),
                 ...h.flags.map((e, t) =>
-                  ao.Single({ id: `Flag-${t}`, flag: e, theme: v.flag, spineContext: getContext(Ws), paused: pauseAnimations, scale: propsScale,})
+                  ao.Single({ id: `Flag-${t}`, flag: e, theme: v.flag, spineContext: getContext(Ws), paused: pauseAnimations, scale: propsScale, frame: frame})
                 ),
                 ...h.powerups.map((e, t) =>
                   Co.Single({
@@ -39670,6 +39670,7 @@ var version = "v1.10.3";
                     spineContext: spineContext,
                     paused: paused,
                     scale: scale,
+                    frame: frame,
                   });
                 case "powerup":
                   return Co.Single({
