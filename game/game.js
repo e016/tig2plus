@@ -31288,6 +31288,40 @@ var version = "v1.10.2";
               )
             ],
           }),
+          bossButtonSprite = makeSprite({
+            init({props: e}) {
+              return {
+                frame: e.button.pressed ? 5 : 0,
+              }
+            },
+            loop({ props: e, state: t}) {
+              t.frame += (e.df || 1) * (e.button.pressed ? 1 : -1);
+              if (t.frame < 0) {
+                t.frame = 0;
+              } else if (t.frame > 17) {
+                t.frame = 17;
+              }
+            },
+            render({ props: e, state: t }) {
+              return [
+                loopingSpriteSheet.Single(
+                  {
+                    fileName:
+                      "images/level/boss2/button.png",
+                    columns: 3,
+                    rows: 2,
+                    frameRate: 3,
+                    width: 90,
+                    height: 30,
+                    frame: t.frame
+                  },
+                  (a) => {
+                    (a.frame = t.frame);
+                  }
+                )
+              ]
+            }
+          }),
           no = makeSprite({
             render: ({ props: e }) => [
               onChange(
@@ -39752,7 +39786,7 @@ var version = "v1.10.2";
                             playSound: playSound,
                             pauseSound: pauseSound,
                           })
-                        : state.bossState,
+                        : boss.cloneState(state.bossState),
                   })
                 : state
               : {
@@ -39817,7 +39851,7 @@ var version = "v1.10.2";
           el = function (e, t) {
             return Object.assign(Object.assign({}, e), { layoutState: t });
           },
-          tl = function (e, t) {
+          tl = function (e, boss) {
             return {
               frame: e.frame,
               attempt: e.attempt,
@@ -39873,7 +39907,7 @@ var version = "v1.10.2";
                 state: e.checkpoint.state,
               },
               bossState:
-                t && e.bossState ? t.cloneState ? t.cloneState(e.bossState) : Object.assign({}, e.bossState) : e.bossState,
+                boss && e.bossState ? boss.cloneState(e.bossState) : e.bossState,
               onObject: e.onObject && {
                 array: e.onObject.array,
                 index: e.onObject.index,
@@ -40146,6 +40180,7 @@ var version = "v1.10.2";
               df: t,
               playSound: (null == u ? void 0 : u.playSound) || (() => null),
               crashed: e.crashed,
+              rectangleHitPlayer: d,
             }),
             !e.crashed &&
               n.boss.crashed({
@@ -42203,6 +42238,7 @@ var version = "v1.10.2";
                 speedX: -3,
                 speedY: 0,
                 gradY: 0,
+                destroyed: false,
               };
             case "missile":
               return {
@@ -42214,6 +42250,19 @@ var version = "v1.10.2";
                 speedX: -0.5,
                 speedY: 0 === i ? 3 : -3,
                 gradY: 0,
+                destroyed: false,
+              };
+            case "cannonbomb":
+              return {
+                type: "cannonbomb",
+                x: t,
+                y: a,
+                width: 30,
+                height: 30,
+                speedX: 0,
+                speedY: 10,
+                gradY: -0.4,
+                destroyed: false,
               };
             case "bomb":
               return {
@@ -42225,6 +42274,7 @@ var version = "v1.10.2";
                 speedX: -3,
                 speedY: 0,
                 gradY: -0.4,
+                destroyed: false,
               };
             case "bulletHell":
             case "bulletHellBig":
@@ -42241,6 +42291,7 @@ var version = "v1.10.2";
                 speedX: ("bulletHell" === e ? 4 : -1) - 2 * Math.sin(s),
                 speedY: Math.cos(s) * o,
                 gradY: 0,
+                destroyed: false,
               };
             case "laser":
               return {
@@ -42252,6 +42303,7 @@ var version = "v1.10.2";
                 speedX: 0,
                 speedY: 0,
                 gradY: 0,
+                destroyed: false,
               };
           }
         }
@@ -42260,15 +42312,24 @@ var version = "v1.10.2";
           if (
             ((e.y += e.speedY * df),
             (e.speedY += e.gradY * df),
-            "bomb" === e.type)
+            "bomb" === e.type || "cannonbomb" === e.type)
           ) {
             const t = et.initialPosition.y - 15 + e.height / 2;
-            e.y < t && ((e.speedY *= -0.25), (e.y = t + (t - e.y)));
+            if (e.y < t && !e.speedY > 0) {
+              if ("cannonbomb" === e.type) {
+                e.destroyed = true;
+                e.speedY = 0;
+                e.y = t + (t - e.y);
+              } else { 
+                e.speedY *= -0.25;
+                e.y = t + (t - e.y);
+              }
+            }
           } else
             "missile" === e.type &&
               (e.x - playerX < 160 || crashed) &&
               (e.speedY *= 0.85 + (df < 1 ? 0.07 : 0));
-          const n = crashed ? Math.min(-1, e.speedX) : e.speedX;
+          const n = crashed ? e.speedX === 0 ? 0 : Math.min(-1, e.speedX) : e.speedX;
           e.x += n * df;
         }
         const yl = G.getJumpFrames(176),
@@ -42771,15 +42832,15 @@ var version = "v1.10.2";
                     `images/level/boss2/idle/health${e}.png`,
                     `images/level/boss2/lasercharge/base/health${e}.png`,
                     `images/level/boss2/lasercharge/shot/health${e}.png`,
-                    5 === e
-                      ? null
-                      : `images/level/boss2/laserdamage/health${e}.png`,
+                    `images/level/boss2/laserdamage/health${e}.png`,
                   ])
                   .filter(nt)
                   .concat([
                     "images/level/boss2/thinBullet.png",
                     "images/level/boss2/missile.png",
                     "images/level/boss2/bomb.png",
+                    "images/level/boss2/cannonbomb.png",
+                    "images/level/boss2/button.png",
                     "images/level/boss2/bulletHell.png",
                     "images/level/boss2/bulletHellBig.png",
                     "images/level/boss2/healthbar.png",
@@ -42816,8 +42877,13 @@ var version = "v1.10.2";
                 isShootingFrames: 0,
                 startChargeFrame: null,
                 takingDamageTimeout: 0,
-                health: 5,
+                health: 10,
                 bullets: [],
+                allButtons: [
+                  {x: 26370, y: 0, pressed: false}, 
+                  {x: 26880, y: -15, pressed: false}
+                ],
+                pressedButtons: [],
                 destroyed: false,
               }),
               cloneState: (e) =>
@@ -42826,7 +42892,9 @@ var version = "v1.10.2";
                 }),
               loop: ({
                 bossState: e,
-                playerX: t,
+                playerX: playerX,
+                playerY,
+                rectangleHitPlayer,
                 playerBullets: a,
                 frame: i,
                 df: n,
@@ -42834,9 +42902,22 @@ var version = "v1.10.2";
                 crashed: o,
               }) => {
                 e.isShootingFrames > 0 && (e.isShootingFrames -= n);
-                for (const a of e.bullets) fl(a, n, o, t);
+                for (const a of e.bullets) fl(a, n, o, playerX);
                 lt(e.bullets, (t) => t.x > e.bossX - 1e3);
-                let r = t + 350,
+                e.allButtons.forEach((button) => {
+                  let lastPressed = button.pressed;
+                  button.pressed = rectangleHitPlayer(
+                    Object.assign(Object.assign({}, button), { 
+                      width: 90, height: 30 
+                    })
+                  );
+                  if (button.pressed && !lastPressed) {
+                    e.bullets.push(ml("cannonbomb", 26370, -90, 0));
+                    e.bullets.push(ml("cannonbomb", 26550, -90, 0));
+                  }
+                });
+                console.warn(e.allButtons);
+                let r = playerX + 350,
                   l = e.bossY;
                 const c = e.view;
                 switch (i) {
@@ -42892,7 +42973,7 @@ var version = "v1.10.2";
                       t.x > e.bossX - 80 &&
                         ((e.view = "chargeLaserDamage"),
                         (e.startChargeFrame = null),
-                        e.health--,
+                        (e.health -= 0.5),
                         (a.length = 0),
                         (e.takingDamageTimeout = 30));
                   0 === e.health && ((e.view = "death"), (e.destroyed = true)),
@@ -42958,6 +43039,8 @@ var version = "v1.10.2";
                           ml("bulletHellBig", a, o, 4.5)
                         ));
                   }
+                } else if (i > 5269) {
+                  (l = 2 * Math.abs((i % (2 * gl)) - gl) - 0);
                 } else if (!e.destroyed) {
                   const t = 50;
                   (l = 2 * Math.abs((i % (2 * t)) - t) - 80),
@@ -42976,7 +43059,7 @@ var version = "v1.10.2";
               },
               crashed: ({ bossState: e, rectangleHitPlayer: t }) => {
                 let a = false;
-                for (const i of e.bullets) t(i) && (a = true);
+                for (const i of e.bullets) i.destroyed || (t(i) && (a = true));
                 return a;
               },
             };
@@ -46700,6 +46783,7 @@ var version = "v1.10.2";
                   _c("thinBullet"),
                   _c("missile"),
                   _c("bomb"),
+                  _c("cannonbomb"),
                   _c("bulletHell"),
                   _c("bulletHellBig"),
                   _c("laser"),
@@ -46711,8 +46795,14 @@ var version = "v1.10.2";
                 speedX: fc,
                 speedY: fc,
                 gradY: fc,
+                destroyed: yc,
               })
             ),
+            allButtons: Oc(kc({
+              x: fc,
+              y: fc,
+              pressed: yc,
+            })),
             destroyed: yc,
           }),
           mu = kc({
@@ -51795,17 +51885,25 @@ var version = "v1.10.2";
                   const i = 338,
                     n = 285;
                   return [
+                    bossButtonSprite.Array({
+                      props: (e) => ({button: e}),
+                      update: (e, t) => {
+                        (e.button = t), (e.x = t.x), (e.y = t.y), (e.df = t.df);
+                      },
+                      array: () => e.bossState.allButtons,
+                      key: (e, t) => t,
+                    }),
                     onChange(
                       () => e.bossState.view,
                       () => {
                         const t = e.bossState,
-                          a = t.health;
+                          health = t.health;
                         switch (t.view) {
                           case "idle":
                             return [
                               loopingSpriteSheet.Single(
                                 {
-                                  fileName: `images/level/boss2/idle/health${a}.png`,
+                                  fileName: `images/level/boss2/idle/health${Math.ceil(health / 2)}.png`,
                                   columns: 6,
                                   rows: 2,
                                   maxIndex: 10,
@@ -51826,7 +51924,7 @@ var version = "v1.10.2";
                             return [
                               triggerableSpriteSheet.Single(
                                 {
-                                  fileName: `images/level/boss2/gunout/health${a}.png`,
+                                  fileName: `images/level/boss2/gunout/health${Math.ceil(health / 2)}.png`,
                                   columns: 3,
                                   rows: 2,
                                   frameRate: 6,
@@ -51848,7 +51946,7 @@ var version = "v1.10.2";
                             return [
                               triggerableSpriteSheet.Single(
                                 {
-                                  fileName: `images/level/boss2/gunin/health${a}.png`,
+                                  fileName: `images/level/boss2/gunin/health${Math.ceil(health / 2)}.png`,
                                   columns: 2,
                                   rows: 2,
                                   frameRate: 6,
@@ -51867,13 +51965,13 @@ var version = "v1.10.2";
                               ),
                             ];
                           case "gun":
-                            const s = 3 === a || 4 === a ? 3 : 2,
-                              o = 2 === a || 4 === a ? 2 : 1,
+                            const s = 6 === health || 8 === health ? 3 : 2,
+                              o = 4 === health || 8 === health ? 2 : 1,
                               r = 6 * s * o - 1;
                             return [
                               loopingSpriteSheet.Single(
                                 {
-                                  fileName: `images/level/boss2/gunshot/health${a}.png`,
+                                  fileName: `images/level/boss2/gunshot/health${Math.ceil(health / 2)}.png`,
                                   columns: s,
                                   rows: o,
                                   frameRate: 6,
@@ -51895,7 +51993,7 @@ var version = "v1.10.2";
                                 {
                                   bossWidth: i,
                                   bossHeight: n,
-                                  health: a,
+                                  health: health,
                                   paused: e.paused,
                                   frame: e.frame,
                                   df: e.df,
@@ -51927,7 +52025,7 @@ var version = "v1.10.2";
                             return [
                               triggerableSpriteSheet.Single(
                                 {
-                                  fileName: `images/level/boss2/laserdamage/health${a}.png`,
+                                  fileName: `images/level/boss2/laserdamage/health${Math.ceil(health / 2)}.png`,
                                   columns: 2,
                                   rows: 2,
                                   frameRate: 6,
@@ -52337,7 +52435,7 @@ var version = "v1.10.2";
                 () => [
                   triggerableSpriteSheet.Single(
                     {
-                      fileName: `images/level/boss2/lasercharge/shot/health${e.health}.png`,
+                      fileName: `images/level/boss2/lasercharge/shot/health${Math.ceil(e.health / 2)}.png`,
                       columns: 2,
                       rows: 1,
                       frameRate: 3,
@@ -52353,7 +52451,7 @@ var version = "v1.10.2";
                 ],
                 () => [
                   y({
-                    fileName: `images/level/boss2/lasercharge/base/health${e.health}.png`,
+                    fileName: `images/level/boss2/lasercharge/base/health${Math.ceil(e.health / 2)}.png`,
                     width: e.bossWidth,
                     height: e.bossHeight,
                   }),
@@ -61737,7 +61835,9 @@ var version = "v1.10.2";
                     onPress: () => {
                       a((e) => {
                         const t = 
-                            Object.assign({}, e.runHistory[e.runHistoryIndex]),
+                            Object.assign(Object.assign({}, e.runHistory[e.runHistoryIndex]), {
+                              bossState: e.runHistory[e.runHistoryIndex].bossState ? JSON.parse(JSON.stringify(e.runHistory[e.runHistoryIndex].bossState)) : null
+                            }),
                           { sortedState: a, originalIndexes: i } =
                             xa.sortLayoutState(t.layoutState, e.layout);
                         return Object.assign(Object.assign({}, e), {
@@ -73699,7 +73799,7 @@ var version = "v1.10.2";
               Gf({
                 id: "LevelEditorAssets",
                 withContext: {
-                  spineFiles: [...Qs.getThemeSpine(ca.world1), ...(e.view.level.level.boss ? e.view.level.level.boss.fileNames.spine : [])],
+                  spineFiles: [...Qs.getThemeSpine(ca.world1), ...(e.view.level.level.boss ? e.view.level.level.boss.fileNames.spine || [] : [])],
                   globalContext: e.globalContextVal,
                   animationContext: e.animationContext,
                   animationRenderer: e.animationRenderer,
