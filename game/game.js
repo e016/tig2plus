@@ -40199,6 +40199,7 @@ var version = "v1.10.4";
               playerX: e.playerX,
               playerY: e.playerY,
               playerBullets: e.playerBullets,
+              playerOnGroundY: e.playerOnGroundY,
               frame: e.frame,
               speed: levelSpeed,
               df: t,
@@ -42936,6 +42937,7 @@ var version = "v1.10.4";
                 playerX: playerX,
                 playerY,
                 rectangleHitPlayer,
+                playerOnGroundY,
                 playerBullets: a,
                 frame: i,
                 df: n,
@@ -42962,7 +42964,7 @@ var version = "v1.10.4";
                     e.bullets.push(ml("cannonbomb", 27255, -90, 15.2));
                     e.bullets.push(ml("cannonbomb", 27585, -30, 6));
                     e.bullets.push(ml("cannonbomb", 27720, -90, 10));
-                    e.bullets.push(ml("cannonbomb", 27855, 15, 9));
+                    e.bullets.push(ml("cannonbomb", 27855, 15, 10));
                     e.bullets.push(ml("cannonbomb", 28110, 75, 10));
                     e.bullets.push(ml("cannonbomb", 28245, 75, 13.5));
                     e.bullets.push(ml("cannonbomb", 28380, 75, 10));
@@ -43100,6 +43102,9 @@ var version = "v1.10.4";
                           ml("bulletHellBig", a, o, 4.5)
                         ));
                   }
+                } else if (i > 6215){
+                  (l = 0.5 * Math.abs((i % (2 * gl)) - gl));
+                  l += 90 + playerOnGroundY;
                 } else if (i > 5269) {
                   (l = 0.5 * Math.abs((i % (2 * gl)) - gl));
                   l += 150;
