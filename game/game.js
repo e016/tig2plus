@@ -51592,7 +51592,7 @@ var version = "v1.10.4";
           universalFlyingTrail = makeSprite({
             init: ({ props: e }) => ({
               path: Array.from({ length: eg + 6 + 2 }, () => ({
-                x: 0,// 40,
+                x: e.playerX,// 40,
                 y: e.playerY + (e.offset || 0),
               })),
               renderPath: Array.from({ length: eg + 6 + 2 }, () => [0, 0]),
@@ -51617,11 +51617,11 @@ var version = "v1.10.4";
                 }
                 e.path.shift();
                 
-                for (let t = 0; t < e.path.length; t++) e.path[t].x -= Math.abs(props.playerX - e.lastPlayerX);
+                // for (let t = 0; t < e.path.length; t++) e.path[t].x -= Math.abs(props.playerX - e.lastPlayerX);
 
                 if (!props.crashed) {
                   e.path.push({
-                    x: 0, //e.space,
+                    x: props.playerX, //e.space,
                     y: props.playerY + (props.offset || 0),
                   });
                 };
@@ -51648,9 +51648,8 @@ var version = "v1.10.4";
                       ],
                     }),
                     update: (a, n, index) => {
-                      (a.x = (e.playerX * e.playerDir)),// - t.space * e.playerDir)),
-                      (a.path = t.path[index + 1] ? [[n.x * e.playerDir, n.y], [t.path[index + 1].x * e.playerDir, t.path[index + 1].y]] : [[n.x * e.playerDir, n.y], [n.x * e.playerDir, n.y]]),
-
+                      (a.x = 0),
+                      (a.path = t.path[index + 1] ? [[n.x, n.y], [t.path[index + 1].x, t.path[index + 1].y]] : [[n.x, n.y], [n.x, n.y]]),
                       (a.opacity = index / t.path.length);
                     },
                     array: () => t.path,
