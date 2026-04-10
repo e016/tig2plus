@@ -20132,7 +20132,7 @@ var version = "v1.10.3";
                               (a.x = i.x),
                               (a.y = getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (a.opacity = n),
-                              void (a.show = true)
+                              void (a.show = !s.steel)
                             );
                         }
                         a.show = false;
@@ -42249,7 +42249,7 @@ var version = "v1.10.3";
           },
           pl = 2.5 * G.jumpDistance,
           gl = G.getJumpFrames(130);
-        function ml(e, t, a, i) {
+        function ml(e, t, a, data1, data2) {
           switch (e) {
             case "thinBullet":
               return {
@@ -42271,7 +42271,7 @@ var version = "v1.10.3";
                 width: 33,
                 height: 15,
                 speedX: -0.5,
-                speedY: 0 === i ? 3 : -3,
+                speedY: 0 === data1 ? 3 : -3,
                 gradY: 0,
                 destroyed: false,
               };
@@ -42282,8 +42282,8 @@ var version = "v1.10.3";
                 y: a,
                 width: 30,
                 height: 30,
-                speedX: 0,
-                speedY: i,
+                speedX: data2 || 0,
+                speedY: data1 || 0,
                 gradY: -0.4,
                 destroyed: false,
               };
@@ -42301,7 +42301,7 @@ var version = "v1.10.3";
               };
             case "bulletHell":
             case "bulletHellBig":
-              const n = 30 * i,
+              const n = 30 * data1,
                 s = B.toRad(30 + n),
                 o = "bulletHell" === e ? 1.8 : 7,
                 r = "bulletHell" === e ? 3 : 15;
@@ -42843,7 +42843,7 @@ var version = "v1.10.3";
               },
             };
           },
-          kl = function () {
+          getPixelBoss = function () {
             return {
               mutatesState: false,
               fileNames: {
@@ -42905,7 +42905,11 @@ var version = "v1.10.3";
                 allButtons: [
                   {x: 26370, y: 0, pressed: false}, 
                   {x: 26880, y: -15, pressed: false},
-                  {x: 27420, y: -15, pressed: false}
+                  {x: 27420, y: -15, pressed: false},
+                  {x: 27720, y: 15, pressed: false},
+                  {x: 27990, y: 45, pressed: false},
+                  {x: 28590, y: 90, pressed: false},
+                  {x: 29100, y: 75, pressed: false},
                 ],
                 destroyed: false,
                 mutatesState: false,
@@ -42938,11 +42942,25 @@ var version = "v1.10.3";
                   );
                   if (button.pressed && !lastPressed) {
                     e.bullets.push(ml("cannonbomb", 26370, -90, 10));
-                    e.bullets.push(ml("cannonbomb", 26550, -90, 10));
+                    e.bullets.push(ml("cannonbomb", 26550, -90, 11));
                     e.bullets.push(ml("cannonbomb", 26790, -90, 11));
                     e.bullets.push(ml("cannonbomb", 26970, -90, 12));
                     e.bullets.push(ml("cannonbomb", 27120, -90, 10));
                     e.bullets.push(ml("cannonbomb", 27255, -90, 15.2));
+                    e.bullets.push(ml("cannonbomb", 27585, -30, 6));
+                    e.bullets.push(ml("cannonbomb", 27720, -90, 10));
+                    e.bullets.push(ml("cannonbomb", 27855, 15, 9));
+                    e.bullets.push(ml("cannonbomb", 28110, 75, 10));
+                    e.bullets.push(ml("cannonbomb", 28245, 75, 13.5));
+                    e.bullets.push(ml("cannonbomb", 28380, 75, 10));
+
+                    e.bullets.push(ml("cannonbomb", 28950, 90, 10, 0.5));
+
+                    e.bullets.push(ml("cannonbomb", 29190, 30, 11));
+                    e.bullets.push(ml("cannonbomb", 29250, 0, 12));
+                    e.bullets.push(ml("cannonbomb", 29310, -30, 13));
+                    e.bullets.push(ml("cannonbomb", 29370, -60, 17));
+                    e.bullets.push(ml("cannonbomb", 29400, -60, 17));
                   }
                 });
                 console.warn(e.allButtons);
@@ -42976,6 +42994,7 @@ var version = "v1.10.3";
                   case 3342:
                   case 4238:
                   case 5083:
+                  case 6020:
                     e.startChargeFrame = i;
                     break;
                   case 3021:
@@ -43677,7 +43696,7 @@ var version = "v1.10.3";
               ],
               maxFrames: 5343,
               difficulty: 5,
-              boss: kl(),
+              boss: getPixelBoss(),
               comingSoon: true,
             },
           ],
@@ -56339,12 +56358,12 @@ var version = "v1.10.3";
                     {
                       bossState: t.bossState,
                       frame: t.frame,
-                      y: e.size.fullHeight / 2 - 120,
+                      y: e.size.fullHeight / 2 - 100,
                     },
                     (a) => {
                       (a.bossState = t.bossState),
                         (a.frame = t.frame),
-                        (a.y = e.size.fullHeight / 2 - 120);
+                        (a.y = e.size.fullHeight / 2 - 100);
                     }
                   )
                 : null,
