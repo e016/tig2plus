@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.10.3";
+var version = "v1.10.4";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -30176,6 +30176,7 @@ var version = "v1.10.3";
               "audio/levels/spring.wav",
               "audio/levels/level-complete.wav",
               "audio/levels/object-explosion.wav",
+              "audio/levels/boss4/block_explosion.mp3",
               "audio/levels/enemy/shoot.wav",
               "audio/levels/enemy/stomped.wav",
               "audio/levels/enemy/explosion.wav",
@@ -37752,7 +37753,7 @@ var version = "v1.10.3";
                           });
                         },
                       }),
-                      /* n.push({
+                      /*n.push({
                         name: "Drill",
                         selected: "drill" === t.item,
                         onPress: () => {
@@ -37768,8 +37769,8 @@ var version = "v1.10.3";
                             });
                           });
                         },
-                      }), 
-                      n.push({
+                      }), */
+                      /* n.push({
                         name: "Ghost",
                         selected: "ghost" === t.item,
                         onPress: () => {
@@ -41844,6 +41845,12 @@ var version = "v1.10.3";
                 bpm: 110,
                 isBonusSong: false,
               },
+              solarWind: {
+                name: "Solar Wind",
+                author: "Jumper",
+                fileName: "audio/tracks/jumper-solar-wind.mp3",
+                bpm: 130,
+              },
               solace: {
                 name: "Solace",
                 author: "Avenza",
@@ -41873,7 +41880,12 @@ var version = "v1.10.3";
                 label: "Tasty",
                 isBonusSong: false,
               },
-              
+              glitchedOut: {
+                name: "Glitched Out",
+                author: "FantomenK",
+                fileName: "audio/tracks/fantomenk-glitched-out.mp3  ",
+                bpm: 140,
+              },
               eightBitAdventure: {
                 name: "8 Bit Adventure",
                 author: "AdhesiveWombat",
@@ -42232,18 +42244,19 @@ var version = "v1.10.3";
                 fileName: "audio/tracks/onefin-stardew-plummet.mp3",
                 bpm: 134,
               },
-              solarWind: {
-                name: "Solar Wind",
-                author: "Jumper",
-                fileName: "audio/tracks/jumper-solar-wind.mp3",
-                bpm: 130,
+              lastTile: {
+                name: "Last Tile",
+                author: "Kommisar",
+                bpm: 150,
+                fileName: "audio/tracks/kommisar-last-tile.mp3",
               },
-              glitchedOut: {
-                name: "Glitched Out",
-                author: "FantomenK",
-                fileName: "audio/tracks/fantomenk-glitched-out.mp3  ",
-                bpm: 140,
+              hellidox: {
+                name: "Hellidox",
+                author: "Exilelord",
+                bpm: 210,
+                fileName: "audio/tracks/exilelord-hellidox.mp3"
               }
+              
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -45685,6 +45698,8 @@ var version = "v1.10.3";
             e[(e.Plummet = 55)] = "Plummet";
             e[(e.SolarWind = 56)] = "SolarWind";
             e[(e.GlitchedOut = 57)] = "GlitchedOut";
+            e[(e.LastTile = 58)] = "LastTile";
+            // you know what? I'm not gonna put songs here. This variable (Rd) isn't even used anywhere.
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45800,6 +45815,8 @@ var version = "v1.10.3";
              e[(e.Plummet = 55)] = "Plummet";
              e[(e.SolarWind = 56)] = "SolarWind";
              e[(e.GlitchedOut = 57)] = "GlitchedOut";
+             e[(e.LastTile = 58)] = "LastTile";
+             e[(e.Hellidox = 59)] = "Hellidox";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -46637,6 +46654,8 @@ var version = "v1.10.3";
             [Nd.Plummet]: hl.songs.plummet,
             [Nd.SolarWind]: hl.songs.solarWind,
             [Nd.GlitchedOut]: hl.songs.glitchedOut,
+            [Nd.LastTile]: hl.songs.lastTile,
+            [Nd.Hellidox]: hl.songs.hellidox
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -51592,7 +51611,7 @@ var version = "v1.10.3";
           universalFlyingTrail = makeSprite({
             init: ({ props: e }) => ({
               path: Array.from({ length: eg + 6 + 2 }, () => ({
-                x: 0,// 40,
+                x: e.playerX,// 40,
                 y: e.playerY + (e.offset || 0),
               })),
               renderPath: Array.from({ length: eg + 6 + 2 }, () => [0, 0]),
@@ -51617,11 +51636,11 @@ var version = "v1.10.3";
                 }
                 e.path.shift();
                 
-                for (let t = 0; t < e.path.length; t++) e.path[t].x -= Math.abs(props.playerX - e.lastPlayerX);
+                // for (let t = 0; t < e.path.length; t++) e.path[t].x -= Math.abs(props.playerX - e.lastPlayerX);
 
                 if (!props.crashed) {
                   e.path.push({
-                    x: 0, //e.space,
+                    x: props.playerX, //e.space,
                     y: props.playerY + (props.offset || 0),
                   });
                 };
@@ -51648,9 +51667,8 @@ var version = "v1.10.3";
                       ],
                     }),
                     update: (a, n, index) => {
-                      (a.x = (e.playerX * e.playerDir)),// - t.space * e.playerDir)),
-                      (a.path = t.path[index + 1] ? [[n.x * e.playerDir, n.y], [t.path[index + 1].x * e.playerDir, t.path[index + 1].y]] : [[n.x * e.playerDir, n.y], [n.x * e.playerDir, n.y]]),
-
+                      (a.x = 0),
+                      (a.path = t.path[index + 1] ? [[n.x, n.y], [t.path[index + 1].x, t.path[index + 1].y]] : [[n.x, n.y], [n.x, n.y]]),
                       (a.opacity = index / t.path.length);
                     },
                     array: () => t.path,
