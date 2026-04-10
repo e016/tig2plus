@@ -18512,8 +18512,8 @@ var version = "v1.10.4";
                   { blocks: inViewLayoutStateBlocks } = inViewLayoutState,
                   { blocks: fullLayoutStateIndexesBlocks } = fullLayoutStateIndexes;
                 for (let i = 0; i < 44; i++) {
-                  inViewLayoutBlocks.push($.newBlock({ x: (i * M - 660) + Math.floor(playerX / M) * M, y: et.initialPosition.y - M, isBoss: true, isGround: true }))
-                  inViewLayoutStateBlocks.push({type: "blockSpikeState", isBoss: true, isGround: true});
+                  inViewLayoutBlocks.push($.newBlock({ x: (i * M - 660) + Math.floor(playerX / M) * M, y: et.initialPosition.y - M, isBoss: layout.properties.theme.id !== "world1Boss", isGround: true }))
+                  inViewLayoutStateBlocks.push({type: "blockSpikeState", isBoss: layout.properties.theme.id !== "world1Boss", isGround: true});
                   fullLayoutStateIndexesBlocks.push(Math.max(...fullLayoutStateIndexesBlocks) + 1)
                 }
 
@@ -18925,7 +18925,7 @@ var version = "v1.10.4";
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
-                if (d?.steel && s.kind === "bomb" && c(s)) {
+                if (d?.steel && c(s)) {
                   Na(i, n, d, o, a, r, l);
                 } else {
                   !d.destroyed &&
@@ -18957,7 +18957,7 @@ var version = "v1.10.4";
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
-                if (d?.steel && s.kind === "bomb" && c(s)) {
+                if (d?.steel && c(s)) {
                   Na(i, n, d, layoutState, a, r, l);
                 } else {
                   !d.destroyed &&
@@ -55966,7 +55966,7 @@ var version = "v1.10.4";
                 }, (a) => {
                   a.y = (et.initialPosition.y - M / 2) - e.cameraY - 15;
                 }) : y({
-                  fileName: `images/themes/${e.theme}/boss.png`,
+                  fileName: `images/themes/${e.theme}/${e.theme === "world1Boss" ? "block" : "boss"}.png`,
                   width: 660 * 2,
                   height: 30,
                 }, (a) => {
