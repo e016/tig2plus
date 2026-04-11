@@ -35274,7 +35274,7 @@ var version = "v1.10.4";
                 id: "ScrollContainer",
                 containerHeight: 280,
                 containerWidth: ar - 20,
-                contentHeight: 40 * e.themes.length + 50,
+                contentHeight: 40 * e.themes.length + 100,
                 x: -10,
                 y: 150,
                 sprites: (t) => [
@@ -36223,7 +36223,7 @@ var version = "v1.10.4";
                         name: "Trigger",
                         options: [
                           {
-                            name: "Beat",
+                            name: "Music Beat",
                             selected: t.trigger == "beat",
                             onPress: () => {
                               a.map((j) => {
@@ -39121,7 +39121,7 @@ var version = "v1.10.4";
                   frame: t.frame,
                 }),
                 I
-                  ? n({ text: I, font: { size: 20 }, color: ve, y: c / 2 - 20 })
+                  ? n({ text: localize(I), font: { size: 20 }, color: ve, y: c / 2 - 20 })
                   : null,
                 tr({
                   id: "Tools",
