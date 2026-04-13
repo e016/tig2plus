@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.9.7";
+var version = "v1.10.5";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -15267,7 +15267,7 @@ var version = "v1.9.7";
             update: t,
             isMut: true,
           }),
-          h = ({ props: e, mask: t, update: a, array: i, testId: n }) => ({
+          circleArray = ({ props: e, mask: t, update: a, array: i, testId: n }) => ({
             type: "circleArray",
             mask: t || null,
             props: [],
@@ -15919,6 +15919,7 @@ var version = "v1.9.7";
                   null !== (o = null == e ? void 0 : e.skipMissiles) &&
                   void 0 !== o &&
                   o,
+                isLaser: e == null ? false : e.isLaser,
                 snapSize: { offsetX: 7.5, offsetY: 7.5 },
               };
             },
@@ -16050,6 +16051,7 @@ var version = "v1.9.7";
                   null !== (b = null == e ? void 0 : e.retainSpeed) &&
                   void 0 !== b &&
                   b,
+                isFlying: e ? e.isFlying : false,
                 snapSize:
                   null !== (r = null == e ? void 0 : e.snapSize) && void 0 !== r
                     ? r
@@ -16102,6 +16104,8 @@ var version = "v1.9.7";
                     ? l
                     : "beat",
                 multiplier: e == undefined ? 1 : e?.multiplier || 1,
+                rotation: e == null ? 0 : e.rotation || 0,
+                offset: e == null ? 0 : e.offset || 0,
               };
             },
             newEnemy: (e) => {
@@ -16613,18 +16617,18 @@ var version = "v1.9.7";
                 return () => false;
               }
             },
-            getPlayerPoly: (e, t, a, i, n, s, o) => {
-              const r = i * (s ? M + $.skateboardHeight : M),
-                l = a * M;
+            getPlayerPoly: (playerX, playerY, scaleX, scaleY, n, skating, o) => {
+              const r = scaleY * (skating ? M + $.skateboardHeight : M),
+                l = scaleX * M;
               return (
-                (o.pos.x = e),
-                (o.pos.y = t),
+                (o.pos.x = playerX),
+                (o.pos.y = playerY),
                 (o.points[1].x = l),
                 (o.points[2].x = l),
                 (o.points[2].y = r),
                 (o.points[3].y = r),
-                (o.offset.x = -15 * a),
-                (o.offset.y = -15 * i),
+                (o.offset.x = -15 * scaleX),
+                (o.offset.y = -15 * scaleY),
                 o.setAngle(B.toRad(-n)),
                 o
               );
@@ -16647,10 +16651,10 @@ var version = "v1.9.7";
               ae.setAngle(0),
               ae
             ),
-            getObjectPolygon: (obj, t, inset = 3) => {
+            getObjectPolygon: (obj, switchBlockSpike, inset = 3) => {
               switch (obj.type) {
                 case "spike":
-                  return obj.isLaser ? laserHitbox(obj, inset) : t
+                  return obj.isLaser ? laserHitbox(obj, inset) : switchBlockSpike
                     ? te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset)
                     : ce(obj, inset);
                 case "powerup":
@@ -16670,7 +16674,7 @@ var version = "v1.9.7";
                   return te(obj.x, obj.y, t, a);
                 }
                 case "block":
-                  return t
+                  return switchBlockSpike
                     ? ce(obj, inset)
                     : te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset);
                 case "platform":
@@ -16681,10 +16685,7 @@ var version = "v1.9.7";
                     : te(obj.x, obj.y, obj.width, obj.height);
                 case "enemy":
                   return "walkerHelmet" === obj.kind
-                    ? ((i = obj.x),
-                      (n = obj.y),
-                      (s = -obj.width / 2),
-                      (o = -obj.height / 2),
+                    ? (
                       (r = obj.width / 2),
                       (l = -obj.height / 2),
                       (c = obj.width / 2),
@@ -16693,10 +16694,10 @@ var version = "v1.9.7";
                       (u = obj.height / 2 - 1),
                       (h = -obj.width / 2),
                       (p = -obj.height / 2 + M),
-                      (le.pos.x = i),
-                      (le.pos.y = n),
-                      (le.points[0].x = s),
-                      (le.points[0].y = o),
+                      (le.pos.x = obj.x),
+                      (le.pos.y = obj.y),
+                      (le.points[0].x = -obj.width / 2),
+                      (le.points[0].y = -obj.height / 2),
                       (le.points[1].x = r),
                       (le.points[1].y = l),
                       (le.points[2].x = c),
@@ -16743,20 +16744,20 @@ var version = "v1.9.7";
                   );
                 }
                 case "saw":
-                  let top = obj.y + obj.height / 2,
-                  bottom = obj.y - obj.height / 2,
-                  left = obj.x - obj.width / 2,
-                  right = obj.x + obj.width / 2;
-
+                  let left = -(obj.width / 2) + inset,
+                    right = obj.width / 2 - inset,
+                    bottom = -obj.height / 2 + inset,
+                    top = obj.height / 2 - inset;
+                console.warn(obj.rotation);
                   return obj.shape == "bar" ? (
                     (ee.pos.x = obj.x),
                     (ee.pos.y = obj.y),
-                    (ee.points[0].x = right),
-                    (ee.points[0].y = top),
+                    (ee.points[0].x = left),
+                    (ee.points[0].y = bottom),
                     (ee.points[1].x = right),
                     (ee.points[1].y = bottom),
-                    (ee.points[2].x = left),
-                    (ee.points[2].y = bottom),
+                    (ee.points[2].x = right),
+                    (ee.points[2].y = top),
                     (ee.points[3].x = left),
                     (ee.points[3].y = top),
                     ee.setAngle(B.toRad(-obj.rotation)),
@@ -16902,6 +16903,17 @@ var version = "v1.9.7";
             pointInCircle: (e) => (t) =>
               de.pointInCircle(e.x, e.y, e.radius, t.x, t.y),
             rectTouchesRect: (e) => (t) => {
+              if (t.type === "saw" && t.shape === "bar") {
+                return be.hitObject(
+                  e.x,
+                  e.y,
+                  e.width / 30,
+                  e.height / 30,
+                  0,
+                  false,
+                  false
+                )(t);
+              }
               const a = e.x - e.width / 2,
                 i = t.x - t.width / 2,
                 n = e.x + e.width / 2,
@@ -17378,9 +17390,10 @@ var version = "v1.9.7";
               playerScaleX: sx,
               playerScaleY: sy,
               playerScale: ps,
-              isGravity
+              isGravity,
+              playerPowerup,
             } = e;
-            gy = isGravity ? 0 : gy;
+            gy = isGravity || playerPowerup?.item === "spaceship" ? 0 : gy;
             globalPlayerScale = ps;
             sx = sx / ps;
             sy = sy / ps;
@@ -17695,13 +17708,6 @@ var version = "v1.9.7";
               size: 47,
               trail: ct(),
             },
-            mikhael: {
-              name: "Mikhael",
-              fileName: "mikhael",
-              size: 31,
-              author: "mikhael",
-              trail: ct({ topColour: "#78baba", bottomColour: "#78baba"}),
-            },
             pumpkin: {
               name: "Pumpkin",
               fileName: "pumpkin",
@@ -17713,6 +17719,20 @@ var version = "v1.9.7";
               fileName: "calavera",
               size: 45,
               trail: ct({ topColour: "#f7ded4", bottomColour: "#f7ded4" }),
+            },
+            mikhael: {
+              name: "Mikhael",
+              fileName: "mikhael",
+              size: 31,
+              author: "mikhael",
+              trail: ct({ topColour: "#78baba", bottomColour: "#78baba"}),
+            },
+            benjamin: {
+              name: "Benja",
+              fileName: "benjamin",
+              size: 30,
+              author: "GatoNegro",
+              trail: ct({ topColour: "#9f1960", bottomColour: "#691d96"}),
             },
             blank: {
               name: "Blank",
@@ -18106,7 +18126,7 @@ var version = "v1.9.7";
             }
             case "saw": {
               const a = obj;
-
+              a.rotation = ((a.x - playerX) / 2) + a.offset;
               const i =
                 "static" === a.movement
                   ? a.y
@@ -18127,6 +18147,7 @@ var version = "v1.9.7";
                   (updated.height = a.height),
                   (updated.movement = a.movement),
                   (updated.movementTrigger = a.movementTrigger),
+                  (updated.rotation = a.rotation),
                   updated)
                 : Object.assign(Object.assign({}, a), { y: i });
             }
@@ -18498,8 +18519,8 @@ var version = "v1.9.7";
                   { blocks: inViewLayoutStateBlocks } = inViewLayoutState,
                   { blocks: fullLayoutStateIndexesBlocks } = fullLayoutStateIndexes;
                 for (let i = 0; i < 44; i++) {
-                  inViewLayoutBlocks.push($.newBlock({ x: (i * M - 660) + Math.floor(playerX / M) * M, y: et.initialPosition.y - M, isBoss: true, isGround: true }))
-                  inViewLayoutStateBlocks.push({type: "blockSpikeState", isBoss: true, isGround: true});
+                  inViewLayoutBlocks.push($.newBlock({ x: (i * M - 660) + Math.floor(playerX / M) * M, y: et.initialPosition.y - M, isBoss: layout.properties.theme.id !== "world1Boss", isGround: true }))
+                  inViewLayoutStateBlocks.push({type: "blockSpikeState", isBoss: layout.properties.theme.id !== "world1Boss", isGround: true});
                   fullLayoutStateIndexesBlocks.push(Math.max(...fullLayoutStateIndexesBlocks) + 1)
                 }
 
@@ -18911,7 +18932,7 @@ var version = "v1.9.7";
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
-                if (d?.steel && s.kind === "bomb" && c(s)) {
+                if (d?.steel && c(s)) {
                   Na(i, n, d, o, a, r, l);
                 } else {
                   !d.destroyed &&
@@ -18943,7 +18964,7 @@ var version = "v1.9.7";
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
-                if (d?.steel && s.kind === "bomb" && c(s)) {
+                if (d?.steel && c(s)) {
                   Na(i, n, d, layoutState, a, r, l);
                 } else {
                   !d.destroyed &&
@@ -20118,7 +20139,7 @@ var version = "v1.9.7";
                               (a.x = i.x),
                               (a.y = getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (a.opacity = n),
-                              void (a.show = true)
+                              void (a.show = !s.steel)
                             );
                         }
                         a.show = false;
@@ -29923,9 +29944,9 @@ var version = "v1.9.7";
               "images/themes/world2/arrow.png",
               "images/themes/infinite/arrow.png",
               "images/themes/world2/double-jump.png",
-              `images/themes/${e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
-              `images/themes/${e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
-              "images/themes/infinite/saw-bar.png",
+              `images/themes/${e.objects.spike == "classic" ? "classic" : e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
+              `images/themes/${e.objects.spike == "classic" ? "classic" : e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
+              `images/themes/${e.objects.saw == "classic" ? "classic" : "infinite"}/saw-bar.png`,
               "images/themes/world1/red.png",
               "images/themes/world1/blue.png",
               "images/themes/world2/red.png",
@@ -29958,6 +29979,10 @@ var version = "v1.9.7";
               "images/level/boss2/bomb.png",
               "images/level/boss2/bulletHell.png",
               "images/level/boss2/bulletHellBig.png",
+              "images/themes/world3/player-ship.png",
+              "images/level/boss3/player-ship.png",
+              "images/level/boss3/star-line.png",
+              "images/level/boss3/star-line-stars.png",
               "images/editor/editorOnly/size-button.png",
               "images/editor/editorOnly/color-button.png",
               "images/themes/skater/rail.png",
@@ -30158,6 +30183,7 @@ var version = "v1.9.7";
               "audio/levels/spring.wav",
               "audio/levels/level-complete.wav",
               "audio/levels/object-explosion.wav",
+              "audio/levels/boss4/block_explosion.mp3",
               "audio/levels/enemy/shoot.wav",
               "audio/levels/enemy/stomped.wav",
               "audio/levels/enemy/explosion.wav",
@@ -30236,6 +30262,7 @@ var version = "v1.9.7";
                 Ks.sizeButton,
                 Ks.world4BossMinion,
                 Ks.world4BossFireBall,
+                Ks.flyingFlag,
               ];
               switch (e.id) {
                 case "world2":
@@ -30491,7 +30518,7 @@ var version = "v1.9.7";
                   
                     
                   imageArray({
-                    fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                    fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30518,7 +30545,7 @@ var version = "v1.9.7";
                     testId: (e, t) => `Saw-${t}`,
                   }),
                   imageArray({
-                    fileName: `images/themes/infinite/saw-bar.png`,
+                    fileName: `images/themes/${e.theme == "classic" ? "classic" : "infinite"}/saw-bar.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30539,7 +30566,7 @@ var version = "v1.9.7";
                         ((null === (o = e.inGame) || void 0 === o
                           ? void 0
                           : o.frame) || 0) / 2;
-                      t.rotation = ((3) * l) % 360;
+                      t.rotation = a.rotation - 90;
                     },
                     array: () => e.saws,
                     testId: (e, t) => `Saw-${t}`,
@@ -30579,7 +30606,7 @@ var version = "v1.9.7";
                     },
                   }),
                   imageArray({
-                    fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                    fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                     props: () => ({}),
                     update: (t, a, i) => {
                       var n, s, o;
@@ -30758,7 +30785,7 @@ var version = "v1.9.7";
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       imageArray({
-                        fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
+                        fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-medium.png`,
                         props: () => ({}),
                         update: (e, t) => {
                           (e.width = t.width * sawRatio),
@@ -30775,7 +30802,7 @@ var version = "v1.9.7";
                         testId: (e, t) => `Saw-${t}`,
                       }),
                       imageArray({
-                        fileName: `images/themes/${e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                        fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                         props: () => ({}),
                         update: (e, t) => {
                           (e.width = t.width * sawRatio),
@@ -30791,27 +30818,64 @@ var version = "v1.9.7";
                         array: () => e.saws,
                         testId: (e, t) => `Saw-${t}`,
                       }),
+                      imageArray({
+                        fileName: `images/themes/${e.theme == "classic" ? "classic" : "infinite"}/saw-bar.png`,
+                        props: () => ({}),
+                        update: (e, t) => {
+                          (e.width = t.height),
+                            (e.height = t.width),
+                            (e.x = t.x),
+                            (e.y = t.y),
+                            (e.rotation = t.offset - 90),
+                            (e.opacity = "downUp" === t.movement
+                                ? 0
+                                : "upDown" === t.movement
+                                ? 0
+                                : t.shape == "bar" ? 1 : 0);
+                        },
+                        array: () => e.saws,
+                        testId: (e, t) => `Saw-${t}`,
+                      }),
                       ifConditional(
                         () => {
                           var t;
                           return (
-                            void 0 !==
+                            (void 0 !==
                             (null === (t = e.editor) || void 0 === t
                               ? void 0
-                              : t.previewYs)
+                              : t.previewYs)) && void 0 !==
+                            (null === (t = e.editor) || void 0 === t
+                              ? void 0
+                              : t.previewRots)
                           );
                         },
                         () => [
-                          h({
+                          circleArray({
                             props: () => ({
                               radius: 15,
                               color: "red",
                               opacity: 0.5,
                             }),
                             update: (t, a, i) => {
-                              (t.x = e.saws[i].x), (t.y = a), (t.radius = e.saws[i].width / 2);
+                              (t.x = e.saws[i].x), (t.y = a), (t.radius = e.saws[i].width / 2), (t.opacity = e.saws[i].shape == "bar" ? 0 : 0.5);
                             },
                             array: () => e.editor.previewYs,
+                          }),
+                          g({
+                            props: () => ({
+                              
+                              color: "red",
+                              opacity: 0.5,
+                            }),
+                            update: (t, a, i) => {
+                              (t.x = e.saws[i].x), 
+                              (t.y = e.saws[i].y), 
+                              (t.width = e.saws[i].width), 
+                              (t.height = e.saws[i].height),
+                              (t.rotation = a),
+                              (t.opacity = e.saws[i].shape == "bar" ? 0.5 : 0);
+                            },
+                            array: () => e.editor.previewRots,
                           }),
                         ]
                       ),
@@ -30874,13 +30938,13 @@ var version = "v1.9.7";
                     (null === (t = e.inGame) || void 0 === t
                       ? void 0
                       : t.isFlying)
-                  );
+                  ) || e.flag.isFlying;
                 },
                 () => {
-                  const { animationAssets: i, animationRenderer: n } = t(Ws);
+                  const { animationAssets: i, animationRenderer: n } = e.spineContext || t(Ws);
                   return [
                     conditional(
-                      () => !e.inGame.wasHit,
+                      () => e.inGame ? !e.inGame.wasHit : true,
                       () => [
                         Hs(
                           {
@@ -30890,17 +30954,21 @@ var version = "v1.9.7";
                             fileNames: Qs.spineFiles.flyingFlag,
                             animationName: "idle",
                             loop: true,
-                            paused: e.inGame.paused,
+                            paused: (e.inGame && e.inGame.paused) || e.paused,
                             x: e.flag.x,
-                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
+                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5,
                             height: 0,
-                            df: e.inGame.df,
+                            df: !e.inGame ? 1 : e.inGame.df,
                           },
                           (t) => {
-                            (t.paused = e.inGame.paused),
+                            (t.paused = (e.inGame && e.inGame.paused) || e.paused),
                               (t.x = e.flag.x),
-                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
-                              (t.df = e.inGame.df);
+                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5),
+                              (t.df = !e.inGame ? 1 : e.inGame.df),
+                              (t.scale = {
+                                x: e.scale || 1,
+                                y: e.scale || 1,
+                              })
                           }
                         ),
                       ],
@@ -30916,14 +30984,14 @@ var version = "v1.9.7";
                             startFromFrame: a.wasAlreadyHit ? 200 : 0,
                             paused: e.inGame.paused,
                             x: e.flag.x,
-                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
+                            y: getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5,
                             height: 0,
                             df: e.inGame.df,
                           },
                           (t) => {
                             (t.paused = e.inGame.paused),
                               (t.x = e.flag.x),
-                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
+                              (t.y = getBlockFallY(e.flag.x, e.flag.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir) - 1.5),
                               (t.df = e.inGame.df);
                           }
                         ),
@@ -31075,7 +31143,7 @@ var version = "v1.9.7";
                                 frame:
                                   (null === (t = e.inGame) || void 0 === t
                                     ? void 0
-                                    : t.frame) || 0,
+                                    : t.frame) || e.frame || 0,
                               },
                               (t) => {
                                 var a;
@@ -31084,7 +31152,7 @@ var version = "v1.9.7";
                                   (t.frame =
                                     (null === (a = e.inGame) || void 0 === a
                                       ? void 0
-                                      : a.frame) || 0);
+                                      : a.frame) || e.frame || 0);
                               }
                             ),
                           ];
@@ -31115,7 +31183,7 @@ var version = "v1.9.7";
                                     frame:
                                       (null === (t = e.inGame) || void 0 === t
                                         ? void 0
-                                        : t.frame) || 0,
+                                        : t.frame) || e.frame || 0,
                                   },
                                   (t) => {
                                     var a;
@@ -31124,7 +31192,7 @@ var version = "v1.9.7";
                                       (t.frame =
                                         (null === (a = e.inGame) || void 0 === a
                                           ? void 0
-                                          : a.frame) || 0);
+                                          : a.frame) || e.frame || 0);
                                   }
                                 ),
                                 triggerableSpriteSheet.Single(
@@ -31163,7 +31231,7 @@ var version = "v1.9.7";
                                     frame:
                                       (null === (t = e.inGame) || void 0 === t
                                         ? void 0
-                                        : t.frame) || 0,
+                                        : t.frame) || e.frame || 0,
                                   },
                                   (t) => {
                                     var a;
@@ -31172,7 +31240,7 @@ var version = "v1.9.7";
                                       (t.frame =
                                         (null === (a = e.inGame) || void 0 === a
                                           ? void 0
-                                          : a.frame) || 0);
+                                          : a.frame) || e.frame || 0);
                                   }
                                 ),
                               ];
@@ -31228,6 +31296,40 @@ var version = "v1.9.7";
               )
             ],
           }),
+          bossButtonSprite = makeSprite({
+            init({props: e}) {
+              return {
+                frame: e.button.pressed ? 5 : 0,
+              }
+            },
+            loop({ props: e, state: t}) {
+              t.frame += (e.df || 1) * (e.button.pressed ? 1 : -1);
+              if (t.frame < 0) {
+                t.frame = 0;
+              } else if (t.frame > 17) {
+                t.frame = 17;
+              }
+            },
+            render({ props: e, state: t }) {
+              return [
+                loopingSpriteSheet.Single(
+                  {
+                    fileName:
+                      "images/level/boss2/button.png",
+                    columns: 3,
+                    rows: 2,
+                    frameRate: 3,
+                    width: 90,
+                    height: 30,
+                    frame: t.frame
+                  },
+                  (a) => {
+                    (a.frame = t.frame);
+                  }
+                )
+              ]
+            }
+          }),
           no = makeSprite({
             render: ({ props: e }) => [
               onChange(
@@ -31248,7 +31350,28 @@ var version = "v1.9.7";
                         width: 7,
                         height: 7,
                       })
-                    : y(
+                    : conditional(
+                    () => e.bullet.destroyed,
+                    () => [
+                      triggerableSpriteSheet.Single(
+                      {
+                        fileName: "images/themes/world2/enemy-explosion.png",
+                        columns: 4,
+                        rows: 2,
+                        frameRate: 3,
+                        width: 100,
+                        height: 100,
+                        paused: e.paused,
+                        df: e.df,
+                        hideOnEnd: true
+                      },
+                      (t) => {
+                        (t.paused = e.paused), (t.df = e.df);
+                      }
+                    ),
+                    ],
+                    () => [
+                      y(
                         {
                           fileName: `images/level/boss2/${e.bullet.type}.png`,
                           width: e.bullet.width,
@@ -31258,7 +31381,8 @@ var version = "v1.9.7";
                           (t.width = e.bullet.width),
                             (t.height = e.bullet.height);
                         }
-                      ),
+                      )
+                    ]),
                 ]
               ),
             ],
@@ -31365,7 +31489,21 @@ var version = "v1.9.7";
               direction: f,
             });
           for (const { object: i } of [...s, ...((bottom || []).map(x=>({index: 0, object: x})))])
-            if ("enemy" !== i?.type && d(i))
+            if ("saw" === i?.type && i?.shape === "bar") {
+              if (be.hitObject(
+                p,
+                g,
+                t.width / 30,
+                t.height / 30,
+                0,
+                false,
+                false
+              )(i)) {
+                return Object.assign(Object.assign({}, a), {
+                destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
+              });
+              }
+            } else if ("enemy" !== i?.type && d(i))
               return Object.assign(Object.assign({}, a), {
                 destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
               });
@@ -31481,7 +31619,21 @@ var version = "v1.9.7";
               direction: newDirection,
             });
           for (const { object: i } of [...s, ...((bottom || []).map(x=>({index: 0, object: x})))])
-            if ("enemy" !== i?.type && d(i))
+            if ("saw" === i?.type && i?.shape === "bar") {
+              if (be.hitObject(
+                newX,
+                newY,
+                t.width / 30,
+                t.height / 30,
+                0,
+                false,
+                false
+              )(i)) {
+                return Object.assign(Object.assign({}, a), {
+                destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
+              });
+              }
+            } else if ("enemy" !== i?.type && d(i))
               return Object.assign(Object.assign({}, a), {
                 destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
               });
@@ -32308,6 +32460,7 @@ var version = "v1.9.7";
           _o = makeCustomSprite({
             render: ({
               props: {
+                isFullScreen: fullScreen,
                 iconName: e,
                 iconWidth: t,
                 iconHeight: a,
@@ -32315,7 +32468,7 @@ var version = "v1.9.7";
                 height: n,
                 noSound: s = false,
                 disabled: o = false,
-                testId: r,
+                testId: testId,
                 onPress: c,
               },
               device: d,
@@ -32338,9 +32491,46 @@ var version = "v1.9.7";
                     isPressed: s,
                     topColour: o ? Xe : s ? ke : Re,
                     bottomColour: ve,
-                    sprites: (i) => [
-                      l({ testId: r, fileName: e, width: t, height: a, y: i }),
-                    ],
+                    stroke: fullScreen ? {thickness: 2, colour: Me} : null,
+                    sprites: (i) => 
+                      fullScreen ? [
+                        r({ 
+                          testId: testId, 
+                          path: [[-10, 3], [-10, 10], [-3, 10]], 
+                          width: t, 
+                          height: a, 
+                          color: Be, 
+                          thickness: 3,
+                          lineCap: "round", y: i 
+                        }),
+                        r({ 
+                          testId: testId, 
+                          path: [[10, 3], [10, 10], [3, 10]], 
+                          width: t, 
+                          height: a, 
+                          color: Be, 
+                          thickness: 3,
+                          lineCap: "round", y: i 
+                        }),
+                        r({ 
+                          testId: testId, 
+                          path: [[-10, -3], [-10, -10], [-3, -10]], 
+                          width: t, 
+                          height: a, 
+                          color: Be, 
+                          thickness: 3,
+                          lineCap: "round", y: i 
+                        }),
+                        r({ 
+                          testId: testId, 
+                          path: [[10, -3], [10, -10], [3, -10]], 
+                          width: t, 
+                          height: a, 
+                          color: Be, 
+                          thickness: 3,
+                          lineCap: "round", y: i 
+                        }),
+                      ] : [l({ testId: testId, fileName: e, width: t, height: a, y: i })],
                   }),
                 ],
               }),
@@ -32362,6 +32552,7 @@ var version = "v1.9.7";
                   disabled: e.disabled,
                   noSound: e.noSound,
                   iconName: e.fileName,
+                  isFullScreen: e.fullScreen,
                   iconWidth: 25 * t,
                   iconHeight: 25 * t,
                 }),
@@ -32778,6 +32969,21 @@ var version = "v1.9.7";
                           (t.x = e.powerup.x), (t.y = getBlockFallY(e.powerup.x, e.powerup.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)), (t.opacity = 0.5);
                         }),
                       ];
+                    case "spaceship":
+                      return [
+                        y(
+                          {
+                            fileName:
+                              "images/themes/world3/player-ship.png",
+                            width: 40,
+                            height: 30,
+                          },
+                          (t) => {
+                            (t.x = e.powerup.x),
+                              (t.y = e.powerup.y);
+                          }
+                        )
+                      ]
                     case "skateboard":
                       return [
                         y(
@@ -32888,6 +33094,7 @@ var version = "v1.9.7";
                     case "playerStack":
                     case "skateboard":
                     case "ghost":
+                    case "spaceship":
                       return [];
                   }
                 }
@@ -33161,6 +33368,7 @@ var version = "v1.9.7";
                 case "playerStack":
                 case "skateboard":
                 case "ghost":
+                case "spaceship":
                   return [];
               }
             },
@@ -33512,20 +33720,21 @@ var version = "v1.9.7";
           Lo = makeSprite({ render: ({ props: { sprites: e } }) => e }),
           ScrollContainer = makeCustomSprite({
             init({
-              props: {
-                initScrollY: e = 0,
-                containerHeight: t,
-                contentHeight: a,
-              },
+              props,
               updateState: i,
               getContext
             }) {
+              let {
+                initScrollY: e = 0,
+                containerHeight: t,
+                contentHeight: a,
+              } = props
               const { addToOnScrollQueue } = getContext(Se),
               n = (e) => addToOnScrollQueue(() => 
                 (0 === e.deltaMode &&
                   i((t) =>
                     Object.assign(Object.assign({}, t), {
-                      scrollY: B.clamp([0, s])(t.scrollY + e.deltaY),
+                      scrollY: B.clamp([0, props.contentHeight - props.containerHeight])(t.scrollY + e.deltaY),
                     })
                   ))
                 );
@@ -34329,7 +34538,7 @@ var version = "v1.9.7";
                           : 0);
                   }),
                 ];
-              const { animationAssets: i, animationRenderer: n } = e.spineContext || t(Ws),
+              let { animationAssets: i, animationRenderer: n } = e.spineContext || t(Ws),
                 s = Ko[e.portal.pairId % Ko.length];
               let o = 0,
                 r = 0,
@@ -34369,6 +34578,7 @@ var version = "v1.9.7";
                     height: e.portal.height,
                   },
                   (t) => {
+                    s = Ko[e.portal.pairId % Ko.length];
                     var a;
                     o = 0,
                     r = 0,
@@ -34483,7 +34693,7 @@ var version = "v1.9.7";
                         ])])
                 ]
               }
-              if (bgOnly || e.isEditor)
+              if (bgOnly)
                 return [
                   y(
                     {
@@ -34501,7 +34711,7 @@ var version = "v1.9.7";
                     }
                   ),
                 ];
-              const { animationAssets: i, animationRenderer: n } = a(Ws);
+              const { animationAssets: i, animationRenderer: n } = e.spineContext || a(Ws);
               return [
                 onChange(
                   () => t.hitCount,
@@ -34520,13 +34730,17 @@ var version = "v1.9.7";
                         x: e.speedChange.x,
                         y: getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                         scale: {
-                          x: "right" === e.speedChange.direction ? 1 : -1,
-                          y: 1,
+                          x: ("right" === e.speedChange.direction ? 1 : -1) * (e.scale || 1),
+                          y: e.scale || 1,
                         },
                         height: 0,
                       },
                       (a) => {
                         (a.df = (0 === t.hitCount ? 0 : e.df || 1) / 1.2),
+                        (a.scale = {
+                          x: ("right" === e.speedChange.direction ? 1 : -1) * (e.scale || 1),
+                          y: e.scale || 1,
+                        }),
                           (a.paused = e.paused || false),
                           (a.x = e.speedChange.x),
                           (a.y = getBlockFallY(e.speedChange.x, e.speedChange.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
@@ -35067,7 +35281,7 @@ var version = "v1.9.7";
                 id: "ScrollContainer",
                 containerHeight: 280,
                 containerWidth: ar - 20,
-                contentHeight: 40 * e.themes.length + 50,
+                contentHeight: 40 * e.themes.length + 100,
                 x: -10,
                 y: 150,
                 sprites: (t) => [
@@ -36016,7 +36230,7 @@ var version = "v1.9.7";
                         name: "Trigger",
                         options: [
                           {
-                            name: "Beat",
+                            name: "Music Beat",
                             selected: t.trigger == "beat",
                             onPress: () => {
                               a.map((j) => {
@@ -36718,6 +36932,91 @@ var version = "v1.9.7";
                         });
                       },
                     },
+                  ],
+                  j = [
+                    {
+                        name: "Movement",
+                        options: [
+                          {
+                            name: "Static",
+                            selected: "static" === t.movement,
+                            onPress: () => {
+                              i.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "saws",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      movement: "static",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Up-Down",
+                            selected: "upDown" === t.movement,
+                            onPress: () => {
+                              i.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "saws",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      movement: "upDown",
+                                      shape: "rail",
+                                    width: 30,
+                                    height: 30,
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Down-Up",
+                            selected: "downUp" === t.movement,
+                            onPress: () => {
+                              i.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "saws",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      movement: "downUp",
+                                      shape: "rail",
+                                    width: 30,
+                                    height: 30,
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Falling",
+                            selected: "falling" === t.movement,
+                            onPress: () => {
+                              i.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "saws",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      movement: "falling",
+                                      shape: "rail",
+                                    width: 30,
+                                    height: 30,
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                        ],
+                      },
+                      
                   ];
                   return (
                     a.includes("moveOnJump") &&
@@ -36863,7 +37162,7 @@ var version = "v1.9.7";
                               });
                             });
                           },
-                        },*/
+                        },*/ // Come on...
                         {
                           name: "Large",
                           selected: t?.shape == "large",
@@ -36922,91 +37221,81 @@ var version = "v1.9.7";
                           },
                         },
                       ]),
-                    [
-                      {
-                        name: "Movement",
-                        options: [
-                          {
-                            name: "Static",
-                            selected: "static" === t.movement,
-                            onPress: () => {
-                              i.map((j) => {
-                                e({
-                                  type: "setProperty",
-                                  array: "saws",
-                                  index: j,
-                                  set: (e) =>
-                                    Object.assign(Object.assign({}, e), {
-                                      movement: "static",
-                                    }),
-                                });
+                    j.push({ name: t.movement == "falling" ? "Multiplier" : t.movement == "static" ? "Shape" : "Trigger", options: n }),
+                    t.shape === "bar" && j.push({ 
+                      name: "Offset", 
+                      options: [
+                        {
+                          name: "0",
+                          selected: t.offset === 0,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    offset: 0
+                                  }),
                               });
-                            },
+                            });
                           },
-                          {
-                            name: "Up-Down",
-                            selected: "upDown" === t.movement,
-                            onPress: () => {
-                              i.map((j) => {
-                                e({
-                                  type: "setProperty",
-                                  array: "saws",
-                                  index: j,
-                                  set: (e) =>
-                                    Object.assign(Object.assign({}, e), {
-                                      movement: "upDown",
-                                      shape: "rail",
-                                    width: 30,
-                                    height: 30,
-                                    }),
-                                });
+                        },
+                        {
+                          name: "30",
+                          selected: t.offset === 30,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    offset: 30
+                                  }),
                               });
-                            },
+                            });
                           },
-                          {
-                            name: "Down-Up",
-                            selected: "downUp" === t.movement,
-                            onPress: () => {
-                              i.map((j) => {
-                                e({
-                                  type: "setProperty",
-                                  array: "saws",
-                                  index: j,
-                                  set: (e) =>
-                                    Object.assign(Object.assign({}, e), {
-                                      movement: "downUp",
-                                      shape: "rail",
-                                    width: 30,
-                                    height: 30,
-                                    }),
-                                });
+                        },
+                        {
+                          name: "60",
+                          selected: t.offset === 60,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    offset: 60
+                                  }),
                               });
-                            },
+                            });
                           },
-                          {
-                            name: "Falling",
-                            selected: "falling" === t.movement,
-                            onPress: () => {
-                              i.map((j) => {
-                                e({
-                                  type: "setProperty",
-                                  array: "saws",
-                                  index: j,
-                                  set: (e) =>
-                                    Object.assign(Object.assign({}, e), {
-                                      movement: "falling",
-                                      shape: "rail",
-                                    width: 30,
-                                    height: 30,
-                                    }),
-                                });
+                        },
+                        {
+                          name: "90",
+                          selected: t.offset === 90,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    offset: 90
+                                  }),
                               });
-                            },
+                            });
                           },
-                        ],
-                      },
-                      { name: t.movement == "falling" ? "Multiplier" : t.movement == "static" ? "Shape" : "Trigger", options: n },
-                    ]
+                        },
+                      ]
+                      }),
+                    j
                   );
                 })(e, t, a, i);
               case "directionChange":
@@ -37300,6 +37589,45 @@ var version = "v1.9.7";
                         ],
                       },
                     ]);
+                    j.push({
+                      name: "Shape",
+                      options: [
+                        {
+                          name: "Normal",
+                          selected: !t.isFlying,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "flags",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    isFlying: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Flying",
+                          selected: t.isFlying,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "flags",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    isFlying: true
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                      ],
+                    },)
                   return j;
                 })(e, t, i);
               case "powerup":
@@ -37415,7 +37743,24 @@ var version = "v1.9.7";
                           });
                         },
                       }),
-                      /* n.push({
+                      n.push({
+                        name: "Spaceship",
+                        selected: "spaceship" === t.item,
+                        onPress: () => {
+                          i.map((j) => {
+                            e({
+                              type: "setProperty",
+                              array: "powerups",
+                              index: j,
+                              set: (e) =>
+                                Object.assign(Object.assign({}, e), {
+                                  item: "spaceship",
+                                }),
+                            });
+                          });
+                        },
+                      }),
+                      /*n.push({
                         name: "Drill",
                         selected: "drill" === t.item,
                         onPress: () => {
@@ -37431,8 +37776,8 @@ var version = "v1.9.7";
                             });
                           });
                         },
-                      }), 
-                      n.push({
+                      }), */
+                      /* n.push({
                         name: "Ghost",
                         selected: "ghost" === t.item,
                         onPress: () => {
@@ -38783,7 +39128,7 @@ var version = "v1.9.7";
                   frame: t.frame,
                 }),
                 I
-                  ? n({ text: I, font: { size: 20 }, color: ve, y: c / 2 - 20 })
+                  ? n({ text: localize(I), font: { size: 20 }, color: ve, y: c / 2 - 20 })
                   : null,
                 tr({
                   id: "Tools",
@@ -39086,7 +39431,7 @@ var version = "v1.9.7";
                   })
                 ),
                 ...h.flags.map((e, t) =>
-                  ao.Single({ id: `Flag-${t}`, flag: e, theme: v.flag, spineContext: getContext(Ws), paused: pauseAnimations, scale: propsScale,})
+                  ao.Single({ id: `Flag-${t}`, flag: e, theme: v.flag, spineContext: getContext(Ws), paused: pauseAnimations, scale: propsScale, frame: frame})
                 ),
                 ...h.powerups.map((e, t) =>
                   Co.Single({
@@ -39105,7 +39450,7 @@ var version = "v1.9.7";
                   id: "Saws",
                   saws: h.saws,
                   theme: v.saw,
-                  editor: { previewYs: inViewLayoutAtTime.saws.map((e) => e.y) },
+                  editor: { previewYs: inViewLayoutAtTime.saws.map((e) => e.y), previewRots: inViewLayoutAtTime.saws.map((e) => e.rotation)},
                   bigTheme: v.spike
                 }),
                 ...inViewLayoutAtTime.enemies.map((e, t) =>
@@ -39333,6 +39678,7 @@ var version = "v1.9.7";
                     spineContext: spineContext,
                     paused: paused,
                     scale: scale,
+                    frame: frame,
                   });
                 case "powerup":
                   return Co.Single({
@@ -39471,7 +39817,7 @@ var version = "v1.9.7";
                             playSound: playSound,
                             pauseSound: pauseSound,
                           })
-                        : state.bossState,
+                        : boss.cloneState(state.bossState),
                   })
                 : state
               : {
@@ -39529,13 +39875,14 @@ var version = "v1.9.7";
                   gravity: 1,
                   dashing: false,
                   isGravity: false,
-                  fallTypes: [null, null]
+                  fallTypes: [null, null],
+                  flyingAnchor: null,
                 };
           },
           el = function (e, t) {
             return Object.assign(Object.assign({}, e), { layoutState: t });
           },
-          tl = function (e, t) {
+          tl = function (e, boss) {
             return {
               frame: e.frame,
               attempt: e.attempt,
@@ -39591,7 +39938,7 @@ var version = "v1.9.7";
                 state: e.checkpoint.state,
               },
               bossState:
-                t && e.bossState ? t.cloneState ? t.cloneState(e.bossState) : Object.assign({}, e.bossState) : e.bossState,
+                boss && e.bossState ? boss.cloneState(e.bossState) : e.bossState,
               onObject: e.onObject && {
                 array: e.onObject.array,
                 index: e.onObject.index,
@@ -39609,7 +39956,8 @@ var version = "v1.9.7";
               gravity: e.gravity,
               dashing: e.dashing,
               isGravity: e.isGravity,
-              fallTypes: [e.fallTypes[0], e.fallTypes[1]]
+              fallTypes: [e.fallTypes[0], e.fallTypes[1]],
+              flyingAnchor: e.flyingAnchor
             };
           },
           menuButtonSprite = makeSprite({
@@ -39751,6 +40099,7 @@ var version = "v1.9.7";
                 playerDir: n,
                 gravity: gravity,
                 dashing: dashing,
+                portalY: p.y
               }),
               il
             );
@@ -39857,11 +40206,13 @@ var version = "v1.9.7";
               playerX: e.playerX,
               playerY: e.playerY,
               playerBullets: e.playerBullets,
+              playerOnGroundY: e.playerOnGroundY,
               frame: e.frame,
               speed: levelSpeed,
               df: t,
               playSound: (null == u ? void 0 : u.playSound) || (() => null),
               crashed: e.crashed,
+              rectangleHitPlayer: d,
             }),
             !e.crashed &&
               n.boss.crashed({
@@ -40061,6 +40412,7 @@ var version = "v1.9.7";
                 (U.playerX = e.playerX),
                 (U.jumping = e.jumping);
             } else {
+              
               if (isDown) {
                 const e = U.justDownInputTimer > 0,
                   t = e
@@ -40263,12 +40615,14 @@ var version = "v1.9.7";
                     U.dashing = false;
                   U.gravity = 1;
                   U.isGravity = false;
-                  U.jumping = true;
+                  U.jumping = U.flyingAnchor === null ? true : U.jumping;
                   U.playerGradY = -1;
                   (L.blockJumpUntilReleased = true),
                   (isDown = false),
                   (U.justDownInputTimer = 0);
                   }
+                } else if (U.playerPowerup?.item === "spaceship") {
+                  
                 } else {
                   if (U.dashing) {
                     U.dashing && e && ((U.dashing = false),
@@ -40320,10 +40674,9 @@ var version = "v1.9.7";
               )
                 U.playerRot = B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir;
               else if (
-                ("playerStack" ===
-                (null === (l = U.playerPowerup) || void 0 === l
+                (["playerStack", "spaceship"].includes(null === (l = U.playerPowerup) || void 0 === l
                   ? void 0
-                  : l.item)) & !U.dashing
+                  : l.item)) && !U.dashing
               )
                 U.playerRot = 0;
               
@@ -40342,6 +40695,7 @@ var version = "v1.9.7";
                 } else U.playerRot = 0;
               else if (U.isGravity)
                 (U.playerRot % 90) > 89 || (U.playerRot % 90) < 1 ? (U.playerRot = et.closestFlatAngle(U.playerRot)) : (U.playerRot += (et.closestFlatAngle(U.playerRot) - U.playerRot) / 5)
+              
               else
                 (J && !U.dashing) ||
                   ((U.playerRot += (90 * U.playerDir * df) / C * U.gravity * (U.dashing ? 2 : 1)),
@@ -40349,7 +40703,30 @@ var version = "v1.9.7";
                     ? (U.playerRot += 360)
                     : U.playerRot > 360 && (U.playerRot -= 360));
               const e = U.dashing ? {y: U.playerY, gradY: 0} : G.stepY(U.playerY, U.playerGradY, j, df, U.gravity);
-              (U.playerY = e.y), (U.playerGradY = e.gradY);
+              const low = U.flyingAnchor - 45,
+              high = U.flyingAnchor + 45,
+              oldY = U.playerY;
+              U.playerPowerup?.item === "spaceship" ? 
+                    (
+                      "justDown" === playerInput && !L.blockJumpUntilReleased && (
+                        (U.jumping = !U.jumping),
+                        (U.jumpSwitch.on = !U.jumpSwitch.on),
+                        (U.jumpSwitch.delay = 0),
+                        (L.blockJumpUntilReleased = true),
+                        (isDown = false),
+                        (U.justDownInputTimer = 0)),
+                      U.dashing || (U.jumping
+                        ? U.playerY > low
+                          ? ((U.playerY += 2 * df * ((-5 + low - U.playerY) / 6.6) * (w / 6.6)),
+                            (U.playerY = B.clamp2(low, high, U.playerY)))
+                          : (U.playerY = low)
+                        : U.playerY < high
+                        ? ((U.playerY += 2 * df * ((5 + high - U.playerY) / 6.6) * (w / 6.6)),
+                          (U.playerY = B.clamp2(low, high, U.playerY)))
+                        : (U.playerY = high)),
+                      (U.playerGradY = U.playerY - oldY)
+                    ) : 
+              ((U.playerY = e.y), (U.playerGradY = e.gradY));
               if (("ghost" ===
                 (null === (l = U.playerPowerup) || void 0 === l
                   ? void 0
@@ -40510,6 +40887,9 @@ var version = "v1.9.7";
                   "skateboard" !==
                     (null === (c = U.playerPowerup) || void 0 === c
                       ? void 0
+                      : c.item) && "spaceship" !==
+                    (null === (c = U.playerPowerup) || void 0 === c
+                      ? void 0
                       : c.item) && (U.playerPowerup = null),
                   U.playerStacks.length > 0 &&
                     (U.explosions.push(
@@ -40594,7 +40974,7 @@ var version = "v1.9.7";
                   : "blockSpike" === e.affects
                   ? (U.switchBlockSpikes = !U.switchBlockSpikes)
                   : ((U.fallTypes[0] = e.down ? "down" : null), (U.fallTypes[1] = e.up ? "up" : null)),
-                null == v || v.hitSwitch(),
+                null == v || "color" === e.affects || v.hitSwitch(),
                 (U.justHitObject = { array: "switchButtons", index: ie });
             };
             U.flash > 0 ? (U.flash -= 0.01) : (U.flash = 0);
@@ -40662,7 +41042,7 @@ var version = "v1.9.7";
               var gradY = stack ? stack.gradY : (U.isGravity ? G.initGrad(V) : U.playerGradY);
               if (-1 !== idx) {
                 const spring = inViewLayout.springs[idx];
-                (stack || (U.jumping = true)),
+                (stack || (U.jumping = U.playerPowerup?.item === "spaceship" ? spring.direction < 0 : true)),
                 (stack || (U.gravity = 1)),
                 (setGradY((spring.direction > 0
                       ? Math.max(1.5 * G.initGrad(V), Math.abs((gradY)))
@@ -40705,6 +41085,8 @@ var version = "v1.9.7";
                 ((U.cameraXOffset += U.playerX - oe.teleport.playerX),
                 (U.playerX = oe.teleport.playerX),
                 (U.playerY = oe.teleport.playerY),
+                (U.flyingAnchor = U.flyingAnchor ? oe.teleport.portalY : null),
+                (U.jumping = U.flyingAnchor ? (U.playerGradY !== oe.teleport.playerGradY ? oe.teleport.playerGradY <= 0 : U.jumping ) : U.jumping),
                 (U.playerGradY = oe.teleport.playerGradY),
                 (U.playerDir = oe.teleport.playerDir),
                 (U.gravity = oe.teleport.gravity),
@@ -40731,6 +41113,7 @@ var version = "v1.9.7";
 
               }
               U.isCompatible = e.compatible;
+              U.flyingAnchor = null;
               if (
                 (xa.updateLayoutStateField(
                   "powerups",
@@ -40766,6 +41149,10 @@ var version = "v1.9.7";
                   });
                 }
                 //console.log(U.playerStackIndex)
+              } else if (e.item === "spaceship") {
+                U.flyingAnchor = e.y;
+                U.jumping = U.playerGradY <= 0;
+                U.playerRot = 0;
               } else "skateboard" === e.item && (U.playerRot = 0);
               // set powerup
               U.playerPowerup = Object.assign(Object.assign({}, e), {
@@ -40793,8 +41180,8 @@ var version = "v1.9.7";
                 U.gravityHitObject,
                 U.playerPowerup ? U.playerPowerup.item == "ghost" : false
               );
-            (U.crashed = ce.crashed), (Q = ce.onGroundY);
-            var de = U.gravityHitObject || ce.hitObject;
+            (U.crashed = U.playerPowerup?.item == "spaceship" && ce.hitObject && !ce.hitObject.object.canJumpThrough ? ((U.playerGradY < -3) || ce.crashed) : ce.crashed), (Q = U.flyingAnchor === null ? ce.onGroundY : null);
+            var de = U.flyingAnchor === null ? (U.gravityHitObject || ce.hitObject) : null;
             if (U.gravity < 0 && Math.abs(U.playerGradY) < 2) {
               
               (U.crashed = U.crashed || rl(
@@ -40894,7 +41281,7 @@ var version = "v1.9.7";
               if (
                 (Math.abs(U.playerGradY) > w &&
                   (L.landTimer = et.landTimerLimit),
-                (U.jumping = U.gravity > 0 ? (isDown && !skating) : false),
+                U.flyingAnchor === null && (U.jumping = U.gravity > 0 ? (isDown && !skating) : false),
                 (U.playerY = Q),
                 (U.playerGradY = 0),
                 U.jumping &&
@@ -40988,7 +41375,7 @@ var version = "v1.9.7";
                     : g.minY) && void 0 !== m
                 ? m
                 : Ca.getMinYFromX(U.playerX, inViewLayout.properties.minY);
-            if (U.playerY <= pe) {
+            if (U.playerY <= pe && !inViewLayout.properties.useGround) {
               const e =
                 null !==
                   (y =
@@ -41380,12 +41767,13 @@ var version = "v1.9.7";
                     U.playerStacks.splice(U.playerStackIndex, 1),
                     (U.crashed = false),
                     0 === U.playerStacks.length && (U.playerPowerup = null))
-                  : ("skateboard" !==
-                      (null === (S = U.playerPowerup) || void 0 === S
+                  : (!["skateboard", "spaceship"].includes(
+                    null === (S = U.playerPowerup) || void 0 === S
                         ? void 0
                         : S.item) && (U.playerPowerup = null),
                     onCrash(U.checkpoint.index),
                     N && (L.resetTimer = 60)));
+            U.playerOnGroundY = U.flyingAnchor === null ? U.playerOnGroundY : U.flyingAnchor;
             let ge = U.explosions.length;
             ge > 0 &&
               ((U.explosions = U.explosions.map(
@@ -41398,7 +41786,7 @@ var version = "v1.9.7";
               )),
               0 === ge && (U.explosions.length = 0)),
               L.landTimer > 0 && L.landTimer--,
-              (U.playerOnGroundY = null != Q ? Q : U.playerOnGroundY),
+              U.flyingAnchor === null && (U.playerOnGroundY = null != Q ? Q : U.playerOnGroundY),
               (U.playerWasOnGroundCooldown = Math.max(
                 0,
                 U.playerWasOnGroundCooldown - df
@@ -41465,6 +41853,12 @@ var version = "v1.9.7";
                 bpm: 110,
                 isBonusSong: false,
               },
+              solarWind: {
+                name: "Solar Wind",
+                author: "Jumper",
+                fileName: "audio/tracks/jumper-solar-wind.mp3",
+                bpm: 130,
+              },
               solace: {
                 name: "Solace",
                 author: "Avenza",
@@ -41494,7 +41888,12 @@ var version = "v1.9.7";
                 label: "Tasty",
                 isBonusSong: false,
               },
-              
+              glitchedOut: {
+                name: "Glitched Out",
+                author: "FantomenK",
+                fileName: "audio/tracks/fantomenk-glitched-out.mp3  ",
+                bpm: 140,
+              },
               eightBitAdventure: {
                 name: "8 Bit Adventure",
                 author: "AdhesiveWombat",
@@ -41840,13 +42239,38 @@ var version = "v1.9.7";
                 author: "dj-Nate",
                 fileName: "audio/tracks/dj-nate-electrodynamix.mp3",
                 bpm: 127,
+              },
+              skyFractureExtended: {
+                name: "Sky Fracture (extended)",
+                author: "Getsix",
+                fileName: "audio/tracks/getsix-sky-fracture-extended.mp3",
+                bpm: 176,
+              },
+              plummet: {
+                name: "Plümmet",
+                author: "Onefin & Stardew",
+                fileName: "audio/tracks/onefin-stardew-plummet.mp3",
+                bpm: 134,
+              },
+              lastTile: {
+                name: "Last Tile",
+                author: "Kommisar",
+                bpm: 150,
+                fileName: "audio/tracks/kommisar-last-tile.mp3",
+              },
+              hellidox: {
+                name: "Hellidox",
+                author: "Exilelord",
+                bpm: 210,
+                fileName: "audio/tracks/exilelord-hellidox.mp3"
               }
+              
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
           pl = 2.5 * G.jumpDistance,
           gl = G.getJumpFrames(130);
-        function ml(e, t, a, i) {
+        function ml(e, t, a, data1, data2) {
           switch (e) {
             case "thinBullet":
               return {
@@ -41858,6 +42282,7 @@ var version = "v1.9.7";
                 speedX: -3,
                 speedY: 0,
                 gradY: 0,
+                destroyed: false,
               };
             case "missile":
               return {
@@ -41867,8 +42292,21 @@ var version = "v1.9.7";
                 width: 33,
                 height: 15,
                 speedX: -0.5,
-                speedY: 0 === i ? 3 : -3,
+                speedY: 0 === data1 ? 3 : -3,
                 gradY: 0,
+                destroyed: false,
+              };
+            case "cannonbomb":
+              return {
+                type: "cannonbomb",
+                x: t,
+                y: a,
+                width: 30,
+                height: 30,
+                speedX: data2 || 0,
+                speedY: data1 || 0,
+                gradY: -0.4,
+                destroyed: false,
               };
             case "bomb":
               return {
@@ -41880,10 +42318,11 @@ var version = "v1.9.7";
                 speedX: -3,
                 speedY: 0,
                 gradY: -0.4,
+                destroyed: false,
               };
             case "bulletHell":
             case "bulletHellBig":
-              const n = 30 * i,
+              const n = 30 * data1,
                 s = B.toRad(30 + n),
                 o = "bulletHell" === e ? 1.8 : 7,
                 r = "bulletHell" === e ? 3 : 15;
@@ -41896,6 +42335,7 @@ var version = "v1.9.7";
                 speedX: ("bulletHell" === e ? 4 : -1) - 2 * Math.sin(s),
                 speedY: Math.cos(s) * o,
                 gradY: 0,
+                destroyed: false,
               };
             case "laser":
               return {
@@ -41907,6 +42347,7 @@ var version = "v1.9.7";
                 speedX: 0,
                 speedY: 0,
                 gradY: 0,
+                destroyed: false,
               };
           }
         }
@@ -41915,15 +42356,24 @@ var version = "v1.9.7";
           if (
             ((e.y += e.speedY * df),
             (e.speedY += e.gradY * df),
-            "bomb" === e.type)
+            "bomb" === e.type || "cannonbomb" === e.type)
           ) {
             const t = et.initialPosition.y - 15 + e.height / 2;
-            e.y < t && ((e.speedY *= -0.25), (e.y = t + (t - e.y)));
+            if (e.y < t && !(e.speedY > 0)) {
+              if ("cannonbomb" === e.type) {
+                e.destroyed = true;
+                e.speedY = 0;
+                e.y = t;
+              } else { 
+                e.speedY *= -0.25;
+                e.y = t + (t - e.y);
+              }
+            }
           } else
             "missile" === e.type &&
               (e.x - playerX < 160 || crashed) &&
               (e.speedY *= 0.85 + (df < 1 ? 0.07 : 0));
-          const n = crashed ? Math.min(-1, e.speedX) : e.speedX;
+          const n = crashed ? e.speedX === 0 ? 0 : Math.min(-1, e.speedX) : e.speedX;
           e.x += n * df;
         }
         const yl = G.getJumpFrames(176),
@@ -42414,7 +42864,7 @@ var version = "v1.9.7";
               },
             };
           },
-          kl = function () {
+          getPixelBoss = function () {
             return {
               mutatesState: false,
               fileNames: {
@@ -42426,15 +42876,15 @@ var version = "v1.9.7";
                     `images/level/boss2/idle/health${e}.png`,
                     `images/level/boss2/lasercharge/base/health${e}.png`,
                     `images/level/boss2/lasercharge/shot/health${e}.png`,
-                    5 === e
-                      ? null
-                      : `images/level/boss2/laserdamage/health${e}.png`,
+                    `images/level/boss2/laserdamage/health${e}.png`,
                   ])
                   .filter(nt)
                   .concat([
                     "images/level/boss2/thinBullet.png",
                     "images/level/boss2/missile.png",
                     "images/level/boss2/bomb.png",
+                    "images/level/boss2/cannonbomb.png",
+                    "images/level/boss2/button.png",
                     "images/level/boss2/bulletHell.png",
                     "images/level/boss2/bulletHellBig.png",
                     "images/level/boss2/healthbar.png",
@@ -42471,9 +42921,19 @@ var version = "v1.9.7";
                 isShootingFrames: 0,
                 startChargeFrame: null,
                 takingDamageTimeout: 0,
-                health: 5,
+                health: 10,
                 bullets: [],
+                allButtons: [
+                  {x: 26370, y: 0, pressed: false}, 
+                  {x: 26880, y: -15, pressed: false},
+                  {x: 27420, y: -15, pressed: false},
+                  {x: 27720, y: 15, pressed: false},
+                  {x: 27990, y: 45, pressed: false},
+                  {x: 28590, y: 90, pressed: false},
+                  {x: 29100, y: 75, pressed: false},
+                ],
                 destroyed: false,
+                mutatesState: false,
               }),
               cloneState: (e) =>
                 Object.assign(Object.assign({}, e), {
@@ -42481,17 +42941,52 @@ var version = "v1.9.7";
                 }),
               loop: ({
                 bossState: e,
-                playerX: t,
+                playerX: playerX,
+                playerY,
+                rectangleHitPlayer,
+                playerOnGroundY,
                 playerBullets: a,
                 frame: i,
                 df: n,
                 playSound: s,
                 crashed: o,
               }) => {
+                e.mutatesState = false;
                 e.isShootingFrames > 0 && (e.isShootingFrames -= n);
-                for (const a of e.bullets) fl(a, n, o, t);
+                for (const a of e.bullets) fl(a, n, o, playerX);
                 lt(e.bullets, (t) => t.x > e.bossX - 1e3);
-                let r = t + 350,
+                e.allButtons.forEach((button) => {
+                  let lastPressed = button.pressed;
+                  button.pressed = rectangleHitPlayer(
+                    Object.assign(Object.assign({}, button), { 
+                      width: 90, height: 30 
+                    })
+                  );
+                  if (button.pressed && !lastPressed) {
+                    e.bullets.push(ml("cannonbomb", 26370, -90, 10));
+                    e.bullets.push(ml("cannonbomb", 26550, -90, 11));
+                    e.bullets.push(ml("cannonbomb", 26790, -90, 11));
+                    e.bullets.push(ml("cannonbomb", 26970, -90, 12));
+                    e.bullets.push(ml("cannonbomb", 27120, -90, 10));
+                    e.bullets.push(ml("cannonbomb", 27255, -90, 15.2));
+                    e.bullets.push(ml("cannonbomb", 27585, -30, 6));
+                    e.bullets.push(ml("cannonbomb", 27720, -90, 10));
+                    e.bullets.push(ml("cannonbomb", 27855, 15, 10));
+                    e.bullets.push(ml("cannonbomb", 28110, 75, 10));
+                    e.bullets.push(ml("cannonbomb", 28245, 75, 13.5));
+                    e.bullets.push(ml("cannonbomb", 28380, 75, 10));
+
+                    e.bullets.push(ml("cannonbomb", 28950, 90, 10, 0.5));
+
+                    e.bullets.push(ml("cannonbomb", 29190, 30, 11));
+                    e.bullets.push(ml("cannonbomb", 29250, 0, 12));
+                    e.bullets.push(ml("cannonbomb", 29310, -30, 13));
+                    e.bullets.push(ml("cannonbomb", 29370, -60, 17));
+                    e.bullets.push(ml("cannonbomb", 29400, -60, 17));
+                  }
+                });
+                console.warn(e.allButtons);
+                let r = playerX + 350,
                   l = e.bossY;
                 const c = e.view;
                 switch (i) {
@@ -42521,6 +43016,7 @@ var version = "v1.9.7";
                   case 3342:
                   case 4238:
                   case 5083:
+                  case 6020:
                     e.startChargeFrame = i;
                     break;
                   case 3021:
@@ -42547,7 +43043,7 @@ var version = "v1.9.7";
                       t.x > e.bossX - 80 &&
                         ((e.view = "chargeLaserDamage"),
                         (e.startChargeFrame = null),
-                        e.health--,
+                        (e.health -= 1),
                         (a.length = 0),
                         (e.takingDamageTimeout = 30));
                   0 === e.health && ((e.view = "death"), (e.destroyed = true)),
@@ -42613,6 +43109,12 @@ var version = "v1.9.7";
                           ml("bulletHellBig", a, o, 4.5)
                         ));
                   }
+                } else if (i > 6215){
+                  (l = 0.5 * Math.abs((i % (2 * gl)) - gl));
+                  l += 90 + playerOnGroundY;
+                } else if (i > 5269) {
+                  (l = 0.5 * Math.abs((i % (2 * gl)) - gl));
+                  l += 150;
                 } else if (!e.destroyed) {
                   const t = 50;
                   (l = 2 * Math.abs((i % (2 * t)) - t) - 80),
@@ -42631,7 +43133,7 @@ var version = "v1.9.7";
               },
               crashed: ({ bossState: e, rectangleHitPlayer: t }) => {
                 let a = false;
-                for (const i of e.bullets) t(i) && (a = true);
+                for (const i of e.bullets) i.destroyed || (t(i) && (a = true));
                 return a;
               },
             };
@@ -43089,9 +43591,9 @@ var version = "v1.9.7";
               difficulty: 2,
             },
             {
-              levelName: "Solace",
-              levelFileName: "solace",
-              song: hl.songs.solace,
+              levelName: "Solar Wind",
+              levelFileName: "solar-wind",
+              song: hl.songs.solarWind,
               unlockedByIndex: 0,
               x: -100,
               y: 70,
@@ -43101,6 +43603,7 @@ var version = "v1.9.7";
               ],
               maxFrames: 8762,
               difficulty: 3,
+              comingSoon: true,
             },
             {
               levelName: "Think Different",
@@ -43149,20 +43652,21 @@ var version = "v1.9.7";
           ],
           Bl = [
             {
-              levelName: "8 Bit Adventure",
-              levelFileName: "8-bit-adventure",
-              song: hl.songs.eightBitAdventure,
+              levelName: "Glitched Out",
+              levelFileName: "glitched-out",
+              song: hl.songs.glitchedOut,
               unlockedByIndex: null,
               x: -250,
               y: 30,
               pathToLevel: [],
               maxFrames: 8705,
               difficulty: 4,
+              comingSoon: true,
             },
             {
-              levelName: "Octane",
-              levelFileName: "octane",
-              song: hl.songs.octane,
+              levelName: "8 Bit Shuffle",
+              levelFileName: "8-bit-shuffle",
+              song: hl.songs.eightBitShuffle,
               unlockedByIndex: 0,
               x: -50,
               y: 50,
@@ -43172,6 +43676,7 @@ var version = "v1.9.7";
               ],
               maxFrames: 8407,
               difficulty: 4,
+              comingSoon: true,
             },
             {
               levelName: "Super Ultra",
@@ -43189,9 +43694,9 @@ var version = "v1.9.7";
               comingSoon: true,
             },
             {
-              levelName: "Breathe",
-              levelFileName: "breathe",
-              song: hl.songs.breathe,
+              levelName: "Daydreamer",
+              levelFileName: "daydreamer",
+              song: hl.songs.daydreamer,
               unlockedByIndex: 1,
               x: 90,
               y: -20,
@@ -43201,27 +43706,12 @@ var version = "v1.9.7";
               ],
               maxFrames: 7477,
               difficulty: 5,
+              comingSoon: true,
             },
             {
-              levelName: "Clonebreaker",
-              levelFileName: "clonebreaker",
-              author: "Alfredo Gamer",
-              song: hl.songs.coincidence,
-              unlockedByIndex: 3,
-              x: 100,
-              y: 60,
-              pathToLevel: [
-                [-20, 50],
-                [60, 0],
-              ],
-              maxFrames: 7477,
-              difficulty: 5,
-            },
-
-            {
-              levelName: "Critical Hit",
+              levelName: "Critical Hit (Extended)",
               levelFileName: "critical-hit",
-              song: hl.songs.criticalHit,
+              song: hl.songs.criticalHitExtended,
               unlockedByIndex: 3,
               x: 250,
               y: 50,
@@ -43231,7 +43721,8 @@ var version = "v1.9.7";
               ],
               maxFrames: 5343,
               difficulty: 5,
-              boss: kl(),
+              boss: getPixelBoss(),
+              comingSoon: true,
             },
           ],
           Fl = [
@@ -43317,9 +43808,9 @@ var version = "v1.9.7";
               difficulty: 3,
             },
             {
-              levelName: "Awake",
-              levelFileName: "awake",
-              song: hl.songs.awake,
+              levelName: "Color",
+              levelFileName: "color",
+              song: hl.songs.color,
               unlockedByIndex: 0,
               x: -100,
               y: 0,
@@ -43329,6 +43820,7 @@ var version = "v1.9.7";
               ],
               maxFrames: 10991,
               difficulty: 4,
+              comingSoon: true,
             },
             {
               levelName: "Coincidence",
@@ -45142,7 +45634,8 @@ var version = "v1.9.7";
               (e[(e.Skateboard = 4)] = "Skateboard"),
               (e[(e.Punch = 5)] = "Punch");
               (e[(e.Drill = 6)] = "Drill");
-              (e[(e.Ghost = 7)] = "Drill");
+              (e[(e.Ghost = 7)] = "Ghost");
+              (e[(e.Spaceship = 8)] = "Spaceship")
           })(Id || (Id = {})),
           (function (e) {
             (e[(e.Movement = 0)] = "Movement"),
@@ -45213,6 +45706,12 @@ var version = "v1.9.7";
             e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
             e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
             e[(e.Electrodynamix = 53)] = "Electrodynamix";
+            e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
+            e[(e.Plummet = 55)] = "Plummet";
+            e[(e.SolarWind = 56)] = "SolarWind";
+            e[(e.GlitchedOut = 57)] = "GlitchedOut";
+            e[(e.LastTile = 58)] = "LastTile";
+            // you know what? I'm not gonna put songs here. This variable (Rd) isn't even used anywhere.
           })(Rd || (Rd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45243,6 +45742,7 @@ var version = "v1.9.7";
               (e[(e.Punch = 5)] = "Punch");
               (e[(e.Drill = 6)] = "Drill");
               (e[(e.Ghost = 7)] = "Ghost");
+              (e[(e.Spaceship = 8)] = "Spaceship")
           })(Cd || (Cd = {})),
           (function (e) {
             (e[(e.Movement = 0)] = "Movement"),
@@ -45323,6 +45823,12 @@ var version = "v1.9.7";
             e[(e.CriticalHitExtended = 51)] = "CriticalHitExtended";
             e[(e.MindsOfTheMad = 52)] = "MindsOfTheMad";
             e[(e.Electrodynamix = 53)] = "Electrodynamix";
+             e[(e.SkyFractureExtended = 54)] = "SkyFractureExtended";
+             e[(e.Plummet = 55)] = "Plummet";
+             e[(e.SolarWind = 56)] = "SolarWind";
+             e[(e.GlitchedOut = 57)] = "GlitchedOut";
+             e[(e.LastTile = 58)] = "LastTile";
+             e[(e.Hellidox = 59)] = "Hellidox";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45407,6 +45913,22 @@ var version = "v1.9.7";
                       _c(2),
                     ]),
                     nd.enum4,
+                    nd.enum4
+                  ]),
+                  Gc([
+                    fc,
+                    fc,
+                    Bc([_c(-1), _c(0), _c(1), _c(2)]),
+                    Bc([
+                      _c(-2),
+                      _c(-1),
+                      _c(-0.5),
+                      _c(0),
+                      _c(0.5),
+                      _c(1),
+                      _c(2),
+                    ]),
+                    nd.enum4,
                   ]),
                   Gc([
                     fc,
@@ -45426,12 +45948,13 @@ var version = "v1.9.7";
                 ),
                 Oc(
                   Bc([
+                    Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum2, nd.enum2]),
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum8, nd.enum2]), Gc([fc, fc, nd.enum8])])
+                  Bc([Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
                 ),
                 Oc(
                   Bc([
@@ -45516,6 +46039,22 @@ var version = "v1.9.7";
                       _c(2),
                     ]),
                     nd.enum4,
+                    nd.enum4
+                  ]),
+                  Gc([
+                    fc,
+                    fc,
+                    Bc([_c(-1), _c(0), _c(1), _c(2)]),
+                    Bc([
+                      _c(-2),
+                      _c(-1),
+                      _c(-0.5),
+                      _c(0),
+                      _c(0.5),
+                      _c(1),
+                      _c(2),
+                    ]),
+                    nd.enum4,
                   ]),
                   Gc([
                     fc,
@@ -45535,12 +46074,13 @@ var version = "v1.9.7";
                 ),
                 Oc(
                   Bc([
+                    Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum2, nd.enum2, nd.enum2]),
                     Gc([fc, fc, nd.enum2, nd.enum2]),
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum8, nd.enum2]), Gc([fc, fc, nd.enum8])])
+                  Bc([Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
                 ),
                 Oc(
                   Bc([
@@ -45722,23 +46262,25 @@ var version = "v1.9.7";
                         fixSync: 1 == n,
                       })
                     ),
-                    saws: u.map(([e, t, a, i, n]) =>
+                    saws: u.map(([e, t, a, i, n, o]) =>
                       $.newSaw({
                         x: e,
                         y: t,
                         movement: $d[a],
                         movementTrigger: Jd[i],
                         multiplier: i,
-                        shape: n == 3 ? "bar" : n == 2 ? "large" : n == 1 ? "small" : "rail"
+                        shape: n == 3 ? "bar" : n == 2 ? "large" : n == 1 ? "small" : "rail",
+                        offset: (o || 0) * 30,
                       })
                     ),
-                    flags: h.map(([e, t, a, i, b]) =>
+                    flags: h.map(([e, t, a, i, b, o]) =>
                       $.newFlag({
                         x: e,
                         y: t,
                         role: Kd[a],
                         switchesOn: ou[i],
                         retainSpeed: ou[b] || false,
+                        isFlying: ou[o] || false
                       })
                     ),
                     powerups: p.map(([e, t, a, n]) =>
@@ -45913,7 +46455,16 @@ var version = "v1.9.7";
 
                       return j;
                     }),
-                    i.saws.map((e) => e.shape != "rail" ? [
+                    i.saws.map((e) => e.shape === "bar" ? [
+                      e.x,
+                      e.y,
+                      ru(e.movement, $d),
+                      e.movement == "falling"
+                        ? e.multiplier
+                        : ru(e.movementTrigger, Jd),
+                      3,
+                      e.offset / 30
+                    ] :  e.shape != "rail" ? [
                       e.x,
                       e.y,
                       ru(e.movement, $d),
@@ -45930,7 +46481,16 @@ var version = "v1.9.7";
                         : ru(e.movementTrigger, Jd),
                     ]),
                     i.flags.map((e) =>
-                      e.retainSpeed
+                      e.isFlying ? 
+                      [
+                        e.x,
+                        e.y,
+                        ru(e.role, Kd),
+                        ru(e.switchesOn, ou),
+                        ru(e.retainSpeed, ou),
+                        ru(e.isFlying, ou),
+                      ]
+                      : e.retainSpeed
                         ? [
                             e.x,
                             e.y,
@@ -46101,7 +46661,13 @@ var version = "v1.9.7";
             [Nd.OctaneExtended]: hl.songs.octaneExtended,
             [Nd.CriticalHitExtended]: hl.songs.criticalHitExtended,
             [Nd.MindsOfTheMad]: hl.songs.mindsOfTheMad,
-            [Nd.Electrodynamix]: hl.songs.electrodynamix
+            [Nd.Electrodynamix]: hl.songs.electrodynamix,
+            [Nd.SkyFractureExtended]: hl.songs.skyFractureExtended,
+            [Nd.Plummet]: hl.songs.plummet,
+            [Nd.SolarWind]: hl.songs.solarWind,
+            [Nd.GlitchedOut]: hl.songs.glitchedOut,
+            [Nd.LastTile]: hl.songs.lastTile,
+            [Nd.Hellidox]: hl.songs.hellidox
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -46142,7 +46708,8 @@ var version = "v1.9.7";
             [Cd.Skateboard]: "skateboard",
             [Cd.Punch]: "punch",
             [Cd.Drill]: "drill",
-            [Cd.Ghost]: "ghost"
+            [Cd.Ghost]: "ghost",
+            [Cd.Spaceship]: "spaceship",
           },
           Zd = {
             [fd.Shooter]: "shooter",
@@ -46198,7 +46765,8 @@ var version = "v1.9.7";
                 _c("skateboard"),
                 _c("punch"),
                 _c("drill"),
-                _c("ghost")
+                _c("ghost"),
+                _c("spaceship"),
               ]),
             }),
             xc({ snapSize: lu }),
@@ -46295,6 +46863,7 @@ var version = "v1.9.7";
                   _c("thinBullet"),
                   _c("missile"),
                   _c("bomb"),
+                  _c("cannonbomb"),
                   _c("bulletHell"),
                   _c("bulletHellBig"),
                   _c("laser"),
@@ -46306,8 +46875,15 @@ var version = "v1.9.7";
                 speedX: fc,
                 speedY: fc,
                 gradY: fc,
+                destroyed: yc,
               })
             ),
+            allButtons: Oc(kc({
+              x: fc,
+              y: fc,
+              pressed: yc,
+            })),
+            mutatesState: yc,
             destroyed: yc,
           }),
           mu = kc({
@@ -46446,7 +47022,7 @@ var version = "v1.9.7";
                   isGravity: false,
                   bullets: e.bullets.map((bullet)=>({...bullet, frame: 0})),
                 }),
-              (e) => Object.assign(Object.assign({}, e), {
+                (e) => Object.assign(Object.assign({}, e), {
                   playerStacks: e.playerStacks.map(stack => Object.assign(Object.assign({}, stack), {onObject: null}))
                 }),
                 (e) => Object.assign(Object.assign({}, e), {
@@ -46454,6 +47030,9 @@ var version = "v1.9.7";
                 }),
                 (e) => Object.assign(Object.assign({}, e), {
                   fallTypes: [null, null]
+                }),
+                (e) => Object.assign(Object.assign({}, e), {
+                  flyingAnchor: null
                 }),
             ],
             finalSchema: kc({
@@ -46521,7 +47100,8 @@ var version = "v1.9.7";
               gravity: fc,
               dashing: yc,
               isGravity: Bc([Hc, yc, hc]),
-              fallTypes: Hc//kc(Bc([hc, mc]), Bc([hc, mc]))
+              fallTypes: Hc,//kc(Bc([hc, mc]), Bc([hc, mc]))
+              flyingAnchor: Bc([fc, hc]),
             }),
             uncompress: (e) => e,
             compress: (e) =>
@@ -50991,7 +51571,7 @@ var version = "v1.9.7";
                 for (let i = 0; i < e.path.length; i++) e.path[i].x -= 10 * t.playerDir * t.df;
                 t.crashed ||
                   e.path.push({
-                    x: 40,
+                    x: 40 * t.playerDir,
                     topY: t.playerY + 8,
                     bottomY: t.playerY - 8,
                   }),
@@ -51033,7 +51613,7 @@ var version = "v1.9.7";
                       y: -5,
                     },
                     (a) => {
-                      (a.fillGradient.width = 80 * e.df), (a.path = t.renderPath), (a.x = e.playerX - 40), (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]);
+                      (a.fillGradient.width = 80 * e.df), (a.path = t.renderPath), (a.x = e.playerX - 40 * e.playerDir), (a.fillGradient.opacities = [e.playerDir > 0 ? 0 : 1, e.playerDir > 0 ? 1 : 0]);
                     }
                   ),
                 ]
@@ -51043,7 +51623,7 @@ var version = "v1.9.7";
           universalFlyingTrail = makeSprite({
             init: ({ props: e }) => ({
               path: Array.from({ length: eg + 6 + 2 }, () => ({
-                x: 40,
+                x: e.playerX,// 40,
                 y: e.playerY + (e.offset || 0),
               })),
               renderPath: Array.from({ length: eg + 6 + 2 }, () => [0, 0]),
@@ -51068,11 +51648,11 @@ var version = "v1.9.7";
                 }
                 e.path.shift();
                 
-                for (let t = 0; t < e.path.length; t++) e.path[t].x -= Math.abs(props.playerX - e.lastPlayerX);
+                // for (let t = 0; t < e.path.length; t++) e.path[t].x -= Math.abs(props.playerX - e.lastPlayerX);
 
                 if (!props.crashed) {
                   e.path.push({
-                    x: e.space,
+                    x: props.playerX, //e.space,
                     y: props.playerY + (props.offset || 0),
                   });
                 };
@@ -51089,7 +51669,7 @@ var version = "v1.9.7";
                   f({
                     props: () => ({
                       thickness: e.radius * 2,
-                      color: e.trail.bottomColour,
+                      color: e.trail.topColour,
                       opacity: 1,
                       lineCap: "butt",
                       path: [
@@ -51099,9 +51679,9 @@ var version = "v1.9.7";
                       ],
                     }),
                     update: (a, n, index) => {
-                      (a.x = (e.playerX - t.space * e.playerDir)),
-                      (a.path = t.path[index + 1] ? [[n.x * e.playerDir, n.y], [t.path[index + 1].x * e.playerDir, t.path[index + 1].y]] : [[n.x * e.playerDir, n.y], [n.x * e.playerDir, n.y]]),
-
+                      (a.x = 0),
+                      (a.color = e.trail.topColour),
+                      (a.path = t.path[index + 1] ? [[n.x, n.y], [t.path[index + 1].x, t.path[index + 1].y]] : [[n.x, n.y], [n.x, n.y]]),
                       (a.opacity = index / t.path.length);
                     },
                     array: () => t.path,
@@ -51317,6 +51897,7 @@ var version = "v1.9.7";
               }),
             ],
           }),
+          
           ug = makeSprite({
             render({ props: e, getContext: t }) {
               switch (e.bossState.type) {
@@ -51349,17 +51930,25 @@ var version = "v1.9.7";
                   const i = 338,
                     n = 285;
                   return [
+                    bossButtonSprite.Array({
+                      props: (e) => ({button: e}),
+                      update: (e, t) => {
+                        (e.button = t), (e.x = t.x), (e.y = t.y), (e.df = t.df);
+                      },
+                      array: () => e.bossState.allButtons,
+                      key: (e, t) => t,
+                    }),
                     onChange(
                       () => e.bossState.view,
                       () => {
                         const t = e.bossState,
-                          a = t.health;
+                          health = t.health;
                         switch (t.view) {
                           case "idle":
                             return [
                               loopingSpriteSheet.Single(
                                 {
-                                  fileName: `images/level/boss2/idle/health${a}.png`,
+                                  fileName: `images/level/boss2/idle/health${Math.ceil(health / 2)}.png`,
                                   columns: 6,
                                   rows: 2,
                                   maxIndex: 10,
@@ -51380,7 +51969,7 @@ var version = "v1.9.7";
                             return [
                               triggerableSpriteSheet.Single(
                                 {
-                                  fileName: `images/level/boss2/gunout/health${a}.png`,
+                                  fileName: `images/level/boss2/gunout/health${Math.ceil(health / 2)}.png`,
                                   columns: 3,
                                   rows: 2,
                                   frameRate: 6,
@@ -51402,7 +51991,7 @@ var version = "v1.9.7";
                             return [
                               triggerableSpriteSheet.Single(
                                 {
-                                  fileName: `images/level/boss2/gunin/health${a}.png`,
+                                  fileName: `images/level/boss2/gunin/health${Math.ceil(health / 2)}.png`,
                                   columns: 2,
                                   rows: 2,
                                   frameRate: 6,
@@ -51421,13 +52010,13 @@ var version = "v1.9.7";
                               ),
                             ];
                           case "gun":
-                            const s = 3 === a || 4 === a ? 3 : 2,
-                              o = 2 === a || 4 === a ? 2 : 1,
+                            const s = 6 === health || 8 === health ? 3 : 2,
+                              o = 4 === health || 8 === health ? 2 : 1,
                               r = 6 * s * o - 1;
                             return [
                               loopingSpriteSheet.Single(
                                 {
-                                  fileName: `images/level/boss2/gunshot/health${a}.png`,
+                                  fileName: `images/level/boss2/gunshot/health${Math.ceil(health / 2)}.png`,
                                   columns: s,
                                   rows: o,
                                   frameRate: 6,
@@ -51449,7 +52038,7 @@ var version = "v1.9.7";
                                 {
                                   bossWidth: i,
                                   bossHeight: n,
-                                  health: a,
+                                  health: health,
                                   paused: e.paused,
                                   frame: e.frame,
                                   df: e.df,
@@ -51481,7 +52070,7 @@ var version = "v1.9.7";
                             return [
                               triggerableSpriteSheet.Single(
                                 {
-                                  fileName: `images/level/boss2/laserdamage/health${a}.png`,
+                                  fileName: `images/level/boss2/laserdamage/health${Math.ceil(health / 2)}.png`,
                                   columns: 2,
                                   rows: 2,
                                   frameRate: 6,
@@ -51548,8 +52137,8 @@ var version = "v1.9.7";
                     ),
                     no.Array({
                       props: (e) => ({ bullet: e }),
-                      update: (e, t) => {
-                        (e.bullet = t), (e.x = t.x), (e.y = t.y);
+                      update: (a, t) => {
+                        (a.bullet = t), (a.x = t.x), (a.y = t.y), (a.paused = e.paused), (a.df = e.df);
                       },
                       array: () => e.bossState.bullets,
                       key: (e, t) => t,
@@ -51858,7 +52447,7 @@ var version = "v1.9.7";
                           () => {
                             const t =
                               15 +
-                              (Math.max(0, e.bossState.health - 0.8) / 4.2) *
+                              (Math.max(0, (e.bossState.health / 2) - 0.8) / 4.2) *
                                 298;
                             return [
                               y({
@@ -51891,7 +52480,7 @@ var version = "v1.9.7";
                 () => [
                   triggerableSpriteSheet.Single(
                     {
-                      fileName: `images/level/boss2/lasercharge/shot/health${e.health}.png`,
+                      fileName: `images/level/boss2/lasercharge/shot/health${Math.ceil(e.health / 2)}.png`,
                       columns: 2,
                       rows: 1,
                       frameRate: 3,
@@ -51907,7 +52496,7 @@ var version = "v1.9.7";
                 ],
                 () => [
                   y({
-                    fileName: `images/level/boss2/lasercharge/base/health${e.health}.png`,
+                    fileName: `images/level/boss2/lasercharge/base/health${Math.ceil(e.health / 2)}.png`,
                     width: e.bossWidth,
                     height: e.bossHeight,
                   }),
@@ -52467,6 +53056,7 @@ var version = "v1.9.7";
               "#000000": "#000000",
             };
           },
+
           //arrows
           arrowTheme = makeSprite({
             init({ device: e }) {
@@ -52575,6 +53165,64 @@ var version = "v1.9.7";
               }),
             ],
           }),
+          tileSprite = makeSprite({
+            init: ({ props: { playerX, playerY }, device: { random } }) =>
+              {
+                const a = random() < 0.5;
+                return {
+                  x: playerX,
+                  y: playerY,
+                  max: 960,
+                  fade: a ? 0 : 1,
+                  fadeIn: a,
+                  timeout: Math.round(100 * random())
+                }
+              },
+            loop({ state: e, props: { playerX: t, playerY: a }, device: {random} }) {
+              e.x = t;
+              e.y = a;
+              if (e.x < -e.max) {
+                while (e.x < -e.max) {
+                  e.x += e.max * 2;
+                }
+              } else if (e.x > e.max) {
+                while (e.x > e.max) {
+                  e.x -= e.max * 2;
+                }
+              };
+              if (e.y < -e.max) {
+                while (e.y < -e.max) {
+                  e.y += e.max * 2;
+                }
+              } else if (e.y > e.max) {
+                while (e.y > e.max) {
+                  e.y -= e.max * 2;
+                }
+              };
+              e.paused ||
+                e.timeout > 0
+                    ? e.timeout--
+                    : e.fadeIn
+                    ? e.fade < 1
+                      ? (e.fade += 0.01)
+                      : ((e.fade = 1),
+                        (e.fadeIn = !1),
+                        (e.timeout = Math.round(100 * random())))
+                    : e.fade > 0
+                    ? (e.fade -= 0.01)
+                    : ((e.fade = 0),
+                      (e.fadeIn = !0),
+                      (e.timeout = Math.round(100 * random())));
+            },
+            render: ({ props: e, state: t }) => [
+              p({ color: e.color, width: e.width, height: e.height }, (a) => {
+                a.color = e.color;
+                a.x = t.x;
+                a.y = t.y;
+                a.opacity = t.fade;
+              }),
+            ],
+          }),
           Tg = [
             [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1],
             [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0],
@@ -52613,11 +53261,11 @@ var version = "v1.9.7";
         const dreamySprite = makeNativeSprite("ShaderBg"),
           createShaderBg = {
             create: ({ props: props }) => {
-              const ctx = document
+              const gl = document
                 .getElementById("replay-canvas")
                 .getContext("webgl");
-              if (!ctx) return null;
-              const a = ctx.getExtension("OES_vertex_array_object");
+              if (!gl) return null;
+              const a = gl.getExtension("OES_vertex_array_object");
               if (!a) return null;
               const i = (function (e, t, a) {
                   const i = Og(e, e.VERTEX_SHADER, t),
@@ -52631,28 +53279,28 @@ var version = "v1.9.7";
                   )
                     return s;
                   throw Error(e.getProgramInfoLog(s) || "");
-                })(ctx, kg, Ng),
+                })(gl, kg, Ng),
                 n = a.createVertexArrayOES();
               if (!n) return null;
               a.bindVertexArrayOES(n);
-              const s = ctx.getAttribLocation(i, "a_position"),
-                o = ctx.createBuffer();
-              ctx.bindBuffer(ctx.ARRAY_BUFFER, o),
-                ctx.enableVertexAttribArray(s),
-                ctx.vertexAttribPointer(s, 2, ctx.FLOAT, false, 0, 0),
-                ctx.bufferData(
-                  ctx.ARRAY_BUFFER,
+              const s = gl.getAttribLocation(i, "a_position"),
+                o = gl.createBuffer();
+              gl.bindBuffer(gl.ARRAY_BUFFER, o),
+                gl.enableVertexAttribArray(s),
+                gl.vertexAttribPointer(s, 2, gl.FLOAT, false, 0, 0),
+                gl.bufferData(
+                  gl.ARRAY_BUFFER,
                   new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
-                  ctx.STATIC_DRAW
+                  gl.STATIC_DRAW
                 );
-              const r = ctx.getUniformLocation(i, "u_resolution"),
-                l = ctx.getUniformLocation(i, "u_time"),
-                c = ctx.getUniformLocation(i, "u_ct"),
-                d = ctx.getUniformLocation(i, "u_xboost"),
-                u = ctx.getUniformLocation(i, "u_yboost"),
-                h = ctx.getUniformLocation(i, "u_col0"),
-                p = ctx.getUniformLocation(i, "u_col1"),
-                g = ctx.getUniformLocation(i, "u_col2");
+              const r = gl.getUniformLocation(i, "u_resolution"),
+                l = gl.getUniformLocation(i, "u_time"),
+                c = gl.getUniformLocation(i, "u_ct"),
+                d = gl.getUniformLocation(i, "u_xboost"),
+                u = gl.getUniformLocation(i, "u_yboost"),
+                h = gl.getUniformLocation(i, "u_col0"),
+                p = gl.getUniformLocation(i, "u_col1"),
+                g = gl.getUniformLocation(i, "u_col2");
               a.bindVertexArrayOES(null);
               const m = [0.43, 0.04, 0.64],
                 f = [0.08, 0.02, 0.61],
@@ -52668,26 +53316,26 @@ var version = "v1.9.7";
               }
               return {
                 render: (frame, bgSwitchTimer) => {
-                  ctx.useProgram(i),
+                  gl.useProgram(i),
                     a.bindVertexArrayOES(n),
-                    ctx.uniform2f(r, ctx.canvas.width, ctx.canvas.height);
+                    gl.uniform2f(r, gl.canvas.width, gl.canvas.height);
                   const o = (frame / 20) * 1.25;
-                  ctx.uniform1f(l, o),
-                    ctx.uniform1f(c, T(5 * o, 3, 1.1)),
-                    ctx.uniform1f(d, T(0.2 * o, 5, 5)),
-                    ctx.uniform1f(u, T(0.1 * o, 10, 5)),
+                  gl.uniform1f(l, o),
+                    gl.uniform1f(c, T(5 * o, 3, 1.1)),
+                    gl.uniform1f(d, T(0.2 * o, 5, 5)),
+                    gl.uniform1f(u, T(0.1 * o, 10, 5)),
                     Ag(f, E, bgSwitchTimer, finish1),
                     Ag(m, S, bgSwitchTimer, finish2),
                     Ag(y, b, bgSwitchTimer, finish3),
-                    ctx.uniform3f(h, ...finish1),
-                    ctx.uniform3f(p, ...finish2),
-                    ctx.uniform3f(g, ...finish3),
-                    ctx.drawArrays(ctx.TRIANGLES, 0, 6);
+                    gl.uniform3f(h, ...finish1),
+                    gl.uniform3f(p, ...finish2),
+                    gl.uniform3f(g, ...finish3),
+                    gl.drawArrays(gl.TRIANGLES, 0, 6);
                 },
                 bgSwitchTimer: props.bgSwitch ? 1 : 0,
                 cleanup: () => {
-                  ctx.deleteBuffer(o),
-                    ctx.deleteProgram(i),
+                  gl.deleteBuffer(o),
+                    gl.deleteProgram(i),
                     a.deleteVertexArrayOES(n);
                 },
               };
@@ -52739,6 +53387,8 @@ var version = "v1.9.7";
                           t.targetColor = e.bgColor || "#00FFFF";
                         }
                       )),
+          rangeAsArray = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i),
+          infiniteTiles = rangeAsArray(-16, 17).map(y => rangeAsArray(-16, 17).map(e => [e * 60, y * 60])),
           xg = makeSprite({
             render({ props: e, device: t }) {
               const a = (() => {
@@ -53647,6 +54297,16 @@ var version = "v1.9.7";
                           ];
                         case "dreamy":
                           return [
+                            p(
+                              {
+                                color: e.theme.colour,
+                                width: t.size.fullWidth,
+                                height: t.size.fullHeight,
+                              },
+                              (j) => 
+                                ((j.width = t.size.fullWidth),
+                                  (j.height = t.size.fullHeight))
+                            ),
                             dreamySprite(
                               {
                                 id: "ShaderBg",
@@ -53705,19 +54365,83 @@ var version = "v1.9.7";
                             ),
                           ];
                         case "infinite":
+                          let infiniteBgTable = [{
+                            "#FF0000": "#e18989",
+                            "#ffea00": "#dee189",
+                            "#00FF00": "#89e193",
+                            "#0000ff": "#898ce1",
+                            "#8000ff": "#c889e1",
+                            "#ff00ff": "#e189da",
+                            "#ffFFff": "#FFFFFF",
+                            "#000000": "#282828",
+                          },
+                          {
+                            "#FF0000": "#d77676",
+                            "#ffea00": "#d7cd76",
+                            "#00FF00": "#88d776",
+                            "#0000ff": "#7b76d7",
+                            "#8000ff": "#b076d7",
+                            "#ff00ff": "#d776d1",
+                            "#ffFFff": "#e7e7e7",
+                            "#000000": "#000000",
+                          }],
+                          infiniteTileSprites = [];
                           return [
-                            dg.Single(
+                            Go.Single(
                               {
-                                fileName:
-                                  "images/themes/infinite/background/tile.png",
-                                height: cg,
-                                playerX: 0.03 * e.cameraX,
-                                playerY: 0
+                                targetOpacity: 1,
+                                targetColor: infiniteBgTable[0][e.bgColor] || "#89dde1",
+                                sprite: (s, l) => [
+                                  Go.Single(
+                                    {
+                                      targetOpacity: 1,
+                                      targetColor: infiniteBgTable[1][e.bgColor] || "#76d7d6",
+                                      sprite: (s, d) => {
+                                        infiniteTileSprites = [];
+                                        infiniteTiles.map(tiles => tiles.map((tile) => (
+                                          infiniteTileSprites.push(tileSprite.Single(
+                                            {
+                                              color: d.ref,
+                                              width: 60,
+                                              height: 60,
+                                              playerX: -0.05 * e.cameraX + tile[0],
+                                              playerY: -0.05 * e.cameraY + tile[1]
+                                            },
+                                            (t) => {
+                                              (t.color = d.ref),
+                                              (t.playerX = -0.05 * e.cameraX + tile[0]), (t.playerY = -0.05 * e.cameraY + tile[1]);
+                                            }
+                                          ))
+                                        ) ));
+                                        return [
+                                          p(
+                                            {
+                                              color: l.ref,
+                                              width: t.size.fullWidth,
+                                              height: t.size.fullHeight,
+                                            },
+                                            (e) => {
+                                              (e.width = t.size.fullWidth),
+                                                (e.height = t.size.fullHeight),
+                                                (e.color = l.ref);
+                                            }
+                                          ),
+                                          ...infiniteTileSprites]
+                                      },
+                                    },
+                                    (t) => {
+                                      t.targetOpacity = 1;
+                                      t.targetColor = infiniteBgTable[1][e.bgColor] ||"#76d7d6";
+                                    }
+                                  ),
+                                ],
                               },
                               (t) => {
-                                (t.playerX = 0.03 * e.cameraX), (t.playerY = 0);
+                                t.targetOpacity = 1;
+                                t.targetColor = infiniteBgTable[0][e.bgColor] || "#89dde1";
                               }
-                            )
+                            ), 
+                            
                           ];
                         case "fighter":
                           return [
@@ -54757,6 +55481,7 @@ var version = "v1.9.7";
                   landTimer: e.landTimer,
                   onSkateboard: e.onSkateboard,
                   playerScale: e.isCompatible ? 1 : e.playerScale,
+                  isFlying: e.isFlying,
                 },
                 (t) => {
                   (t.playerRot = e.playerRot),
@@ -54782,6 +55507,7 @@ var version = "v1.9.7";
                   landTimer: e.landTimer,
                   onSkateboard: e.onSkateboard,
                   playerScale: e.isCompatible ? 1 : e.playerScale,
+                  isFlying: e.isFlying
                 },
                 (a) => {
                   (a.x = t.player2X),
@@ -54807,7 +55533,21 @@ var version = "v1.9.7";
           }),
           Qg = makeSprite({
             render: ({ props: e }) => [
-              To.Single(
+              e.isFlying ? 
+              y(
+                {
+                  fileName:
+                    "images/level/boss3/player-ship.png",
+                  width: 40,
+                  height: 30,
+                },
+                (t) => {
+                    (t.rotation = e.playerRot),
+                    (t.scaleX = e.playerScaleX * e.playerDir),
+                    (t.scaleY = e.playerScaleY);
+                }
+              )
+              : To.Single(
                 {
                   skin: e.skin,
                   landTimer: e.landTimer,
@@ -55258,7 +55998,7 @@ var version = "v1.9.7";
                 }, (a) => {
                   a.y = (et.initialPosition.y - M / 2) - e.cameraY - 15;
                 }) : y({
-                  fileName: `images/themes/${e.theme}/boss.png`,
+                  fileName: `images/themes/${e.theme}/${e.theme === "world1Boss" ? "block" : "boss"}.png`,
                   width: 660 * 2,
                   height: 30,
                 }, (a) => {
@@ -55308,6 +56048,54 @@ var version = "v1.9.7";
                     (e.playerDir = t.playerDir),
                     (e.crashed = t.crashed);
                 }
+              ),
+              ifConditional(
+                () => (t.playerPowerup?.item === "spaceship"),
+                () => [
+                    y({
+                      fileName: "images/level/boss3/star-line.png",
+                      width: 950,
+                      height: 50,
+                      y: t.flyingAnchor - 45 - t.cameraY,
+                    },
+                    (e) => {
+                      e.y = t.flyingAnchor - 45 - t.cameraY
+                    }),
+                    y({
+                      fileName: "images/level/boss3/star-line.png",
+                      width: 950,
+                      height: 50,
+                      y: t.flyingAnchor + 45 - t.cameraY,
+                    }, (e) => {
+                      e.y = t.flyingAnchor + 45 - t.cameraY
+                    }),
+                    dg.Single(
+                      {
+                        fileName: "images/level/boss3/star-line-stars.png",
+                        playerX: t.cameraX,
+                        playerY: 0,
+                        height: 50,
+                        y: t.flyingAnchor - 45 - t.cameraY,
+                      },
+                      (e) => {
+                        e.playerX = t.cameraX;
+                        e.y = t.flyingAnchor - 45 - t.cameraY;
+                      }
+                    ),
+                    dg.Single(
+                      {
+                        fileName: "images/level/boss3/star-line-stars.png",
+                        playerX: e.cameraX,
+                        playerY: 0,
+                        height: 50,
+                        y: t.flyingAnchor + 45 - t.cameraY,
+                      },
+                      (e) => {
+                        e.playerX = t.cameraX;
+                        e.y = t.flyingAnchor + 45 - t.cameraY;
+                      }
+                    ),
+                ]
               ),
               t.bossState
                 ? hg.Single(
@@ -55382,12 +56170,14 @@ var version = "v1.9.7";
                   cameraY: t.cameraY,
                   cameraXOffset: t.cameraXOffset,
                   fallTypes: t.fallTypes,
+                  flyingAnchor: t.flyingAnchor
                 },
                 (e) => {
                   (e.cameraX = t.cameraX),
                   (e.cameraXOffset = t.cameraXOffset),
                   (e.cameraY = t.cameraY),
                   (e.isGravity = t.isGravity),
+                  (e.flyingAnchor = t.flyingAnchor),
                   (e.dashing = t.dashing),
                   (e.frame = t.frame),
                     (e.df = t.df),
@@ -55599,12 +56389,12 @@ var version = "v1.9.7";
                     {
                       bossState: t.bossState,
                       frame: t.frame,
-                      y: e.size.fullHeight / 2 - 120,
+                      y: e.size.fullHeight / 2 - 100,
                     },
                     (a) => {
                       (a.bossState = t.bossState),
                         (a.frame = t.frame),
-                        (a.y = e.size.fullHeight / 2 - 120);
+                        (a.y = e.size.fullHeight / 2 - 100);
                     }
                   )
                 : null,
@@ -55812,6 +56602,7 @@ var version = "v1.9.7";
                   }),
                   update: (t, a) => {
                     (t.playerScale = e.playerScale),
+                    (t.playerDir = e.playerDir),
                     (t.switchButton = a),
                       (t.switchRotation = e.switchRotation),
                       (t.switchBlockSpikes = e.switchBlockSpikes),
@@ -56192,8 +56983,10 @@ var version = "v1.9.7";
                   array: () => e.playerBullets,
                   key: (e, t) => t,
                 }),
-                e.isFlyingLevel
-                  ? onChange(
+                conditional(
+                  () => e.isFlyingLevel || e.playerPowerup?.item === "spaceship",
+                  () => [
+                    onChange(
                       () => e.attempt,
                       () => [
                         flyingTrail.Single(
@@ -56220,7 +57013,9 @@ var version = "v1.9.7";
                         ),
                       ]
                     )
-                  : playerTrail.Single(
+                  ],
+                  () => [
+                    playerTrail.Single(
                       {
                         playerX: e.playerX,
                         playerY: e.playerY,
@@ -56243,6 +57038,8 @@ var version = "v1.9.7";
                           (t.touchingPortals = null !== e.touchingPortals);
                       }
                     ),
+                  ]
+                ),
                 ifConditional(
                   () => !e.hidePlayer,
                   () => [
@@ -56255,7 +57052,11 @@ var version = "v1.9.7";
                             y: e.playerY,
                             justDestroyed: true,
                             paused: e.paused,
-                            trail: e.playerSkin.trail,
+                            trail: e.flyingAnchor === null && !e.isFlyingLevel ? e.playerSkin.trail : {
+                              form: "default",
+                              topColour: "#FCDA45",
+                              bottomColour: "#FCDA45",
+                            }, // for now, hehehe...
                             playerRot: e.playerRot,
                             df: e.df,
                           },
@@ -56283,6 +57084,7 @@ var version = "v1.9.7";
                                 playerScale: e.playerScale,
                                 onSkateboard: false,
                                 touchingPortals: e.touchingPortals,
+                                isFlying: e.playerPowerup?.item === "spaceship"
                               },
                               (t) => {
                                 var a;
@@ -56308,8 +57110,10 @@ var version = "v1.9.7";
                             ),
                           ],
                           () => [
-                            e.isFlyingLevel
-                              ? y(
+                            conditional(
+                              () => e.isFlyingLevel || e.playerPowerup?.item === "spaceship",
+                              () => [
+                                y(
                                   {
                                     fileName:
                                       "images/level/boss3/player-ship.png",
@@ -56324,7 +57128,9 @@ var version = "v1.9.7";
                                       (t.scaleY = e.playerScaleY);
                                   }
                                 )
-                              : To.Single({ skin: e.playerSkin }, (t) => {
+                              ],
+                              () => [
+                                To.Single({ skin: e.playerSkin }, (t) => {
                                   var a;
                                   (t.x = e.playerX),
                                     (t.y = e.playerY),
@@ -56342,6 +57148,8 @@ var version = "v1.9.7";
                                       : a.item);
                                   t.onSkateboard = i;
                                 }),
+                              ]
+                            )
                           ]
                         ),
                         conditional(
@@ -56480,9 +57288,10 @@ var version = "v1.9.7";
                     ),
                   ]
                 ),
-                e.isFlyingLevel
-                  ? null
-                  : playerTrail.Single(
+                ifConditional(
+                  () => !(e.isFlyingLevel || e.playerPowerup?.item === "spaceship"),
+                  () => [
+                    playerTrail.Single(
                       {
                         playerX: e.playerX,
                         playerY: e.playerY,
@@ -56503,6 +57312,8 @@ var version = "v1.9.7";
                           (t.touchingPortals = null !== e.touchingPortals);
                       }
                     ),
+                  ]
+                ),
                 Wo.Single(
                   {
                     collectibles: e.layout.collectibles,
@@ -56659,15 +57470,24 @@ var version = "v1.9.7";
                     ),
                   ],
           }),
-          hm = (e, t, a) => {
-            if (a) return t + (e - t) / 10;
+          hm = (y, cameraY, finished, anchor, useGround) => {
+            if (anchor) {
+              return cameraY + (anchor - cameraY) / 5;
+            }
+            if (finished) return cameraY + (y - cameraY) / 10;
             const i = et.initialPosition.y + 105,
               n = et.initialPosition.y;
-            return e - t > i
-              ? t + (5 + e - t - i) / 4
-              : e - t < n
-              ? t + (-5 + e - t - n) / 4
-              : t;
+              let isGrounded = false;
+              if ((y <= 30) && !(y - cameraY > i) && useGround) {
+                cameraY = cameraY + (30 - cameraY) / 4;
+                isGrounded = true;
+              };
+             cameraY = (y - cameraY > i) && !isGrounded
+              ? cameraY + (5 + y - cameraY - i) / 4
+              : y - cameraY < n && !isGrounded
+              ? cameraY + (-5 + y - cameraY - n) / 4
+              : cameraY;
+            return cameraY;
           },
           pm = (e, t, a) => {
             const i = a
@@ -59553,12 +60373,13 @@ var version = "v1.9.7";
                 )),
                 t.isAfkTimer--;
               const {
-                playerY: T,
+                playerY: playerY,
                 playerGradY: R,
                 playerDir: O,
-                finishedLevel: C,
+                finishedLevel: finishedLevel,
                 bossState: w,
                 frame: A,
+                flyingAnchor,
               } = t.mutValues.levelState;
               if (
                 b &&
@@ -59575,14 +60396,16 @@ var version = "v1.9.7";
               }
               t.isFlyingLevel ||
                 (t.mutValues.levelState.cameraY = hm(
-                  T,
+                  playerY,
                   t.mutValues.levelState.cameraY,
-                  C
+                  finishedLevel,
+                  flyingAnchor,
+                  t.bigMutValues.inViewLayout.properties.useGround,
                 )),
                 (t.mutValues.levelState.cameraXOffset = pm(
                   t.mutValues.levelState.cameraXOffset,
                   O,
-                  C
+                  finishedLevel
                 ));
               const isClassic = isSpecialTheme(t.bigMutValues.inViewLayout.properties.theme.id),
               k =
@@ -59612,7 +60435,7 @@ var version = "v1.9.7";
                     f.keysDown.ArrowUp ||
                     "down" === S ||
                     "justDown" === S) &&
-                  !C &&
+                  !finishedLevel &&
                   !N,
                 P = x
                   ? f.pointer.justPressed ||
@@ -59814,6 +60637,7 @@ var version = "v1.9.7";
                     dashing: t.dashing,
                     isGravity: t.isGravity,
                     fallTypes: t.mutValues.levelState.fallTypes,
+                    flyingAnchor: t.mutValues.levelState.flyingAnchor,
                     justDownInputTimer: t.mutValues.levelState.justDownInputTimer,
                     jumping: t.mutValues.levelState.jumping,
                     levelSpeeds: t.levelSpeeds
@@ -59825,6 +60649,7 @@ var version = "v1.9.7";
                     (a.levelSpeeds = t.levelSpeeds),
                     (a.jumping = t.mutValues.levelState.jumping),
                     (a.isGravity = t.mutValues.levelState.isGravity),
+                    (a.flyingAnchor = t.mutValues.levelState.flyingAnchor),
                     (a.dashing = t.mutValues.levelState.dashing),
                     (a.frame = t.mutValues.levelState.frame),
                     (a.fallTypes = t.mutValues.levelState.fallTypes),
@@ -61134,7 +61959,9 @@ var version = "v1.9.7";
                     onPress: () => {
                       a((e) => {
                         const t = 
-                            Object.assign({}, e.runHistory[e.runHistoryIndex]),
+                            Object.assign(Object.assign({}, e.runHistory[e.runHistoryIndex]), {
+                              bossState: e.runHistory[e.runHistoryIndex].bossState ? JSON.parse(JSON.stringify(e.runHistory[e.runHistoryIndex].bossState)) : null
+                            }),
                           { sortedState: a, originalIndexes: i } =
                             xa.sortLayoutState(t.layoutState, e.layout);
                         return Object.assign(Object.assign({}, e), {
@@ -68316,6 +69143,21 @@ var version = "v1.9.7";
                     x: 0,
                     y: u - 50,
                   }),
+                  document.fullscreenEnabled ? vo({
+                    id: "FullScreen",
+                    fullScreen: true,
+                    onPress: () => {
+                      if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                      } else {
+                        document.documentElement.requestFullscreen().catch((e) => {
+                          throw e
+                        });
+                      }
+                    },
+                    x: mostLeft / 2 - 40,
+                    y: f / 2 - 40,
+                  }) : null,
                   //Fo({
                   //  id: "Account",
                   //    text: a ? "..." : o ? "ACCOUNT" : "LOG IN",
@@ -69098,7 +69940,8 @@ var version = "v1.9.7";
                 (e.cameraY = hm(
                   t.viewingPlayer.state.mutValues.levelState.playerY,
                   e.cameraY,
-                  false
+                  false,
+                  t.viewingPlayer.state.mutValues.levelState.flyingAnchor,
                 )),
                 (e.cameraScale = 2),
                 (e.cameraXOffset = pm(
@@ -69210,7 +70053,8 @@ var version = "v1.9.7";
                     gravity: t.gravity,
                     dashing: t.dashing,
                     isGravity: t.isGravity,
-                    fallTypes: t.fallTypes
+                    fallTypes: t.fallTypes,
+                    flyingAnchor: t.flyingAnchor
                   },
                   (a) => {
                     var i;
@@ -69232,6 +70076,7 @@ var version = "v1.9.7";
                       otherPlayersInfo: p,
                     } = e;
                     (a.isGravity = r.isGravity),
+                    (a.flyingAnchor = r.flyingAnchor),
                     (a.dashing = r.dashing),
                     (a.fallTypes = r.fallTypes),
                     (a.playerName = o),
@@ -73070,7 +73915,7 @@ var version = "v1.9.7";
               Gf({
                 id: "LevelEditorAssets",
                 withContext: {
-                  spineFiles: [...Qs.getThemeSpine(ca.world1), ...(e.view.level.level.boss ? e.view.level.level.boss.fileNames.spine : [])],
+                  spineFiles: [...Qs.getThemeSpine(ca.world1), ...(e.view.level.level.boss ? e.view.level.level.boss.fileNames.spine || [] : [])],
                   globalContext: e.globalContextVal,
                   animationContext: e.animationContext,
                   animationRenderer: e.animationRenderer,
