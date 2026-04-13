@@ -47346,8 +47346,8 @@ var version = "v1.10.5";
               });
             },
           }),
-          _u = JSON.parse(
-            '[{"id":"8_bit_adventure_checkpoints","name":"Beat 8 Bit Adventure","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Walking Enemies in Level Editor","blocksPrice":0,"defId":"editor_walking_enemy"},{"name":"Pixel Skin","blocksPrice":0,"defId":"skin_pixel"}]}},{"id":"accelerated_checkpoints","name":"Beat Accelerated","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Synthwave Theme","blocksPrice":0,"defId":"theme_synthwave"}]}},{"id":"accelerated_nocheckpoints","name":"Beat Accelerated without checkpoints","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Glow Skin","blocksPrice":0,"defId":"skin_glow"}]}},{"id":"awake_checkpoints","name":"Beat Awake","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Portals in Level Editor","blocksPrice":0,"defId":"editor_portals"},{"name":"World 4 Theme","blocksPrice":0,"defId":"theme_world4"}]}},{"id":"blythe_checkpoints","name":"Beat Blythe","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Springs in Level Editor","blocksPrice":0,"defId":"editor_spring"},{"name":"Falling Platforms in Level Editor","blocksPrice":0,"defId":"editor_falling_platform"}]}},{"id":"breathe_checkpoints","name":"Beat Breathe","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Jetpack in Level Editor","blocksPrice":0,"defId":"editor_jetpack"},{"name":"1 Missile Booster","blocksPrice":0,"defId":"missiles1"}]}},{"id":"cloud_9_checkpoints","name":"Beat Cloud 9","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Skateboard and Rails in Level Editor","blocksPrice":0,"defId":"editor_skateboard"}]}},{"id":"coincidence_checkpoints","name":"Beat Coincidence","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"World 4 Skin","blocksPrice":0,"defId":"skin_world4"},{"name":"1 Slow Motion Booster","blocksPrice":0,"defId":"slowmo1"}]}},{"id":"critical_hit_checkpoints","name":"Beat Critical Hit","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"World 2 Theme","blocksPrice":0,"defId":"theme_world2"}]}},{"id":"dragonfly_checkpoints","name":"Beat Dragonfly","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Saws in Level Editor","blocksPrice":0,"defId":"editor_saws"},{"name":"1 Slow Motion Booster","blocksPrice":0,"defId":"slowmo1"}]}},{"id":"dragonfly_nocheckpoints","name":"Beat Dragonfly without checkpoints","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Cloud 9 Bonus Level","blocksPrice":0,"defId":"bonus_level_cloud9"}]}},{"id":"frontier_checkpoints","name":"Beat Frontier","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Switch Button and Platform in Level Editor","blocksPrice":0,"defId":"editor_switch_button"},{"name":"1 Slow Motion Booster","blocksPrice":0,"defId":"slowmo1"}]}},{"id":"indestructable_checkpoints","name":"Beat Indestructable","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"World 1 Boss Theme","blocksPrice":0,"defId":"theme_world1Boss"}]}},{"id":"lighthouse_checkpoints","name":"Beat Lighthouse","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Player Stacks in Level Editor","blocksPrice":0,"defId":"editor_player_stacks"},{"name":"1 Missile Booster","blocksPrice":0,"defId":"missiles1"}]}},{"id":"octane_checkpoints","name":"Beat Octane","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Gun in Level Editor","blocksPrice":0,"defId":"editor_gun"},{"name":"1 Missile Booster","blocksPrice":0,"defId":"missiles1"}]}},{"id":"sky_fracture_checkpoints","name":"Beat Sky Fracture","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Spaceship Skin","blocksPrice":0,"defId":"skin_spaceship"},{"name":"World 3 Theme","blocksPrice":0,"defId":"theme_world3"}]}},{"id":"solace_checkpoints","name":"Beat Solace","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Double Jump in Level Editor","blocksPrice":0,"defId":"editor_double_jump"},{"name":"1 Missile Booster","blocksPrice":0,"defId":"missiles1"}]}},{"id":"solace_nocheckpoints","name":"Beat Solace without checkpoints","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Dino Skin","blocksPrice":0,"defId":"skin_dino"}]}},{"id":"think_different_checkpoints","name":"Beat Think Different","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Move on Jump in Level Editor","blocksPrice":0,"defId":"editor_move_on_jump"},{"name":"1 Missile Booster","blocksPrice":0,"defId":"missiles1"}]}},{"id":"xp_rank10","name":"Reach Level 10 online","unlocked":true,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Chicken Skin","blocksPrice":0,"defId":"skin_chicken"}]}},{"id":"cloud_9_high_score","name":"Score 200,000 beating Cloud 9","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Skater Theme","blocksPrice":0,"defId":"theme_skater"}]}},{"id":"accelerated_avoid_collectibles","name":"Avoid all Collectibles in Accelerated","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Green Bot Skin","blocksPrice":0,"defId":"skin_greenbot"}]}},{"id":"8_bit_adventure_nocheckpoints","name":"Beat 8 Bit Adventure without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Pixel Cheese Skin","blocksPrice":0,"defId":"skin_pixelcheese"}]}},{"id":"awake_nocheckpoints","name":"Beat Awake without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Mushroom Skin","blocksPrice":0,"defId":"skin_mushroom"}]}},{"id":"blythe_nocheckpoints","name":"Beat Blythe without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Worm Skin","blocksPrice":0,"defId":"skin_worm"}]}},{"id":"breathe_nocheckpoints","name":"Beat Breathe without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Pixel Robot Skin","blocksPrice":0,"defId":"skin_pixelrobot"}]}},{"id":"cloud_9_nocheckpoints","name":"Beat Cloud 9 without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Skater Skin","blocksPrice":0,"defId":"skin_skater"}]}},{"id":"coincidence_nocheckpoints","name":"Beat Coincidence without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Burger Skin","blocksPrice":0,"defId":"skin_burger"}]}},{"id":"critical_hit_nocheckpoints","name":"Beat Critical Hit without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Boss 2 Skin","blocksPrice":0,"defId":"skin_boss2"}]}},{"id":"dark_sheep_checkpoints","name":"Beat Dark Sheep","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Flying Enemies in Level Editor","blocksPrice":0,"defId":"editor_flying_enemy"},{"name":"World 2 Red Theme","blocksPrice":0,"defId":"theme_world2Red"}]}},{"id":"frontier_nocheckpoints","name":"Beat Frontier without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Machine Skin","blocksPrice":0,"defId":"skin_machine"}]}},{"id":"indestructable_nocheckpoints","name":"Beat Indestructable without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Boss 1 Skin","blocksPrice":0,"defId":"skin_boss1"}]}},{"id":"lighthouse_nocheckpoints","name":"Beat Lighthouse without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Alien Skin","blocksPrice":0,"defId":"skin_alien"}]}},{"id":"mutant_checkpoints","name":"Beat Mutant","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Bull Skin","blocksPrice":0,"defId":"skin_bull"},{"name":"World 4 Red Theme","blocksPrice":0,"defId":"theme_world4Red"}]}},{"id":"octane_nocheckpoints","name":"Beat Octane without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Pixel Skull Skin","blocksPrice":0,"defId":"skin_pixelskull"}]}},{"id":"overdrive_checkpoints","name":"Beat Overdrive","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"World 4 Boss Theme","blocksPrice":0,"defId":"theme_world4Boss"}]}},{"id":"polymorph_checkpoints","name":"Beat Polymorph","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Yak Skin","blocksPrice":0,"defId":"skin_yak"},{"name":"World 3 Red Theme","blocksPrice":0,"defId":"theme_world3Red"}]}},{"id":"sky_fracture_nocheckpoints","name":"Beat Sky Fracture without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Boss 3 Skin","blocksPrice":0,"defId":"skin_boss3"}]}},{"id":"solar_abyss_checkpoints","name":"Beat Solar Abyss","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"World 1 Red Theme","blocksPrice":0,"defId":"theme_virtual"},{"name":"1 Autopilot Booster","blocksPrice":0,"defId":"autopilot1"}]}},{"id":"think_different_nocheckpoints","name":"Beat Think Different without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Monkey Skin","blocksPrice":0,"defId":"skin_monkey"}]}},{"id":"accelerated_collectibles","name":"Picked up all 75 Collectibles beating Accelerated","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Collectibles in Level Editor","blocksPrice":0,"defId":"editor_collectibles"}]}},{"id":"xp_rank100","name":"Reach Level 100 online","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Dog Skin","blocksPrice":0,"defId":"skin_dog"}]}},{"id":"cloud_9_very_high_score","name":"Score 1,000,000 beating Cloud 9","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Mr Cool Skin","blocksPrice":0,"defId":"skin_mrcool"}]}},{"id":"all_bronze_achievements","name":"Unlocked All Bronze Achievements","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Parrot Skin","blocksPrice":0,"defId":"skin_parrot"}]}},{"id":"dark_sheep_nocheckpoints","name":"Beat Dark Sheep without checkpoints","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Pixel Crown Skin","blocksPrice":0,"defId":"skin_pixelcrown"}]}},{"id":"mutant_nocheckpoints","name":"Beat Mutant without checkpoints","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Knight Skin","blocksPrice":0,"defId":"skin_knight"}]}},{"id":"overdrive_nocheckpoints","name":"Beat Overdrive without checkpoints","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Boss 4 Skin","blocksPrice":0,"defId":"skin_boss4"}]}},{"id":"polymorph_nocheckpoints","name":"Beat Polymorph without checkpoints","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Mummy Skin","blocksPrice":0,"defId":"skin_mummy"}]}},{"id":"solar_abyss_nocheckpoints","name":"Beat Solar Abyss without checkpoints","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Samurai Skin","blocksPrice":0,"defId":"skin_samurai"}]}},{"id":"all_silver_achievements","name":"Unlocked All Silver Achievements","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Superhero Skin","blocksPrice":0,"defId":"skin_superhero"}]}},{"id":"aura_checkpoints","name":"Beat Aura","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Speed Change in Level Editor","blocksPrice":0,"defId":"editor_speed_change"},{"name":"Moon Theme","blocksPrice":0,"defId":"theme_speed"}]}},{"id":"aura_nocheckpoints","name":"Beat Aura without checkpoints","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Astronaut Skin","blocksPrice":0,"defId":"skin_space"}]}},{"id":"cool_friends_checkpoints","name":"Beat Cool Friends","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Punch in Level Editor","blocksPrice":0,"defId":"editor_punch"},{"name":"Giant Enemy in Level Editor","blocksPrice":0,"defId":"editor_giant_enemy"}]}},{"id":"cool_friends_nocheckpoints","name":"Beat Cool Friends without checkpoints","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Fighter Theme","blocksPrice":0,"defId":"theme_fighter"},{"name":"Fighter Skin","blocksPrice":0,"defId":"skin_fighter"}]}},{"id":"for_you_checkpoints","name":"Beat For You","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Switch Block Spikes in Level Editor","blocksPrice":0,"defId":"editor_switch_block_spike"},{"name":"Dreamy Theme","blocksPrice":0,"defId":"theme_dreamy"}]}},{"id":"for_you_nocheckpoints","name":"Beat For You without checkpoints","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Dreamy Skin","blocksPrice":0,"defId":"skin_dreamy"}]}},{"id":"nacreous_snowmelt_checkpoints","name":"Beat Nacreous Snowmelt","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Arrows in Level Editor","blocksPrice":0,"defId":"editor_arrows"}]}},{"id":"nacreous_snowmelt_nocheckpoints","name":"Beat Nacreous Snowmelt without checkpoints","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Arrows Theme","blocksPrice":0,"defId":"theme_arrows"}]}},{"id":"nacreous_snowmelt_high_score","name":"Score 600,000 beating Nacreous Snowmelt","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Outline Skin","blocksPrice":0,"defId":"skin_arrows"}]}}]'
+          allAchievements = JSON.parse(
+            '[{"id":"switch_test_2_checkpoints","name":"Beat Switch Block Test 2","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Walking Enemies in Level Editor","blocksPrice":0,"defId":"editor_walking_enemy"},{"name":"Pixel Skin","blocksPrice":0,"defId":"skin_pixel"}]}}, {"id":"8_bit_adventure_checkpoints","name":"Beat 8 Bit Adventure","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Walking Enemies in Level Editor","blocksPrice":0,"defId":"editor_walking_enemy"},{"name":"Pixel Skin","blocksPrice":0,"defId":"skin_pixel"}]}},{"id":"accelerated_checkpoints","name":"Beat Accelerated","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Synthwave Theme","blocksPrice":0,"defId":"theme_synthwave"}]}},{"id":"accelerated_nocheckpoints","name":"Beat Accelerated without checkpoints","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Glow Skin","blocksPrice":0,"defId":"skin_glow"}]}},{"id":"awake_checkpoints","name":"Beat Awake","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Portals in Level Editor","blocksPrice":0,"defId":"editor_portals"},{"name":"World 4 Theme","blocksPrice":0,"defId":"theme_world4"}]}},{"id":"blythe_checkpoints","name":"Beat Blythe","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Springs in Level Editor","blocksPrice":0,"defId":"editor_spring"},{"name":"Falling Platforms in Level Editor","blocksPrice":0,"defId":"editor_falling_platform"}]}},{"id":"breathe_checkpoints","name":"Beat Breathe","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Jetpack in Level Editor","blocksPrice":0,"defId":"editor_jetpack"},{"name":"1 Missile Booster","blocksPrice":0,"defId":"missiles1"}]}},{"id":"cloud_9_checkpoints","name":"Beat Cloud 9","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Skateboard and Rails in Level Editor","blocksPrice":0,"defId":"editor_skateboard"}]}},{"id":"coincidence_checkpoints","name":"Beat Coincidence","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"World 4 Skin","blocksPrice":0,"defId":"skin_world4"},{"name":"1 Slow Motion Booster","blocksPrice":0,"defId":"slowmo1"}]}},{"id":"critical_hit_checkpoints","name":"Beat Critical Hit","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"World 2 Theme","blocksPrice":0,"defId":"theme_world2"}]}},{"id":"dragonfly_checkpoints","name":"Beat Dragonfly","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Saws in Level Editor","blocksPrice":0,"defId":"editor_saws"},{"name":"1 Slow Motion Booster","blocksPrice":0,"defId":"slowmo1"}]}},{"id":"dragonfly_nocheckpoints","name":"Beat Dragonfly without checkpoints","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Cloud 9 Bonus Level","blocksPrice":0,"defId":"bonus_level_cloud9"}]}},{"id":"frontier_checkpoints","name":"Beat Frontier","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Switch Button and Platform in Level Editor","blocksPrice":0,"defId":"editor_switch_button"},{"name":"1 Slow Motion Booster","blocksPrice":0,"defId":"slowmo1"}]}},{"id":"indestructable_checkpoints","name":"Beat Indestructable","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"World 1 Boss Theme","blocksPrice":0,"defId":"theme_world1Boss"}]}},{"id":"lighthouse_checkpoints","name":"Beat Lighthouse","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Player Stacks in Level Editor","blocksPrice":0,"defId":"editor_player_stacks"},{"name":"1 Missile Booster","blocksPrice":0,"defId":"missiles1"}]}},{"id":"octane_checkpoints","name":"Beat Octane","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Gun in Level Editor","blocksPrice":0,"defId":"editor_gun"},{"name":"1 Missile Booster","blocksPrice":0,"defId":"missiles1"}]}},{"id":"sky_fracture_checkpoints","name":"Beat Sky Fracture","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Spaceship Skin","blocksPrice":0,"defId":"skin_spaceship"},{"name":"World 3 Theme","blocksPrice":0,"defId":"theme_world3"}]}},{"id":"solace_checkpoints","name":"Beat Solace","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Double Jump in Level Editor","blocksPrice":0,"defId":"editor_double_jump"},{"name":"1 Missile Booster","blocksPrice":0,"defId":"missiles1"}]}},{"id":"solace_nocheckpoints","name":"Beat Solace without checkpoints","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Dino Skin","blocksPrice":0,"defId":"skin_dino"}]}},{"id":"think_different_checkpoints","name":"Beat Think Different","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Move on Jump in Level Editor","blocksPrice":0,"defId":"editor_move_on_jump"},{"name":"1 Missile Booster","blocksPrice":0,"defId":"missiles1"}]}},{"id":"xp_rank10","name":"Reach Level 10 online","unlocked":true,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Chicken Skin","blocksPrice":0,"defId":"skin_chicken"}]}},{"id":"cloud_9_high_score","name":"Score 200,000 beating Cloud 9","unlocked":false,"category":"bronze","rewards":{"collected":false,"blocks":10,"items":[{"name":"Skater Theme","blocksPrice":0,"defId":"theme_skater"}]}},{"id":"accelerated_avoid_collectibles","name":"Avoid all Collectibles in Accelerated","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Green Bot Skin","blocksPrice":0,"defId":"skin_greenbot"}]}},{"id":"8_bit_adventure_nocheckpoints","name":"Beat 8 Bit Adventure without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Pixel Cheese Skin","blocksPrice":0,"defId":"skin_pixelcheese"}]}},{"id":"awake_nocheckpoints","name":"Beat Awake without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Mushroom Skin","blocksPrice":0,"defId":"skin_mushroom"}]}},{"id":"blythe_nocheckpoints","name":"Beat Blythe without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Worm Skin","blocksPrice":0,"defId":"skin_worm"}]}},{"id":"breathe_nocheckpoints","name":"Beat Breathe without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Pixel Robot Skin","blocksPrice":0,"defId":"skin_pixelrobot"}]}},{"id":"cloud_9_nocheckpoints","name":"Beat Cloud 9 without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Skater Skin","blocksPrice":0,"defId":"skin_skater"}]}},{"id":"coincidence_nocheckpoints","name":"Beat Coincidence without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Burger Skin","blocksPrice":0,"defId":"skin_burger"}]}},{"id":"critical_hit_nocheckpoints","name":"Beat Critical Hit without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Boss 2 Skin","blocksPrice":0,"defId":"skin_boss2"}]}},{"id":"dark_sheep_checkpoints","name":"Beat Dark Sheep","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Flying Enemies in Level Editor","blocksPrice":0,"defId":"editor_flying_enemy"},{"name":"World 2 Red Theme","blocksPrice":0,"defId":"theme_world2Red"}]}},{"id":"frontier_nocheckpoints","name":"Beat Frontier without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Machine Skin","blocksPrice":0,"defId":"skin_machine"}]}},{"id":"indestructable_nocheckpoints","name":"Beat Indestructable without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Boss 1 Skin","blocksPrice":0,"defId":"skin_boss1"}]}},{"id":"lighthouse_nocheckpoints","name":"Beat Lighthouse without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Alien Skin","blocksPrice":0,"defId":"skin_alien"}]}},{"id":"mutant_checkpoints","name":"Beat Mutant","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Bull Skin","blocksPrice":0,"defId":"skin_bull"},{"name":"World 4 Red Theme","blocksPrice":0,"defId":"theme_world4Red"}]}},{"id":"octane_nocheckpoints","name":"Beat Octane without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Pixel Skull Skin","blocksPrice":0,"defId":"skin_pixelskull"}]}},{"id":"overdrive_checkpoints","name":"Beat Overdrive","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"World 4 Boss Theme","blocksPrice":0,"defId":"theme_world4Boss"}]}},{"id":"polymorph_checkpoints","name":"Beat Polymorph","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Yak Skin","blocksPrice":0,"defId":"skin_yak"},{"name":"World 3 Red Theme","blocksPrice":0,"defId":"theme_world3Red"}]}},{"id":"sky_fracture_nocheckpoints","name":"Beat Sky Fracture without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Boss 3 Skin","blocksPrice":0,"defId":"skin_boss3"}]}},{"id":"solar_abyss_checkpoints","name":"Beat Solar Abyss","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"World 1 Red Theme","blocksPrice":0,"defId":"theme_virtual"},{"name":"1 Autopilot Booster","blocksPrice":0,"defId":"autopilot1"}]}},{"id":"think_different_nocheckpoints","name":"Beat Think Different without checkpoints","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Monkey Skin","blocksPrice":0,"defId":"skin_monkey"}]}},{"id":"accelerated_collectibles","name":"Picked up all 75 Collectibles beating Accelerated","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Collectibles in Level Editor","blocksPrice":0,"defId":"editor_collectibles"}]}},{"id":"xp_rank100","name":"Reach Level 100 online","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Dog Skin","blocksPrice":0,"defId":"skin_dog"}]}},{"id":"cloud_9_very_high_score","name":"Score 1,000,000 beating Cloud 9","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Mr Cool Skin","blocksPrice":0,"defId":"skin_mrcool"}]}},{"id":"all_bronze_achievements","name":"Unlocked All Bronze Achievements","unlocked":false,"category":"silver","rewards":{"collected":false,"blocks":20,"items":[{"name":"Parrot Skin","blocksPrice":0,"defId":"skin_parrot"}]}},{"id":"dark_sheep_nocheckpoints","name":"Beat Dark Sheep without checkpoints","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Pixel Crown Skin","blocksPrice":0,"defId":"skin_pixelcrown"}]}},{"id":"mutant_nocheckpoints","name":"Beat Mutant without checkpoints","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Knight Skin","blocksPrice":0,"defId":"skin_knight"}]}},{"id":"overdrive_nocheckpoints","name":"Beat Overdrive without checkpoints","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Boss 4 Skin","blocksPrice":0,"defId":"skin_boss4"}]}},{"id":"polymorph_nocheckpoints","name":"Beat Polymorph without checkpoints","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Mummy Skin","blocksPrice":0,"defId":"skin_mummy"}]}},{"id":"solar_abyss_nocheckpoints","name":"Beat Solar Abyss without checkpoints","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Samurai Skin","blocksPrice":0,"defId":"skin_samurai"}]}},{"id":"all_silver_achievements","name":"Unlocked All Silver Achievements","unlocked":false,"category":"gold","rewards":{"collected":false,"blocks":60,"items":[{"name":"Superhero Skin","blocksPrice":0,"defId":"skin_superhero"}]}},{"id":"aura_checkpoints","name":"Beat Aura","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Speed Change in Level Editor","blocksPrice":0,"defId":"editor_speed_change"},{"name":"Moon Theme","blocksPrice":0,"defId":"theme_speed"}]}},{"id":"aura_nocheckpoints","name":"Beat Aura without checkpoints","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Astronaut Skin","blocksPrice":0,"defId":"skin_space"}]}},{"id":"cool_friends_checkpoints","name":"Beat Cool Friends","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Punch in Level Editor","blocksPrice":0,"defId":"editor_punch"},{"name":"Giant Enemy in Level Editor","blocksPrice":0,"defId":"editor_giant_enemy"}]}},{"id":"cool_friends_nocheckpoints","name":"Beat Cool Friends without checkpoints","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Fighter Theme","blocksPrice":0,"defId":"theme_fighter"},{"name":"Fighter Skin","blocksPrice":0,"defId":"skin_fighter"}]}},{"id":"for_you_checkpoints","name":"Beat For You","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Switch Block Spikes in Level Editor","blocksPrice":0,"defId":"editor_switch_block_spike"},{"name":"Dreamy Theme","blocksPrice":0,"defId":"theme_dreamy"}]}},{"id":"for_you_nocheckpoints","name":"Beat For You without checkpoints","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Dreamy Skin","blocksPrice":0,"defId":"skin_dreamy"}]}},{"id":"nacreous_snowmelt_checkpoints","name":"Beat Nacreous Snowmelt","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Arrows in Level Editor","blocksPrice":0,"defId":"editor_arrows"}]}},{"id":"nacreous_snowmelt_nocheckpoints","name":"Beat Nacreous Snowmelt without checkpoints","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Arrows Theme","blocksPrice":0,"defId":"theme_arrows"}]}},{"id":"nacreous_snowmelt_high_score","name":"Score 600,000 beating Nacreous Snowmelt","unlocked":false,"category":"levelPack","rewards":{"collected":false,"blocks":0,"items":[{"name":"Outline Skin","blocksPrice":0,"defId":"skin_arrows"}]}}]'
           ),
           vu = Ld({
             mappers: [
@@ -47373,7 +47373,7 @@ var version = "v1.10.5";
               (e) =>
                 Object.assign(Object.assign({}, e), {
                   hasVisitedSuperLevelPack: false,
-                  offlineCache: { achievements: _u },
+                  offlineCache: { achievements: allAchievements },
                 }),
               (e) =>
                 Object.assign(Object.assign({}, e), {
@@ -48293,9 +48293,32 @@ var version = "v1.10.5";
               ]),
             }),
           });
-        function Dh(e, t) {
+        function awardAchievement(e, t) {
           return Wu(this, void 0, void 0, function* () {
             return new Promise((a, i) => {
+              /*{
+                id: "test1",
+                title:
+                  "Picked up all 100 collectibles beating accelerated",
+                status: "AWARDED",
+                extraData: {
+                  blocks: "100",
+                  items: [fp[5], fp[4]],
+                  category:
+                    e < 0.2
+                      ? "bronze"
+                      : e < 0.4
+                      ? "silver"
+                      : e < 0.6
+                      ? "gold"
+                      : "levelPack",
+                },
+              },*/
+              a({
+                hasPass: true, // duh
+                achievements: Jp.getLocal(),
+              })
+              return;
               e.script.runScript(
                 "client/AwardAchievement",
                 {
@@ -48308,7 +48331,7 @@ var version = "v1.10.5";
                     return 200 !== s.status
                       ? eh(s)
                         ? lh(e)
-                            .then(() => Dh(e, t))
+                            .then(() => awardAchievement(e, t))
                             .then(a)
                             .catch(i)
                         : void i(Error(String(s.reason_code)))
@@ -50015,30 +50038,30 @@ var version = "v1.10.5";
             },
             completedLevel: function (e, t, a, i, n) {
               return Wu(this, void 0, void 0, function* () {
-                const s = yield Dh(
+                const s = yield awardAchievement(
                   e,
                   t + "_" + (a ? "" : "no") + "checkpoints"
                 );
                 if ("accelerated" === t)
                   if (0 === i) {
-                    const t = yield Dh(e, "accelerated_avoid_collectibles");
+                    const t = yield awardAchievement(e, "accelerated_avoid_collectibles");
                     s.achievements.push(...t.achievements);
                   } else if (75 === i) {
-                    const t = yield Dh(e, "accelerated_collectibles");
+                    const t = yield awardAchievement(e, "accelerated_collectibles");
                     s.achievements.push(...t.achievements);
                   }
                 if ("cloud_9" === t) {
                   if (n >= 2e5) {
-                    const t = yield Dh(e, "cloud_9_high_score");
+                    const t = yield awardAchievement(e, "cloud_9_high_score");
                     s.achievements.push(...t.achievements);
                   }
                   if (n >= 1e6) {
-                    const t = yield Dh(e, "cloud_9_very_high_score");
+                    const t = yield awardAchievement(e, "cloud_9_very_high_score");
                     s.achievements.push(...t.achievements);
                   }
                 }
                 if ("nacreous_snowmelt" === t && n >= 6e5) {
-                  const t = yield Dh(e, "nacreous_snowmelt_high_score");
+                  const t = yield awardAchievement(e, "nacreous_snowmelt_high_score");
                   s.achievements.push(...t.achievements);
                 }
                 return s;
@@ -50046,7 +50069,7 @@ var version = "v1.10.5";
             },
             reachedRank: function (e, t) {
               return Wu(this, void 0, void 0, function* () {
-                return Dh(e, "xp_rank" + t);
+                return awardAchievement(e, "xp_rank" + t);
               });
             },
             collectAchievementRewards: function e(t, a) {
@@ -50818,7 +50841,7 @@ var version = "v1.10.5";
         const Dp = "savedLevels",
           Bp = "savedLevelsSettings",
           Fp = "savedAccount",
-          Yp = "savedLocal",
+          savedLocalKey = "savedLocal",
           Up = "savedOfflineRequests",
           jp = "savedOfflineCache";
         function Gp(e, t, a) {
@@ -50884,7 +50907,7 @@ var version = "v1.10.5";
         }
         function Hp(e, t) {
           return Lp(this, void 0, void 0, function* () {
-            const a = yield e.getItem(Yp);
+            const a = yield e.getItem(savedLocalKey);
             if (null === a)
               return { data: vu.getDefaultData(), firstTimePlaying: true };
             try {
@@ -51096,24 +51119,24 @@ var version = "v1.10.5";
                 const s = n || (yield Hp(e)).data,
                   o = Object.assign(Object.assign({}, s), i);
                 try {
-                  yield e.setItem(Yp, JSON.stringify(vu.dataToJson(o, a)));
+                  yield e.setItem(savedLocalKey, JSON.stringify(vu.dataToJson(o, a)));
                 } catch (e) {
                   const a = `Error saving local data: ${e.message}`;
                   t.ok(a), Ql(a);
                 }
               });
             },
-            saveLocalOfflineCache: function (e, t, a) {
+            saveLocalOfflineCache: function (storage, now, data) {
               return Lp(this, void 0, void 0, function* () {
-                const i = (yield Hp(e)).data,
+                const i = (yield Hp(storage)).data,
                   n = Object.assign(Object.assign({}, i), {
                     offlineCache: Object.assign(
                       Object.assign({}, i.offlineCache),
-                      a
+                      data
                     ),
                   });
                 try {
-                  yield e.setItem(Yp, JSON.stringify(vu.dataToJson(n, t)));
+                  yield storage.setItem(savedLocalKey, JSON.stringify(vu.dataToJson(n, now)));
                 } catch (e) {
                   console.error("Error saving local offline cache", e);
                 }
@@ -51188,7 +51211,7 @@ var version = "v1.10.5";
             SAVED_LEVELS_KEY: Dp,
             SAVED_ACCOUNT_KEY: Fp,
             SAVED_OFFLINE_REQUESTS: Up,
-            SAVED_LOCAL_KEY: Yp,
+            SAVED_LOCAL_KEY: savedLocalKey,
           },
           Kp = 120,
           Qp = (e, t) => ({
@@ -59727,6 +59750,20 @@ var version = "v1.10.5";
           pf = function (e, t) {},
           gf = function () {},
           mf = function (e) {};
+        const unlockOfflineAchievement = async function (device, request, achievements, unlock) {
+          let newUnlocked = allAchievements.find(
+            (a) => a.id === (request.levelFileName + "_" + (request.isCheckpoints ? "" : "no") + "checkpoints")
+          );
+          console.warn(request, [...allAchievements, Object.assign(Object.assign({}, newUnlocked), {unlocked: true})]);
+                    const local = await Jp.getLocal(device.storage, device.alert);
+                    
+                    Jp.saveLocalOfflineCache(
+                      device.storage,
+                      device.now,
+                      { achievements: [...local.data.offlineCache.achievements.map((a) => a.id == newUnlocked.id ? Object.assign(Object.assign({}, newUnlocked), {unlocked: true}) : a )] }
+                    );
+                    unlock(newUnlocked);
+                  };
         const ff = makeSprite({
           init({ getContext: e, device: t, props: a }) {
             if ((t.audio("audio/levels/level-complete.wav").play(0), a.world)) {
@@ -59790,7 +59827,7 @@ var version = "v1.10.5";
                     ),
                       Jp.addOfflineRequests(t.storage, [yf(s, o, r)]);
                   })
-                : Jp.addOfflineRequests(t.storage, [yf(s, o, r)]);
+                : (unlockOfflineAchievement)(t, yf(s, o, r), allAchievements, n);//Jp.addOfflineRequests(t.storage, [yf(s, o, r)]);
             }
             return { frame: 0, opacity: 0 };
           },
@@ -66230,7 +66267,7 @@ var version = "v1.10.5";
                     if (t.hidden && !a) return null;
                     if (a) return { skin: t, unlockText: null };
                     const i = {};
-                    _u.forEach((e) => {
+                    allAchievements.forEach((e) => {
                       e.rewards.items.forEach((t) => {
                         if (t.defId.startsWith("skin_")) {
                           const a = t.defId.slice(5);
@@ -67832,10 +67869,10 @@ var version = "v1.10.5";
                 r = a.size.height + 2 * a.size.heightMargin,
                 {
                   showBuyPassModal: l,
-                  achievements: c,
+                  achievements: achievements,
                   hasPass: d,
-                  hasSuperLevelPack: u,
-                  hasPendingAchievements: h,
+                  hasSuperLevelPack: hasSuperLevelPack,
+                  hasPendingAchievements: hasPendingAchievements,
                 } = t,
                 { online: p } = s(Se),
                 g = [
@@ -67857,7 +67894,7 @@ var version = "v1.10.5";
                     y: -r / 2 + 40,
                   }),
                 ];
-              return "loading" === c
+              return "loading" === achievements
                 ? [
                     ...g,
                     n({
@@ -67908,9 +67945,9 @@ var version = "v1.10.5";
                             font: { size: 15 },
                             color: Ve,
                             x: 30,
-                            y: r / 2 - (h ? 35 : 40),
+                            y: r / 2 - (hasPendingAchievements ? 35 : 40),
                           }),
-                          h
+                          hasPendingAchievements
                             ? n({
                                 text: "GO ONLINE TO UNLOCK YOUR ACHIEVEMENTS",
                                 font: { size: 12 },
@@ -67926,14 +67963,15 @@ var version = "v1.10.5";
                       showScrollBar: true,
                       containerWidth: o - 18,
                       containerHeight: r - 130,
-                      contentHeight: 100 * c.length,
+                      contentHeight: 100 * achievements.length,
                       y: r / 2 - 70,
                       sprites: () =>
-                        c.map((e, t) =>
+                        achievements.map((e, t) =>
                           zy({
                             id: `Row-${e.id}`,
                             achievement: e,
-                            locked: "levelPack" === e.category ? !u : !d,
+                            allAchievements: achievements,
+                            locked: false,// "levelPack" === e.category ? !hasSuperLevelPack : !d,
                             width: o,
                             y: 100 * -t - 50,
                           })
@@ -67976,10 +68014,10 @@ var version = "v1.10.5";
               ),
             }),
             render({
-              props: { achievement: e, width: t, locked: a },
+              props: { achievement: e, width: t, locked: a, allAchievements },
               state: { collected: i, rewards: s, nameLines: o },
               getContext: c,
-              updateState: d,
+              updateState: updateState,
               device: u,
             }) {
               const { online: h } = c(Se),
@@ -68080,7 +68118,7 @@ var version = "v1.10.5";
                 e.unlocked ? null : r({ path: m, fillColor: Ue, opacity: 0.5 }),
                 r({ path: m, color: Ye, thickness: 4 }),
                 e.unlocked
-                  ? i
+                  ? i || e.rewards.collected
                     ? n({
                         text:
                           "loading" === i
@@ -68120,20 +68158,26 @@ var version = "v1.10.5";
         n = 1 //usesLeft
                                  */
                           console.warn(e);
-                          e.rewards.items.map(item => Jp.addPurchasedItems([{
+                          /*e.rewards.items.map(item => (Jp.addPurchasedItems([{
                             usesLeft: null,
                             defId: item.defId,
                             version: 1,
-                          }], u.now));
+                          }], u.now)));*/
                           u.audio("audio/achievement/rewards-collect.wav").play(
                             0
                           );
-                          d((e) =>
-                            Object.assign(Object.assign({}, e), {
+                          updateState((t) =>
+                            ((e.rewards.collected = true), 
+                            (allAchievements[allAchievements.indexOf(e)].rewards.collected = true), 
+                            Jp.saveLocalOfflineCache(
+                                        u.storage,
+                                        u.now,
+                                        { achievements: [...allAchievements] }
+                            ), console.warn(e, allAchievements.find(a => a.id === "xp_rank10"), localStorage.savedLocal), 
+                            Object.assign(Object.assign({}, t), {
                               collected: true,
-                            })
+                            }))
                           );
-
                           return;
                           h &&
                             (bp
@@ -68152,20 +68196,20 @@ var version = "v1.10.5";
                                     "audio/achievement/rewards-collect.wav"
                                   )
                                   .play(0),
-                                  d((e) =>
+                                  updateState((e) =>
                                     Object.assign(Object.assign({}, e), {
                                       collected: true,
                                     })
                                   );
                               })
                               .catch(() => {
-                                d((e) =>
+                                updateState((e) =>
                                   Object.assign(Object.assign({}, e), {
                                     collected: false,
                                   })
                                 );
                               }),
-                            d((e) =>
+                            updateState((e) =>
                               Object.assign(Object.assign({}, e), {
                                 collected: "loading",
                               })
@@ -72570,7 +72614,7 @@ var version = "v1.10.5";
             render({
               props: e,
               state: t,
-              updateState: a,
+              updateState: updateState,
               getContext: i,
               device: s,
             }) {
@@ -72663,7 +72707,7 @@ var version = "v1.10.5";
                                   "loading" === f ? "LOADING" : "COLLECTED!",
                                 color: Ye,
                                 font: { size: 16 },
-                                x: zu.hasIAP() ? 130 : 0,
+                                x: 130,
                                 y: -130,
                               })
                             : Fo({
@@ -72671,13 +72715,29 @@ var version = "v1.10.5";
                                 text: "COLLECT",
                                 width: 120,
                                 height: 60,
-                                x: zu.hasIAP() ? 130 : 0,
+                                x: 130,
                                 y: -130,
                                 strokeColor: Ye,
                                 onPress: () => {
-                                  Jp.saveEncryptedStorage(s.now, {
-                                    ownedItems: d.rewards.items,
-                                  });
+                                  /*d.rewards.items.map(item => (Jp.addPurchasedItems([{
+                                    usesLeft: null,
+                                    defId: item.defId,
+                                    version: 1,
+                                  }], s.now)));*/
+                                  s.audio("audio/achievement/rewards-collect.wav").play(
+                                    0
+                                  );
+                                  updateState((t) =>
+                                    ((d.rewards.collected = true), 
+                                    (allAchievements[allAchievements.indexOf(d)].rewards.collected = true), 
+                                    Jp.saveLocalOfflineCache(
+                                                d.storage,
+                                                d.now,
+                                                { achievements: [...allAchievements] }
+                                    ), Object.assign(Object.assign({}, t), {
+                                      collected: true,
+                                    }))
+                                  );
                                   return;
                                   bp
                                     .collectAchievementRewards(c.backend, d)
@@ -72695,20 +72755,20 @@ var version = "v1.10.5";
                                           "audio/achievement/rewards-collect.wav"
                                         )
                                         .play(0),
-                                        a((e) =>
+                                        updateState((e) =>
                                           Object.assign(Object.assign({}, e), {
                                             collected: true,
                                           })
                                         );
                                     })
                                     .catch(() => {
-                                      a((e) =>
+                                      updateState((e) =>
                                         Object.assign(Object.assign({}, e), {
                                           collected: false,
                                         })
                                       );
                                     }),
-                                    a((e) =>
+                                    updateState((e) =>
                                       Object.assign(Object.assign({}, e), {
                                         collected: "loading",
                                       })
@@ -72757,7 +72817,7 @@ var version = "v1.10.5";
                             y: -130,
                             strokeColor: Ye,
                             onPress: () => {
-                              a((e) =>
+                              updateState((e) =>
                                 Object.assign(Object.assign({}, e), {
                                   showModal: "buyPass",
                                 })
@@ -72769,7 +72829,7 @@ var version = "v1.10.5";
                       ? Vy({
                           id: "BuyPassModal",
                           closeMenu: () => {
-                            a((e) =>
+                            updateState((e) =>
                               Object.assign(Object.assign({}, e), {
                                 showModal: "none",
                               })
