@@ -17708,13 +17708,6 @@ var version = "v1.10.5";
               size: 47,
               trail: ct(),
             },
-            mikhael: {
-              name: "Mikhael",
-              fileName: "mikhael",
-              size: 31,
-              author: "mikhael",
-              trail: ct({ topColour: "#78baba", bottomColour: "#78baba"}),
-            },
             pumpkin: {
               name: "Pumpkin",
               fileName: "pumpkin",
@@ -17726,6 +17719,20 @@ var version = "v1.10.5";
               fileName: "calavera",
               size: 45,
               trail: ct({ topColour: "#f7ded4", bottomColour: "#f7ded4" }),
+            },
+            mikhael: {
+              name: "Mikhael",
+              fileName: "mikhael",
+              size: 31,
+              author: "mikhael",
+              trail: ct({ topColour: "#78baba", bottomColour: "#78baba"}),
+            },
+            benjamin: {
+              name: "Benja",
+              fileName: "benjamin",
+              size: 30,
+              author: "GatoNegro",
+              trail: ct({ topColour: "#9f1960", bottomColour: "#691d96"}),
             },
             blank: {
               name: "Blank",
@@ -53168,7 +53175,7 @@ var version = "v1.10.5";
                   max: 960,
                   fade: a ? 0 : 1,
                   fadeIn: a,
-                  timeout: Math.round(300 * random())
+                  timeout: Math.round(100 * random())
                 }
               },
             loop({ state: e, props: { playerX: t, playerY: a }, device: {random} }) {
@@ -53200,12 +53207,12 @@ var version = "v1.10.5";
                       ? (e.fade += 0.01)
                       : ((e.fade = 1),
                         (e.fadeIn = !1),
-                        (e.timeout = Math.round(300 * random())))
+                        (e.timeout = Math.round(100 * random())))
                     : e.fade > 0
                     ? (e.fade -= 0.01)
                     : ((e.fade = 0),
                       (e.fadeIn = !0),
-                      (e.timeout = Math.round(300 * random())));
+                      (e.timeout = Math.round(100 * random())));
             },
             render: ({ props: e, state: t }) => [
               p({ color: e.color, width: e.width, height: e.height }, (a) => {
