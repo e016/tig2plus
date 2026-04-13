@@ -16748,7 +16748,7 @@ var version = "v1.10.5";
                     right = obj.width / 2 - inset,
                     bottom = -obj.height / 2 + inset,
                     top = obj.height / 2 - inset;
-
+                console.warn(obj.rotation);
                   return obj.shape == "bar" ? (
                     (ee.pos.x = obj.x),
                     (ee.pos.y = obj.y),
@@ -37144,7 +37144,7 @@ var version = "v1.10.5";
                       ]),
                       t.movement == "static" &&
                       (n = [
-                        {
+                        /*{
                           name: "Bar",
                           selected: t?.shape == "bar",
                           onPress: () => {
@@ -37162,7 +37162,7 @@ var version = "v1.10.5";
                               });
                             });
                           },
-                        },
+                        },*/ // Come on...
                         {
                           name: "Large",
                           selected: t?.shape == "large",
@@ -41375,7 +41375,7 @@ var version = "v1.10.5";
                     : g.minY) && void 0 !== m
                 ? m
                 : Ca.getMinYFromX(U.playerX, inViewLayout.properties.minY);
-            if (U.playerY <= pe) {
+            if (U.playerY <= pe && !inViewLayout.properties.useGround) {
               const e =
                 null !==
                   (y =
