@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.10.4";
+var version = "v1.10.5";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -51673,6 +51673,7 @@ var version = "v1.10.4";
                     }),
                     update: (a, n, index) => {
                       (a.x = 0),
+                      (a.color = e.trail.topColour),
                       (a.path = t.path[index + 1] ? [[n.x, n.y], [t.path[index + 1].x, t.path[index + 1].y]] : [[n.x, n.y], [n.x, n.y]]),
                       (a.opacity = index / t.path.length);
                     },
@@ -57462,18 +57463,24 @@ var version = "v1.10.4";
                     ),
                   ],
           }),
-          hm = (y, cameraY, finished, anchor) => {
+          hm = (y, cameraY, finished, anchor, useGround) => {
             if (anchor) {
               return cameraY + (anchor - cameraY) / 5;
             }
             if (finished) return cameraY + (y - cameraY) / 10;
             const i = et.initialPosition.y + 105,
               n = et.initialPosition.y;
-            return y - cameraY > i
+              let isGrounded = false;
+              if ((y <= 30) && !(y - cameraY > i) && useGround) {
+                cameraY = cameraY + (30 - cameraY) / 4;
+                isGrounded = true;
+              };
+             cameraY = (y - cameraY > i) && !isGrounded
               ? cameraY + (5 + y - cameraY - i) / 4
-              : y - cameraY < n
+              : y - cameraY < n && !isGrounded
               ? cameraY + (-5 + y - cameraY - n) / 4
               : cameraY;
+            return cameraY;
           },
           pm = (e, t, a) => {
             const i = a
@@ -60386,6 +60393,7 @@ var version = "v1.10.4";
                   t.mutValues.levelState.cameraY,
                   finishedLevel,
                   flyingAnchor,
+                  t.bigMutValues.inViewLayout.properties.useGround,
                 )),
                 (t.mutValues.levelState.cameraXOffset = pm(
                   t.mutValues.levelState.cameraXOffset,
@@ -69934,7 +69942,7 @@ var version = "v1.10.4";
                   t.viewingPlayer.state.mutValues.levelState.playerY,
                   e.cameraY,
                   false,
-                  t.viewingPlayer.state.mutValues.levelState.flyingAnchor
+                  t.viewingPlayer.state.mutValues.levelState.flyingAnchor,
                 )),
                 (e.cameraScale = 2),
                 (e.cameraXOffset = pm(
