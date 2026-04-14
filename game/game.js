@@ -42263,6 +42263,12 @@ var version = "v1.10.5";
                 author: "Exilelord",
                 bpm: 210,
                 fileName: "audio/tracks/exilelord-hellidox.mp3"
+              },
+              jackpot: {
+                name: "Jackpot",
+                author: "TheFatRat",
+                bpm: 103,
+                fileName: "audio/tracks/the-fat-rat-jackpot.mp3"
               }
               
             },
@@ -45829,6 +45835,7 @@ var version = "v1.10.5";
              e[(e.GlitchedOut = 57)] = "GlitchedOut";
              e[(e.LastTile = 58)] = "LastTile";
              e[(e.Hellidox = 59)] = "Hellidox";
+             e[(e.Jackpot = 60)] = "Jackpot";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -46667,7 +46674,8 @@ var version = "v1.10.5";
             [Nd.SolarWind]: hl.songs.solarWind,
             [Nd.GlitchedOut]: hl.songs.glitchedOut,
             [Nd.LastTile]: hl.songs.lastTile,
-            [Nd.Hellidox]: hl.songs.hellidox
+            [Nd.Hellidox]: hl.songs.hellidox,
+            [Nd.Jackpot]: hl.songs.jackpot
           },
           Hd = {
             [ld.Rot0]: 0,
