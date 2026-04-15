@@ -42424,7 +42424,7 @@ var version = "v1.10.9";
               hellidox: {
                 name: "Hellidox",
                 author: "Exilelord",
-                bpm: 210,
+                bpm: 200,
                 fileName: "audio/tracks/exilelord-hellidox.mp3"
               },
               jackpot: {
