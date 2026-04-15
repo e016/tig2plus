@@ -1,5 +1,5 @@
 {
-    "id": 8,
-    "title": "Sky Fracture Stuff",
-    "news": "There's a new \"Spaceship\" powerup\n and a flying option for flags!\n\nHave fun playing around with these boss mechanics!!~"
+    "id": 9,
+    "title": "Powerup Overrides",
+    "news": "By default, placing a powerup will make it NOT override other powerups' effects.\n This means that you can have multiple at once.\n\n I hope you'll have fun with these crazy combinations!"
 }

@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.10.5";
+var version = "v1.10.9";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -249,7 +249,7 @@ var version = "v1.10.5";
                     operation: "READ",
                     callback: function (e) {},
                   });
-                }, 1e3 * e._idleTimeout));
+                }, 1000 * e._idleTimeout));
             }),
             (e.stopHeartBeat = function () {
               e._heartBeatIntervalId &&
@@ -389,7 +389,7 @@ var version = "v1.10.5";
                       ),
                       setTimeout(
                         e.performQuery,
-                        1e3 * e._packetTimeouts[e._retry - 1]
+                        1000 * e._packetTimeouts[e._retry - 1]
                       )))
                 : (e.debugLog("Failed after " + e._retry + " retries.", true),
                   null != e._errorCallback && e._errorCallback,
@@ -468,7 +468,7 @@ var version = "v1.10.5";
                 }),
                 (e.xml_timeoutId = setTimeout(
                   t.ontimeout_bc,
-                  1e3 * e._packetTimeouts[0]
+                  1000 * e._packetTimeouts[0]
                 ));
                 return;
                 t.open("POST", e._dispatcherUrl, true),
@@ -7963,7 +7963,7 @@ var version = "v1.10.5";
             (t._netId = t.INVALID_NET_ID),
             (t._systemCallback = null),
             (t._relayCallback = null),
-            (t._pingIntervalMS = 1e3),
+            (t._pingIntervalMS = 1000),
             (t._pingIntervalId = null),
             (t._pingInFlight = false),
             (t._pingTime = null),
@@ -8047,7 +8047,7 @@ var version = "v1.10.5";
               t._systemCallback = null;
             }),
             (t.setPingInterval = function (e) {
-              (t._pingIntervalMS = Math.max(1e3, e)),
+              (t._pingIntervalMS = Math.max(1000, e)),
                 t.isConnected && (t.stopPing(), t.startPing());
             }),
             (t.getOwnerProfileId = function () {
@@ -8475,7 +8475,7 @@ var version = "v1.10.5";
                   t._debugEnabled &&
                     console.log("WS SEND: " + JSON.stringify(e)),
                     t.socket.send(JSON.stringify(e));
-                }, 1e3 * Q));
+                }, 1000 * Q));
             }),
             (t.onRecv = function (e) {
               t._debugEnabled && console.log("WS RECV: " + JSON.stringify(e)),
@@ -14360,7 +14360,7 @@ var version = "v1.10.5";
                 }));
             });
           var R = new T(),
-            O = 1e3,
+            O = 1000,
             C = 1005,
             w = 1006,
             A = {
@@ -14773,7 +14773,7 @@ var version = "v1.10.5";
               (t.prototype.close = function (e, a) {
                 if (
                   void 0 !== e &&
-                  ("number" != typeof e || (1e3 !== e && (e < 3e3 || e > 4999)))
+                  ("number" != typeof e || (1000 !== e && (e < 3e3 || e > 4999)))
                 )
                   throw new TypeError(
                     A.CLOSE_ERROR +
@@ -16170,7 +16170,8 @@ var version = "v1.10.5";
                     ? s
                     : 30,
                 item: o,
-                compatible: e ? e.compatible : true
+                compatible: e ? e.compatible : true,
+                override: e ? e.override : false
               };
             },
             newSwitchButton: (e) => {
@@ -16748,7 +16749,6 @@ var version = "v1.10.5";
                     right = obj.width / 2 - inset,
                     bottom = -obj.height / 2 + inset,
                     top = obj.height / 2 - inset;
-                console.warn(obj.rotation, obj);
                   return obj.shape == "bar" ? (
                     (ee.pos.x = obj.x),
                     (ee.pos.y = obj.y),
@@ -17391,9 +17391,9 @@ var version = "v1.10.5";
               playerScaleY: sy,
               playerScale: ps,
               isGravity,
-              playerPowerup,
+              playerPowerups,
             } = e;
-            gy = isGravity || playerPowerup?.item === "spaceship" ? 0 : gy;
+            gy = isGravity || playerPowerups.some(e => e.item === "spaceship") ? 0 : gy;
             globalPlayerScale = ps;
             sx = sx / ps;
             sy = sy / ps;
@@ -18283,10 +18283,10 @@ var version = "v1.10.5";
           if (0 === a.length) return { minYsByXDiv1000: [], minX: 0, minY: 0 };
           const i = a[0].x - 2e3,
             n = a[a.length - 1].x + 2e3,
-            s = Array.from({ length: Math.ceil((n - i) / 1e3) }, () => null);
+            s = Array.from({ length: Math.ceil((n - i) / 1000) }, () => null);
           return (
             a.forEach((e) => {
-              const t = Math.ceil((e.x - i) / 1e3),
+              const t = Math.ceil((e.x - i) / 1000),
                 a = s[t];
               s[t] = null === a ? e.y : Math.min(e.y, a);
               const n = s[t - 1];
@@ -18638,7 +18638,7 @@ var version = "v1.10.5";
               e,
               { minX: t, minY: a, minYsByXDiv1000: i }
             ) {
-              const n = i[Math.ceil((e - t) / 1e3)];
+              const n = i[Math.ceil((e - t) / 1000)];
               return null == n ? a : n;
             },
             updateMinY: function (e) {
@@ -19188,7 +19188,7 @@ var version = "v1.10.5";
             ];
           };
         function La(e, t, a = -1) {
-          let i = 1e3;
+          let i = 1000;
           for (; !Pa(e, t) && i > 0; )
             i--,
               (t = t.map((e) => {
@@ -32995,8 +32995,11 @@ var version = "v1.10.5";
           wo = makeSprite({
             render: ({ props: e, getContext: t }) => [
               onChange(
-                () => e.powerup.item,
+                () => e.powerup && e.powerup.item,
                 () => {
+                  if (!e.powerup) {
+                    return [];
+                  }
                   switch (e.powerup.item) {
                     case "doubleJump": {
                       const { animationAssets: a, animationRenderer: i } =
@@ -33104,11 +33107,12 @@ var version = "v1.10.5";
             },
             render: ({ props: e, state: t }) => [
               onChange(
-                () => e.powerup.item,
+                () => e.isJetpack !== e.isSkating,
                 () => {
-                  switch (e.powerup.item) {
+                  let t = [];
+                  switch (e.isJetpack ? "jetpack" : "") {
                     case "jetpack":
-                      return [
+                      t = [
                         conditional(
                           () => e.isUsing,
                           () => [
@@ -33206,9 +33210,16 @@ var version = "v1.10.5";
                           }
                         ),
                       ];
+                      break;
                     case "skateboard":
-                      return [
-                        ifConditional(
+                      t = [];
+                      break;
+                    default:
+                      t = [];
+                      break;
+                  }
+                  e.isSkating && t.push(
+                    ifConditional(
                           () => !e.crashed,
                           () => [
                             Oo.Single(
@@ -33242,10 +33253,9 @@ var version = "v1.10.5";
                             ),
                           ]
                         ),
-                      ];
-                    default:
-                      return [];
-                  }
+                  );
+                  console.warn(t, e.powerup);
+                  return t;
                 }
               ),
             ],
@@ -37821,9 +37831,81 @@ var version = "v1.10.5";
                       }),
                     l.length > 0 ? [
                       { name: "Item", options: n },
+                      { name: "Override", options: [
+                        {
+                          name: "On",
+                          selected: t.override,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "powerups",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    override: true
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Off",
+                          selected: !t.override,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "powerups",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    override: false
+                                  }),
+                              });
+                            });
+                          },
+                        }
+                      ]},
                       { name: "Compatible? (EXPERIMENTAL)", options: l },
                     ] : [
                       { name: "Item", options: n },
+                      { name: "Override", options: [
+                        {
+                          name: "On",
+                          selected: t.override,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "powerups",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    override: true
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Off",
+                          selected: !t.override,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "powerups",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    override: false
+                                  }),
+                              });
+                            });
+                          },
+                        }
+                      ]}
                     ]
                   );
                 })(e, t, a, i);
@@ -39252,7 +39334,7 @@ var version = "v1.10.5";
                           e.setSettings({
                             viewOffset: pr(
                               d,
-                              B.clamp2(dr, cr, d.scale * (1 - t / 1e3)),
+                              B.clamp2(dr, cr, d.scale * (1 - t / 1000)),
                               { x: r.pointer.x, y: r.pointer.y }
                             ),
                           });
@@ -39311,7 +39393,7 @@ var version = "v1.10.5";
                             viewOffset: r.keysDown.Control
                               ? pr(
                                   d,
-                                  B.clamp2(dr, cr, d.scale * (1 - t / 1e3)),
+                                  B.clamp2(dr, cr, d.scale * (1 - t / 1000)),
                                   { x: r.pointer.x, y: r.pointer.y }
                                 )
                               : r.keysDown.Shift
@@ -39824,7 +39906,7 @@ var version = "v1.10.5";
                   playerRot: 0,
                   playerDir: 1,
                   playerSpeedMultiplier: 1,
-                  playerPowerup: null,
+                  playerPowerups: [],
                   isCompatible: true,
                   playerBullets: [],
                   playerJetpackFuel: 0,
@@ -39887,7 +39969,7 @@ var version = "v1.10.5";
               playerScaleY: e.playerScaleY,
               playerDir: e.playerDir,
               playerSpeedMultiplier: e.playerSpeedMultiplier,
-              playerPowerup: e.playerPowerup,
+              playerPowerups: [...e.playerPowerups],
               isCompatible: e.isCompatible,
               playerBullets: [...e.playerBullets],
               playerJetpackFuel: e.playerJetpackFuel,
@@ -40273,13 +40355,11 @@ var version = "v1.10.5";
             let isDown =
               ("up" !== playerInput || U.justDownInputTimer > 0) &&
               !L.blockJumpUntilReleased;
+              console.warn(L.blockJumpUntilReleased, isDown);
             const skating =
-              "skateboard" ===
-              (null === (t = U.playerPowerup) || void 0 === t
-                ? void 0
-                : t.item);
+              U.playerPowerups.some(e => e.item === "skateboard");
             U.justDownInputTimer > 0 && (disableReleaseBuffer ? ("up" == playerInput && (U.justDownInputTimer = 0), "up" !== playerInput) : true) && U.justDownInputTimer--,
-              "justDown" !== playerInput || skating || (U.justDownInputTimer = 10);
+              "justDown" !== playerInput || (skating ? (void 0) : (U.justDownInputTimer = 10));
             const inViewLayout =
                 (null == D ? void 0 : D.inViewLayout) ||
                 Ca.getEmptyLayout(_.layout.properties),
@@ -40403,7 +40483,7 @@ var version = "v1.10.5";
             } else {
               
               if (isDown) {
-                const e = U.justDownInputTimer > 0,
+                const e = U.justDownInputTimer > 0 || "justDown" === playerInput,
                   t = e
                     ? (e, t, a) => be.rectTouchesRect2(e, U.playerY, t, M, a)
                     : null,
@@ -40415,10 +40495,7 @@ var version = "v1.10.5";
                         return inViewLayoutState.collectibles[a].wasPickedUp
                           ? void 0
                           : (null == t ? void 0 : t(U.playerX - 10, 70, e)) ||
-                              ("playerStack" ===
-                                (null === (i = U.playerPowerup) || void 0 === i
-                                  ? void 0
-                                  : i.item) &&
+                              (U.playerPowerups.some(e => e.item === "playerStack") &&
                                 be.hitStack(
                                   e,
                                   U.playerX - 10,
@@ -40437,7 +40514,7 @@ var version = "v1.10.5";
               )(button)));
               U.dashing && e && ((U.dashing = false),
                     (U.jumping = true),
-                    ((!U.playerPowerup && U.playerPowerup?.item != "playerStack") && (L.blockJumpUntilReleased = true),
+                    ((U.playerPowerups.length === 0 && !U.playerPowerups.some(e => e.item === "playerStack")) && (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0)));
                 if (a)
@@ -40449,10 +40526,7 @@ var version = "v1.10.5";
                       if (!inViewLayoutState.collectibles[a].wasPickedUp)
                         if (
                           (null == t ? void 0 : t(U.playerX, 50, e)) ||
-                          ("playerStack" ===
-                            (null === (i = U.playerPowerup) || void 0 === i
-                              ? void 0
-                              : i.item) &&
+                          (U.playerPowerups.some(e => e.item === "playerStack") &&
                             be.hitStack(e, U.playerX, U.playerStacks, 50))
                         ) {
                           const t = Math.abs(e.x - U.playerX),
@@ -40472,10 +40546,7 @@ var version = "v1.10.5";
                           );
                         } else
                           ((null == t ? void 0 : t(U.playerX - M, M, e)) ||
-                            ("playerStack" ===
-                              (null === (n = U.playerPowerup) || void 0 === n
-                                ? void 0
-                                : n.item) &&
+                            (U.playerPowerups.some(e => e.item === "playerStack") &&
                               be.hitStack(e, U.playerX - M, U.playerStacks))) &&
                             ((U.score.multiplier = 0),
                             xa.updateLayoutStateField(
@@ -40500,7 +40571,7 @@ var version = "v1.10.5";
                 else if (
                   e &&
                   "punch" ===
-                    (null === (i = U.playerPowerup) || void 0 === i
+                    (null === (i = U.playerPowerups[0]) || void 0 === i
                       ? void 0
                       : i.item)
                 )
@@ -40508,7 +40579,7 @@ var version = "v1.10.5";
                     (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0),
-                    (U.playerPowerup = null),
+                    (U.playerPowerups.shift()),
                     xa.updateHitPunchState(
                       U.frame,
                       inViewLayout,
@@ -40524,7 +40595,7 @@ var version = "v1.10.5";
                 else if (
                   e &&
                   "drill" ===
-                    (null === (i = U.playerPowerup) || void 0 === i
+                    (null === (i = U.playerPowerups[0]) || void 0 === i
                       ? void 0
                       : i.item)
                 )
@@ -40532,7 +40603,7 @@ var version = "v1.10.5";
                     (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0),
-                    (U.playerPowerup = null),
+                    (U.playerPowerups.shift()),
                     xa.updateHitDrillState(
                       U.frame,
                       inViewLayout,
@@ -40549,7 +40620,7 @@ var version = "v1.10.5";
                 else if (
                   e &&
                   "gun" ===
-                    (null === (n = U.playerPowerup) || void 0 === n
+                    (null === (n = U.playerPowerups[0]) || void 0 === n
                       ? void 0
                       : n.item)
                 )
@@ -40557,32 +40628,37 @@ var version = "v1.10.5";
                     (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0),
-                    (U.playerPowerup = null),
+                    (U.playerPowerups.shift()),
                     U.playerBullets.push(
                       oo(U.playerX, U.playerY, 4 * w * U.playerDir)
+                    ),
+                    (
+                      U.playerPowerups.some(e => e.item === "playerStack") && U.playerStacks.map(
+                        (e) => U.playerBullets.push(
+                          oo(U.playerX, e.y, 4 * w * U.playerDir)
+                        )
+                      )
                     );
+                    
                 else if (
                   e &&
                   (U.jumping || 0 !== U.playerGradY) &&
                   "doubleJump" ===
-                    (null === (s = U.playerPowerup) || void 0 === s
+                    (null === (s = U.playerPowerups[0]) || void 0 === s
                       ? void 0
                       : s.item)
                 )
                   (U.playerGradY = G.initGrad(V)),
                     (U.jumpSwitch.on = !U.jumpSwitch.on),
                     (U.jumpSwitch.delay = 2),
-                    (U.playerPowerup = null),
+                    (U.playerPowerups.shift()),
                     (U.justDownInputTimer = 0),
                     null == v || v.useUpPowerup("doubleJump"),
                     (U.jumping = true);
                 else if (
-                  "jetpack" ===
-                  (null === (o = U.playerPowerup) || void 0 === o
-                    ? void 0
-                    : o.item)
+                  U.playerPowerups.some(e => e.item === "jetpack")
                 ) {
-                  if (U.jumping) {
+                  if (U.jumping && U.flyingAnchor === null) {
                     if (U.playerGradY < V) {
                       const e = 1 === df ? 1 : 1.01 * df;
                       U.playerGradY += (e * (V - U.playerGradY)) / 5;
@@ -40592,12 +40668,12 @@ var version = "v1.10.5";
                       (U.playerGradY = G.initGrad(V) / 2),
                       U.playerJetpackFuel < 8 &&
                         ((U.playerGradY = G.initGrad(V)),
-                        (U.playerPowerup = null),
+                        (U.playerPowerups = U.playerPowerups.filter(e => e.item !== "jetpack")),
                         null == v || v.useUpPowerup("jetpack"));
                   (U.playerJetpackFuel -= df * (w / 5)),
                     (U.playerUsingPowerup = true),
                     U.playerJetpackFuel <= 0 &&
-                      ((U.playerPowerup = null),
+                      ((U.playerPowerups = U.playerPowerups.filter(e => e.item !== "jetpack")),
                       null == v || v.useUpPowerup("jetpack"));
                 } else if (U.gravity < 0) {
                   if ((U.gravityHitObject || U.dashing) && e) {
@@ -40610,7 +40686,7 @@ var version = "v1.10.5";
                   (isDown = false),
                   (U.justDownInputTimer = 0);
                   }
-                } else if (U.playerPowerup?.item === "spaceship") {
+                } else if (U.playerPowerups.some(e => e.item === "spaceship")) {
                   
                 } else {
                   if (U.dashing) {
@@ -40656,16 +40732,11 @@ var version = "v1.10.5";
                 } else U.playerScaleY = 1;
               else et.setScaleInc(U, df, V);
               if (
-                ("jetpack" ===
-                (null === (r = U.playerPowerup) || void 0 === r
-                  ? void 0
-                  : r.item)) && !U.dashing
+                U.playerPowerups.some(e => e.item === "jetpack") && !U.dashing
               )
                 U.playerRot = B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir;
               else if (
-                (["playerStack", "spaceship"].includes(null === (l = U.playerPowerup) || void 0 === l
-                  ? void 0
-                  : l.item)) && !U.dashing
+                (U.playerPowerups.some(e => e.item === "spaceship" || e.item === "playerStack")) && !U.dashing
               )
                 U.playerRot = 0;
               
@@ -40695,7 +40766,7 @@ var version = "v1.10.5";
               const low = U.flyingAnchor - 45,
               high = U.flyingAnchor + 45,
               oldY = U.playerY;
-              U.playerPowerup?.item === "spaceship" ? 
+              U.playerPowerups.some(e => e.item === "spaceship") && ("up" == playerInput || !U.playerPowerups.some(e => e.item === "jetpack")) ? 
                     (
                       "justDown" === playerInput && !L.blockJumpUntilReleased && (
                         (U.jumping = !U.jumping),
@@ -40704,6 +40775,7 @@ var version = "v1.10.5";
                         (L.blockJumpUntilReleased = true),
                         (isDown = false),
                         (U.justDownInputTimer = 0)),
+                      
                       U.dashing || (U.jumping
                         ? U.playerY > low
                           ? ((U.playerY += 2 * df * ((-5 + low - U.playerY) / 6.6) * (w / 6.6)),
@@ -40716,17 +40788,14 @@ var version = "v1.10.5";
                       (U.playerGradY = U.playerY - oldY)
                     ) : 
               ((U.playerY = e.y), (U.playerGradY = e.gradY));
-              if (("ghost" ===
-                (null === (l = U.playerPowerup) || void 0 === l
-                  ? void 0
-                  : l.item))) {
+              if (U.playerPowerups.some(e => e.item === "ghost")) {
                 U.playerJetpackFuel < 8 &&
-                        ((U.playerPowerup = null),
+                        ((U.playerPowerups.shift()),
                         null == v || v.useUpPowerup("jetpack"));
                   (U.playerJetpackFuel -= df * (w / 10)),
                     (U.playerUsingPowerup = true),
                     U.playerJetpackFuel <= 0 &&
-                      ((U.playerPowerup = null),
+                      ((U.playerPowerups.shift()),
                       null == v || v.useUpPowerup("jetpack"))}
             }
             if (
@@ -40777,7 +40846,7 @@ var version = "v1.10.5";
               const t = inViewLayout.directionChanges[e],
                 a = t.x - U.playerX;
 
-                if (Z(t) || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(t, U.playerX, U.playerStacks))) {
+                if (Z(t) || (!U.isCompatible && (U.playerPowerups.some(e => e.item === "playerStack")) && be.hitStack(t, U.playerX, U.playerStacks))) {
                   if ((1 === U.playerDir && "left" === t.direction && a <= 0) ||
                     (-1 === U.playerDir && "right" === t.direction && a >= 0)) {
                       (inViewLayoutState.directionChanges[e].wasHit
@@ -40809,7 +40878,7 @@ var version = "v1.10.5";
                 index = e,
                 a = U.playerX - t.x;
               if (
-                (Z(t) || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(t, U.playerX, U.playerStacks))) &&
+                (Z(t) || (!U.isCompatible && (U.playerPowerups.some(e => e.item === "playerStack")) && be.hitStack(t, U.playerX, U.playerStacks))) &&
                 ((1 === U.playerDir && a >= 0) ||
                   (-1 === U.playerDir && a <= 0))
                 ) {
@@ -40833,7 +40902,7 @@ var version = "v1.10.5";
                 return false;
               }
               return (
-                (Z(e)  || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(e, U.playerX, U.playerStacks))) &&
+                (Z(e)  || (!U.isCompatible && (U.playerPowerups.some(e => e.item === "playerStack")) && be.hitStack(e, U.playerX, U.playerStacks))) &&
                 ((1 === U.playerDir && t <= 15) ||
                   (-1 === U.playerDir && t >= -15))
               );
@@ -40873,13 +40942,7 @@ var version = "v1.10.5";
                   (U.playerScaleY = U.playerScale),
                   (U.switchBlockSpikes = false),
                   !e?.retainSpeed && (U.playerSpeedMultiplier = 1),
-                  "skateboard" !==
-                    (null === (c = U.playerPowerup) || void 0 === c
-                      ? void 0
-                      : c.item) && "spaceship" !==
-                    (null === (c = U.playerPowerup) || void 0 === c
-                      ? void 0
-                      : c.item) && (U.playerPowerup = null),
+                  (U.playerPowerups = U.playerPowerups.filter(e => e.item === "skateboard" || e.item === "spaceship")),
                   U.playerStacks.length > 0 &&
                     (U.explosions.push(
                       ...U.playerStacks.map((e) => ({
@@ -40920,10 +40983,7 @@ var version = "v1.10.5";
               var t;
               return (
                 Z(e) ||
-                ("playerStack" ===
-                  (null === (t = U.playerPowerup) || void 0 === t
-                    ? void 0
-                    : t.item) &&
+                (U.playerPowerups.some(e => e.item === "playerStack") &&
                   be.hitStack(e, U.playerX, U.playerStacks))
               );
             });
@@ -41001,10 +41061,7 @@ var version = "v1.10.5";
                     K
                   ))
                 : (Z(t) ||
-                    ("playerStack" ===
-                      (null === (u = U.playerPowerup) || void 0 === u
-                        ? void 0
-                        : u.item) &&
+                    (U.playerPowerups.some(e => e.item === "playerStack") &&
                       be.hitStack(t, U.playerX, U.playerStacks))) && !inViewLayoutState.collectibles[e].wasPickedUp &&
                   (ne = e);
             }
@@ -41031,7 +41088,7 @@ var version = "v1.10.5";
               var gradY = stack ? stack.gradY : (U.isGravity ? G.initGrad(V) : U.playerGradY);
               if (-1 !== idx) {
                 const spring = inViewLayout.springs[idx];
-                (stack || (U.jumping = U.playerPowerup?.item === "spaceship" ? spring.direction < 0 : true)),
+                (stack || (U.jumping = U.playerPowerups.some(e => e.item === "spaceship") ? spring.direction < 0 : true)),
                 (stack || (U.gravity = 1)),
                 (setGradY((spring.direction > 0
                       ? Math.max(1.5 * G.initGrad(V), Math.abs((gradY)))
@@ -41092,9 +41149,9 @@ var version = "v1.10.5";
                 null == v || v.hitPortal());
             const re = inViewLayout.powerups.findIndex((e, t) => {
               return (
-                Z(e) ||
-                ("playerStack" === (U.playerPowerup?.item)) && (!e.compatible || !U.isCompatible ? !inViewLayoutState.powerups[t].wasPickedUp : true) &&
-                  be.hitStack(e, U.playerX, U.playerStacks))
+                (!inViewLayoutState.powerups[t].wasPickedUp || U.isCompatible) && (Z(e) ||
+                (U.playerPowerups.some(e => e.item === "playerStack")) && (!e.compatible || !U.isCompatible ? !inViewLayoutState.powerups[t].wasPickedUp : true) &&
+                  be.hitStack(e, U.playerX, U.playerStacks)))
             });
             if (-1 !== re && !inViewLayoutState.powerups[re].wasPickedUp) {
               const e = inViewLayout.powerups[re];
@@ -41102,7 +41159,9 @@ var version = "v1.10.5";
 
               }
               U.isCompatible = e.compatible;
-              U.flyingAnchor = null;
+              if (e.override && e.item !== "spaceship") {
+                U.flyingAnchor = null;
+              };
               if (
                 (xa.updateLayoutStateField(
                   "powerups",
@@ -41117,6 +41176,7 @@ var version = "v1.10.5";
                 "jetpack" === e.item || "ghost" === e.item)
               )
                 (U.playerJetpackFuel = $.maxJetpackFuel),
+                (U.playerPowerups = U.playerPowerups.filter(t => t.item != e.item)),
                   (U.playerRot =
                     e.item === "ghost" ? U.playerRot : B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir);
               //playerStack code
@@ -41127,7 +41187,8 @@ var version = "v1.10.5";
                     (t, a) => a !== stacksY.length - 1 && stacksY[a + 1] > t + M
                   ) : be.hitStackWhich(e, U.playerX, U.playerStacks) + 1,
                   a = { y: ((-1 === t ? stacksY[stacksY.length - 1] : stacksY[t])) + M, gradY: 0 };
-                U.playerStacks.splice(t, 0, a)
+                U.playerStacks.splice(t, 0, a);
+                U.playerPowerups = U.playerPowerups.filter(t => t.item != e.item);
                 if (false) {
                   //e.direction) {
                   U.playerY += M;
@@ -41142,12 +41203,16 @@ var version = "v1.10.5";
                 U.flyingAnchor = e.y;
                 U.jumping = U.playerGradY <= 0;
                 U.playerRot = 0;
-              } else "skateboard" === e.item && (U.playerRot = 0);
+                U.playerPowerups = U.playerPowerups.filter(t => t.item != e.item);
+              } else "skateboard" === e.item && ((U.playerRot = 0), (U.playerPowerups = U.playerPowerups.filter(t => t.item != e.item)));
               // set powerup
-              U.playerPowerup = Object.assign(Object.assign({}, e), {
+              if (e.override) {
+                U.playerPowerups = [];
+              }
+              U.playerPowerups.unshift(Object.assign(Object.assign({}, e), {
                 x: 0,
                 y: 0,
-              });
+              }));
             }
             let le = Ca.getAllLandableObjects(inViewLayout, inViewLayoutState, skating),
               ce = rl(
@@ -41167,9 +41232,9 @@ var version = "v1.10.5";
                 U.switchBlockSpikes,
                 U.dashing ? 1 : U.gravity,
                 U.gravityHitObject,
-                U.playerPowerup ? U.playerPowerup.item == "ghost" : false
+                U.playerPowerups.some(e => e.item === "ghost")
               );
-            (U.crashed = U.playerPowerup?.item == "spaceship" && ce.hitObject && !ce.hitObject.object.canJumpThrough ? ((U.playerGradY < -3) || ce.crashed) : ce.crashed), (Q = U.flyingAnchor === null ? ce.onGroundY : null);
+            (U.crashed = U.playerPowerups.some(e => e.item === "spaceship") && ce.hitObject && !ce.hitObject.object.canJumpThrough ? ((U.playerGradY < -3) || ce.crashed) : ce.crashed), (Q = U.flyingAnchor === null ? ce.onGroundY : null);
             var de = U.flyingAnchor === null ? (U.gravityHitObject || ce.hitObject) : null;
             if (U.gravity < 0 && Math.abs(U.playerGradY) < 2) {
               
@@ -41190,7 +41255,7 @@ var version = "v1.10.5";
                 U.switchBlockSpikes,
                 1,
                 null,
-                U.playerPowerup ? U.playerPowerup.item == "ghost" : false
+                U.playerPowerups.some(e => e.item === "ghost")
               ).crashed)
               if (!rl(
                 le,
@@ -41209,7 +41274,7 @@ var version = "v1.10.5";
                 U.switchBlockSpikes,
                 1,
                 null,
-                U.playerPowerup ? U.playerPowerup.item == "ghost" : false
+                U.playerPowerups.some(e => e.item === "ghost")
               ).crashed) {
                 U.jumping = true;
                 U.gravity = 1;
@@ -41274,10 +41339,7 @@ var version = "v1.10.5";
                 (U.playerY = Q),
                 (U.playerGradY = 0),
                 U.jumping &&
-                  "jetpack" !==
-                    (null === (p = U.playerPowerup) || void 0 === p
-                      ? void 0
-                      : p.item))
+                  !U.playerPowerups.some(e => e.item === "jetpack"))
               ) {
                 Z = be.hitObject(
                   U.playerX,
@@ -41500,10 +41562,7 @@ var version = "v1.10.5";
                 fullLayoutStateIndexes,
                 K
               ),
-              "playerStack" ===
-                (null === (E = U.playerPowerup) || void 0 === E
-                  ? void 0
-                  : E.item) &&
+              U.playerPowerups.some(e => e.item === "playerStack") &&
                 U.playerStacks.length > 0 &&
                 ((function (stacks, t, a, i, n, s, o, r, l, enemies, d, u) {
                   for (let l = 0; l < stacks.length; l++) {
@@ -41693,7 +41752,7 @@ var version = "v1.10.5";
                   j,
                   df,
                   U.playerX,
-                  U.playerY,
+                  U.playerY + (skating ? $.skateboardHeight - (15 - U.playerScaleY * 15) : 0),
                   U.playerDir,
                   le,
                   fullLayoutStateIndexes,
@@ -41702,7 +41761,7 @@ var version = "v1.10.5";
                   U.explosions,
                   U.switchBlockSpikes
                 ),
-                0 === U.playerStacks.length && (U.playerPowerup = null)),
+                0 === U.playerStacks.length && (U.playerPowerups = U.playerPowerups.filter(e => e.item != "playerStack"))),
               U.switchButtons.on && U.switchButtons.rot < 90
                 ? (U.switchButtons.rot = Math.min(
                     U.switchButtons.rot + df * (180 / C),
@@ -41740,10 +41799,7 @@ var version = "v1.10.5";
                   K
                 ),
               U.crashed &&
-                ("playerStack" ===
-                  (null === (b = U.playerPowerup) || void 0 === b
-                    ? void 0
-                    : b.item) &&
+                ((U.playerPowerups.some(e => e.item === "playerStack")) &&
                 U.playerStacks.length > 0 &&
                 U.playerStacks[U.playerStackIndex].y < U.playerY + 300
                   ? (U.explosions.push({
@@ -41755,11 +41811,8 @@ var version = "v1.10.5";
                     (U.playerGradY = U.playerStacks[U.playerStackIndex].gradY),
                     U.playerStacks.splice(U.playerStackIndex, 1),
                     (U.crashed = false),
-                    0 === U.playerStacks.length && (U.playerPowerup = null))
-                  : (!["skateboard", "spaceship"].includes(
-                    null === (S = U.playerPowerup) || void 0 === S
-                        ? void 0
-                        : S.item) && (U.playerPowerup = null),
+                    0 === U.playerStacks.length && (U.playerPowerups = U.playerPowerups.filter(e => e.item !== "playerStack")))
+                  : ((U.playerPowerups = U.playerPowerups.filter(e => e.item === "skateboard" || e.item === "spaceship")),
                     onCrash(U.checkpoint.index),
                     N && (L.resetTimer = 60)));
             U.playerOnGroundY = U.flyingAnchor === null ? U.playerOnGroundY : U.flyingAnchor;
@@ -42949,7 +43002,7 @@ var version = "v1.10.5";
                 e.mutatesState = false;
                 e.isShootingFrames > 0 && (e.isShootingFrames -= n);
                 for (const a of e.bullets) fl(a, n, o, playerX);
-                lt(e.bullets, (t) => t.x > e.bossX - 1e3);
+                lt(e.bullets, (t) => t.x > e.bossX - 1000);
                 e.allButtons.forEach((button) => {
                   let lastPressed = button.pressed;
                   button.pressed = rectangleHitPlayer(
@@ -42980,7 +43033,6 @@ var version = "v1.10.5";
                     e.bullets.push(ml("cannonbomb", 29400, -60, 17));
                   }
                 });
-                console.warn(e.allButtons);
                 let r = playerX + 350,
                   l = e.bossY;
                 const c = e.view;
@@ -43188,7 +43240,7 @@ var version = "v1.10.5";
               initState: () => ({
                 type: "flying",
                 mutatesState: false,
-                bossX: 1e3,
+                bossX: 1000,
                 bossY: 0,
                 gunView: "up",
                 shootFrames: 0,
@@ -43248,7 +43300,7 @@ var version = "v1.10.5";
                   : t + 300;
                 for (const t of e.bullets)
                   t.x += s ? Math.min(-3, t.speed) : t.speed;
-                if ((lt(e.bullets, (t) => t.x > e.bossX - 1e3), a < 1286))
+                if ((lt(e.bullets, (t) => t.x > e.bossX - 1000), a < 1286))
                   r = Math.max(r, e.bossX + 1);
                 else if (a < 2574) {
                   const t = yl * (a < 1600 ? 2.5 : a < 1950 ? 2 : 3);
@@ -43297,20 +43349,20 @@ var version = "v1.10.5";
                   (e.moveFrames[0] <= a &&
                     ((e.isUp = !e.isUp), e.moveFrames.shift()),
                   e.asteroids.length > 0 &&
-                    e.asteroids[0].x < t - 1e3 &&
+                    e.asteroids[0].x < t - 1000 &&
                     e.asteroids.shift(),
                   e.insideAsteroid.length > 0 &&
-                    e.insideAsteroid[0].x < t - 1e3 &&
+                    e.insideAsteroid[0].x < t - 1000 &&
                     e.insideAsteroid.shift(),
                   e.allAsteroids.length > 0)
                 ) {
                   const a = e.allAsteroids[0];
-                  a.x < t + 1e3 &&
+                  a.x < t + 1000 &&
                     (e.asteroids.push(a), e.allAsteroids.shift());
                 }
                 if (e.allInsideAsteroid.length > 0) {
                   const a = e.allInsideAsteroid[0];
-                  a.x < t + 1e3 &&
+                  a.x < t + 1000 &&
                     (e.insideAsteroid.push(a), e.allInsideAsteroid.shift());
                 }
                 e.isUp
@@ -45950,7 +46002,7 @@ var version = "v1.10.5";
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
+                  Bc([Gc([fc, fc, nd.enum9, nd.enum2, nd.enum2]), Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
                 ),
                 Oc(
                   Bc([
@@ -46076,7 +46128,7 @@ var version = "v1.10.5";
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
+                  Bc([Gc([fc, fc, nd.enum9, nd.enum2, nd.enum2]), Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
                 ),
                 Oc(
                   Bc([
@@ -46279,12 +46331,13 @@ var version = "v1.10.5";
                         isFlying: ou[o] || false
                       })
                     ),
-                    powerups: p.map(([e, t, a, n]) =>
+                    powerups: p.map(([e, t, a, n, i]) =>
                       $.newPowerup({
                         x: e,
                         y: t,
                         item: Qd[a],
-                        compatible: n != 1
+                        compatible: n != 1,
+                        override: i != 1,
                       })
                     ),
                     //******
@@ -46496,7 +46549,7 @@ var version = "v1.10.5";
                           ]
                         : [e.x, e.y, ru(e.role, Kd), ru(e.switchesOn, ou)]
                     ),
-                    i.powerups.map((e) => e.compatible ? [e.x, e.y, ru(e.item, Qd)] : [e.x, e.y, ru(e.item, Qd), 1]),
+                    i.powerups.map((e) => !e.override ? [e.x, e.y, ru(e.item, Qd), +!e.compatible, 1] : e.compatible ? [e.x, e.y, ru(e.item, Qd)] : [e.x, e.y, ru(e.item, Qd), 1]),
                     i.enemies.map((e) =>
                       !e.isCompatible
                         ? [
@@ -47031,6 +47084,9 @@ var version = "v1.10.5";
                 (e) => Object.assign(Object.assign({}, e), {
                   flyingAnchor: null
                 }),
+                (e) => Object.assign(Object.assign({}, e), {
+                  playerPowerups: e.playerPowerup ? [e.playerPowerup] : []
+                }),
             ],
             finalSchema: kc({
               frame: fc,
@@ -47047,7 +47103,7 @@ var version = "v1.10.5";
               playerScaleY: fc,
               playerDir: Bc([_c(1), _c(-1)]),
               playerSpeedMultiplier: fc,
-              playerPowerup: Bc([hc, cu]),
+              playerPowerups: Oc(Bc([hc, cu])),
               isCompatible: yc,
               playerJetpackFuel: fc,
               playerUsingPowerup: yc,
@@ -47661,7 +47717,7 @@ var version = "v1.10.5";
                 yield new Promise((i) => {
                   setTimeout(() => {
                     e(t, a - 1).then(i);
-                  }, 1e3);
+                  }, 1000);
                 });
               }
             });
@@ -48425,7 +48481,7 @@ var version = "v1.10.5";
           ap = {
             strategy: "ranged-absolute",
             alignment: "center",
-            ranges: [1e3],
+            ranges: [1000],
           },
           ip = {},
           np = (e, t) => ({ type: "joinedPlayer", skin: e.fileName, rank: t }),
@@ -48961,7 +49017,7 @@ var version = "v1.10.5";
                   status: 200,
                   data: {
                     resultCode: 0,
-                    currency: { blocks: { balance: 1e3 } },
+                    currency: { blocks: { balance: 1000 } },
                   },
                 };
                 mp(() => {
@@ -54785,7 +54841,7 @@ var version = "v1.10.5";
               speed: Bg,
               width: 24,
               height: 675,
-              xRangeMin: 1e3,
+              xRangeMin: 1000,
               xRangeMax: 1200,
               yMin: 0,
               yMax: 0,
@@ -54829,7 +54885,7 @@ var version = "v1.10.5";
               speed: Bg,
               width: 1453 / 3,
               height: 1453 / 3,
-              xRangeMin: 1e3,
+              xRangeMin: 1000,
               xRangeMax: 1200,
             },
             {
@@ -54899,7 +54955,7 @@ var version = "v1.10.5";
               width: 132,
               height: 1256 / 3,
               xRangeMin: 800,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               opacity: 0.5,
             },
             {
@@ -54916,7 +54972,7 @@ var version = "v1.10.5";
               speed: Dg,
               width: 353 / 3,
               height: 176 / 3,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               xRangeMin: 800,
               opacity: 0.7,
             },
@@ -54927,7 +54983,7 @@ var version = "v1.10.5";
               yMax: 0.9 * e,
               width: 502 / 3,
               height: 251 / 3,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               xRangeMin: 800,
               opacity: 0.7,
             },
@@ -54936,7 +54992,7 @@ var version = "v1.10.5";
               speed: Dg,
               width: 353 / 3,
               height: 176 / 3,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               xRangeMin: 800,
               opacity: 0.7,
             },
@@ -54965,7 +55021,7 @@ var version = "v1.10.5";
               speed: Dg,
               width: 149 / 3,
               height: 74 / 3,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               xRangeMin: 800,
               opacity: 0.7,
             },
@@ -54974,7 +55030,7 @@ var version = "v1.10.5";
               speed: Dg,
               width: 221 / 3,
               height: 37,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               xRangeMin: 800,
               opacity: 0.7,
             },
@@ -55027,7 +55083,7 @@ var version = "v1.10.5";
               speed: 2,
               width: 149 / 3,
               height: 74 / 3,
-              xRangeMin: 1e3,
+              xRangeMin: 1000,
               xRangeMax: 1700 * t,
               opacity: "world1Boss" === e ? 0.4 : 0.7,
             },
@@ -55036,7 +55092,7 @@ var version = "v1.10.5";
               speed: 2,
               width: 221 / 3,
               height: 37,
-              xRangeMin: 1e3,
+              xRangeMin: 1000,
               xRangeMax: 1700 * t,
               opacity: "world1Boss" === e ? 0.4 : 0.7,
             },
@@ -55075,8 +55131,8 @@ var version = "v1.10.5";
               speed: 0.03,
               width: 220,
               height: 42,
-              xRangeMin: 1e3,
-              xRangeMax: 1e3,
+              xRangeMin: 1000,
+              xRangeMax: 1000,
               initXOffset: 1,
               yMin: 240,
               yMax: 300,
@@ -55088,8 +55144,8 @@ var version = "v1.10.5";
               speed: 0.03,
               width: 242,
               height: 47,
-              xRangeMin: 1e3,
-              xRangeMax: 1e3,
+              xRangeMin: 1000,
+              xRangeMax: 1000,
               initXOffset: 500,
               yMin: 240,
               yMax: 300,
@@ -56047,7 +56103,7 @@ var version = "v1.10.5";
                 }
               ),
               ifConditional(
-                () => (t.playerPowerup?.item === "spaceship"),
+                () => (t.playerPowerups.some(e => e.item === "spaceship")),
                 () => [
                     y({
                       fileName: "images/level/boss3/star-line.png",
@@ -56123,7 +56179,7 @@ var version = "v1.10.5";
                   playerScaleX: t.playerScaleX,
                   playerScaleY: t.playerScaleY,
 
-                  playerPowerup: t.playerPowerup,
+                  playerPowerups: t.playerPowerups,
                   isCompatible: t.isCompatible,
                   playerPowerupOut: t.playerPowerupOut,
                   playerBullets: t.playerBullets,
@@ -56187,7 +56243,7 @@ var version = "v1.10.5";
                     (e.playerScaleX = t.playerScaleX),
                     (e.playerScaleY = t.playerScaleY),
                     (e.playerScale = t.playerScale),
-                    (e.playerPowerup = t.playerPowerup),
+                    (e.playerPowerups = t.playerPowerups),
                     (e.isCompatible = t.isCompatible),
                     (e.playerPowerupOut = t.playerPowerupOut),
                     (e.playerBullets = t.playerBullets),
@@ -56297,10 +56353,7 @@ var version = "v1.10.5";
                 () => {
                   var e;
                   return (
-                    "skateboard" ===
-                    (null === (e = t.playerPowerup) || void 0 === e
-                      ? void 0
-                      : e.item)
+                    t.playerPowerups.some(e => e.item === "skateboard")
                   );
                 },
                 () => [
@@ -56901,7 +56954,7 @@ var version = "v1.10.5";
                   ]
                 ),
                 conditional(
-                  () => null !== e.playerPowerup,
+                  () => e.playerPowerups.length > 0,
                   () => [
                     Ao.Single(
                       {
@@ -56909,7 +56962,9 @@ var version = "v1.10.5";
                         y: e.playerY,
                         scaleX: e.playerDir * e.playerScale,
                         scaleY: e.playerScale,
-                        powerup: e.playerPowerup,
+                        powerup: e.playerPowerups[0] || null,
+                        isJetpack: e.playerPowerups.some(e => e.item === "jetpack"),
+                        isSkating: e.playerPowerups.some(e => e.item === "skateboard"),
                         isUsing: e.playerUsingPowerup,
                         playerRot: e.playerRot * e.playerDir,
                         playerDir: e.playerDir,
@@ -56927,7 +56982,9 @@ var version = "v1.10.5";
                           (t.y = e.playerY),
                           (t.scaleX = e.playerDir * e.playerScale),
                           (t.scaleY = e.playerScale),
-                          (t.powerup = e.playerPowerup),
+                          (t.powerup = e.playerPowerups[0] || null),
+                          (t.isJetpack = e.playerPowerups.some(e => e.item === "jetpack")),
+                          (t.isSkating = e.playerPowerups.some(e => e.item === "skateboard")),
                           (t.isUsing = e.playerUsingPowerup),
                           (t.playerRot = e.playerRot * e.playerDir),
                           (t.playerDir = e.playerDir),
@@ -56941,6 +56998,7 @@ var version = "v1.10.5";
                           (t.crashed = e.crashed);
                       }
                     ),
+                    
                   ],
                   () => [
                     ifConditional(
@@ -56981,7 +57039,7 @@ var version = "v1.10.5";
                   key: (e, t) => t,
                 }),
                 conditional(
-                  () => e.isFlyingLevel || e.playerPowerup?.item === "spaceship",
+                  () => e.isFlyingLevel || e.playerPowerups.some(e => e.item === "spaceship"),
                   () => [
                     onChange(
                       () => e.attempt,
@@ -57081,16 +57139,12 @@ var version = "v1.10.5";
                                 playerScale: e.playerScale,
                                 onSkateboard: false,
                                 touchingPortals: e.touchingPortals,
-                                isFlying: e.playerPowerup?.item === "spaceship"
+                                isFlying: e.playerPowerups.some(e => e.item === "spaceship")
                               },
                               (t) => {
                                 var a;
                                 const i =
-                                  "skateboard" ===
-                                  (null === (a = e.playerPowerup) ||
-                                  void 0 === a
-                                    ? void 0
-                                    : a.item);
+                                  e.playerPowerups.some(e => e.item === "skateboard");
                                 (t.x = e.playerX),
                                   (t.y = e.playerY),
                                   (t.playerX = e.playerX),
@@ -57108,7 +57162,7 @@ var version = "v1.10.5";
                           ],
                           () => [
                             conditional(
-                              () => e.isFlyingLevel || e.playerPowerup?.item === "spaceship",
+                              () => e.isFlyingLevel || e.playerPowerups.some(e => e.item === "spaceship"),
                               () => [
                                 y(
                                   {
@@ -57135,34 +57189,19 @@ var version = "v1.10.5";
                                     (t.scaleX = e.playerScaleX * e.playerDir),
                                     (t.scaleY = e.playerScaleY),
                                     (t.skin = e.playerSkin),
-                                    (t.opacity = e.playerPowerup ? e.playerPowerup.item == "ghost" ? 0.5 : 1 : 1),
+                                    (t.opacity = e.playerPowerups.some(e => e.item == "ghost") ? 0.5 : 1),
                                     (t.landTimer = e.landTimer);
-                                  const i =
-                                    "skateboard" ===
-                                    (null === (a = e.playerPowerup) ||
-                                    void 0 === a
-                                      ? void 0
-                                      : a.item);
-                                  t.onSkateboard = i;
+                                  t.onSkateboard = e.playerPowerups.some(e => e.item === "skateboard");
                                 }),
                               ]
                             )
                           ]
                         ),
                         conditional(
-                          () => null !== e.playerPowerup,
+                          () => e.playerPowerups.length > 0,
                           () => [
                             conditional(
-                              () => {
-                                var t;
-                                return (
-                                  "playerStack" ===
-                                  (null === (t = e.playerPowerup) ||
-                                  void 0 === t
-                                    ? void 0
-                                    : t.item)
-                                );
-                              },
+                              () => e.playerPowerups.some((e) => e.item === "playerStack"),
                               () => [
                                 playerTrail.Array({
                                   props: ({ y: t }) => ({
@@ -57218,11 +57257,43 @@ var version = "v1.10.5";
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
                                 }),
+                                        (t.scaleX = e.playerDir * e.playerScale),
+                                        (t.scaleY = e.playerScale),
+                                        (t.isUsing = e.playerUsingPowerup),
+                                        (t.playerRot = e.playerRot * e.playerDir),
+                                wo.Array({
+                                    props: (
+                                      {y}
+                                    ) => ({
+                                      powerup: e.playerPowerups[0],
+                                      x: e.playerX,
+                                      y: y,
+                                      scaleX: e.playerDir * e.playerScale,
+                                      scaleY: e.playerScale,
+                                      isUsing: e.playerUsingPowerup,
+                                      playerRot: e.playerRot * e.playerDir,
+                                      paused: e.paused,
+                                      df: e.df,
+                                    }),
+                                    update: (t, a) => {
+                                      (t.powerup = e.playerPowerups[0]),
+                                        (t.x = e.playerX),
+                                        (t.y = a.y),
+                                        (t.paused = e.paused),
+                                        (t.df = e.df);
+                                    },
+                                    array: () => e.playerStacks,
+                                    key: (e, t) => t,
+                                  }
+                                ),
                               ],
                               () => [
-                                wo.Single(
+                                
+                              ]
+                            ),
+                            wo.Single(
                                   {
-                                    powerup: e.playerPowerup,
+                                    powerup: e.playerPowerups.filter(e => e.item != "playerStack")[0],
                                     x: e.playerX,
                                     y: e.playerY,
                                     scaleX: e.playerDir * e.playerScale,
@@ -57233,7 +57304,7 @@ var version = "v1.10.5";
                                     df: e.df,
                                   },
                                   (t) => {
-                                    (t.powerup = e.playerPowerup),
+                                    (t.powerup = e.playerPowerups.filter(e => e.item != "playerStack")[0]),
                                       (t.x = e.playerX),
                                       (t.y = e.playerY),
                                       (t.scaleX = e.playerDir * e.playerScale),
@@ -57244,11 +57315,16 @@ var version = "v1.10.5";
                                       (t.df = e.df);
                                   }
                                 ),
-                              ]
-                            ),
                           ],
                           () => [
-                            ifConditional(
+                            
+                          ]
+                        ),
+                      ]
+                    ),
+                  ]
+                ),
+                ifConditional(
                               () => null !== e.playerPowerupOut,
                               () => [
                                 ko.Single(
@@ -57277,16 +57353,61 @@ var version = "v1.10.5";
                                       (t.df = e.df);
                                   }
                                 ),
+                                ko.Array({
+                                    props: (
+                                      {y}
+                                    ) => ({
+                                      x: e.playerX,
+                                      y: y,
+                                      scaleX: e.playerDir * e.playerScale,
+                                      scaleY: e.playerScale,
+                                      powerup: e.playerPowerupOut,
+                                      playerRot: e.playerRot,
+                                      playerDir: e.playerDir,
+                                      playerScale: e.playerScale,
+                                      paused: e.paused,
+                                      df: e.df,
+                                    }),
+                                    update: (t, a) => {
+                                      (t.x = e.playerX),
+                                      (t.y = a.y),
+                                      (t.scaleX = e.playerDir * e.playerScale),
+                                      (t.scaleY = e.playerScale),
+                                      (t.powerup = e.playerPowerupOut),
+                                      (t.playerRot = e.playerRot),
+                                      (t.playerDir = e.playerDir),
+                                      (t.playerScale = e.playerScale),
+                                      (t.paused = e.paused),
+                                      (t.df = e.df);
+                                    },
+                                    array: () => e.playerStacks,
+                                    key: (e, t) => t,
+                                  }
+                                ),
                               ]
                             ),
-                          ]
-                        ),
-                      ]
-                    ),
-                  ]
-                ),
                 ifConditional(
-                  () => !(e.isFlyingLevel || e.playerPowerup?.item === "spaceship"),
+                  () => e.playerPowerups.length > 1,
+                  () => [
+                    c(
+                              {
+                                text: `x${e.playerPowerups.length}`,
+                                color: Te,
+                                strokeColor: He,
+                                strokeThickness: 4,
+                                font: { size: 20 },
+                                x: e.playerX,
+                                y: e.playerY + 40,
+                              },
+                              (t) => {
+                                t.x = e.playerX;
+                                t.y = e.playerY + 40;
+                                t.text = `x${e.playerPowerups.length}`;
+                              }
+                            )
+                  ]),
+                ifConditional(
+                  () => !(e.isFlyingLevel || e.playerPowerups.some((e) => e.item === "spaceship")),
                   () => [
                     playerTrail.Single(
                       {
@@ -58266,7 +58387,7 @@ var version = "v1.10.5";
                           { font: { size: 15 }, color: ve, x: -140, y: -160 },
                           (e) => {
                             const { settings: a } = t(Se);
-                            e.text = `${localize("DELAY")}: ${1e3 * a.headphonesDelay}ms`;
+                            e.text = `${localize("DELAY")}: ${1000 * a.headphonesDelay}ms`;
                           }
                         ),
                         sliderSprite.Single(
@@ -60465,6 +60586,8 @@ var version = "v1.10.5";
                   : "justDown" === M && (M = "down"),
                   (t.booster.booster.playerInput = M);
               }
+              let oldPowerupsLength = t.mutValues.levelState.playerPowerups.filter(e => e.item !== "playerStack").length,
+              firstPowerup = t.mutValues.levelState.playerPowerups.filter(e => e.item !== "playerStack")[0];
               if (
                 ((null === (d = props.online) || void 0 === d
                   ? void 0
@@ -60502,19 +60625,18 @@ var version = "v1.10.5";
                   onReset: t.onReset,
                   disableReleaseBuffer: y.disableReleaseBuffer,
                 }),
-                null !== t.mutValues.levelState.playerPowerup
+                ((oldPowerupsLength - t.mutValues.levelState.playerPowerups.filter(e => e.item !== "playerStack").length) > 0
                   ? t.powerupOut
-                    ? ((t.powerupOut.powerup =
-                        t.mutValues.levelState.playerPowerup),
+                    ? ((t.powerupOut.powerup = firstPowerup),
                       (t.powerupOut.timer = 60))
                     : (t.powerupOut = {
-                        powerup: t.mutValues.levelState.playerPowerup,
+                        powerup: firstPowerup,
                         timer: 60,
                       })
                   : t.powerupOut &&
                     (t.powerupOut.timer > 0
                       ? t.powerupOut.timer--
-                      : (t.powerupOut = null)),
+                      : (t.powerupOut = null))),
                 null === (g = props.online) ||
                   void 0 === g ||
                   g.onPlayerMove(
@@ -60564,7 +60686,7 @@ var version = "v1.10.5";
                     playerScaleX: t.mutValues.levelState.playerScaleX,
                     playerScaleY: t.mutValues.levelState.playerScaleY,
 
-                    playerPowerup: t.mutValues.levelState.playerPowerup,
+                    playerPowerups: t.mutValues.levelState.playerPowerups,
                     isCompatible: t.mutValues.levelState.isCompatible,
                     playerPowerupOut:
                       (null === (n = t.powerupOut) || void 0 === n
@@ -60660,7 +60782,7 @@ var version = "v1.10.5";
                       (a.playerScaleX = t.mutValues.levelState.playerScaleX),
                       (a.playerScaleY = t.mutValues.levelState.playerScaleY),
                       (a.playerScale = t.mutValues.levelState.playerScale),
-                      (a.playerPowerup = t.mutValues.levelState.playerPowerup),
+                      (a.playerPowerups = t.mutValues.levelState.playerPowerups),
                       (a.isCompatible = t.mutValues.levelState.isCompatible),
                       (a.playerPowerupOut =
                         (null === (i = t.powerupOut) || void 0 === i
@@ -69828,18 +69950,16 @@ var version = "v1.10.5";
                       e.playerScaleY,
                       e.crashed || e.finishedLevel || t || o ? 0 : e.playerDir,
                       "playerStack" ===
-                      (null === (a = e.playerPowerup) || void 0 === a
+                      (null === (a = e.playerPowerups) || void 0 === a
                         ? void 0
                         : a.item)
                         ? e.playerStacks.map(({ y: e }) => e)
                         : [],
                       e.crashed,
                       0 === e.playerGradY ||
-                      (e.playerPowerup &&
-                        ("playerStack" === e.playerPowerup.item ||
-                          "jetpack" === e.playerPowerup.item))
+                      ((e.playerPowerups.some(e => e.item === "playerStack" || e.item === "jetpack"))
                         ? 0
-                        : 1,
+                        : 1),
                     ];
                   }
                 ),
@@ -69977,8 +70097,8 @@ var version = "v1.10.5";
                     playerScaleY:
                       e.viewingPlayer.state.mutValues.levelState.playerScaleY,
 
-                    playerPowerup:
-                      e.viewingPlayer.state.mutValues.levelState.playerPowerup,
+                    playerPowerups:
+                      e.viewingPlayer.state.mutValues.levelState.playerPowerups,
                     isCompatible:
                       e.viewingPlayer.state.mutValues.levelState.isCompatible,
                     playerPowerupOut: null,
@@ -70095,7 +70215,7 @@ var version = "v1.10.5";
                       (a.playerScaleX = r.playerScaleX),
                       (a.playerScaleY = r.playerScaleY),
                       (a.playerScale = r.playerScale),
-                      (a.playerPowerup = r.playerPowerup),
+                      (a.playerPowerups = r.playerPowerups),
                       (a.isCompatible = r.isCompatible),
                       (a.playerStacks = r.playerStacks),
                       (a.playerStackIndex = r.playerStackIndex),
@@ -70593,7 +70713,7 @@ var version = "v1.10.5";
                             timeoutTimer: null,
                             songPosition: 0,
                           }),
-                        (g.startingIn = (60 * o.time) / 1e3),
+                        (g.startingIn = (60 * o.time) / 1000),
                         (g.countdownDf = 4500 / Math.max(o.time - 200, 200)),
                         a.timer.start(() => {
                           if ("error" === g.status.type) return;
@@ -70645,7 +70765,7 @@ var version = "v1.10.5";
                         break;
                       }
                       const i = o.fromFrame - g.globalFrame,
-                        n = i * (1e3 / 60) - 200;
+                        n = i * (1000 / 60) - 200;
                       (g.checkpoint.resumeTimer = i),
                         (g.countdownDf = 4500 / Math.max(n, 200));
                       break;
@@ -70752,7 +70872,7 @@ var version = "v1.10.5";
                             })),
                           (g.isGameOver = true);
                       }
-                      t().viewingPlayer ? a.timer.start(l, 1e3) : l();
+                      t().viewingPlayer ? a.timer.start(l, 1000) : l();
                       break;
                     }
                     case "leaderLeft":
