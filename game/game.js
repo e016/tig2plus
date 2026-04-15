@@ -16748,7 +16748,7 @@ var version = "v1.10.5";
                     right = obj.width / 2 - inset,
                     bottom = -obj.height / 2 + inset,
                     top = obj.height / 2 - inset;
-                console.warn(obj.rotation);
+                console.warn(obj.rotation, obj);
                   return obj.shape == "bar" ? (
                     (ee.pos.x = obj.x),
                     (ee.pos.y = obj.y),
@@ -18059,6 +18059,7 @@ var version = "v1.10.5";
           fallTypes
         ) {
           switch (obj.type) {
+            case "spike":
             case "block": {
               var trig = obj.trigger == "jump" ? jump : switchTrig / 90;
               if (!("midY" in obj)) {
@@ -18107,7 +18108,7 @@ var version = "v1.10.5";
               return doNotApply &&
                 !willApplyMovement(obj.x, obj.midY, playerX, playerY, fallTypes)
                 ? null
-                : "block" === (null == updated ? void 0 : updated.type)
+                : ["block", "spike"].includes(null == updated ? void 0 : updated.type)
                 ? ((updated.x = obj.x),
                   (updated.y = trueY),
                   (updated.midY = obj.midY),
@@ -18115,12 +18116,15 @@ var version = "v1.10.5";
                   (updated.height = obj.height),
                   (updated.movement = obj.movement),
                   (updated.trigger = obj.trigger),
-                  (updated.isSteel = obj.isSteel),
+                  (updated.steel = obj.steel),
                   (updated.isVoid = obj.isVoid),
                   (updated.isBoss = obj.isBoss),
                   (updated.trigger = obj.trigger),
                   (updated.init = obj.init),
                   (updated.pastTrigger = obj.pastTrigger),
+                  (updated.rotation = obj.rotation),
+                  (updated.skipMissiles = obj.skipMissiles),
+                  (updated.isLaser = obj.isLaser),
                   updated)
                 : Object.assign(Object.assign({}, obj), { y: trueY });
             }
