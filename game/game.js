@@ -35548,7 +35548,7 @@ var version = "v1.10.9";
           },
           Tr = [],
           Rr = [],
-          objPropsMenu = function (e, t, a, i) {
+          objPropsMenu = function (e, t, a, i, debug) {
             switch (t.type) {
               case "spike":
                 return (function (e, t, a) {
@@ -35661,7 +35661,7 @@ var version = "v1.10.9";
                             });
                           },
                         }];
-                  return [
+                    let all = [
                     {
                       name: "Direction",
                       options: di,
@@ -35707,6 +35707,48 @@ var version = "v1.10.9";
                       ]
                     }
                   ];
+                  if (debug) {
+                    all.push({
+                      name: "Skip Missiles",
+                      options: [
+                        {
+                          name: "On",
+                          selected: t.skipMissiles,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: true,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Off",
+                          selected: !t.skipMissiles,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                      ]
+                    })
+                  }
+                  return all;
                 })(e, t, i);
               case "portal":
                 return (function (e, t, a) {
@@ -36668,6 +36710,45 @@ var version = "v1.10.9";
                         },
                       ],
                     }),
+                    debug && o.push({
+                      name: "Skip Missiles",
+                      options: [
+                        {
+                          name: "On",
+                          selected: t.skipMissiles,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "enemies",
+                                index: j,
+                                set: (e, t) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: true
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Off",
+                          selected: !t.skipMissiles,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "enemies",
+                                index: j,
+                                set: (e, t) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: false
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                      ],
+                    }),
                     o
                   );
                 })(e, t, a, i);
@@ -37287,6 +37368,45 @@ var version = "v1.10.9";
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     offset: 90
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                      ]
+                      }),
+                    debug && j.push({ 
+                      name: "Skip Missiles", 
+                      options: [
+                        {
+                          name: "On",
+                          selected: t.skipMissiles,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: true
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Off",
+                          selected: !t.skipMissiles,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: false
                                   }),
                               });
                             });
@@ -38191,8 +38311,9 @@ var version = "v1.10.9";
                 features: i,
                 arrowMove: s,
               },
+              getContext
             }) {
-              const o = objPropsMenu(t, e[0], i, a),
+              const o = objPropsMenu(t, e[0], i, a, getContext(Se).settings.showDebug),
                 l = 130;
               var c = Zo(e[0].type);
               if (c == "BLOCK" && e[0]?.init) {
