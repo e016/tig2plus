@@ -18152,6 +18152,9 @@ var version = "v1.10.5";
                   (updated.movement = a.movement),
                   (updated.movementTrigger = a.movementTrigger),
                   (updated.rotation = a.rotation),
+                  (updated.shape = a.shape),
+                  (updated.multiplier = a.multiplier),
+                  (updated.offset = a.offset),
                   updated)
                 : Object.assign(Object.assign({}, a), { y: i });
             }
@@ -18169,9 +18172,10 @@ var version = "v1.10.5";
                   (updated.height = a.height),
                   (updated.initPosition = a.initPosition),
                   (updated.movementTrigger = a.movementTrigger),
+                  (updated.direction = a.direction),
                   (updated.rotation = o + a.direction),
                   updated)
-                : Object.assign(Object.assign({}, a), { rotation: o });
+                : Object.assign(Object.assign({}, a), { rotation: o, direction: a.direction });
             }
             case "platform": {
               const a = obj;
@@ -18204,6 +18208,7 @@ var version = "v1.10.5";
                     (updated.height = a.height),
                     (updated.movement = a.movement),
                     (updated.movementTrigger = a.movementTrigger),
+                    (updated.multiplier = a.multiplier),
                     updated)
                   : Object.assign(Object.assign({}, a), { y: i })
               );
@@ -18225,6 +18230,7 @@ var version = "v1.10.5";
                   (updated.kind = o.kind),
                   (updated.skipMissiles = o.skipMissiles),
                   (updated.giant = o.giant),
+                  (updated.enemyDir = o.enemyDir),
                   updated)
                 : Object.assign(Object.assign({}, o), { x: r, y: l });
             }
@@ -18755,28 +18761,15 @@ var version = "v1.10.5";
           //console.warn(e,t,i)
           switch (e) {
             case "blocks":
-              if (i?.atIndex) {
-                i = { ...i };
-                i.index = i.atIndex;
-              };
               var block = {
                 type: "blockSpikeState",
-                isVoid: t?.blocks?.[i.index]?.isVoid,
-                steel: t?.blocks?.[i.index]?.steel,
-                isBoss: t?.blocks?.[i.index]?.isBoss,
-                init: t?.blocks?.[i.index]?.init,
-                off: false//t?.blocks?.[i.index]?.off
               };
               //t && t.blocks[i.index]?.init && console.warn(t.blocks[i.index], block);
               return block;
             case "spikes":
               return { type: "blockSpikeState" };
             case "saws":
-              if (i?.atIndex) {
-                i = { ...i };
-                i.index = i.atIndex;
-              }
-              return { type: "sawState", inverse: Math.random() > 0.5, shape: t?.saws?.[i.index]?.shape || "rail" };
+              return { type: "sawState", inverse: Math.random() > 0.5};
             case "directionChanges":
               return { type: "directionChangeState", wasHit: false };
             case "speedChanges":
@@ -18811,7 +18804,7 @@ var version = "v1.10.5";
           }
         }
         const destroyableObjects = ["saws", "blocks", "spikes", "enemies"],
-          destroyableDeadlyObjects = destroyableObjects.filter((e) => "blocks" !== e);
+          missleObjects = destroyableObjects.filter((e) => "blocks" !== e);
         function Na(e, t, a, i, n, s, o) {
           let r = e;
           o &&
@@ -18900,7 +18893,7 @@ var version = "v1.10.5";
                   const obj = layout[destroyableType][objIndex],
                     state = layoutState[destroyableType][objIndex],
                     sign = Math.sign(bullets[i].speed);
-                  if ((state?.steel || obj.type === "bomb") && hit(obj)) {
+                  if (obj?.steel && hit(obj)) {
                     return (Na(destroyableType, objIndex, state, n, layoutState, s, o), 
                       bullets[i].x = (obj.x - (obj.width / 2) * sign) - bullets[i].width / (2 * sign),
                       bullets[i].frame = 1
@@ -18936,7 +18929,7 @@ var version = "v1.10.5";
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
-                if (d?.steel && c(s)) {
+                if (s?.steel && c(s)) {
                   Na(i, n, d, o, a, r, l);
                 } else {
                   !d.destroyed &&
@@ -18968,7 +18961,7 @@ var version = "v1.10.5";
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
-                if (d?.steel && c(s)) {
+                if (s?.steel && c(s)) {
                   Na(i, n, d, layoutState, a, r, l);
                 } else {
                   !d.destroyed &&
@@ -18990,7 +18983,7 @@ var version = "v1.10.5";
             return blocksKilled;
           },
           useMissiles: function (e, t, a, i, n, s, o, r) {
-            for (const l of destroyableDeadlyObjects)
+            for (const l of missleObjects)
               for (let c = 0; c < t[l].length; c++) {
                 const d = t[l][c],
                   u = a[l][c];
@@ -19736,12 +19729,12 @@ var version = "v1.10.5";
                           gravity = e.inGame?.gravity || 1;
                         (a.show =
                           (e.theme == "world2" ? i.width !== $.miniBlockWidth : true) && (
-                            !(e.inGame ? r?.steel : i?.steel) &&
-                          !((e.inGame ? r : i) == undefined
+                            !(i?.steel) &&
+                          !((i) == undefined
                             ? false
-                            : (e.inGame ? r : i).init)) &&
-                          !(e.inGame ? r.isVoid : i.isVoid) &&
-                          !(e.inGame ? r.isBoss : i.isBoss) &&
+                            : (i).init)) &&
+                          !(i.isVoid) &&
+                          !(i.isBoss) &&
                           !(null == r ? void 0 : r.destroyed) && !r?.off),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
@@ -19777,12 +19770,12 @@ var version = "v1.10.5";
                               : o[n],
                           gravity = e?.inGame?.gravity || 1;
                         (a.show =
-                          e.theme == "world2" && i.width === $.miniBlockWidth && !(e.inGame ? r?.steel : i?.steel) &&
-                          !((e.inGame ? r : i) == undefined
+                          e.theme == "world2" && i.width === $.miniBlockWidth && !(i?.steel) &&
+                          !((i) == undefined
                             ? false
-                            : (e.inGame ? r : i).init) &&
-                          !(e.inGame ? r?.isVoid : i?.isVoid) &&
-                          !(e.inGame ? r?.isBoss : i?.isBoss) &&
+                            : (i).init) &&
+                          !(i?.isVoid) &&
+                          !(i?.isBoss) &&
                           !(null == r ? void 0 : r.destroyed) &&
                           !r?.off),
                           (a.width = i.width * t),
@@ -19827,7 +19820,7 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          (e.inGame ? r?.init == "red" : i?.init == "red") &&
+                          (i?.init == "red") &&
                           !(null == r ? void 0 : r.destroyed) &&
                           !r?.off),
                           (a.width = i.width * t),
@@ -19871,11 +19864,7 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          !(e.inGame
-                            ? r?.init == undefined
-                              ? true
-                              : r?.init == "red"
-                            : i?.init == "red" || i?.init == undefined) &&
+                          !(i?.init == "red" || i?.init == undefined) &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
@@ -19918,7 +19907,7 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          (e.inGame ? r?.init == "red" : i?.init == "red") &&
+                          (i?.init == "red") &&
                           !(null == r ? void 0 : r.destroyed) &&
                           !r?.off),
                           (a.width = i.width * t),
@@ -19962,11 +19951,7 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          !(e.inGame
-                            ? r?.init == undefined
-                              ? true
-                              : r?.init == "red"
-                            : i?.init == "red" || i?.init == undefined) &&
+                          !(i?.init == "red" || i?.init == undefined) &&
                           !(null == r ? void 0 : r.destroyed) &&
                           !r?.off),
                           (a.width = i.width * t),
@@ -20009,9 +19994,7 @@ var version = "v1.10.5";
                                 : s.blockStates) || void 0 === o
                             ? void 0
                             : o[n];
-                        (a.show = e.inGame
-                          ? r?.steel
-                          : i?.steel && !(null == r ? void 0 : r.destroyed)),
+                        (a.show = i?.steel && !(null == r ? void 0 : r.destroyed)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
@@ -20053,7 +20036,7 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          (e.inGame ? r?.isVoid : i?.isVoid) &&
+                          (i?.isVoid) &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
@@ -20096,9 +20079,9 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          !(e.inGame ? r?.steel : i?.steel) &&
-                          (e.inGame ? r?.isBoss : i?.isBoss) &&
-                          !(e.inGame ? r?.isVoid : i?.isVoid) &&
+                          !(i?.steel) &&
+                          (i?.isBoss) &&
+                          !(i?.isVoid) &&
                           !(null == r ? void 0 : r.destroyed) && !(null == r ? void 0 : (r.isGround && isSpecialTheme(e.theme)))),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
@@ -20143,7 +20126,7 @@ var version = "v1.10.5";
                               (a.x = i.x),
                               (a.y = getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (a.opacity = n),
-                              void (a.show = !s.steel)
+                              void (a.show = !i.steel)
                             );
                         }
                         a.show = false;
@@ -20518,21 +20501,21 @@ var version = "v1.10.5";
                           objectY: getBlockFallY(a.x, a.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                           playerX: e.inGame.playerX,
                           playerY: e.inGame.playerY,
-                          getSprite: (i, n) =>
+                          getSprite: (i, position) =>
                             i
                               ? ei.Single(
                                   {
                                     justDestroyed: true,
                                     paused: e.inGame.paused,
                                     df: e.inGame.df,
-                                    x: n.x,
-                                    y: getBlockFallY(n.x, n.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
+                                    x: position.x,
+                                    y: position.y,
                                     theme: e.theme,
                                   },
                                   (t) => {
                                     (t.paused = e.inGame.paused),
                                       (t.df = e.inGame.df),
-                                      (t.y = getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir))
+                                      (t.y = position.y)
                                   }
                                 )
                               : y(
@@ -20545,7 +20528,7 @@ var version = "v1.10.5";
                                     rotation: a.rotation,
                                   },
                                   (e) => {
-                                    (e.x = n.x), (e.y = getBlockFallY(n.x, n.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
+                                    (e.x = position.x), (e.y = position.y);
                                   }
                                 ),
                           justDestroyed:
@@ -30504,7 +30487,7 @@ var version = "v1.10.5";
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = (r?.shape == undefined ? true : r?.shape == "rail") && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (a.shape == "rail") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.width),
                         (t.height = a.height),
                         (t.x = a.x),
@@ -30534,7 +30517,7 @@ var version = "v1.10.5";
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = (r?.shape == undefined ? false : r?.shape == "large") && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (a.shape == "large") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.width * sawRatio),
                         (t.height = a.height * sawRatio),
                         (t.x = a.x),
@@ -30561,7 +30544,7 @@ var version = "v1.10.5";
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = (r?.shape == undefined ? false : r?.shape == "bar") && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (a.shape == "bar") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.height),
                         (t.height = a.width),
                         (t.x = a.x),
@@ -30622,7 +30605,7 @@ var version = "v1.10.5";
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = (r?.shape == undefined ? false : r?.shape == "small") && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (a.shape == "small") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.width * sawRatio),
                         (t.height = a.height * sawRatio),
                         (t.x = a.x),
@@ -30647,7 +30630,9 @@ var version = "v1.10.5";
                         df: e.inGame.df,
                         x: t.x,
                         y: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
-                        theme: e.theme
+                        theme: e.theme,
+                        scaleX: t.width / 60 + 0.5,
+                        scaleY: t.width / 60 + 0.5,
                       };
                     },
                     array: () => e.saws,
@@ -30678,15 +30663,15 @@ var version = "v1.10.5";
                         objectY: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                         playerX: e.inGame.playerX,
                         playerY: e.inGame.playerY,
-                        getSprite: (a, i) =>
-                          a
+                        getSprite: (destroyed, pos) =>
+                          destroyed
                             ? to.Single(
                                 {
                                   justDestroyed: true,
                                   paused: e.inGame.paused,
                                   df: e.inGame.df,
-                                  x: i.x,
-                                  y: getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
+                                  x: pos.x,
+                                  y: pos.y,
                                   theme: e.theme,
                                 },
                                 (t) => {
@@ -30700,8 +30685,8 @@ var version = "v1.10.5";
                                   width: t.width,
                                   height: t.height,
                                 },
-                                (t) => {
-                                  (t.x = i.x), (e.y = getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
+                                (a) => {
+                                  (a.x = pos.x), (a.y = pos.y);
                                 }
                               ),
                         justDestroyed:
@@ -30727,7 +30712,7 @@ var version = "v1.10.5";
                         (t.playerX = e.inGame.playerX),
                         (t.playerY = e.inGame.playerY),
                         (t.objectX = a.x),
-                        (t.objectY = a.y);
+                        (t.objectY = getBlockFallY(a.x, a.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                     },
                   }),
                 ],
@@ -37148,7 +37133,7 @@ var version = "v1.10.5";
                       ]),
                       t.movement == "static" &&
                       (n = [
-                        /*{
+                        {
                           name: "Bar",
                           selected: t?.shape == "bar",
                           onPress: () => {
@@ -37166,7 +37151,7 @@ var version = "v1.10.5";
                               });
                             });
                           },
-                        },*/ // Come on...
+                        },
                         {
                           name: "Large",
                           selected: t?.shape == "large",
@@ -40272,7 +40257,7 @@ var version = "v1.10.5";
                 df,
                 shouldResetOnCrash: N,
                 waitAtCheckpoint: x,
-                booster: P,
+                booster: booster,
                 mutValues: L,
                 bigMutValues: D,
                 animationAssets: F,
@@ -41504,7 +41489,7 @@ var version = "v1.10.5";
                 ? ((U.bottomLine.minY = pe), (U.bottomLine.objects = e))
                 : (U.bottomLine = { minY: pe, objects: e });
             } else U.bottomLine = null;
-            "missiles" === (null == P ? void 0 : P.type) &&
+            "missiles" === (null == booster ? void 0 : booster.type) &&
               xa.useMissiles(
                 U.frame,
                 inViewLayout,
