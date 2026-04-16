@@ -40718,7 +40718,21 @@ var version = "v1.10.9";
                       fullLayoutStateIndexes,
                       K,
                       U.isCompatible ? 1 : U.playerScale
-                    );
+                    ),
+                    (U.playerPowerups.some(e => e.item === "playerStack") && U.playerStacks.map(e => 
+                      xa.updateHitPunchState(
+                        U.frame,
+                        inViewLayout,
+                        inViewLayoutState,
+                        U.playerX,
+                        e.y,
+                        U.playerDir,
+                        U.layoutState,
+                        fullLayoutStateIndexes,
+                        K,
+                        U.isCompatible ? 1 : U.playerScale
+                      )
+                    ));
                 else if (
                   e &&
                   "drill" ===
