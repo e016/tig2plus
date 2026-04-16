@@ -33418,6 +33418,10 @@ var version = "v1.10.9";
                               height: e.switchButton.height,
                             },
                             (t) => {
+                              let time = 60 - a.justHitTimer;
+                              let scale = (time > 5 ? Math.max(5 - (time - 5), 0) : time) / 7;
+                              (t.scaleX = 1 + scale),
+                              (t.scaleY = 1 + scale),
                               (t.x = e.switchButton.x),
                                 (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                 (t.rotation = e.switchButton.gravity == 0 ? (e.playerDir < 0 ? -90 : 90) : e.switchButton.gravity > 0 ? 180 : 0);
@@ -40476,7 +40480,6 @@ var version = "v1.10.9";
             let isDown =
               ("up" !== playerInput || U.justDownInputTimer > 0) &&
               !L.blockJumpUntilReleased;
-              console.warn(L.blockJumpUntilReleased, isDown);
             const skating =
               U.playerPowerups.some(e => e.item === "skateboard");
             U.justDownInputTimer > 0 && (disableReleaseBuffer ? ("up" == playerInput && (U.justDownInputTimer = 0), "up" !== playerInput) : true) && U.justDownInputTimer--,
@@ -40586,6 +40589,8 @@ var version = "v1.10.9";
             let J = false;
             U.playerUsingPowerup = false;
             const K = U.switchBlockSpikes;
+            const previousJustHitObject = U.justHitObject;
+            U.justHitObject = null;
             if (
               null === (a = _.boss) || void 0 === a
                 ? void 0
@@ -40682,6 +40687,7 @@ var version = "v1.10.9";
                     });
                 else if (e && toggleGravity > -1) {
                   var g = inViewLayout.switchButtons[toggleGravity].gravity;
+                  U.justHitObject = { array: "switchButtons", index: toggleGravity };
                   (U.dashing = false),
                   (g == 0 ? (U.dashing = true) : (U.gravity = g, U.isGravity = true)),
                   (U.playerGradY = G.initGrad(V) * -2 * U.gravity),
@@ -40992,8 +40998,7 @@ var version = "v1.10.9";
                 fullLayoutStateIndexes,
                 K
               );
-            const previousJustHitObject = U.justHitObject;
-            U.justHitObject = null;
+            
             for (let e = 0; e < inViewLayout.speedChanges.length; e++) {
               const t = inViewLayout.speedChanges[e],
                 index = e,
@@ -41145,7 +41150,7 @@ var version = "v1.10.9";
                   ? (U.switchBlockSpikes = !U.switchBlockSpikes)
                   : ((U.fallTypes[0] = e.down ? "down" : null), (U.fallTypes[1] = e.up ? "up" : null)),
                 null == v || "color" === e.affects || v.hitSwitch(),
-                (U.justHitObject = { array: "switchButtons", index: ie });
+                "color" === e.affects || (U.justHitObject = { array: "switchButtons", index: ie });
             };
             U.flash > 0 ? (U.flash -= 0.01) : (U.flash = 0);
             for (let e = 0; e < inViewLayoutState.switchButtons.length; e++) {
@@ -56771,7 +56776,7 @@ var version = "v1.10.9";
                       playerDir: e.playerDir,
                     }
                   }),
-                  update: (t, a) => {
+                  update: (t, a, i) => {
                     (t.playerScale = e.playerScale),
                     (t.playerDir = e.playerDir),
                     (t.switchButton = a),
@@ -56782,7 +56787,7 @@ var version = "v1.10.9";
                       (t.theme = e.layout.properties.theme.objects.switch),
                       (t.justHit =
                         null !== e.justHitObject &&
-                        "switchButtons" === e.justHitObject.array);
+                        "switchButtons" === e.justHitObject.array && (a.affects === "gravity" ? e.justHitObject.index === i : true));
                         (t.inGame.playerDir = e.playerDir),
                         (t.inGame.playerX = e.playerX),
                         (t.inGame.fallTypes = e.fallTypes);

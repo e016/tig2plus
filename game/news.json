@@ -1,5 +1,5 @@
 {
     "id": 9,
     "title": "Powerup Overrides",
-    "news": "By default, placing a powerup will make it NOT override other powerups' effects.\n This means that you can have multiple at once.\n\n I hope you'll have fun with these crazy combinations!"
+    "news": "By default, placing a powerup will \nmake it NOT override other powerups' effects.\n This means that you can have multiple at once.\n\n I hope you'll have fun with these crazy combinations!"
 }
