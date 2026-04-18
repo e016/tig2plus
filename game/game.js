@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.10.9";
+var version = "v1.10.10";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -15948,6 +15948,36 @@ var version = "v1.10.9";
                 trigger: e == undefined ? "beat" : e?.trigger || "beat",
                 init: e == undefined ? "red" : e?.init || "red",
                 snapSize: null == e ? void 0 : e.snapSize,
+                rotation: 0,
+                skipMissiles: false,
+              };
+            },
+            newSwitchSpike: (e) => {
+              var t, a, i, n;
+              return {
+                type: "spike",
+                array: "spikes",
+                x:
+                  null !== (t = null == e ? void 0 : e.x) && void 0 !== t
+                    ? t
+                    : 0,
+                y:
+                  null !== (a = null == e ? void 0 : e.y) && void 0 !== a
+                    ? a
+                    : 0,
+                width:
+                  null !== (i = null == e ? void 0 : e.width) && void 0 !== i
+                    ? i
+                    : 30,
+                height:
+                  null !== (n = null == e ? void 0 : e.height) && void 0 !== n
+                    ? n
+                    : 30,
+                trigger: e == undefined ? "beat" : e?.trigger || "beat",
+                init: e == undefined ? "red" : e?.init || "red",
+                snapSize: null == e ? void 0 : e.snapSize,
+                rotation: 0,
+                skipMissiles: false,
               };
             },
             newDirectionChange: (e) => {
@@ -16655,9 +16685,9 @@ var version = "v1.10.9";
             getObjectPolygon: (obj, switchBlockSpike, inset = 3) => {
               switch (obj.type) {
                 case "spike":
-                  return obj.isLaser ? laserHitbox(obj, inset) : switchBlockSpike
+                  return switchBlockSpike
                     ? te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset)
-                    : ce(obj, inset);
+                    : obj.isLaser ? laserHitbox(obj, inset) : ce(obj, inset);
                 case "powerup":
                   return re(
                     obj.x,
@@ -16676,7 +16706,7 @@ var version = "v1.10.9";
                 }
                 case "block":
                   return switchBlockSpike
-                    ? ce(obj, inset)
+                    ? obj.isLaser ? laserHitbox(obj, inset) : ce(obj, inset)
                     : te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset);
                 case "platform":
                   return te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset);
@@ -16938,15 +16968,16 @@ var version = "v1.10.9";
             hitLandableObject: (...params) => {
               var [e, t, a, i, n, s, o, r, l, c, gravity, ghost] = params;
               const checkDist = "switchPlatform" === r.type ? 120 : 30;
-              if (isNaN(r.y)) {
+              console.warn(r, r.y);
+              if (isNaN(r.y) || r.y === Infinity) {
                 return null;
-              }
+              };
               if (
                 r.x > e + r.width + checkDist ||
                 r.x < e - r.width - checkDist
               )
                 return null;
-              const d =
+              const pointInBoundingBox =
                   "switchPlatform" === r.type
                     ? (
                         (e) => (t) =>
@@ -16955,8 +16986,8 @@ var version = "v1.10.9";
                     : he(r),
                 edge = gravity > 0 ? getObjectTopY(r, e, t) : getObjectBottomY(r, e, t);
               if (a <= 0 && (gravity > 0 ? (t - a >= edge + (7.5) * globalPlayerScale) : (t - a <= edge + (-7.5) * globalPlayerScale))) {
-                const k = pe(e, t, i, n, s),
-                  l = k[Math.floor(k.length / 2)],
+                const bottomPlayerLine = pe(e, t, i, n, s),
+                  l = bottomPlayerLine[Math.floor(bottomPlayerLine.length / 2)],
                   c = (function (e, t, a) {
                     ye.length = a;
                     for (let i = 0; i < a; i++) {
@@ -16967,14 +16998,15 @@ var version = "v1.10.9";
                     }
                     return ye;
                   })(l.x, l.y, Math.min(Math.ceil(Math.abs(a)), M));
-                for (const e of c) if (d(e)) return { type: "hitMidLine" };
-                const u = s % 90 == 0 ? [] : me(e, t, i, n, s, o);
-                for (const e of k)
-                  if (d(e)) return { type: "hitBottomEdges", rotatePoint: e };
-                for (const e of u)
-                  if (d(e)) return { type: "hitBottomEdges", rotatePoint: e };
+                for (const e of c) if (pointInBoundingBox(e)) return { type: "hitMidLine" };
+                const secondBottomPlayerLine = s % 90 == 0 ? [] : me(e, t, i, n, s, o);
+                for (const e of bottomPlayerLine)
+                  if (pointInBoundingBox(e)) return { type: "hitBottomEdges", rotatePoint: e };
+                for (const e of secondBottomPlayerLine)
+                  if (pointInBoundingBox(e)) return { type: "hitBottomEdges", rotatePoint: e };
               }
               const h = de.getObjectPolygon(r, c);
+              console.warn(r, c, h)
               return !("canJumpThrough" in r) && de.polygonHitSomething(l, h) && !ghost
                 ? { type: "crashed" }
                 : null;
@@ -18073,8 +18105,8 @@ var version = "v1.10.9";
               }
               var trueY = obj.trueY,
               toggleOn = (on) => {
-                var stateOn = obj.init == "red" ? obj.midY : NaN;
-                var stateOff = obj.init == "red" ? NaN : obj.midY;
+                var stateOn = obj.init == "red" ? obj.midY : Infinity;
+                var stateOff = obj.init == "red" ? Infinity : obj.midY;
                 if (on) {
                   trueY = stateOn
                 } else {
@@ -18088,13 +18120,13 @@ var version = "v1.10.9";
                 if (obj?.pastTrigger == trig) {
                   obj.inSwitch = false;
                   if (trig == 0) {
-                    trueY = obj.init == "blue" ? NaN : obj.midY;
+                    trueY = obj.init == "blue" ? Infinity : obj.midY;
                   } else {
-                    trueY = obj.init == "blue" ? obj.midY : NaN;
+                    trueY = obj.init == "blue" ? obj.midY : Infinity;
                   }
                 } else {
                   if (obj.inSwitch == false) {
-                    trueY = isNaN(trueY) ? obj.midY : NaN;
+                    trueY = (trueY) === Infinity ? obj.midY : Infinity;
                     obj.inSwitch = true;
                   }
                 }
@@ -18243,8 +18275,8 @@ var version = "v1.10.9";
         }
         // sort by position
         const sBP = (e, t) => {
-          const y1 = isNaN(e.y) ? e.midY : e.y,
-          y2 = isNaN(t.y) ? t.midY : t.y;
+          const y1 = isNaN(e.y) || e.y === Infinity ? e.midY : e.y,
+          y2 = isNaN(t.y) || e.y === Infinity ? t.midY : t.y;
           return e.x - t.x || y1 - y2
         };
         function ma(e) {
@@ -19484,7 +19516,7 @@ var version = "v1.10.9";
                 () => e.justDestroyed,
                 () => [
                   g({
-                    props: () => ({ color: t.colour, width: 6, height: 6 }),
+                    props: () => ({ color: t.bottomColour, width: 6, height: 6 }),
                     update: (e, t) => {
                       (e.scaleX = t.scale),
                         (e.scaleY = t.scale),
@@ -19668,11 +19700,13 @@ var version = "v1.10.9";
                     {
                       justDestroyed: e.justDestroyed,
                       colour: e.trail.topColour,
+                      bottomColour: e.trail.bottomColour,
                       paused: e.paused,
                     },
                     (t) => {
                       (t.justDestroyed = e.justDestroyed),
                         (t.colour = e.trail.topColour),
+                        (t.bottomColour = e.trail.bottomColour),
                         (t.paused = e.paused);
                     }
                   ),
@@ -20362,6 +20396,126 @@ var version = "v1.10.9";
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
                     imageArray({
+                      fileName: `images/themes/world1/red-spike-outline.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        (a.show = i.init === "red" && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = getBlockFallY(i.x, i.midY, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t * 0.9),
+                          (a.height = i.height * t * 0.9);
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    imageArray({
+                      fileName: `images/themes/world1/red-spike.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        (a.show = i.init === "red" && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t),
+                          (a.height = i.height * t);
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    imageArray({
+                      fileName: `images/themes/world1/blue-spike-outline.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        (a.show = i.init === "blue" && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = getBlockFallY(i.x, i.midY, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t * 0.9),
+                          (a.height = i.height * t * 0.9);
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    imageArray({
+                      fileName: `images/themes/world1/blue-spike.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        (a.show = i.init === "blue" && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t),
+                          (a.height = i.height * t);
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    imageArray({
                       fileName: `images/themes/${e.theme}/spike.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -20374,7 +20528,7 @@ var version = "v1.10.9";
                                 : s.spikeStates) || void 0 === o
                             ? void 0
                             : s.spikeStates[n];
-                        (a.show = (e.theme == "world2" ? i.width : 30) !== $.miniSpikeWidth && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                        (a.show = !i.init && (e.theme == "world2" ? i.width : 30) !== $.miniSpikeWidth && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
@@ -20404,7 +20558,7 @@ var version = "v1.10.9";
                                 : s.spikeStates) || void 0 === o
                             ? void 0
                             : s.spikeStates[n];
-                        (a.show = ((e.theme == "world2" ? i.width : 30) === $.miniSpikeWidth) && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                        (a.show = !i.init && ((e.theme == "world2" ? i.width : 30) === $.miniSpikeWidth) && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
@@ -20434,7 +20588,7 @@ var version = "v1.10.9";
                                 : s.spikeStates) || void 0 === o
                             ? void 0
                             : s.spikeStates[n];
-                        (a.show = i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                        (a.show = !i.init && i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
@@ -29935,11 +30089,15 @@ var version = "v1.10.9";
               `images/themes/${e.objects.spike == "classic" ? "classic" : e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
               `images/themes/${e.objects.saw == "classic" ? "classic" : "infinite"}/saw-bar.png`,
               "images/themes/world1/red.png",
+              "images/themes/world1/red-spike.png",
               "images/themes/world1/blue.png",
+              "images/themes/world1/blue-spike.png",
               "images/themes/world2/red.png",
               "images/themes/world2/blue.png",
               "images/themes/world1/red-outline.png",
+              "images/themes/world1/red-spike-outline.png",
               "images/themes/world1/blue-outline.png",
+              "images/themes/world1/blue-spike-outline.png",
               `images/themes/${e.objects.block || "world2"}/block-explosion.png`,
               "images/themes/world2/block-spike-switch.png",
               "images/themes/world1/spike-explosion.png",
@@ -34929,6 +35087,7 @@ var version = "v1.10.9";
                 }),
                 y = $.newSpring(),
                 q = $.newSwitchBlock(),
+                switchSpike = $.newSwitchSpike(),
                 E = $.newPortal();
               return {
                 objects: [
@@ -35065,6 +35224,12 @@ var version = "v1.10.9";
                     name: localize("SWITCH BLOCK"),
                     object: q,
                     iconName: "images/editor/objects/block.png",
+                    unlocked: true,
+                  },
+                  {
+                    name: localize("SWITCH SPIKE"),
+                    object: switchSpike,
+                    iconName: "images/editor/objects/spike.png",
                     unlocked: true,
                   },
                   {
@@ -35556,6 +35721,180 @@ var version = "v1.10.9";
             switch (t.type) {
               case "spike":
                 return (function (e, t, a) {
+                  if (t.init) {
+                    return [
+                      {
+                        name: "Direction",
+                        options: [{
+                          name: "Up",
+                          selected: !t.isLaser && 0 === t.rotation,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 0,
+                                    isLaser: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Left",
+                          selected: !t.isLaser && 270 === t.rotation,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 270,
+                                    isLaser: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Down",
+                          selected: !t.isLaser && 180 === t.rotation,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 180,
+                                    isLaser: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Right",
+                          selected: !t.isLaser && 90 === t.rotation,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 90,
+                                    isLaser: false,
+                                  }),
+                              });
+                            });
+                          },
+                        }]
+                      },
+                      {
+                        name: "Color",
+                        options: [
+                          {
+                            name: "Red",
+                            selected: t.init == "red",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "spikes",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      init: "red",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Blue",
+                            selected: t.init == "blue",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "spikes",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      init: "blue",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                        ],
+                      },
+                      {
+                        name: "Trigger",
+                        options: [
+                          {
+                            name: "Music Beat",
+                            selected: t.trigger == "beat",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "spikes",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      trigger: "beat",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Jump",
+                            selected: t.trigger == "jump",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "spikes",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      trigger: "jump",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Switch",
+                            selected: t.trigger == "switch",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "spikes",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      trigger: "switch",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                        ],
+                      },
+                    ];
+                  };
                   let di =
                   t.isLaser ? [
                         {
@@ -46065,6 +46404,7 @@ var version = "v1.10.9";
                 ),
                 Oc(
                   Bc([
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum3]),
                     Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(0), _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(1), _c(1)]),
@@ -46191,6 +46531,7 @@ var version = "v1.10.9";
                 ),
                 Oc(
                   Bc([
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum3]),
                     Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(0), _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(1), _c(1)]),
@@ -46425,8 +46766,8 @@ var version = "v1.10.9";
                             })
                           : []
                       ),
-                    spikes: l.map(([e, t, a, i, n, laser]) =>
-                      n
+                    spikes: l.map(([e, t, a, i, n, laser, ini, tr]) =>
+                      ini === undefined ? n
                         ? $.newMiniSpike({
                             x: e,
                             y: t,
@@ -46440,6 +46781,14 @@ var version = "v1.10.9";
                             rotation: Hd[a],
                             skipMissiles: 1 === i,
                             isLaser: 1 === laser
+                          }) : $.newSwitchSpike({
+                            x: e,
+                            y: t,
+                            rotation: Hd[a],
+                            skipMissiles: 1 === i,
+                            isLaser: false,
+                            init: ini == 0 ? "blue" : "red",
+                            trigger: tr,
                           })
                     ),
                     platforms: c.map(([e, t, a, i]) =>
@@ -46616,7 +46965,12 @@ var version = "v1.10.9";
                           : [e.x, e.y]
                       ),
                     i.spikes.map((e) =>
-                      e.isLaser ? ([e.x, e.y, ru(e.rotation, Hd), e.skipMissiles ? 1 : 0, +(e.width === $.miniSpikeWidth), 1]
+                      e.init ? [e.x, e.y, ru(e.rotation, Hd), e.skipMissiles ? 1 : 0, 
+                        +(e.width === $.miniSpikeWidth), 
+                        0, 
+                        ru(e.init == "blue", ou),
+                        (ru(e.trigger, zd)),
+                      ] : e.isLaser ? ([e.x, e.y, ru(e.rotation, Hd), e.skipMissiles ? 1 : 0, +(e.width === $.miniSpikeWidth), 1]
                       ) : (e.width === $.miniSpikeWidth
                         ? [
                             e.x,
