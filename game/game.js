@@ -15973,10 +15973,10 @@ var version = "v1.10.10";
                   null !== (n = null == e ? void 0 : e.height) && void 0 !== n
                     ? n
                     : 30,
-                trigger: e == undefined ? "beat" : e?.trigger || "beat",
-                init: e == undefined ? "red" : e?.init || "red",
+                trigger: e == null ? "beat" : e.trigger || "beat",
+                init: e == null ? "red" : e?.init || "red",
                 snapSize: null == e ? void 0 : e.snapSize,
-                rotation: 0,
+                rotation: e?.rotation || 0,
                 skipMissiles: false,
               };
             },
@@ -16968,7 +16968,6 @@ var version = "v1.10.10";
             hitLandableObject: (...params) => {
               var [e, t, a, i, n, s, o, r, l, c, gravity, ghost] = params;
               const checkDist = "switchPlatform" === r.type ? 120 : 30;
-              console.warn(r, r.y);
               if (isNaN(r.y) || r.y === Infinity) {
                 return null;
               };
@@ -17006,7 +17005,6 @@ var version = "v1.10.10";
                   if (pointInBoundingBox(e)) return { type: "hitBottomEdges", rotatePoint: e };
               }
               const h = de.getObjectPolygon(r, c);
-              console.warn(r, c, h)
               return !("canJumpThrough" in r) && de.polygonHitSomething(l, h) && !ghost
                 ? { type: "crashed" }
                 : null;
@@ -39986,7 +39984,8 @@ var version = "v1.10.10";
                   saws: h.saws,
                   theme: v.saw,
                   editor: { previewYs: inViewLayoutAtTime.saws.map((e) => e.y), previewRots: inViewLayoutAtTime.saws.map((e) => e.rotation)},
-                  bigTheme: v.spike
+                  bigTheme: v.spike,
+                  frame: frame,
                 }),
                 ...inViewLayoutAtTime.enemies.map((e, t) =>
                   runHistory[i].layoutState.enemies[t].destroyed ? null : o({
@@ -46404,7 +46403,7 @@ var version = "v1.10.10";
                 ),
                 Oc(
                   Bc([
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum3]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum2, nd.enum3]),
                     Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(0), _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(1), _c(1)]),
@@ -46531,7 +46530,7 @@ var version = "v1.10.10";
                 ),
                 Oc(
                   Bc([
-                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum3]),
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum2, nd.enum3]),
                     Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(0), _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(1), _c(1)]),
@@ -46781,15 +46780,15 @@ var version = "v1.10.10";
                             rotation: Hd[a],
                             skipMissiles: 1 === i,
                             isLaser: 1 === laser
-                          }) : $.newSwitchSpike({
+                          }) : (console.warn(tr, zd[tr], ini, laser), $.newSwitchSpike({
                             x: e,
                             y: t,
                             rotation: Hd[a],
                             skipMissiles: 1 === i,
                             isLaser: false,
                             init: ini == 0 ? "blue" : "red",
-                            trigger: tr,
-                          })
+                            trigger: zd[tr],
+                          }))
                     ),
                     platforms: c.map(([e, t, a, i]) =>
                       $.newPlatform({
