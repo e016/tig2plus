@@ -69575,7 +69575,7 @@ var version = "v1.10.10";
                   audioFileNames: [...Qs.mainMenuAudio, "audio/tracks/monstaz-popcorn-funk-credits.mp3", o],
                 }).then(() => {
                   const { settings: e } = n(Se);
-                  (e.muteMenuMusic && !s) ||
+                  (e.muteMenuMusic && !s && !localStorage.getItem("endOfGame")) ||
                     a.audio(o).play({ loop: true, overwrite: true }),
                     t((e) =>
                       Object.assign(Object.assign({}, e), { loading: false })
