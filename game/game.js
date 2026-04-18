@@ -40810,11 +40810,21 @@ var version = "v1.10.9";
                       U.playerJetpackFuel < 8 &&
                         ((U.playerGradY = G.initGrad(V)),
                         (U.playerPowerups = U.playerPowerups.filter(e => e.item !== "jetpack")),
+                        U.playerPowerups.some((e) => !["jetpack", "spaceship", "playerStack", "skateboard"].includes(e.item)) && (
+                          (L.blockJumpUntilReleased = true),
+                          (isDown = false),
+                          (U.justDownInputTimer = 0)
+                        ),
                         null == v || v.useUpPowerup("jetpack"));
                   (U.playerJetpackFuel -= df * (w / 5)),
                     (U.playerUsingPowerup = true),
                     U.playerJetpackFuel <= 0 &&
                       ((U.playerPowerups = U.playerPowerups.filter(e => e.item !== "jetpack")),
+                      U.playerPowerups.some((e) => !["jetpack", "spaceship", "playerStack", "skateboard"].includes(e.item)) && (
+                          (L.blockJumpUntilReleased = true),
+                          (isDown = false),
+                          (U.justDownInputTimer = 0)
+                        ),
                       null == v || v.useUpPowerup("jetpack"));
                 } else if (U.gravity < 0) {
                   if ((U.gravityHitObject || U.dashing) && e) {
