@@ -69227,6 +69227,16 @@ var version = "v1.10.10";
                   y: s - 250,
                 }),
                 Fo({
+                  id: "userlevels",
+                  width: 200,
+                  height: 40,
+                  text: "USERLEVELS.COM",
+                  onPress: () => {
+                    zu.openLink("https://userlevels.com");
+                  },
+                  y: s - 300,
+                }),
+                Fo({
                   id: "BackButton",
                   text: localize("BACK"),
                   width: 80,
