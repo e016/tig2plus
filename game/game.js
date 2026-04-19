@@ -74005,7 +74005,7 @@ var version = "v1.10.10";
                         (a) => (
                           HE(e, t),
                           Object.assign(Object.assign({}, a), {
-                            view: { type: "goOnline" },
+                            view: { type: "termsConditions" },
                             settings: i.data.settings,
                             playerSkin: s.playerSkin,
                           })
@@ -74115,8 +74115,26 @@ var version = "v1.10.10";
                       color: ve,
                     }),
               ];
-            if ("termsConditions" === e.view.type)
-              return [
+            if ("termsConditions" === e.view.type) {
+              $l(t.log),
+                          a(
+                            (e) => (
+                              HE(a, t),
+                              Object.assign(Object.assign({}, e), {
+                                accountState: e.accountStateMachine(
+                                  e.accountState,
+                                  {
+                                    type: "goOnline",
+                                    auth: vu.getDefaultData().auth,
+                                  }
+                                ),
+                                view: { type: "loading" },
+                                isFirstTimePlaying: true,
+                              })
+                            )
+                          );
+                        }
+              /*return [
                 Se.Sprite({
                   context: e.globalContextVal,
                   sprites: [
@@ -74145,7 +74163,7 @@ var version = "v1.10.10";
                     }),
                   ],
                 }),
-              ];
+              ];*/
             const s =
                 e.achievementModalQueue.length > 0
                   ? Uo({
