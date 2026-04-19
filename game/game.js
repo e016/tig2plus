@@ -40535,6 +40535,15 @@ var version = "v1.10.10";
                             })
                           ],
                           () => [
+                            e.theme === "infinite" ? 
+                            p({
+                              width: 40,
+                              height: 28,
+                              color: e.background,
+                            }, (t) => {
+                              t.color = e.background
+                            })
+                            : null,
                             y({
                               fileName: `images/themes/${e.theme}/menu-button.png`,
                               width: 50,
@@ -53945,6 +53954,28 @@ var version = "v1.10.10";
                       )),
           rangeAsArray = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i),
           infiniteTiles = rangeAsArray(-16, 17).map(y => rangeAsArray(-16, 17).map(e => [e * 60, y * 60])),
+          infiniteBgTable = function (i, clr) {
+                            
+                            return [{
+                            "#FF0000": "#e18989",
+                            "#ffea00": "#dee189",
+                            "#00FF00": "#89e193",
+                            "#0000ff": "#898ce1",
+                            "#8000ff": "#c889e1",
+                            "#ff00ff": "#e189da",
+                            "#ffFFff": "#FFFFFF",
+                            "#000000": "#282828",
+                          },
+                          {
+                            "#FF0000": "#d77676",
+                            "#ffea00": "#d7cd76",
+                            "#00FF00": "#88d776",
+                            "#0000ff": "#7b76d7",
+                            "#8000ff": "#b076d7",
+                            "#ff00ff": "#d776d1",
+                            "#ffFFff": "#e7e7e7",
+                            "#000000": "#000000",
+                          }][i][clr] || (i ? "#76d7d6" : "#89dde1")},
           xg = makeSprite({
             render({ props: e, device: t }) {
               const a = (() => {
@@ -54921,37 +54952,17 @@ var version = "v1.10.10";
                             ),
                           ];
                         case "infinite":
-                          let infiniteBgTable = [{
-                            "#FF0000": "#e18989",
-                            "#ffea00": "#dee189",
-                            "#00FF00": "#89e193",
-                            "#0000ff": "#898ce1",
-                            "#8000ff": "#c889e1",
-                            "#ff00ff": "#e189da",
-                            "#ffFFff": "#FFFFFF",
-                            "#000000": "#282828",
-                          },
-                          {
-                            "#FF0000": "#d77676",
-                            "#ffea00": "#d7cd76",
-                            "#00FF00": "#88d776",
-                            "#0000ff": "#7b76d7",
-                            "#8000ff": "#b076d7",
-                            "#ff00ff": "#d776d1",
-                            "#ffFFff": "#e7e7e7",
-                            "#000000": "#000000",
-                          }],
-                          infiniteTileSprites = [];
+                          let infiniteTileSprites = [];
                           return [
                             Go.Single(
                               {
                                 targetOpacity: 1,
-                                targetColor: infiniteBgTable[0][e.bgColor] || "#89dde1",
+                                targetColor: infiniteBgTable(0, e.bgColor),
                                 sprite: (s, l) => [
                                   Go.Single(
                                     {
                                       targetOpacity: 1,
-                                      targetColor: infiniteBgTable[1][e.bgColor] || "#76d7d6",
+                                      targetColor: infiniteBgTable(1,e.bgColor),
                                       sprite: (s, d) => {
                                         infiniteTileSprites = [];
                                         infiniteTiles.map(tiles => tiles.map((tile) => (
@@ -54987,14 +54998,14 @@ var version = "v1.10.10";
                                     },
                                     (t) => {
                                       t.targetOpacity = 1;
-                                      t.targetColor = infiniteBgTable[1][e.bgColor] ||"#76d7d6";
+                                      t.targetColor = infiniteBgTable(1, e.bgColor) ||"#76d7d6";
                                     }
                                   ),
                                 ],
                               },
                               (t) => {
                                 t.targetOpacity = 1;
-                                t.targetColor = infiniteBgTable[0][e.bgColor] || "#89dde1";
+                                t.targetColor = infiniteBgTable(0, e.bgColor) || "#89dde1";
                               }
                             ), 
                             
@@ -56550,9 +56561,9 @@ var version = "v1.10.10";
                 }) : e.theme == "infinite" ? y({
                   fileName: "images/themes/infinite/ground.png",
                   width: 660 * 2,
-                  height: 30,
+                  height: 20,
                 }, (a) => {
-                  a.y = (et.initialPosition.y - M / 2) - e.cameraY - 15;
+                  a.y = (et.initialPosition.y - M / 2) - e.cameraY - 15 + 5;
                 }) : y({
                   fileName: `images/themes/${e.theme}/${e.theme === "world1Boss" ? "block" : "boss"}.png`,
                   width: 660 * 2,
@@ -56821,7 +56832,7 @@ var version = "v1.10.10";
                             fadeFrames: 120,
                             sprite: (e) => [
                               attemptCounter.Single({ attempt: t.attempt, theme: t.layout.properties.theme.id }, (a) => {
-                                (a.attempt = t.attempt), (a.theme = t.layout.properties.theme.id), (a.opacity = e.ref);
+                                (a.attempt = t.attempt), (a.theme = t.layout.properties.theme.id), (a.background = infiniteBgTable(0, t.bgColor)), (a.opacity = e.ref);
                               }),
                             ],
                         }),
@@ -56831,6 +56842,7 @@ var version = "v1.10.10";
                     () => [attemptCounter.Single({ attempt: t.attempt, theme: t.layout.properties.theme.id }, (e) => {
                       e.attempt = t.attempt;
                       e.theme = t.layout.properties.theme.id;
+                      e.background = infiniteBgTable(0, t.bgColor);
                     })]
                   )
                 : null,
@@ -58033,6 +58045,14 @@ var version = "v1.10.10";
                       t.y = e.size.fullHeight / 2 - 55;
                     }
                   ),
+                  u({
+                    y: e.size.fullHeight / 2 - 55,
+                    color: t.background,
+                    radius: 40,
+                  }, (a) => {
+                    a.y = e.size.fullHeight / 2 - 55;
+                    a.color = t.background;
+                  }),
                   c(
                     {
                       text: localize("Attempt"),
@@ -59408,12 +59428,14 @@ var version = "v1.10.10";
                     onPress: e.onPause,
                     x: (-a.size.fullWidth / 2 + (isSpecialTheme(e.theme) ? 35 : 50)) * (n.mirrorMenuButton ? -1 : 1),
                     y: a.size.fullHeight / 2 - (isSpecialTheme(e.theme) ? 25 : 50),
-                    theme: e.theme
+                    theme: e.theme,
+                    background: e.background,
                   },
-                  (e) => {
-                    (e.hidden = i(Se).settings.hideUi),
-                      (e.x = (-a.size.fullWidth / 2 + (isSpecialTheme(e.theme) ? 35 : 50)) * (i(Se).settings.mirrorMenuButton ? -1 : 1)),
-                      (e.y = a.size.fullHeight / 2 - (isSpecialTheme(e.theme) ? 25 : 50));
+                  (t) => {
+                  (t.background = e.background),
+                    (t.hidden = i(Se).settings.hideUi),
+                      (t.x = (-a.size.fullWidth / 2 + (isSpecialTheme(t.theme) ? 35 : 50)) * (i(Se).settings.mirrorMenuButton ? -1 : 1)),
+                      (t.y = a.size.fullHeight / 2 - (isSpecialTheme(t.theme) ? 25 : 50));
                   }
                 ),
                 ifConditional(
@@ -61551,6 +61573,7 @@ var version = "v1.10.10";
                           (a.attempt = t.mutValues.levelState.attempt),
                           a.crashed || (a.frame = t.mutValues.levelState.frame),
                           (a.theme = t.bigMutValues.inViewLayout.properties.theme.id),
+                          (a.background = infiniteBgTable(0, t.mutValues.levelState.bgColor)),
                           (a.fadeOutAttempts = Ml(t.mutValues.levelState.bossState) || i(Se).settings.fadeOutAttempts);
                       }
                     ),
