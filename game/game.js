@@ -74116,7 +74116,7 @@ var version = "v1.10.10";
                     }),
               ];
             if ("termsConditions" === e.view.type) {
-              $l(t.log),
+              ($l(t.log),
                           a(
                             (e) => (
                               HE(a, t),
@@ -74132,8 +74132,9 @@ var version = "v1.10.10";
                                 isFirstTimePlaying: true,
                               })
                             )
-                          );
-                        }
+              ));
+              return [];
+                        };
               /*return [
                 Se.Sprite({
                   context: e.globalContextVal,
