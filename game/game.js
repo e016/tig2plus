@@ -41697,7 +41697,7 @@ var version = "v1.10.10";
               if (e.override) {
                 U.playerPowerups = [];
               }
-              U.playerPowerups.unshift(Object.assign(Object.assign({}, e), {
+              U.playerPowerups[["playerStack", "spaceship", "skateboard", "ghost"].includes(e.item) ? "push" : "unshift"](Object.assign(Object.assign({}, e), {
                 x: 0,
                 y: 0,
               }));
@@ -57830,7 +57830,9 @@ var version = "v1.10.10";
                 ifConditional(
                               () => null !== e.playerPowerupOut,
                               () => [
-                                ko.Single(
+                                onChange(
+                                  () => e.playerPowerups.length,
+                                () => [ko.Single(
                                   {
                                     x: e.playerX,
                                     y: e.playerY,
@@ -57887,6 +57889,8 @@ var version = "v1.10.10";
                                     key: (e, t) => t,
                                   }
                                 ),
+                              ]),
+                                
                               ]
                             ),
                 ifConditional(
@@ -74001,7 +74005,7 @@ var version = "v1.10.10";
                         (a) => (
                           HE(e, t),
                           Object.assign(Object.assign({}, a), {
-                            view: { type: "termsConditions" },
+                            view: { type: "goOnline" },
                             settings: i.data.settings,
                             playerSkin: s.playerSkin,
                           })
