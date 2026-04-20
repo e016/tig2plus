@@ -43,10 +43,11 @@
       "attachment": "sqare_green_2"
     },
     { "name": "triangle_2", "bone": "triangle_2", "attachment": "triangle_2" },
-    { "name": "path", "bone": "Switch_button", "attachment": "path" }
+    { "name": "path", "bone": "Switch_button", "attachment": "path" },
+    { "name": "path2", "bone": "Switch_button", "attachment": "path2" }
   ],
   "path": [
-    { "name": "1", "bones": ["triangle_2"], "target": "path", "mixRotate": 0 },
+    { "name": "1", "bones": ["triangle_2"], "target": "path2", "mixRotate": 0 },
     {
       "name": "2",
       "order": 1,
@@ -68,6 +69,18 @@
             "vertices": [
               42.65, 29.7, -1.23, 29.92, -46.04, 30.14, -40.67, -31.14, -0.87,
               -30.53, 43.52, -29.85
+            ]
+          }
+        },
+        "path2": {
+          "path2": {
+            "type": "path",
+            "closed": true,
+            "lengths": [95.85, 193.56],
+            "vertexCount": 6,
+            "vertices": [
+              50.52, 35.85, -1.23, 29.92, -46.04, 30.14, -46.04, -31.14, -0.87,
+              -30.53, 43.52, -35.85
             ]
           }
         },
