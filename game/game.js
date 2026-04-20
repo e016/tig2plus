@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.10.5";
+var version = "v1.10.10";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -249,7 +249,7 @@ var version = "v1.10.5";
                     operation: "READ",
                     callback: function (e) {},
                   });
-                }, 1e3 * e._idleTimeout));
+                }, 1000 * e._idleTimeout));
             }),
             (e.stopHeartBeat = function () {
               e._heartBeatIntervalId &&
@@ -389,7 +389,7 @@ var version = "v1.10.5";
                       ),
                       setTimeout(
                         e.performQuery,
-                        1e3 * e._packetTimeouts[e._retry - 1]
+                        1000 * e._packetTimeouts[e._retry - 1]
                       )))
                 : (e.debugLog("Failed after " + e._retry + " retries.", true),
                   null != e._errorCallback && e._errorCallback,
@@ -468,7 +468,7 @@ var version = "v1.10.5";
                 }),
                 (e.xml_timeoutId = setTimeout(
                   t.ontimeout_bc,
-                  1e3 * e._packetTimeouts[0]
+                  1000 * e._packetTimeouts[0]
                 ));
                 return;
                 t.open("POST", e._dispatcherUrl, true),
@@ -7963,7 +7963,7 @@ var version = "v1.10.5";
             (t._netId = t.INVALID_NET_ID),
             (t._systemCallback = null),
             (t._relayCallback = null),
-            (t._pingIntervalMS = 1e3),
+            (t._pingIntervalMS = 1000),
             (t._pingIntervalId = null),
             (t._pingInFlight = false),
             (t._pingTime = null),
@@ -8047,7 +8047,7 @@ var version = "v1.10.5";
               t._systemCallback = null;
             }),
             (t.setPingInterval = function (e) {
-              (t._pingIntervalMS = Math.max(1e3, e)),
+              (t._pingIntervalMS = Math.max(1000, e)),
                 t.isConnected && (t.stopPing(), t.startPing());
             }),
             (t.getOwnerProfileId = function () {
@@ -8475,7 +8475,7 @@ var version = "v1.10.5";
                   t._debugEnabled &&
                     console.log("WS SEND: " + JSON.stringify(e)),
                     t.socket.send(JSON.stringify(e));
-                }, 1e3 * Q));
+                }, 1000 * Q));
             }),
             (t.onRecv = function (e) {
               t._debugEnabled && console.log("WS RECV: " + JSON.stringify(e)),
@@ -14360,7 +14360,7 @@ var version = "v1.10.5";
                 }));
             });
           var R = new T(),
-            O = 1e3,
+            O = 1000,
             C = 1005,
             w = 1006,
             A = {
@@ -14773,7 +14773,7 @@ var version = "v1.10.5";
               (t.prototype.close = function (e, a) {
                 if (
                   void 0 !== e &&
-                  ("number" != typeof e || (1e3 !== e && (e < 3e3 || e > 4999)))
+                  ("number" != typeof e || (1000 !== e && (e < 3e3 || e > 4999)))
                 )
                   throw new TypeError(
                     A.CLOSE_ERROR +
@@ -15948,6 +15948,36 @@ var version = "v1.10.5";
                 trigger: e == undefined ? "beat" : e?.trigger || "beat",
                 init: e == undefined ? "red" : e?.init || "red",
                 snapSize: null == e ? void 0 : e.snapSize,
+                rotation: 0,
+                skipMissiles: false,
+              };
+            },
+            newSwitchSpike: (e) => {
+              var t, a, i, n;
+              return {
+                type: "spike",
+                array: "spikes",
+                x:
+                  null !== (t = null == e ? void 0 : e.x) && void 0 !== t
+                    ? t
+                    : 0,
+                y:
+                  null !== (a = null == e ? void 0 : e.y) && void 0 !== a
+                    ? a
+                    : 0,
+                width:
+                  null !== (i = null == e ? void 0 : e.width) && void 0 !== i
+                    ? i
+                    : 30,
+                height:
+                  null !== (n = null == e ? void 0 : e.height) && void 0 !== n
+                    ? n
+                    : 30,
+                trigger: e == null ? "beat" : e.trigger || "beat",
+                init: e == null ? "red" : e?.init || "red",
+                snapSize: null == e ? void 0 : e.snapSize,
+                rotation: e?.rotation || 0,
+                skipMissiles: false,
               };
             },
             newDirectionChange: (e) => {
@@ -16170,7 +16200,8 @@ var version = "v1.10.5";
                     ? s
                     : 30,
                 item: o,
-                compatible: e ? e.compatible : true
+                compatible: e ? e.compatible : true,
+                override: e ? e.override : false
               };
             },
             newSwitchButton: (e) => {
@@ -16654,9 +16685,9 @@ var version = "v1.10.5";
             getObjectPolygon: (obj, switchBlockSpike, inset = 3) => {
               switch (obj.type) {
                 case "spike":
-                  return obj.isLaser ? laserHitbox(obj, inset) : switchBlockSpike
+                  return switchBlockSpike
                     ? te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset)
-                    : ce(obj, inset);
+                    : obj.isLaser ? laserHitbox(obj, inset) : ce(obj, inset);
                 case "powerup":
                   return re(
                     obj.x,
@@ -16675,7 +16706,7 @@ var version = "v1.10.5";
                 }
                 case "block":
                   return switchBlockSpike
-                    ? ce(obj, inset)
+                    ? obj.isLaser ? laserHitbox(obj, inset) : ce(obj, inset)
                     : te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset);
                 case "platform":
                   return te(obj.x, obj.y, obj.width - 2 * inset, obj.height - 2 * inset);
@@ -16748,7 +16779,6 @@ var version = "v1.10.5";
                     right = obj.width / 2 - inset,
                     bottom = -obj.height / 2 + inset,
                     top = obj.height / 2 - inset;
-                console.warn(obj.rotation);
                   return obj.shape == "bar" ? (
                     (ee.pos.x = obj.x),
                     (ee.pos.y = obj.y),
@@ -16938,15 +16968,15 @@ var version = "v1.10.5";
             hitLandableObject: (...params) => {
               var [e, t, a, i, n, s, o, r, l, c, gravity, ghost] = params;
               const checkDist = "switchPlatform" === r.type ? 120 : 30;
-              if (isNaN(r.y)) {
+              if (isNaN(r.y) || r.y === Infinity) {
                 return null;
-              }
+              };
               if (
                 r.x > e + r.width + checkDist ||
                 r.x < e - r.width - checkDist
               )
                 return null;
-              const d =
+              const pointInBoundingBox =
                   "switchPlatform" === r.type
                     ? (
                         (e) => (t) =>
@@ -16955,8 +16985,8 @@ var version = "v1.10.5";
                     : he(r),
                 edge = gravity > 0 ? getObjectTopY(r, e, t) : getObjectBottomY(r, e, t);
               if (a <= 0 && (gravity > 0 ? (t - a >= edge + (7.5) * globalPlayerScale) : (t - a <= edge + (-7.5) * globalPlayerScale))) {
-                const k = pe(e, t, i, n, s),
-                  l = k[Math.floor(k.length / 2)],
+                const bottomPlayerLine = pe(e, t, i, n, s),
+                  l = bottomPlayerLine[Math.floor(bottomPlayerLine.length / 2)],
                   c = (function (e, t, a) {
                     ye.length = a;
                     for (let i = 0; i < a; i++) {
@@ -16967,12 +16997,12 @@ var version = "v1.10.5";
                     }
                     return ye;
                   })(l.x, l.y, Math.min(Math.ceil(Math.abs(a)), M));
-                for (const e of c) if (d(e)) return { type: "hitMidLine" };
-                const u = s % 90 == 0 ? [] : me(e, t, i, n, s, o);
-                for (const e of k)
-                  if (d(e)) return { type: "hitBottomEdges", rotatePoint: e };
-                for (const e of u)
-                  if (d(e)) return { type: "hitBottomEdges", rotatePoint: e };
+                for (const e of c) if (pointInBoundingBox(e)) return { type: "hitMidLine" };
+                const secondBottomPlayerLine = s % 90 == 0 ? [] : me(e, t, i, n, s, o);
+                for (const e of bottomPlayerLine)
+                  if (pointInBoundingBox(e)) return { type: "hitBottomEdges", rotatePoint: e };
+                for (const e of secondBottomPlayerLine)
+                  if (pointInBoundingBox(e)) return { type: "hitBottomEdges", rotatePoint: e };
               }
               const h = de.getObjectPolygon(r, c);
               return !("canJumpThrough" in r) && de.polygonHitSomething(l, h) && !ghost
@@ -17391,9 +17421,9 @@ var version = "v1.10.5";
               playerScaleY: sy,
               playerScale: ps,
               isGravity,
-              playerPowerup,
+              playerPowerups,
             } = e;
-            gy = isGravity || playerPowerup?.item === "spaceship" ? 0 : gy;
+            gy = isGravity || playerPowerups.some(e => e.item === "spaceship") ? 0 : gy;
             globalPlayerScale = ps;
             sx = sx / ps;
             sy = sy / ps;
@@ -18059,6 +18089,7 @@ var version = "v1.10.5";
           fallTypes
         ) {
           switch (obj.type) {
+            case "spike":
             case "block": {
               var trig = obj.trigger == "jump" ? jump : switchTrig / 90;
               if (!("midY" in obj)) {
@@ -18072,8 +18103,8 @@ var version = "v1.10.5";
               }
               var trueY = obj.trueY,
               toggleOn = (on) => {
-                var stateOn = obj.init == "red" ? obj.midY : NaN;
-                var stateOff = obj.init == "red" ? NaN : obj.midY;
+                var stateOn = obj.init == "red" ? obj.midY : Infinity;
+                var stateOff = obj.init == "red" ? Infinity : obj.midY;
                 if (on) {
                   trueY = stateOn
                 } else {
@@ -18087,13 +18118,13 @@ var version = "v1.10.5";
                 if (obj?.pastTrigger == trig) {
                   obj.inSwitch = false;
                   if (trig == 0) {
-                    trueY = obj.init == "blue" ? NaN : obj.midY;
+                    trueY = obj.init == "blue" ? Infinity : obj.midY;
                   } else {
-                    trueY = obj.init == "blue" ? obj.midY : NaN;
+                    trueY = obj.init == "blue" ? obj.midY : Infinity;
                   }
                 } else {
                   if (obj.inSwitch == false) {
-                    trueY = isNaN(trueY) ? obj.midY : NaN;
+                    trueY = (trueY) === Infinity ? obj.midY : Infinity;
                     obj.inSwitch = true;
                   }
                 }
@@ -18107,7 +18138,7 @@ var version = "v1.10.5";
               return doNotApply &&
                 !willApplyMovement(obj.x, obj.midY, playerX, playerY, fallTypes)
                 ? null
-                : "block" === (null == updated ? void 0 : updated.type)
+                : ["block", "spike"].includes(null == updated ? void 0 : updated.type)
                 ? ((updated.x = obj.x),
                   (updated.y = trueY),
                   (updated.midY = obj.midY),
@@ -18115,12 +18146,15 @@ var version = "v1.10.5";
                   (updated.height = obj.height),
                   (updated.movement = obj.movement),
                   (updated.trigger = obj.trigger),
-                  (updated.isSteel = obj.isSteel),
+                  (updated.steel = obj.steel),
                   (updated.isVoid = obj.isVoid),
                   (updated.isBoss = obj.isBoss),
                   (updated.trigger = obj.trigger),
                   (updated.init = obj.init),
                   (updated.pastTrigger = obj.pastTrigger),
+                  (updated.rotation = obj.rotation),
+                  (updated.skipMissiles = obj.skipMissiles),
+                  (updated.isLaser = obj.isLaser),
                   updated)
                 : Object.assign(Object.assign({}, obj), { y: trueY });
             }
@@ -18148,6 +18182,9 @@ var version = "v1.10.5";
                   (updated.movement = a.movement),
                   (updated.movementTrigger = a.movementTrigger),
                   (updated.rotation = a.rotation),
+                  (updated.shape = a.shape),
+                  (updated.multiplier = a.multiplier),
+                  (updated.offset = a.offset),
                   updated)
                 : Object.assign(Object.assign({}, a), { y: i });
             }
@@ -18165,9 +18202,10 @@ var version = "v1.10.5";
                   (updated.height = a.height),
                   (updated.initPosition = a.initPosition),
                   (updated.movementTrigger = a.movementTrigger),
+                  (updated.direction = a.direction),
                   (updated.rotation = o + a.direction),
                   updated)
-                : Object.assign(Object.assign({}, a), { rotation: o });
+                : Object.assign(Object.assign({}, a), { rotation: o, direction: a.direction });
             }
             case "platform": {
               const a = obj;
@@ -18200,6 +18238,7 @@ var version = "v1.10.5";
                     (updated.height = a.height),
                     (updated.movement = a.movement),
                     (updated.movementTrigger = a.movementTrigger),
+                    (updated.multiplier = a.multiplier),
                     updated)
                   : Object.assign(Object.assign({}, a), { y: i })
               );
@@ -18221,6 +18260,7 @@ var version = "v1.10.5";
                   (updated.kind = o.kind),
                   (updated.skipMissiles = o.skipMissiles),
                   (updated.giant = o.giant),
+                  (updated.enemyDir = o.enemyDir),
                   updated)
                 : Object.assign(Object.assign({}, o), { x: r, y: l });
             }
@@ -18233,8 +18273,8 @@ var version = "v1.10.5";
         }
         // sort by position
         const sBP = (e, t) => {
-          const y1 = isNaN(e.y) ? e.midY : e.y,
-          y2 = isNaN(t.y) ? t.midY : t.y;
+          const y1 = isNaN(e.y) || e.y === Infinity ? e.midY : e.y,
+          y2 = isNaN(t.y) || e.y === Infinity ? t.midY : t.y;
           return e.x - t.x || y1 - y2
         };
         function ma(e) {
@@ -18273,10 +18313,10 @@ var version = "v1.10.5";
           if (0 === a.length) return { minYsByXDiv1000: [], minX: 0, minY: 0 };
           const i = a[0].x - 2e3,
             n = a[a.length - 1].x + 2e3,
-            s = Array.from({ length: Math.ceil((n - i) / 1e3) }, () => null);
+            s = Array.from({ length: Math.ceil((n - i) / 1000) }, () => null);
           return (
             a.forEach((e) => {
-              const t = Math.ceil((e.x - i) / 1e3),
+              const t = Math.ceil((e.x - i) / 1000),
                 a = s[t];
               s[t] = null === a ? e.y : Math.min(e.y, a);
               const n = s[t - 1];
@@ -18628,7 +18668,7 @@ var version = "v1.10.5";
               e,
               { minX: t, minY: a, minYsByXDiv1000: i }
             ) {
-              const n = i[Math.ceil((e - t) / 1e3)];
+              const n = i[Math.ceil((e - t) / 1000)];
               return null == n ? a : n;
             },
             updateMinY: function (e) {
@@ -18751,28 +18791,15 @@ var version = "v1.10.5";
           //console.warn(e,t,i)
           switch (e) {
             case "blocks":
-              if (i?.atIndex) {
-                i = { ...i };
-                i.index = i.atIndex;
-              };
               var block = {
                 type: "blockSpikeState",
-                isVoid: t?.blocks?.[i.index]?.isVoid,
-                steel: t?.blocks?.[i.index]?.steel,
-                isBoss: t?.blocks?.[i.index]?.isBoss,
-                init: t?.blocks?.[i.index]?.init,
-                off: false//t?.blocks?.[i.index]?.off
               };
               //t && t.blocks[i.index]?.init && console.warn(t.blocks[i.index], block);
               return block;
             case "spikes":
               return { type: "blockSpikeState" };
             case "saws":
-              if (i?.atIndex) {
-                i = { ...i };
-                i.index = i.atIndex;
-              }
-              return { type: "sawState", inverse: Math.random() > 0.5, shape: t?.saws?.[i.index]?.shape || "rail" };
+              return { type: "sawState", inverse: Math.random() > 0.5};
             case "directionChanges":
               return { type: "directionChangeState", wasHit: false };
             case "speedChanges":
@@ -18807,7 +18834,7 @@ var version = "v1.10.5";
           }
         }
         const destroyableObjects = ["saws", "blocks", "spikes", "enemies"],
-          destroyableDeadlyObjects = destroyableObjects.filter((e) => "blocks" !== e);
+          missleObjects = destroyableObjects.filter((e) => "blocks" !== e);
         function Na(e, t, a, i, n, s, o) {
           let r = e;
           o &&
@@ -18896,7 +18923,7 @@ var version = "v1.10.5";
                   const obj = layout[destroyableType][objIndex],
                     state = layoutState[destroyableType][objIndex],
                     sign = Math.sign(bullets[i].speed);
-                  if ((state?.steel || obj.type === "bomb") && hit(obj)) {
+                  if (obj?.steel && hit(obj)) {
                     return (Na(destroyableType, objIndex, state, n, layoutState, s, o), 
                       bullets[i].x = (obj.x - (obj.width / 2) * sign) - bullets[i].width / (2 * sign),
                       bullets[i].frame = 1
@@ -18932,7 +18959,7 @@ var version = "v1.10.5";
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
-                if (d?.steel && c(s)) {
+                if (s?.steel && c(s)) {
                   Na(i, n, d, o, a, r, l);
                 } else {
                   !d.destroyed &&
@@ -18964,7 +18991,7 @@ var version = "v1.10.5";
               for (let n = 0; n < t[i].length; n++) {
                 const s = t[i][n],
                   d = a[i][n];
-                if (d?.steel && c(s)) {
+                if (s?.steel && c(s)) {
                   Na(i, n, d, layoutState, a, r, l);
                 } else {
                   !d.destroyed &&
@@ -18986,7 +19013,7 @@ var version = "v1.10.5";
             return blocksKilled;
           },
           useMissiles: function (e, t, a, i, n, s, o, r) {
-            for (const l of destroyableDeadlyObjects)
+            for (const l of missleObjects)
               for (let c = 0; c < t[l].length; c++) {
                 const d = t[l][c],
                   u = a[l][c];
@@ -19191,7 +19218,7 @@ var version = "v1.10.5";
             ];
           };
         function La(e, t, a = -1) {
-          let i = 1e3;
+          let i = 1000;
           for (; !Pa(e, t) && i > 0; )
             i--,
               (t = t.map((e) => {
@@ -19487,7 +19514,7 @@ var version = "v1.10.5";
                 () => e.justDestroyed,
                 () => [
                   g({
-                    props: () => ({ color: t.colour, width: 6, height: 6 }),
+                    props: () => ({ color: t.bottomColour, width: 6, height: 6 }),
                     update: (e, t) => {
                       (e.scaleX = t.scale),
                         (e.scaleY = t.scale),
@@ -19671,11 +19698,13 @@ var version = "v1.10.5";
                     {
                       justDestroyed: e.justDestroyed,
                       colour: e.trail.topColour,
+                      bottomColour: e.trail.bottomColour,
                       paused: e.paused,
                     },
                     (t) => {
                       (t.justDestroyed = e.justDestroyed),
                         (t.colour = e.trail.topColour),
+                        (t.bottomColour = e.trail.bottomColour),
                         (t.paused = e.paused);
                     }
                   ),
@@ -19732,12 +19761,12 @@ var version = "v1.10.5";
                           gravity = e.inGame?.gravity || 1;
                         (a.show =
                           (e.theme == "world2" ? i.width !== $.miniBlockWidth : true) && (
-                            !(e.inGame ? r?.steel : i?.steel) &&
-                          !((e.inGame ? r : i) == undefined
+                            !(i?.steel) &&
+                          !((i) == undefined
                             ? false
-                            : (e.inGame ? r : i).init)) &&
-                          !(e.inGame ? r.isVoid : i.isVoid) &&
-                          !(e.inGame ? r.isBoss : i.isBoss) &&
+                            : (i).init)) &&
+                          !(i.isVoid) &&
+                          !(i.isBoss) &&
                           !(null == r ? void 0 : r.destroyed) && !r?.off),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
@@ -19773,12 +19802,12 @@ var version = "v1.10.5";
                               : o[n],
                           gravity = e?.inGame?.gravity || 1;
                         (a.show =
-                          e.theme == "world2" && i.width === $.miniBlockWidth && !(e.inGame ? r?.steel : i?.steel) &&
-                          !((e.inGame ? r : i) == undefined
+                          e.theme == "world2" && i.width === $.miniBlockWidth && !(i?.steel) &&
+                          !((i) == undefined
                             ? false
-                            : (e.inGame ? r : i).init) &&
-                          !(e.inGame ? r?.isVoid : i?.isVoid) &&
-                          !(e.inGame ? r?.isBoss : i?.isBoss) &&
+                            : (i).init) &&
+                          !(i?.isVoid) &&
+                          !(i?.isBoss) &&
                           !(null == r ? void 0 : r.destroyed) &&
                           !r?.off),
                           (a.width = i.width * t),
@@ -19823,7 +19852,7 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          (e.inGame ? r?.init == "red" : i?.init == "red") &&
+                          (i?.init == "red") &&
                           !(null == r ? void 0 : r.destroyed) &&
                           !r?.off),
                           (a.width = i.width * t),
@@ -19867,11 +19896,7 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          !(e.inGame
-                            ? r?.init == undefined
-                              ? true
-                              : r?.init == "red"
-                            : i?.init == "red" || i?.init == undefined) &&
+                          !(i?.init == "red" || i?.init == undefined) &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
@@ -19914,7 +19939,7 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          (e.inGame ? r?.init == "red" : i?.init == "red") &&
+                          (i?.init == "red") &&
                           !(null == r ? void 0 : r.destroyed) &&
                           !r?.off),
                           (a.width = i.width * t),
@@ -19958,11 +19983,7 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          !(e.inGame
-                            ? r?.init == undefined
-                              ? true
-                              : r?.init == "red"
-                            : i?.init == "red" || i?.init == undefined) &&
+                          !(i?.init == "red" || i?.init == undefined) &&
                           !(null == r ? void 0 : r.destroyed) &&
                           !r?.off),
                           (a.width = i.width * t),
@@ -20005,9 +20026,7 @@ var version = "v1.10.5";
                                 : s.blockStates) || void 0 === o
                             ? void 0
                             : o[n];
-                        (a.show = e.inGame
-                          ? r?.steel
-                          : i?.steel && !(null == r ? void 0 : r.destroyed)),
+                        (a.show = i?.steel && !(null == r ? void 0 : r.destroyed)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
                           (a.x = i.x),
@@ -20049,7 +20068,7 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          (e.inGame ? r?.isVoid : i?.isVoid) &&
+                          (i?.isVoid) &&
                           !(null == r ? void 0 : r.destroyed)),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
@@ -20092,9 +20111,9 @@ var version = "v1.10.5";
                             ? void 0
                             : o[n];
                         (a.show =
-                          !(e.inGame ? r?.steel : i?.steel) &&
-                          (e.inGame ? r?.isBoss : i?.isBoss) &&
-                          !(e.inGame ? r?.isVoid : i?.isVoid) &&
+                          !(i?.steel) &&
+                          (i?.isBoss) &&
+                          !(i?.isVoid) &&
                           !(null == r ? void 0 : r.destroyed) && !(null == r ? void 0 : (r.isGround && isSpecialTheme(e.theme)))),
                           (a.width = i.width * t),
                           (a.height = i.height * t),
@@ -20139,7 +20158,7 @@ var version = "v1.10.5";
                               (a.x = i.x),
                               (a.y = getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                               (a.opacity = n),
-                              void (a.show = !s.steel)
+                              void (a.show = !i.steel)
                             );
                         }
                         a.show = false;
@@ -20375,6 +20394,126 @@ var version = "v1.10.5";
                   const t = "world3" === e.theme ? 41 / 30 : 1;
                   return [
                     imageArray({
+                      fileName: `images/themes/world1/red-spike-outline.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        (a.show = i.init === "red" && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = getBlockFallY(i.x, i.midY, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t * 0.9),
+                          (a.height = i.height * t * 0.9);
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    imageArray({
+                      fileName: `images/themes/world1/red-spike.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        (a.show = i.init === "red" && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t),
+                          (a.height = i.height * t);
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    imageArray({
+                      fileName: `images/themes/world1/blue-spike-outline.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        (a.show = i.init === "blue" && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = getBlockFallY(i.x, i.midY, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t * 0.9),
+                          (a.height = i.height * t * 0.9);
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    imageArray({
+                      fileName: `images/themes/world1/blue-spike.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        var s, o;
+                        const r =
+                          null ===
+                            (o =
+                              null === (s = e.inGame) || void 0 === s
+                                ? void 0
+                                : s.spikeStates) || void 0 === o
+                            ? void 0
+                            : s.spikeStates[n];
+                        (a.show = i.init === "blue" && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                          (a.x = i.x),
+                          (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
+                          (a.rotation = i.rotation),
+                          (a.width = i.width * t),
+                          (a.height = i.height * t);
+                      },
+                      array: () => e.spikes,
+                      testId: (t, a) => {
+                        var i;
+                        return `Spike-${
+                          null === (i = e.inGame) || void 0 === i
+                            ? void 0
+                            : i.indexes[a]
+                        }`;
+                      },
+                    }),
+                    imageArray({
                       fileName: `images/themes/${e.theme}/spike.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
@@ -20387,7 +20526,7 @@ var version = "v1.10.5";
                                 : s.spikeStates) || void 0 === o
                             ? void 0
                             : s.spikeStates[n];
-                        (a.show = (e.theme == "world2" ? i.width : 30) !== $.miniSpikeWidth && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                        (a.show = !i.init && (e.theme == "world2" ? i.width : 30) !== $.miniSpikeWidth && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
@@ -20417,7 +20556,7 @@ var version = "v1.10.5";
                                 : s.spikeStates) || void 0 === o
                             ? void 0
                             : s.spikeStates[n];
-                        (a.show = ((e.theme == "world2" ? i.width : 30) === $.miniSpikeWidth) && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                        (a.show = !i.init && ((e.theme == "world2" ? i.width : 30) === $.miniSpikeWidth) && !i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
@@ -20447,7 +20586,7 @@ var version = "v1.10.5";
                                 : s.spikeStates) || void 0 === o
                             ? void 0
                             : s.spikeStates[n];
-                        (a.show = i.isLaser && !(null == r ? void 0 : r.destroyed)),
+                        (a.show = !i.init && i.isLaser && !(null == r ? void 0 : r.destroyed)),
                           (a.x = i.x),
                           (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
@@ -20514,21 +20653,21 @@ var version = "v1.10.5";
                           objectY: getBlockFallY(a.x, a.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                           playerX: e.inGame.playerX,
                           playerY: e.inGame.playerY,
-                          getSprite: (i, n) =>
+                          getSprite: (i, position) =>
                             i
                               ? ei.Single(
                                   {
                                     justDestroyed: true,
                                     paused: e.inGame.paused,
                                     df: e.inGame.df,
-                                    x: n.x,
-                                    y: getBlockFallY(n.x, n.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
+                                    x: position.x,
+                                    y: position.y,
                                     theme: e.theme,
                                   },
                                   (t) => {
                                     (t.paused = e.inGame.paused),
                                       (t.df = e.inGame.df),
-                                      (t.y = getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir))
+                                      (t.y = position.y)
                                   }
                                 )
                               : y(
@@ -20541,7 +20680,7 @@ var version = "v1.10.5";
                                     rotation: a.rotation,
                                   },
                                   (e) => {
-                                    (e.x = n.x), (e.y = getBlockFallY(n.x, n.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
+                                    (e.x = position.x), (e.y = position.y);
                                   }
                                 ),
                           justDestroyed:
@@ -29948,11 +30087,15 @@ var version = "v1.10.5";
               `images/themes/${e.objects.spike == "classic" ? "classic" : e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-medium.png`,
               `images/themes/${e.objects.saw == "classic" ? "classic" : "infinite"}/saw-bar.png`,
               "images/themes/world1/red.png",
+              "images/themes/world1/red-spike.png",
               "images/themes/world1/blue.png",
+              "images/themes/world1/blue-spike.png",
               "images/themes/world2/red.png",
               "images/themes/world2/blue.png",
               "images/themes/world1/red-outline.png",
+              "images/themes/world1/red-spike-outline.png",
               "images/themes/world1/blue-outline.png",
+              "images/themes/world1/blue-spike-outline.png",
               `images/themes/${e.objects.block || "world2"}/block-explosion.png`,
               "images/themes/world2/block-spike-switch.png",
               "images/themes/world1/spike-explosion.png",
@@ -30500,7 +30643,7 @@ var version = "v1.10.5";
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = (r?.shape == undefined ? true : r?.shape == "rail") && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (a.shape == "rail") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.width),
                         (t.height = a.height),
                         (t.x = a.x),
@@ -30530,7 +30673,7 @@ var version = "v1.10.5";
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = (r?.shape == undefined ? false : r?.shape == "large") && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (a.shape == "large") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.width * sawRatio),
                         (t.height = a.height * sawRatio),
                         (t.x = a.x),
@@ -30557,7 +30700,7 @@ var version = "v1.10.5";
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = (r?.shape == undefined ? false : r?.shape == "bar") && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (a.shape == "bar") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.height),
                         (t.height = a.width),
                         (t.x = a.x),
@@ -30618,7 +30761,7 @@ var version = "v1.10.5";
                               : n.sawStates) || void 0 === s
                           ? void 0
                           : s[i];
-                      (t.show = (r?.shape == undefined ? false : r?.shape == "small") && !(null == r ? void 0 : r.destroyed)),
+                      (t.show = (a.shape == "small") && !(null == r ? void 0 : r.destroyed)),
                         (t.width = a.width * sawRatio),
                         (t.height = a.height * sawRatio),
                         (t.x = a.x),
@@ -30643,7 +30786,9 @@ var version = "v1.10.5";
                         df: e.inGame.df,
                         x: t.x,
                         y: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
-                        theme: e.theme
+                        theme: e.theme,
+                        scaleX: t.width / 60 + 0.5,
+                        scaleY: t.width / 60 + 0.5,
                       };
                     },
                     array: () => e.saws,
@@ -30674,15 +30819,15 @@ var version = "v1.10.5";
                         objectY: getBlockFallY(t.x, t.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
                         playerX: e.inGame.playerX,
                         playerY: e.inGame.playerY,
-                        getSprite: (a, i) =>
-                          a
+                        getSprite: (destroyed, pos) =>
+                          destroyed
                             ? to.Single(
                                 {
                                   justDestroyed: true,
                                   paused: e.inGame.paused,
                                   df: e.inGame.df,
-                                  x: i.x,
-                                  y: getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir),
+                                  x: pos.x,
+                                  y: pos.y,
                                   theme: e.theme,
                                 },
                                 (t) => {
@@ -30696,8 +30841,8 @@ var version = "v1.10.5";
                                   width: t.width,
                                   height: t.height,
                                 },
-                                (t) => {
-                                  (t.x = i.x), (e.y = getBlockFallY(i.x, i.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
+                                (a) => {
+                                  (a.x = pos.x), (a.y = pos.y);
                                 }
                               ),
                         justDestroyed:
@@ -30723,7 +30868,7 @@ var version = "v1.10.5";
                         (t.playerX = e.inGame.playerX),
                         (t.playerY = e.inGame.playerY),
                         (t.objectX = a.x),
-                        (t.objectY = a.y);
+                        (t.objectY = getBlockFallY(a.x, a.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir));
                     },
                   }),
                 ],
@@ -33006,8 +33151,11 @@ var version = "v1.10.5";
           wo = makeSprite({
             render: ({ props: e, getContext: t }) => [
               onChange(
-                () => e.powerup.item,
+                () => e.powerup && e.powerup.item,
                 () => {
+                  if (!e.powerup) {
+                    return [];
+                  }
                   switch (e.powerup.item) {
                     case "doubleJump": {
                       const { animationAssets: a, animationRenderer: i } =
@@ -33115,11 +33263,12 @@ var version = "v1.10.5";
             },
             render: ({ props: e, state: t }) => [
               onChange(
-                () => e.powerup.item,
+                () => e.isJetpack !== e.isSkating,
                 () => {
-                  switch (e.powerup.item) {
+                  let t = [];
+                  switch (e.isJetpack ? "jetpack" : "") {
                     case "jetpack":
-                      return [
+                      t = [
                         conditional(
                           () => e.isUsing,
                           () => [
@@ -33217,9 +33366,16 @@ var version = "v1.10.5";
                           }
                         ),
                       ];
+                      break;
                     case "skateboard":
-                      return [
-                        ifConditional(
+                      t = [];
+                      break;
+                    default:
+                      t = [];
+                      break;
+                  }
+                  e.isSkating && t.push(
+                    ifConditional(
                           () => !e.crashed,
                           () => [
                             Oo.Single(
@@ -33253,10 +33409,9 @@ var version = "v1.10.5";
                             ),
                           ]
                         ),
-                      ];
-                    default:
-                      return [];
-                  }
+                  );
+                  console.warn(t, e.powerup);
+                  return t;
                 }
               ),
             ],
@@ -33419,6 +33574,10 @@ var version = "v1.10.5";
                               height: e.switchButton.height,
                             },
                             (t) => {
+                              let time = 60 - a.justHitTimer;
+                              let scale = (time > 5 ? Math.max(5 - (time - 5), 0) : time) / 7;
+                              (t.scaleX = 1 + scale),
+                              (t.scaleY = 1 + scale),
                               (t.x = e.switchButton.x),
                                 (t.y = getBlockFallY(e.switchButton.x, e.switchButton.y, e.inGame && e.inGame.playerX, e.inGame && e.inGame.fallTypes, e.inGame && e.inGame.playerDir)),
                                 (t.rotation = e.switchButton.gravity == 0 ? (e.playerDir < 0 ? -90 : 90) : e.switchButton.gravity > 0 ? 180 : 0);
@@ -34926,6 +35085,7 @@ var version = "v1.10.5";
                 }),
                 y = $.newSpring(),
                 q = $.newSwitchBlock(),
+                switchSpike = $.newSwitchSpike(),
                 E = $.newPortal();
               return {
                 objects: [
@@ -35062,6 +35222,12 @@ var version = "v1.10.5";
                     name: localize("SWITCH BLOCK"),
                     object: q,
                     iconName: "images/editor/objects/block.png",
+                    unlocked: true,
+                  },
+                  {
+                    name: localize("SWITCH SPIKE"),
+                    object: switchSpike,
+                    iconName: "images/editor/objects/spike.png",
                     unlocked: true,
                   },
                   {
@@ -35549,10 +35715,184 @@ var version = "v1.10.5";
           },
           Tr = [],
           Rr = [],
-          objPropsMenu = function (e, t, a, i) {
+          objPropsMenu = function (e, t, a, i, debug) {
             switch (t.type) {
               case "spike":
                 return (function (e, t, a) {
+                  if (t.init) {
+                    return [
+                      {
+                        name: "Direction",
+                        options: [{
+                          name: "Up",
+                          selected: !t.isLaser && 0 === t.rotation,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 0,
+                                    isLaser: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Left",
+                          selected: !t.isLaser && 270 === t.rotation,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 270,
+                                    isLaser: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Down",
+                          selected: !t.isLaser && 180 === t.rotation,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 180,
+                                    isLaser: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Right",
+                          selected: !t.isLaser && 90 === t.rotation,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    rotation: 90,
+                                    isLaser: false,
+                                  }),
+                              });
+                            });
+                          },
+                        }]
+                      },
+                      {
+                        name: "Color",
+                        options: [
+                          {
+                            name: "Red",
+                            selected: t.init == "red",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "spikes",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      init: "red",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Blue",
+                            selected: t.init == "blue",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "spikes",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      init: "blue",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                        ],
+                      },
+                      {
+                        name: "Trigger",
+                        options: [
+                          {
+                            name: "Music Beat",
+                            selected: t.trigger == "beat",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "spikes",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      trigger: "beat",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Jump",
+                            selected: t.trigger == "jump",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "spikes",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      trigger: "jump",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                          {
+                            name: "Switch",
+                            selected: t.trigger == "switch",
+                            onPress: () => {
+                              a.map((j) => {
+                                e({
+                                  type: "setProperty",
+                                  array: "spikes",
+                                  index: j,
+                                  set: (e) =>
+                                    Object.assign(Object.assign({}, e), {
+                                      trigger: "switch",
+                                    }),
+                                });
+                              });
+                            },
+                          },
+                        ],
+                      },
+                    ];
+                  };
                   let di =
                   t.isLaser ? [
                         {
@@ -35662,7 +36002,7 @@ var version = "v1.10.5";
                             });
                           },
                         }];
-                  return [
+                    let all = [
                     {
                       name: "Direction",
                       options: di,
@@ -35708,6 +36048,48 @@ var version = "v1.10.5";
                       ]
                     }
                   ];
+                  if (debug) {
+                    all.push({
+                      name: "Skip Missiles",
+                      options: [
+                        {
+                          name: "On",
+                          selected: t.skipMissiles,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: true,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Off",
+                          selected: !t.skipMissiles,
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "spikes",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: false,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                      ]
+                    })
+                  }
+                  return all;
                 })(e, t, i);
               case "portal":
                 return (function (e, t, a) {
@@ -36669,6 +37051,45 @@ var version = "v1.10.5";
                         },
                       ],
                     }),
+                    debug && o.push({
+                      name: "Skip Missiles",
+                      options: [
+                        {
+                          name: "On",
+                          selected: t.skipMissiles,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "enemies",
+                                index: j,
+                                set: (e, t) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: true
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Off",
+                          selected: !t.skipMissiles,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "enemies",
+                                index: j,
+                                set: (e, t) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: false
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                      ],
+                    }),
                     o
                   );
                 })(e, t, a, i);
@@ -37144,7 +37565,7 @@ var version = "v1.10.5";
                       ]),
                       t.movement == "static" &&
                       (n = [
-                        /*{
+                        {
                           name: "Bar",
                           selected: t?.shape == "bar",
                           onPress: () => {
@@ -37162,7 +37583,7 @@ var version = "v1.10.5";
                               });
                             });
                           },
-                        },*/ // Come on...
+                        },
                         {
                           name: "Large",
                           selected: t?.shape == "large",
@@ -37288,6 +37709,45 @@ var version = "v1.10.5";
                                 set: (e) =>
                                   Object.assign(Object.assign({}, e), {
                                     offset: 90
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                      ]
+                      }),
+                    debug && j.push({ 
+                      name: "Skip Missiles", 
+                      options: [
+                        {
+                          name: "On",
+                          selected: t.skipMissiles,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: true
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Off",
+                          selected: !t.skipMissiles,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "saws",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    skipMissiles: false
                                   }),
                               });
                             });
@@ -37832,9 +38292,81 @@ var version = "v1.10.5";
                       }),
                     l.length > 0 ? [
                       { name: "Item", options: n },
+                      { name: "Override", options: [
+                        {
+                          name: "On",
+                          selected: t.override,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "powerups",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    override: true
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Off",
+                          selected: !t.override,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "powerups",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    override: false
+                                  }),
+                              });
+                            });
+                          },
+                        }
+                      ]},
                       { name: "Compatible? (EXPERIMENTAL)", options: l },
                     ] : [
                       { name: "Item", options: n },
+                      { name: "Override", options: [
+                        {
+                          name: "On",
+                          selected: t.override,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "powerups",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    override: true
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Off",
+                          selected: !t.override,
+                          onPress: () => {
+                            i.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "powerups",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    override: false
+                                  }),
+                              });
+                            });
+                          },
+                        }
+                      ]}
                     ]
                   );
                 })(e, t, a, i);
@@ -38120,8 +38652,9 @@ var version = "v1.10.5";
                 features: i,
                 arrowMove: s,
               },
+              getContext
             }) {
-              const o = objPropsMenu(t, e[0], i, a),
+              const o = objPropsMenu(t, e[0], i, a, getContext(Se).settings.showDebug),
                 l = 130;
               var c = Zo(e[0].type);
               if (c == "BLOCK" && e[0]?.init) {
@@ -39263,7 +39796,7 @@ var version = "v1.10.5";
                           e.setSettings({
                             viewOffset: pr(
                               d,
-                              B.clamp2(dr, cr, d.scale * (1 - t / 1e3)),
+                              B.clamp2(dr, cr, d.scale * (1 - t / 1000)),
                               { x: r.pointer.x, y: r.pointer.y }
                             ),
                           });
@@ -39322,7 +39855,7 @@ var version = "v1.10.5";
                             viewOffset: r.keysDown.Control
                               ? pr(
                                   d,
-                                  B.clamp2(dr, cr, d.scale * (1 - t / 1e3)),
+                                  B.clamp2(dr, cr, d.scale * (1 - t / 1000)),
                                   { x: r.pointer.x, y: r.pointer.y }
                                 )
                               : r.keysDown.Shift
@@ -39451,7 +39984,8 @@ var version = "v1.10.5";
                   saws: h.saws,
                   theme: v.saw,
                   editor: { previewYs: inViewLayoutAtTime.saws.map((e) => e.y), previewRots: inViewLayoutAtTime.saws.map((e) => e.rotation)},
-                  bigTheme: v.spike
+                  bigTheme: v.spike,
+                  frame: frame,
                 }),
                 ...inViewLayoutAtTime.enemies.map((e, t) =>
                   runHistory[i].layoutState.enemies[t].destroyed ? null : o({
@@ -39835,7 +40369,7 @@ var version = "v1.10.5";
                   playerRot: 0,
                   playerDir: 1,
                   playerSpeedMultiplier: 1,
-                  playerPowerup: null,
+                  playerPowerups: [],
                   isCompatible: true,
                   playerBullets: [],
                   playerJetpackFuel: 0,
@@ -39898,7 +40432,7 @@ var version = "v1.10.5";
               playerScaleY: e.playerScaleY,
               playerDir: e.playerDir,
               playerSpeedMultiplier: e.playerSpeedMultiplier,
-              playerPowerup: e.playerPowerup,
+              playerPowerups: [...e.playerPowerups],
               isCompatible: e.isCompatible,
               playerBullets: [...e.playerBullets],
               playerJetpackFuel: e.playerJetpackFuel,
@@ -40001,6 +40535,15 @@ var version = "v1.10.5";
                             })
                           ],
                           () => [
+                            e.theme === "infinite" ? 
+                            p({
+                              width: 40,
+                              height: 28,
+                              color: e.background,
+                            }, (t) => {
+                              t.color = e.background
+                            })
+                            : null,
                             y({
                               fileName: `images/themes/${e.theme}/menu-button.png`,
                               width: 50,
@@ -40268,7 +40811,7 @@ var version = "v1.10.5";
                 df,
                 shouldResetOnCrash: N,
                 waitAtCheckpoint: x,
-                booster: P,
+                booster: booster,
                 mutValues: L,
                 bigMutValues: D,
                 animationAssets: F,
@@ -40285,12 +40828,9 @@ var version = "v1.10.5";
               ("up" !== playerInput || U.justDownInputTimer > 0) &&
               !L.blockJumpUntilReleased;
             const skating =
-              "skateboard" ===
-              (null === (t = U.playerPowerup) || void 0 === t
-                ? void 0
-                : t.item);
+              U.playerPowerups.some(e => e.item === "skateboard");
             U.justDownInputTimer > 0 && (disableReleaseBuffer ? ("up" == playerInput && (U.justDownInputTimer = 0), "up" !== playerInput) : true) && U.justDownInputTimer--,
-              "justDown" !== playerInput || skating || (U.justDownInputTimer = 10);
+              "justDown" !== playerInput || (skating ? (void 0) : (U.justDownInputTimer = 10));
             const inViewLayout =
                 (null == D ? void 0 : D.inViewLayout) ||
                 Ca.getEmptyLayout(_.layout.properties),
@@ -40396,6 +40936,8 @@ var version = "v1.10.5";
             let J = false;
             U.playerUsingPowerup = false;
             const K = U.switchBlockSpikes;
+            const previousJustHitObject = U.justHitObject;
+            U.justHitObject = null;
             if (
               null === (a = _.boss) || void 0 === a
                 ? void 0
@@ -40414,7 +40956,7 @@ var version = "v1.10.5";
             } else {
               
               if (isDown) {
-                const e = U.justDownInputTimer > 0,
+                const e = U.justDownInputTimer > 0 || "justDown" === playerInput,
                   t = e
                     ? (e, t, a) => be.rectTouchesRect2(e, U.playerY, t, M, a)
                     : null,
@@ -40426,10 +40968,7 @@ var version = "v1.10.5";
                         return inViewLayoutState.collectibles[a].wasPickedUp
                           ? void 0
                           : (null == t ? void 0 : t(U.playerX - 10, 70, e)) ||
-                              ("playerStack" ===
-                                (null === (i = U.playerPowerup) || void 0 === i
-                                  ? void 0
-                                  : i.item) &&
+                              (U.playerPowerups.some(e => e.item === "playerStack") &&
                                 be.hitStack(
                                   e,
                                   U.playerX - 10,
@@ -40448,7 +40987,7 @@ var version = "v1.10.5";
               )(button)));
               U.dashing && e && ((U.dashing = false),
                     (U.jumping = true),
-                    ((!U.playerPowerup && U.playerPowerup?.item != "playerStack") && (L.blockJumpUntilReleased = true),
+                    ((U.playerPowerups.length === 0 && !U.playerPowerups.some(e => e.item === "playerStack")) && (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0)));
                 if (a)
@@ -40460,10 +40999,7 @@ var version = "v1.10.5";
                       if (!inViewLayoutState.collectibles[a].wasPickedUp)
                         if (
                           (null == t ? void 0 : t(U.playerX, 50, e)) ||
-                          ("playerStack" ===
-                            (null === (i = U.playerPowerup) || void 0 === i
-                              ? void 0
-                              : i.item) &&
+                          (U.playerPowerups.some(e => e.item === "playerStack") &&
                             be.hitStack(e, U.playerX, U.playerStacks, 50))
                         ) {
                           const t = Math.abs(e.x - U.playerX),
@@ -40483,10 +41019,7 @@ var version = "v1.10.5";
                           );
                         } else
                           ((null == t ? void 0 : t(U.playerX - M, M, e)) ||
-                            ("playerStack" ===
-                              (null === (n = U.playerPowerup) || void 0 === n
-                                ? void 0
-                                : n.item) &&
+                            (U.playerPowerups.some(e => e.item === "playerStack") &&
                               be.hitStack(e, U.playerX - M, U.playerStacks))) &&
                             ((U.score.multiplier = 0),
                             xa.updateLayoutStateField(
@@ -40501,6 +41034,7 @@ var version = "v1.10.5";
                     });
                 else if (e && toggleGravity > -1) {
                   var g = inViewLayout.switchButtons[toggleGravity].gravity;
+                  U.justHitObject = { array: "switchButtons", index: toggleGravity };
                   (U.dashing = false),
                   (g == 0 ? (U.dashing = true) : (U.gravity = g, U.isGravity = true)),
                   (U.playerGradY = G.initGrad(V) * -2 * U.gravity),
@@ -40511,7 +41045,7 @@ var version = "v1.10.5";
                 else if (
                   e &&
                   "punch" ===
-                    (null === (i = U.playerPowerup) || void 0 === i
+                    (null === (i = U.playerPowerups[0]) || void 0 === i
                       ? void 0
                       : i.item)
                 )
@@ -40519,7 +41053,7 @@ var version = "v1.10.5";
                     (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0),
-                    (U.playerPowerup = null),
+                    (U.playerPowerups.shift()),
                     xa.updateHitPunchState(
                       U.frame,
                       inViewLayout,
@@ -40531,11 +41065,25 @@ var version = "v1.10.5";
                       fullLayoutStateIndexes,
                       K,
                       U.isCompatible ? 1 : U.playerScale
-                    );
+                    ),
+                    (U.playerPowerups.some(e => e.item === "playerStack") && U.playerStacks.map(e => 
+                      xa.updateHitPunchState(
+                        U.frame,
+                        inViewLayout,
+                        inViewLayoutState,
+                        U.playerX,
+                        e.y,
+                        U.playerDir,
+                        U.layoutState,
+                        fullLayoutStateIndexes,
+                        K,
+                        U.isCompatible ? 1 : U.playerScale
+                      )
+                    ));
                 else if (
                   e &&
                   "drill" ===
-                    (null === (i = U.playerPowerup) || void 0 === i
+                    (null === (i = U.playerPowerups[0]) || void 0 === i
                       ? void 0
                       : i.item)
                 )
@@ -40543,7 +41091,7 @@ var version = "v1.10.5";
                     (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0),
-                    (U.playerPowerup = null),
+                    (U.playerPowerups.shift()),
                     xa.updateHitDrillState(
                       U.frame,
                       inViewLayout,
@@ -40560,7 +41108,7 @@ var version = "v1.10.5";
                 else if (
                   e &&
                   "gun" ===
-                    (null === (n = U.playerPowerup) || void 0 === n
+                    (null === (n = U.playerPowerups[0]) || void 0 === n
                       ? void 0
                       : n.item)
                 )
@@ -40568,32 +41116,37 @@ var version = "v1.10.5";
                     (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0),
-                    (U.playerPowerup = null),
+                    (U.playerPowerups.shift()),
                     U.playerBullets.push(
                       oo(U.playerX, U.playerY, 4 * w * U.playerDir)
+                    ),
+                    (
+                      U.playerPowerups.some(e => e.item === "playerStack") && U.playerStacks.map(
+                        (e) => U.playerBullets.push(
+                          oo(U.playerX, e.y, 4 * w * U.playerDir)
+                        )
+                      )
                     );
+                    
                 else if (
                   e &&
                   (U.jumping || 0 !== U.playerGradY) &&
                   "doubleJump" ===
-                    (null === (s = U.playerPowerup) || void 0 === s
+                    (null === (s = U.playerPowerups[0]) || void 0 === s
                       ? void 0
                       : s.item)
                 )
                   (U.playerGradY = G.initGrad(V)),
                     (U.jumpSwitch.on = !U.jumpSwitch.on),
                     (U.jumpSwitch.delay = 2),
-                    (U.playerPowerup = null),
+                    (U.playerPowerups.shift()),
                     (U.justDownInputTimer = 0),
                     null == v || v.useUpPowerup("doubleJump"),
                     (U.jumping = true);
                 else if (
-                  "jetpack" ===
-                  (null === (o = U.playerPowerup) || void 0 === o
-                    ? void 0
-                    : o.item)
+                  U.playerPowerups.some(e => e.item === "jetpack")
                 ) {
-                  if (U.jumping) {
+                  if (U.jumping && U.flyingAnchor === null) {
                     if (U.playerGradY < V) {
                       const e = 1 === df ? 1 : 1.01 * df;
                       U.playerGradY += (e * (V - U.playerGradY)) / 5;
@@ -40603,12 +41156,22 @@ var version = "v1.10.5";
                       (U.playerGradY = G.initGrad(V) / 2),
                       U.playerJetpackFuel < 8 &&
                         ((U.playerGradY = G.initGrad(V)),
-                        (U.playerPowerup = null),
+                        (U.playerPowerups = U.playerPowerups.filter(e => e.item !== "jetpack")),
+                        U.playerPowerups.some((e) => !["jetpack", "spaceship", "playerStack", "skateboard"].includes(e.item)) && (
+                          (L.blockJumpUntilReleased = true),
+                          (isDown = false),
+                          (U.justDownInputTimer = 0)
+                        ),
                         null == v || v.useUpPowerup("jetpack"));
                   (U.playerJetpackFuel -= df * (w / 5)),
                     (U.playerUsingPowerup = true),
                     U.playerJetpackFuel <= 0 &&
-                      ((U.playerPowerup = null),
+                      ((U.playerPowerups = U.playerPowerups.filter(e => e.item !== "jetpack")),
+                      U.playerPowerups.some((e) => !["jetpack", "spaceship", "playerStack", "skateboard"].includes(e.item)) && (
+                          (L.blockJumpUntilReleased = true),
+                          (isDown = false),
+                          (U.justDownInputTimer = 0)
+                        ),
                       null == v || v.useUpPowerup("jetpack"));
                 } else if (U.gravity < 0) {
                   if ((U.gravityHitObject || U.dashing) && e) {
@@ -40621,7 +41184,7 @@ var version = "v1.10.5";
                   (isDown = false),
                   (U.justDownInputTimer = 0);
                   }
-                } else if (U.playerPowerup?.item === "spaceship") {
+                } else if (U.playerPowerups.some(e => e.item === "spaceship")) {
                   
                 } else {
                   if (U.dashing) {
@@ -40667,16 +41230,11 @@ var version = "v1.10.5";
                 } else U.playerScaleY = 1;
               else et.setScaleInc(U, df, V);
               if (
-                ("jetpack" ===
-                (null === (r = U.playerPowerup) || void 0 === r
-                  ? void 0
-                  : r.item)) && !U.dashing
+                U.playerPowerups.some(e => e.item === "jetpack") && !U.dashing
               )
                 U.playerRot = B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir;
               else if (
-                (["playerStack", "spaceship"].includes(null === (l = U.playerPowerup) || void 0 === l
-                  ? void 0
-                  : l.item)) && !U.dashing
+                (U.playerPowerups.some(e => e.item === "spaceship" || e.item === "playerStack")) && !U.dashing
               )
                 U.playerRot = 0;
               
@@ -40706,7 +41264,7 @@ var version = "v1.10.5";
               const low = U.flyingAnchor - 45,
               high = U.flyingAnchor + 45,
               oldY = U.playerY;
-              U.playerPowerup?.item === "spaceship" ? 
+              U.playerPowerups.some(e => e.item === "spaceship") && ("up" == playerInput || !U.playerPowerups.some(e => e.item === "jetpack")) ? 
                     (
                       "justDown" === playerInput && !L.blockJumpUntilReleased && (
                         (U.jumping = !U.jumping),
@@ -40715,6 +41273,7 @@ var version = "v1.10.5";
                         (L.blockJumpUntilReleased = true),
                         (isDown = false),
                         (U.justDownInputTimer = 0)),
+                      
                       U.dashing || (U.jumping
                         ? U.playerY > low
                           ? ((U.playerY += 2 * df * ((-5 + low - U.playerY) / 6.6) * (w / 6.6)),
@@ -40727,17 +41286,14 @@ var version = "v1.10.5";
                       (U.playerGradY = U.playerY - oldY)
                     ) : 
               ((U.playerY = e.y), (U.playerGradY = e.gradY));
-              if (("ghost" ===
-                (null === (l = U.playerPowerup) || void 0 === l
-                  ? void 0
-                  : l.item))) {
+              if (U.playerPowerups.some(e => e.item === "ghost")) {
                 U.playerJetpackFuel < 8 &&
-                        ((U.playerPowerup = null),
+                        ((U.playerPowerups.shift()),
                         null == v || v.useUpPowerup("jetpack"));
                   (U.playerJetpackFuel -= df * (w / 10)),
                     (U.playerUsingPowerup = true),
                     U.playerJetpackFuel <= 0 &&
-                      ((U.playerPowerup = null),
+                      ((U.playerPowerups.shift()),
                       null == v || v.useUpPowerup("jetpack"))}
             }
             if (
@@ -40788,7 +41344,7 @@ var version = "v1.10.5";
               const t = inViewLayout.directionChanges[e],
                 a = t.x - U.playerX;
 
-                if (Z(t) || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(t, U.playerX, U.playerStacks))) {
+                if (Z(t) || (!U.isCompatible && (U.playerPowerups.some(e => e.item === "playerStack")) && be.hitStack(t, U.playerX, U.playerStacks))) {
                   if ((1 === U.playerDir && "left" === t.direction && a <= 0) ||
                     (-1 === U.playerDir && "right" === t.direction && a >= 0)) {
                       (inViewLayoutState.directionChanges[e].wasHit
@@ -40813,14 +41369,13 @@ var version = "v1.10.5";
                 fullLayoutStateIndexes,
                 K
               );
-            const previousJustHitObject = U.justHitObject;
-            U.justHitObject = null;
+            
             for (let e = 0; e < inViewLayout.speedChanges.length; e++) {
               const t = inViewLayout.speedChanges[e],
                 index = e,
                 a = U.playerX - t.x;
               if (
-                (Z(t) || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(t, U.playerX, U.playerStacks))) &&
+                (Z(t) || (!U.isCompatible && (U.playerPowerups.some(e => e.item === "playerStack")) && be.hitStack(t, U.playerX, U.playerStacks))) &&
                 ((1 === U.playerDir && a >= 0) ||
                   (-1 === U.playerDir && a <= 0))
                 ) {
@@ -40844,7 +41399,7 @@ var version = "v1.10.5";
                 return false;
               }
               return (
-                (Z(e)  || (!U.isCompatible && ("playerStack" === U.playerPowerup?.item) && be.hitStack(e, U.playerX, U.playerStacks))) &&
+                (Z(e)  || (!U.isCompatible && (U.playerPowerups.some(e => e.item === "playerStack")) && be.hitStack(e, U.playerX, U.playerStacks))) &&
                 ((1 === U.playerDir && t <= 15) ||
                   (-1 === U.playerDir && t >= -15))
               );
@@ -40884,13 +41439,7 @@ var version = "v1.10.5";
                   (U.playerScaleY = U.playerScale),
                   (U.switchBlockSpikes = false),
                   !e?.retainSpeed && (U.playerSpeedMultiplier = 1),
-                  "skateboard" !==
-                    (null === (c = U.playerPowerup) || void 0 === c
-                      ? void 0
-                      : c.item) && "spaceship" !==
-                    (null === (c = U.playerPowerup) || void 0 === c
-                      ? void 0
-                      : c.item) && (U.playerPowerup = null),
+                  (U.playerPowerups = U.playerPowerups.filter(e => e.item === "skateboard" || e.item === "spaceship")),
                   U.playerStacks.length > 0 &&
                     (U.explosions.push(
                       ...U.playerStacks.map((e) => ({
@@ -40931,10 +41480,7 @@ var version = "v1.10.5";
               var t;
               return (
                 Z(e) ||
-                ("playerStack" ===
-                  (null === (t = U.playerPowerup) || void 0 === t
-                    ? void 0
-                    : t.item) &&
+                (U.playerPowerups.some(e => e.item === "playerStack") &&
                   be.hitStack(e, U.playerX, U.playerStacks))
               );
             });
@@ -40975,7 +41521,7 @@ var version = "v1.10.5";
                   ? (U.switchBlockSpikes = !U.switchBlockSpikes)
                   : ((U.fallTypes[0] = e.down ? "down" : null), (U.fallTypes[1] = e.up ? "up" : null)),
                 null == v || "color" === e.affects || v.hitSwitch(),
-                (U.justHitObject = { array: "switchButtons", index: ie });
+                "color" === e.affects || (U.justHitObject = { array: "switchButtons", index: ie });
             };
             U.flash > 0 ? (U.flash -= 0.01) : (U.flash = 0);
             for (let e = 0; e < inViewLayoutState.switchButtons.length; e++) {
@@ -41012,10 +41558,7 @@ var version = "v1.10.5";
                     K
                   ))
                 : (Z(t) ||
-                    ("playerStack" ===
-                      (null === (u = U.playerPowerup) || void 0 === u
-                        ? void 0
-                        : u.item) &&
+                    (U.playerPowerups.some(e => e.item === "playerStack") &&
                       be.hitStack(t, U.playerX, U.playerStacks))) && !inViewLayoutState.collectibles[e].wasPickedUp &&
                   (ne = e);
             }
@@ -41042,7 +41585,7 @@ var version = "v1.10.5";
               var gradY = stack ? stack.gradY : (U.isGravity ? G.initGrad(V) : U.playerGradY);
               if (-1 !== idx) {
                 const spring = inViewLayout.springs[idx];
-                (stack || (U.jumping = U.playerPowerup?.item === "spaceship" ? spring.direction < 0 : true)),
+                (stack || (U.jumping = U.playerPowerups.some(e => e.item === "spaceship") ? spring.direction < 0 : true)),
                 (stack || (U.gravity = 1)),
                 (setGradY((spring.direction > 0
                       ? Math.max(1.5 * G.initGrad(V), Math.abs((gradY)))
@@ -41103,9 +41646,9 @@ var version = "v1.10.5";
                 null == v || v.hitPortal());
             const re = inViewLayout.powerups.findIndex((e, t) => {
               return (
-                Z(e) ||
-                ("playerStack" === (U.playerPowerup?.item)) && (!e.compatible || !U.isCompatible ? !inViewLayoutState.powerups[t].wasPickedUp : true) &&
-                  be.hitStack(e, U.playerX, U.playerStacks))
+                (!inViewLayoutState.powerups[t].wasPickedUp || U.isCompatible) && (Z(e) ||
+                (U.playerPowerups.some(e => e.item === "playerStack")) && (!e.compatible || !U.isCompatible ? !inViewLayoutState.powerups[t].wasPickedUp : true) &&
+                  be.hitStack(e, U.playerX, U.playerStacks)))
             });
             if (-1 !== re && !inViewLayoutState.powerups[re].wasPickedUp) {
               const e = inViewLayout.powerups[re];
@@ -41113,7 +41656,9 @@ var version = "v1.10.5";
 
               }
               U.isCompatible = e.compatible;
-              U.flyingAnchor = null;
+              if (e.override && e.item !== "spaceship") {
+                U.flyingAnchor = null;
+              };
               if (
                 (xa.updateLayoutStateField(
                   "powerups",
@@ -41128,6 +41673,7 @@ var version = "v1.10.5";
                 "jetpack" === e.item || "ghost" === e.item)
               )
                 (U.playerJetpackFuel = $.maxJetpackFuel),
+                (U.playerPowerups = U.playerPowerups.filter(t => t.item != e.item)),
                   (U.playerRot =
                     e.item === "ghost" ? U.playerRot : B.clamp2(0, 20, 2 * U.playerGradY) * U.playerDir);
               //playerStack code
@@ -41138,7 +41684,8 @@ var version = "v1.10.5";
                     (t, a) => a !== stacksY.length - 1 && stacksY[a + 1] > t + M
                   ) : be.hitStackWhich(e, U.playerX, U.playerStacks) + 1,
                   a = { y: ((-1 === t ? stacksY[stacksY.length - 1] : stacksY[t])) + M, gradY: 0 };
-                U.playerStacks.splice(t, 0, a)
+                U.playerStacks.splice(t, 0, a);
+                U.playerPowerups = U.playerPowerups.filter(t => t.item != e.item);
                 if (false) {
                   //e.direction) {
                   U.playerY += M;
@@ -41153,12 +41700,16 @@ var version = "v1.10.5";
                 U.flyingAnchor = e.y;
                 U.jumping = U.playerGradY <= 0;
                 U.playerRot = 0;
-              } else "skateboard" === e.item && (U.playerRot = 0);
+                U.playerPowerups = U.playerPowerups.filter(t => t.item != e.item);
+              } else "skateboard" === e.item && ((U.playerRot = 0), (U.playerPowerups = U.playerPowerups.filter(t => t.item != e.item)));
               // set powerup
-              U.playerPowerup = Object.assign(Object.assign({}, e), {
+              if (e.override) {
+                U.playerPowerups = [];
+              }
+              U.playerPowerups[["playerStack", "spaceship", "skateboard", "ghost"].includes(e.item) ? "push" : "unshift"](Object.assign(Object.assign({}, e), {
                 x: 0,
                 y: 0,
-              });
+              }));
             }
             let le = Ca.getAllLandableObjects(inViewLayout, inViewLayoutState, skating),
               ce = rl(
@@ -41178,9 +41729,9 @@ var version = "v1.10.5";
                 U.switchBlockSpikes,
                 U.dashing ? 1 : U.gravity,
                 U.gravityHitObject,
-                U.playerPowerup ? U.playerPowerup.item == "ghost" : false
+                U.playerPowerups.some(e => e.item === "ghost")
               );
-            (U.crashed = U.playerPowerup?.item == "spaceship" && ce.hitObject && !ce.hitObject.object.canJumpThrough ? ((U.playerGradY < -3) || ce.crashed) : ce.crashed), (Q = U.flyingAnchor === null ? ce.onGroundY : null);
+            (U.crashed = U.playerPowerups.some(e => e.item === "spaceship") && ce.hitObject && !ce.hitObject.object.canJumpThrough ? ((U.playerGradY < -3) || ce.crashed) : ce.crashed), (Q = U.flyingAnchor === null ? ce.onGroundY : null);
             var de = U.flyingAnchor === null ? (U.gravityHitObject || ce.hitObject) : null;
             if (U.gravity < 0 && Math.abs(U.playerGradY) < 2) {
               
@@ -41201,7 +41752,7 @@ var version = "v1.10.5";
                 U.switchBlockSpikes,
                 1,
                 null,
-                U.playerPowerup ? U.playerPowerup.item == "ghost" : false
+                U.playerPowerups.some(e => e.item === "ghost")
               ).crashed)
               if (!rl(
                 le,
@@ -41220,7 +41771,7 @@ var version = "v1.10.5";
                 U.switchBlockSpikes,
                 1,
                 null,
-                U.playerPowerup ? U.playerPowerup.item == "ghost" : false
+                U.playerPowerups.some(e => e.item === "ghost")
               ).crashed) {
                 U.jumping = true;
                 U.gravity = 1;
@@ -41285,10 +41836,7 @@ var version = "v1.10.5";
                 (U.playerY = Q),
                 (U.playerGradY = 0),
                 U.jumping &&
-                  "jetpack" !==
-                    (null === (p = U.playerPowerup) || void 0 === p
-                      ? void 0
-                      : p.item))
+                  !U.playerPowerups.some(e => e.item === "jetpack"))
               ) {
                 Z = be.hitObject(
                   U.playerX,
@@ -41500,7 +42048,7 @@ var version = "v1.10.5";
                 ? ((U.bottomLine.minY = pe), (U.bottomLine.objects = e))
                 : (U.bottomLine = { minY: pe, objects: e });
             } else U.bottomLine = null;
-            "missiles" === (null == P ? void 0 : P.type) &&
+            "missiles" === (null == booster ? void 0 : booster.type) &&
               xa.useMissiles(
                 U.frame,
                 inViewLayout,
@@ -41511,10 +42059,7 @@ var version = "v1.10.5";
                 fullLayoutStateIndexes,
                 K
               ),
-              "playerStack" ===
-                (null === (E = U.playerPowerup) || void 0 === E
-                  ? void 0
-                  : E.item) &&
+              U.playerPowerups.some(e => e.item === "playerStack") &&
                 U.playerStacks.length > 0 &&
                 ((function (stacks, t, a, i, n, s, o, r, l, enemies, d, u) {
                   for (let l = 0; l < stacks.length; l++) {
@@ -41704,7 +42249,7 @@ var version = "v1.10.5";
                   j,
                   df,
                   U.playerX,
-                  U.playerY,
+                  U.playerY + (skating ? $.skateboardHeight - (15 - U.playerScaleY * 15) : 0),
                   U.playerDir,
                   le,
                   fullLayoutStateIndexes,
@@ -41713,7 +42258,7 @@ var version = "v1.10.5";
                   U.explosions,
                   U.switchBlockSpikes
                 ),
-                0 === U.playerStacks.length && (U.playerPowerup = null)),
+                0 === U.playerStacks.length && (U.playerPowerups = U.playerPowerups.filter(e => e.item != "playerStack"))),
               U.switchButtons.on && U.switchButtons.rot < 90
                 ? (U.switchButtons.rot = Math.min(
                     U.switchButtons.rot + df * (180 / C),
@@ -41751,10 +42296,7 @@ var version = "v1.10.5";
                   K
                 ),
               U.crashed &&
-                ("playerStack" ===
-                  (null === (b = U.playerPowerup) || void 0 === b
-                    ? void 0
-                    : b.item) &&
+                ((U.playerPowerups.some(e => e.item === "playerStack")) &&
                 U.playerStacks.length > 0 &&
                 U.playerStacks[U.playerStackIndex].y < U.playerY + 300
                   ? (U.explosions.push({
@@ -41766,11 +42308,8 @@ var version = "v1.10.5";
                     (U.playerGradY = U.playerStacks[U.playerStackIndex].gradY),
                     U.playerStacks.splice(U.playerStackIndex, 1),
                     (U.crashed = false),
-                    0 === U.playerStacks.length && (U.playerPowerup = null))
-                  : (!["skateboard", "spaceship"].includes(
-                    null === (S = U.playerPowerup) || void 0 === S
-                        ? void 0
-                        : S.item) && (U.playerPowerup = null),
+                    0 === U.playerStacks.length && (U.playerPowerups = U.playerPowerups.filter(e => e.item !== "playerStack")))
+                  : ((U.playerPowerups = U.playerPowerups.filter(e => e.item === "skateboard" || e.item === "spaceship")),
                     onCrash(U.checkpoint.index),
                     N && (L.resetTimer = 60)));
             U.playerOnGroundY = U.flyingAnchor === null ? U.playerOnGroundY : U.flyingAnchor;
@@ -42261,8 +42800,14 @@ var version = "v1.10.5";
               hellidox: {
                 name: "Hellidox",
                 author: "Exilelord",
-                bpm: 210,
+                bpm: 200,
                 fileName: "audio/tracks/exilelord-hellidox.mp3"
+              },
+              jackpot: {
+                name: "Jackpot",
+                author: "TheFatRat",
+                bpm: 103,
+                fileName: "audio/tracks/the-fat-rat-jackpot.mp3"
               }
               
             },
@@ -42954,7 +43499,7 @@ var version = "v1.10.5";
                 e.mutatesState = false;
                 e.isShootingFrames > 0 && (e.isShootingFrames -= n);
                 for (const a of e.bullets) fl(a, n, o, playerX);
-                lt(e.bullets, (t) => t.x > e.bossX - 1e3);
+                lt(e.bullets, (t) => t.x > e.bossX - 1000);
                 e.allButtons.forEach((button) => {
                   let lastPressed = button.pressed;
                   button.pressed = rectangleHitPlayer(
@@ -42985,7 +43530,6 @@ var version = "v1.10.5";
                     e.bullets.push(ml("cannonbomb", 29400, -60, 17));
                   }
                 });
-                console.warn(e.allButtons);
                 let r = playerX + 350,
                   l = e.bossY;
                 const c = e.view;
@@ -43193,7 +43737,7 @@ var version = "v1.10.5";
               initState: () => ({
                 type: "flying",
                 mutatesState: false,
-                bossX: 1e3,
+                bossX: 1000,
                 bossY: 0,
                 gunView: "up",
                 shootFrames: 0,
@@ -43253,7 +43797,7 @@ var version = "v1.10.5";
                   : t + 300;
                 for (const t of e.bullets)
                   t.x += s ? Math.min(-3, t.speed) : t.speed;
-                if ((lt(e.bullets, (t) => t.x > e.bossX - 1e3), a < 1286))
+                if ((lt(e.bullets, (t) => t.x > e.bossX - 1000), a < 1286))
                   r = Math.max(r, e.bossX + 1);
                 else if (a < 2574) {
                   const t = yl * (a < 1600 ? 2.5 : a < 1950 ? 2 : 3);
@@ -43302,20 +43846,20 @@ var version = "v1.10.5";
                   (e.moveFrames[0] <= a &&
                     ((e.isUp = !e.isUp), e.moveFrames.shift()),
                   e.asteroids.length > 0 &&
-                    e.asteroids[0].x < t - 1e3 &&
+                    e.asteroids[0].x < t - 1000 &&
                     e.asteroids.shift(),
                   e.insideAsteroid.length > 0 &&
-                    e.insideAsteroid[0].x < t - 1e3 &&
+                    e.insideAsteroid[0].x < t - 1000 &&
                     e.insideAsteroid.shift(),
                   e.allAsteroids.length > 0)
                 ) {
                   const a = e.allAsteroids[0];
-                  a.x < t + 1e3 &&
+                  a.x < t + 1000 &&
                     (e.asteroids.push(a), e.allAsteroids.shift());
                 }
                 if (e.allInsideAsteroid.length > 0) {
                   const a = e.allInsideAsteroid[0];
-                  a.x < t + 1e3 &&
+                  a.x < t + 1000 &&
                     (e.insideAsteroid.push(a), e.allInsideAsteroid.shift());
                 }
                 e.isUp
@@ -45829,6 +46373,7 @@ var version = "v1.10.5";
              e[(e.GlitchedOut = 57)] = "GlitchedOut";
              e[(e.LastTile = 58)] = "LastTile";
              e[(e.Hellidox = 59)] = "Hellidox";
+             e[(e.Jackpot = 60)] = "Jackpot";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -45867,6 +46412,7 @@ var version = "v1.10.5";
                 ),
                 Oc(
                   Bc([
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum2, nd.enum3]),
                     Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(0), _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(1), _c(1)]),
@@ -45954,7 +46500,7 @@ var version = "v1.10.5";
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
+                  Bc([Gc([fc, fc, nd.enum9, nd.enum2, nd.enum2]), Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
                 ),
                 Oc(
                   Bc([
@@ -45993,6 +46539,7 @@ var version = "v1.10.5";
                 ),
                 Oc(
                   Bc([
+                    Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, nd.enum2, nd.enum2, nd.enum3]),
                     Gc([fc, fc, nd.enum4, nd.enum2, nd.enum2, _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(0), _c(1)]),
                     Gc([fc, fc, nd.enum4, _c(1), _c(1)]),
@@ -46080,7 +46627,7 @@ var version = "v1.10.5";
                   ])
                 ),
                 Oc(
-                  Bc([Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
+                  Bc([Gc([fc, fc, nd.enum9, nd.enum2, nd.enum2]), Gc([fc, fc, nd.enum9, nd.enum2]), Gc([fc, fc, nd.enum9])])
                 ),
                 Oc(
                   Bc([
@@ -46227,8 +46774,8 @@ var version = "v1.10.5";
                             })
                           : []
                       ),
-                    spikes: l.map(([e, t, a, i, n, laser]) =>
-                      n
+                    spikes: l.map(([e, t, a, i, n, laser, ini, tr]) =>
+                      ini === undefined ? n
                         ? $.newMiniSpike({
                             x: e,
                             y: t,
@@ -46242,7 +46789,15 @@ var version = "v1.10.5";
                             rotation: Hd[a],
                             skipMissiles: 1 === i,
                             isLaser: 1 === laser
-                          })
+                          }) : (console.warn(tr, zd[tr], ini, laser), $.newSwitchSpike({
+                            x: e,
+                            y: t,
+                            rotation: Hd[a],
+                            skipMissiles: 1 === i,
+                            isLaser: false,
+                            init: ini == 0 ? "blue" : "red",
+                            trigger: zd[tr],
+                          }))
                     ),
                     platforms: c.map(([e, t, a, i]) =>
                       $.newPlatform({
@@ -46283,12 +46838,13 @@ var version = "v1.10.5";
                         isFlying: ou[o] || false
                       })
                     ),
-                    powerups: p.map(([e, t, a, n]) =>
+                    powerups: p.map(([e, t, a, n, i]) =>
                       $.newPowerup({
                         x: e,
                         y: t,
                         item: Qd[a],
-                        compatible: n != 1
+                        compatible: n != 1,
+                        override: i != 1,
                       })
                     ),
                     //******
@@ -46417,7 +46973,12 @@ var version = "v1.10.5";
                           : [e.x, e.y]
                       ),
                     i.spikes.map((e) =>
-                      e.isLaser ? ([e.x, e.y, ru(e.rotation, Hd), e.skipMissiles ? 1 : 0, +(e.width === $.miniSpikeWidth), 1]
+                      e.init ? [e.x, e.y, ru(e.rotation, Hd), e.skipMissiles ? 1 : 0, 
+                        +(e.width === $.miniSpikeWidth), 
+                        0, 
+                        ru(e.init == "blue", ou),
+                        (ru(e.trigger, zd)),
+                      ] : e.isLaser ? ([e.x, e.y, ru(e.rotation, Hd), e.skipMissiles ? 1 : 0, +(e.width === $.miniSpikeWidth), 1]
                       ) : (e.width === $.miniSpikeWidth
                         ? [
                             e.x,
@@ -46500,7 +47061,7 @@ var version = "v1.10.5";
                           ]
                         : [e.x, e.y, ru(e.role, Kd), ru(e.switchesOn, ou)]
                     ),
-                    i.powerups.map((e) => e.compatible ? [e.x, e.y, ru(e.item, Qd)] : [e.x, e.y, ru(e.item, Qd), 1]),
+                    i.powerups.map((e) => !e.override ? [e.x, e.y, ru(e.item, Qd), +!e.compatible, 1] : e.compatible ? [e.x, e.y, ru(e.item, Qd)] : [e.x, e.y, ru(e.item, Qd), 1]),
                     i.enemies.map((e) =>
                       !e.isCompatible
                         ? [
@@ -46667,7 +47228,8 @@ var version = "v1.10.5";
             [Nd.SolarWind]: hl.songs.solarWind,
             [Nd.GlitchedOut]: hl.songs.glitchedOut,
             [Nd.LastTile]: hl.songs.lastTile,
-            [Nd.Hellidox]: hl.songs.hellidox
+            [Nd.Hellidox]: hl.songs.hellidox,
+            [Nd.Jackpot]: hl.songs.jackpot
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -47034,6 +47596,9 @@ var version = "v1.10.5";
                 (e) => Object.assign(Object.assign({}, e), {
                   flyingAnchor: null
                 }),
+                (e) => Object.assign(Object.assign({}, e), {
+                  playerPowerups: e.playerPowerup ? [e.playerPowerup] : []
+                }),
             ],
             finalSchema: kc({
               frame: fc,
@@ -47050,7 +47615,7 @@ var version = "v1.10.5";
               playerScaleY: fc,
               playerDir: Bc([_c(1), _c(-1)]),
               playerSpeedMultiplier: fc,
-              playerPowerup: Bc([hc, cu]),
+              playerPowerups: Oc(Bc([hc, cu])),
               isCompatible: yc,
               playerJetpackFuel: fc,
               playerUsingPowerup: yc,
@@ -47664,7 +48229,7 @@ var version = "v1.10.5";
                 yield new Promise((i) => {
                   setTimeout(() => {
                     e(t, a - 1).then(i);
-                  }, 1e3);
+                  }, 1000);
                 });
               }
             });
@@ -48451,7 +49016,7 @@ var version = "v1.10.5";
           ap = {
             strategy: "ranged-absolute",
             alignment: "center",
-            ranges: [1e3],
+            ranges: [1000],
           },
           ip = {},
           np = (e, t) => ({ type: "joinedPlayer", skin: e.fileName, rank: t }),
@@ -48987,7 +49552,7 @@ var version = "v1.10.5";
                   status: 200,
                   data: {
                     resultCode: 0,
-                    currency: { blocks: { balance: 1e3 } },
+                    currency: { blocks: { balance: 1000 } },
                   },
                 };
                 mp(() => {
@@ -53412,6 +53977,28 @@ var version = "v1.10.5";
                       )),
           rangeAsArray = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i),
           infiniteTiles = rangeAsArray(-16, 17).map(y => rangeAsArray(-16, 17).map(e => [e * 60, y * 60])),
+          infiniteBgTable = function (i, clr) {
+                            
+                            return [{
+                            "#FF0000": "#e18989",
+                            "#ffea00": "#dee189",
+                            "#00FF00": "#89e193",
+                            "#0000ff": "#898ce1",
+                            "#8000ff": "#c889e1",
+                            "#ff00ff": "#e189da",
+                            "#ffFFff": "#FFFFFF",
+                            "#000000": "#282828",
+                          },
+                          {
+                            "#FF0000": "#d77676",
+                            "#ffea00": "#d7cd76",
+                            "#00FF00": "#88d776",
+                            "#0000ff": "#7b76d7",
+                            "#8000ff": "#b076d7",
+                            "#ff00ff": "#d776d1",
+                            "#ffFFff": "#e7e7e7",
+                            "#000000": "#000000",
+                          }][i][clr] || (i ? "#76d7d6" : "#89dde1")},
           xg = makeSprite({
             render({ props: e, device: t }) {
               const a = (() => {
@@ -54388,37 +54975,17 @@ var version = "v1.10.5";
                             ),
                           ];
                         case "infinite":
-                          let infiniteBgTable = [{
-                            "#FF0000": "#e18989",
-                            "#ffea00": "#dee189",
-                            "#00FF00": "#89e193",
-                            "#0000ff": "#898ce1",
-                            "#8000ff": "#c889e1",
-                            "#ff00ff": "#e189da",
-                            "#ffFFff": "#FFFFFF",
-                            "#000000": "#282828",
-                          },
-                          {
-                            "#FF0000": "#d77676",
-                            "#ffea00": "#d7cd76",
-                            "#00FF00": "#88d776",
-                            "#0000ff": "#7b76d7",
-                            "#8000ff": "#b076d7",
-                            "#ff00ff": "#d776d1",
-                            "#ffFFff": "#e7e7e7",
-                            "#000000": "#000000",
-                          }],
-                          infiniteTileSprites = [];
+                          let infiniteTileSprites = [];
                           return [
                             Go.Single(
                               {
                                 targetOpacity: 1,
-                                targetColor: infiniteBgTable[0][e.bgColor] || "#89dde1",
+                                targetColor: infiniteBgTable(0, e.bgColor),
                                 sprite: (s, l) => [
                                   Go.Single(
                                     {
                                       targetOpacity: 1,
-                                      targetColor: infiniteBgTable[1][e.bgColor] || "#76d7d6",
+                                      targetColor: infiniteBgTable(1,e.bgColor),
                                       sprite: (s, d) => {
                                         infiniteTileSprites = [];
                                         infiniteTiles.map(tiles => tiles.map((tile) => (
@@ -54454,14 +55021,14 @@ var version = "v1.10.5";
                                     },
                                     (t) => {
                                       t.targetOpacity = 1;
-                                      t.targetColor = infiniteBgTable[1][e.bgColor] ||"#76d7d6";
+                                      t.targetColor = infiniteBgTable(1, e.bgColor) ||"#76d7d6";
                                     }
                                   ),
                                 ],
                               },
                               (t) => {
                                 t.targetOpacity = 1;
-                                t.targetColor = infiniteBgTable[0][e.bgColor] || "#89dde1";
+                                t.targetColor = infiniteBgTable(0, e.bgColor) || "#89dde1";
                               }
                             ), 
                             
@@ -54811,7 +55378,7 @@ var version = "v1.10.5";
               speed: Bg,
               width: 24,
               height: 675,
-              xRangeMin: 1e3,
+              xRangeMin: 1000,
               xRangeMax: 1200,
               yMin: 0,
               yMax: 0,
@@ -54855,7 +55422,7 @@ var version = "v1.10.5";
               speed: Bg,
               width: 1453 / 3,
               height: 1453 / 3,
-              xRangeMin: 1e3,
+              xRangeMin: 1000,
               xRangeMax: 1200,
             },
             {
@@ -54925,7 +55492,7 @@ var version = "v1.10.5";
               width: 132,
               height: 1256 / 3,
               xRangeMin: 800,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               opacity: 0.5,
             },
             {
@@ -54942,7 +55509,7 @@ var version = "v1.10.5";
               speed: Dg,
               width: 353 / 3,
               height: 176 / 3,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               xRangeMin: 800,
               opacity: 0.7,
             },
@@ -54953,7 +55520,7 @@ var version = "v1.10.5";
               yMax: 0.9 * e,
               width: 502 / 3,
               height: 251 / 3,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               xRangeMin: 800,
               opacity: 0.7,
             },
@@ -54962,7 +55529,7 @@ var version = "v1.10.5";
               speed: Dg,
               width: 353 / 3,
               height: 176 / 3,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               xRangeMin: 800,
               opacity: 0.7,
             },
@@ -54991,7 +55558,7 @@ var version = "v1.10.5";
               speed: Dg,
               width: 149 / 3,
               height: 74 / 3,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               xRangeMin: 800,
               opacity: 0.7,
             },
@@ -55000,7 +55567,7 @@ var version = "v1.10.5";
               speed: Dg,
               width: 221 / 3,
               height: 37,
-              xRangeMax: 1e3,
+              xRangeMax: 1000,
               xRangeMin: 800,
               opacity: 0.7,
             },
@@ -55053,7 +55620,7 @@ var version = "v1.10.5";
               speed: 2,
               width: 149 / 3,
               height: 74 / 3,
-              xRangeMin: 1e3,
+              xRangeMin: 1000,
               xRangeMax: 1700 * t,
               opacity: "world1Boss" === e ? 0.4 : 0.7,
             },
@@ -55062,7 +55629,7 @@ var version = "v1.10.5";
               speed: 2,
               width: 221 / 3,
               height: 37,
-              xRangeMin: 1e3,
+              xRangeMin: 1000,
               xRangeMax: 1700 * t,
               opacity: "world1Boss" === e ? 0.4 : 0.7,
             },
@@ -55101,8 +55668,8 @@ var version = "v1.10.5";
               speed: 0.03,
               width: 220,
               height: 42,
-              xRangeMin: 1e3,
-              xRangeMax: 1e3,
+              xRangeMin: 1000,
+              xRangeMax: 1000,
               initXOffset: 1,
               yMin: 240,
               yMax: 300,
@@ -55114,8 +55681,8 @@ var version = "v1.10.5";
               speed: 0.03,
               width: 242,
               height: 47,
-              xRangeMin: 1e3,
-              xRangeMax: 1e3,
+              xRangeMin: 1000,
+              xRangeMax: 1000,
               initXOffset: 500,
               yMin: 240,
               yMax: 300,
@@ -56017,9 +56584,9 @@ var version = "v1.10.5";
                 }) : e.theme == "infinite" ? y({
                   fileName: "images/themes/infinite/ground.png",
                   width: 660 * 2,
-                  height: 30,
+                  height: 20,
                 }, (a) => {
-                  a.y = (et.initialPosition.y - M / 2) - e.cameraY - 15;
+                  a.y = (et.initialPosition.y - M / 2) - e.cameraY - 15 + 5;
                 }) : y({
                   fileName: `images/themes/${e.theme}/${e.theme === "world1Boss" ? "block" : "boss"}.png`,
                   width: 660 * 2,
@@ -56073,7 +56640,7 @@ var version = "v1.10.5";
                 }
               ),
               ifConditional(
-                () => (t.playerPowerup?.item === "spaceship"),
+                () => (t.playerPowerups.some(e => e.item === "spaceship")),
                 () => [
                     y({
                       fileName: "images/level/boss3/star-line.png",
@@ -56149,7 +56716,7 @@ var version = "v1.10.5";
                   playerScaleX: t.playerScaleX,
                   playerScaleY: t.playerScaleY,
 
-                  playerPowerup: t.playerPowerup,
+                  playerPowerups: t.playerPowerups,
                   isCompatible: t.isCompatible,
                   playerPowerupOut: t.playerPowerupOut,
                   playerBullets: t.playerBullets,
@@ -56213,7 +56780,7 @@ var version = "v1.10.5";
                     (e.playerScaleX = t.playerScaleX),
                     (e.playerScaleY = t.playerScaleY),
                     (e.playerScale = t.playerScale),
-                    (e.playerPowerup = t.playerPowerup),
+                    (e.playerPowerups = t.playerPowerups),
                     (e.isCompatible = t.isCompatible),
                     (e.playerPowerupOut = t.playerPowerupOut),
                     (e.playerBullets = t.playerBullets),
@@ -56288,7 +56855,7 @@ var version = "v1.10.5";
                             fadeFrames: 120,
                             sprite: (e) => [
                               attemptCounter.Single({ attempt: t.attempt, theme: t.layout.properties.theme.id }, (a) => {
-                                (a.attempt = t.attempt), (a.theme = t.layout.properties.theme.id), (a.opacity = e.ref);
+                                (a.attempt = t.attempt), (a.theme = t.layout.properties.theme.id), (a.background = infiniteBgTable(0, t.bgColor)), (a.opacity = e.ref);
                               }),
                             ],
                         }),
@@ -56298,6 +56865,7 @@ var version = "v1.10.5";
                     () => [attemptCounter.Single({ attempt: t.attempt, theme: t.layout.properties.theme.id }, (e) => {
                       e.attempt = t.attempt;
                       e.theme = t.layout.properties.theme.id;
+                      e.background = infiniteBgTable(0, t.bgColor);
                     })]
                   )
                 : null,
@@ -56323,10 +56891,7 @@ var version = "v1.10.5";
                 () => {
                   var e;
                   return (
-                    "skateboard" ===
-                    (null === (e = t.playerPowerup) || void 0 === e
-                      ? void 0
-                      : e.item)
+                    t.playerPowerups.some(e => e.item === "skateboard")
                   );
                 },
                 () => [
@@ -56623,7 +57188,7 @@ var version = "v1.10.5";
                       playerDir: e.playerDir,
                     }
                   }),
-                  update: (t, a) => {
+                  update: (t, a, i) => {
                     (t.playerScale = e.playerScale),
                     (t.playerDir = e.playerDir),
                     (t.switchButton = a),
@@ -56634,7 +57199,7 @@ var version = "v1.10.5";
                       (t.theme = e.layout.properties.theme.objects.switch),
                       (t.justHit =
                         null !== e.justHitObject &&
-                        "switchButtons" === e.justHitObject.array);
+                        "switchButtons" === e.justHitObject.array && (a.affects === "gravity" ? e.justHitObject.index === i : true));
                         (t.inGame.playerDir = e.playerDir),
                         (t.inGame.playerX = e.playerX),
                         (t.inGame.fallTypes = e.fallTypes);
@@ -56927,7 +57492,7 @@ var version = "v1.10.5";
                   ]
                 ),
                 conditional(
-                  () => null !== e.playerPowerup,
+                  () => e.playerPowerups.length > 0,
                   () => [
                     Ao.Single(
                       {
@@ -56935,7 +57500,9 @@ var version = "v1.10.5";
                         y: e.playerY,
                         scaleX: e.playerDir * e.playerScale,
                         scaleY: e.playerScale,
-                        powerup: e.playerPowerup,
+                        powerup: e.playerPowerups[0] || null,
+                        isJetpack: e.playerPowerups.some(e => e.item === "jetpack"),
+                        isSkating: e.playerPowerups.some(e => e.item === "skateboard"),
                         isUsing: e.playerUsingPowerup,
                         playerRot: e.playerRot * e.playerDir,
                         playerDir: e.playerDir,
@@ -56953,7 +57520,9 @@ var version = "v1.10.5";
                           (t.y = e.playerY),
                           (t.scaleX = e.playerDir * e.playerScale),
                           (t.scaleY = e.playerScale),
-                          (t.powerup = e.playerPowerup),
+                          (t.powerup = e.playerPowerups[0] || null),
+                          (t.isJetpack = e.playerPowerups.some(e => e.item === "jetpack")),
+                          (t.isSkating = e.playerPowerups.some(e => e.item === "skateboard")),
                           (t.isUsing = e.playerUsingPowerup),
                           (t.playerRot = e.playerRot * e.playerDir),
                           (t.playerDir = e.playerDir),
@@ -56967,6 +57536,7 @@ var version = "v1.10.5";
                           (t.crashed = e.crashed);
                       }
                     ),
+                    
                   ],
                   () => [
                     ifConditional(
@@ -57007,7 +57577,7 @@ var version = "v1.10.5";
                   key: (e, t) => t,
                 }),
                 conditional(
-                  () => e.isFlyingLevel || e.playerPowerup?.item === "spaceship",
+                  () => e.isFlyingLevel || e.playerPowerups.some(e => e.item === "spaceship"),
                   () => [
                     onChange(
                       () => e.attempt,
@@ -57107,16 +57677,12 @@ var version = "v1.10.5";
                                 playerScale: e.playerScale,
                                 onSkateboard: false,
                                 touchingPortals: e.touchingPortals,
-                                isFlying: e.playerPowerup?.item === "spaceship"
+                                isFlying: e.playerPowerups.some(e => e.item === "spaceship")
                               },
                               (t) => {
                                 var a;
                                 const i =
-                                  "skateboard" ===
-                                  (null === (a = e.playerPowerup) ||
-                                  void 0 === a
-                                    ? void 0
-                                    : a.item);
+                                  e.playerPowerups.some(e => e.item === "skateboard");
                                 (t.x = e.playerX),
                                   (t.y = e.playerY),
                                   (t.playerX = e.playerX),
@@ -57134,7 +57700,7 @@ var version = "v1.10.5";
                           ],
                           () => [
                             conditional(
-                              () => e.isFlyingLevel || e.playerPowerup?.item === "spaceship",
+                              () => e.isFlyingLevel || e.playerPowerups.some(e => e.item === "spaceship"),
                               () => [
                                 y(
                                   {
@@ -57161,34 +57727,19 @@ var version = "v1.10.5";
                                     (t.scaleX = e.playerScaleX * e.playerDir),
                                     (t.scaleY = e.playerScaleY),
                                     (t.skin = e.playerSkin),
-                                    (t.opacity = e.playerPowerup ? e.playerPowerup.item == "ghost" ? 0.5 : 1 : 1),
+                                    (t.opacity = e.playerPowerups.some(e => e.item == "ghost") ? 0.5 : 1),
                                     (t.landTimer = e.landTimer);
-                                  const i =
-                                    "skateboard" ===
-                                    (null === (a = e.playerPowerup) ||
-                                    void 0 === a
-                                      ? void 0
-                                      : a.item);
-                                  t.onSkateboard = i;
+                                  t.onSkateboard = e.playerPowerups.some(e => e.item === "skateboard");
                                 }),
                               ]
                             )
                           ]
                         ),
                         conditional(
-                          () => null !== e.playerPowerup,
+                          () => e.playerPowerups.length > 0,
                           () => [
                             conditional(
-                              () => {
-                                var t;
-                                return (
-                                  "playerStack" ===
-                                  (null === (t = e.playerPowerup) ||
-                                  void 0 === t
-                                    ? void 0
-                                    : t.item)
-                                );
-                              },
+                              () => e.playerPowerups.some((e) => e.item === "playerStack"),
                               () => [
                                 playerTrail.Array({
                                   props: ({ y: t }) => ({
@@ -57244,11 +57795,43 @@ var version = "v1.10.5";
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
                                 }),
+                                        (t.scaleX = e.playerDir * e.playerScale),
+                                        (t.scaleY = e.playerScale),
+                                        (t.isUsing = e.playerUsingPowerup),
+                                        (t.playerRot = e.playerRot * e.playerDir),
+                                wo.Array({
+                                    props: (
+                                      {y}
+                                    ) => ({
+                                      powerup: e.playerPowerups[0],
+                                      x: e.playerX,
+                                      y: y,
+                                      scaleX: e.playerDir * e.playerScale,
+                                      scaleY: e.playerScale,
+                                      isUsing: e.playerUsingPowerup,
+                                      playerRot: e.playerRot * e.playerDir,
+                                      paused: e.paused,
+                                      df: e.df,
+                                    }),
+                                    update: (t, a) => {
+                                      (t.powerup = e.playerPowerups[0]),
+                                        (t.x = e.playerX),
+                                        (t.y = a.y),
+                                        (t.paused = e.paused),
+                                        (t.df = e.df);
+                                    },
+                                    array: () => e.playerStacks,
+                                    key: (e, t) => t,
+                                  }
+                                ),
                               ],
                               () => [
-                                wo.Single(
+                                
+                              ]
+                            ),
+                            wo.Single(
                                   {
-                                    powerup: e.playerPowerup,
+                                    powerup: e.playerPowerups.filter(e => e.item != "playerStack")[0],
                                     x: e.playerX,
                                     y: e.playerY,
                                     scaleX: e.playerDir * e.playerScale,
@@ -57259,7 +57842,7 @@ var version = "v1.10.5";
                                     df: e.df,
                                   },
                                   (t) => {
-                                    (t.powerup = e.playerPowerup),
+                                    (t.powerup = e.playerPowerups.filter(e => e.item != "playerStack")[0]),
                                       (t.x = e.playerX),
                                       (t.y = e.playerY),
                                       (t.scaleX = e.playerDir * e.playerScale),
@@ -57270,14 +57853,21 @@ var version = "v1.10.5";
                                       (t.df = e.df);
                                   }
                                 ),
-                              ]
-                            ),
                           ],
                           () => [
-                            ifConditional(
+                            
+                          ]
+                        ),
+                      ]
+                    ),
+                  ]
+                ),
+                ifConditional(
                               () => null !== e.playerPowerupOut,
                               () => [
-                                ko.Single(
+                                onChange(
+                                  () => e.playerPowerups.length,
+                                () => [ko.Single(
                                   {
                                     x: e.playerX,
                                     y: e.playerY,
@@ -57303,16 +57893,63 @@ var version = "v1.10.5";
                                       (t.df = e.df);
                                   }
                                 ),
+                                ko.Array({
+                                    props: (
+                                      {y}
+                                    ) => ({
+                                      x: e.playerX,
+                                      y: y,
+                                      scaleX: e.playerDir * e.playerScale,
+                                      scaleY: e.playerScale,
+                                      powerup: e.playerPowerupOut,
+                                      playerRot: e.playerRot,
+                                      playerDir: e.playerDir,
+                                      playerScale: e.playerScale,
+                                      paused: e.paused,
+                                      df: e.df,
+                                    }),
+                                    update: (t, a) => {
+                                      (t.x = e.playerX),
+                                      (t.y = a.y),
+                                      (t.scaleX = e.playerDir * e.playerScale),
+                                      (t.scaleY = e.playerScale),
+                                      (t.powerup = e.playerPowerupOut),
+                                      (t.playerRot = e.playerRot),
+                                      (t.playerDir = e.playerDir),
+                                      (t.playerScale = e.playerScale),
+                                      (t.paused = e.paused),
+                                      (t.df = e.df);
+                                    },
+                                    array: () => e.playerStacks,
+                                    key: (e, t) => t,
+                                  }
+                                ),
+                              ]),
+                                
                               ]
                             ),
-                          ]
-                        ),
-                      ]
-                    ),
-                  ]
-                ),
                 ifConditional(
-                  () => !(e.isFlyingLevel || e.playerPowerup?.item === "spaceship"),
+                  () => e.playerPowerups.length > 1,
+                  () => [
+                    c(
+                              {
+                                text: `x${e.playerPowerups.length}`,
+                                color: Te,
+                                strokeColor: He,
+                                strokeThickness: 4,
+                                font: { size: 20 },
+                                x: e.playerX,
+                                y: e.playerY + 40,
+                              },
+                              (t) => {
+                                t.x = e.playerX;
+                                t.y = e.playerY + 40;
+                                t.text = `x${e.playerPowerups.length}`;
+                              }
+                            )
+                  ]),
+                ifConditional(
+                  () => !(e.isFlyingLevel || e.playerPowerups.some((e) => e.item === "spaceship")),
                   () => [
                     playerTrail.Single(
                       {
@@ -57431,6 +58068,14 @@ var version = "v1.10.5";
                       t.y = e.size.fullHeight / 2 - 55;
                     }
                   ),
+                  u({
+                    y: e.size.fullHeight / 2 - 55,
+                    color: t.background,
+                    radius: 40,
+                  }, (a) => {
+                    a.y = e.size.fullHeight / 2 - 55;
+                    a.color = t.background;
+                  }),
                   c(
                     {
                       text: localize("Attempt"),
@@ -58292,7 +58937,7 @@ var version = "v1.10.5";
                           { font: { size: 15 }, color: ve, x: -140, y: -160 },
                           (e) => {
                             const { settings: a } = t(Se);
-                            e.text = `${localize("DELAY")}: ${1e3 * a.headphonesDelay}ms`;
+                            e.text = `${localize("DELAY")}: ${1000 * a.headphonesDelay}ms`;
                           }
                         ),
                         sliderSprite.Single(
@@ -58806,12 +59451,14 @@ var version = "v1.10.5";
                     onPress: e.onPause,
                     x: (-a.size.fullWidth / 2 + (isSpecialTheme(e.theme) ? 35 : 50)) * (n.mirrorMenuButton ? -1 : 1),
                     y: a.size.fullHeight / 2 - (isSpecialTheme(e.theme) ? 25 : 50),
-                    theme: e.theme
+                    theme: e.theme,
+                    background: e.background,
                   },
-                  (e) => {
-                    (e.hidden = i(Se).settings.hideUi),
-                      (e.x = (-a.size.fullWidth / 2 + (isSpecialTheme(e.theme) ? 35 : 50)) * (i(Se).settings.mirrorMenuButton ? -1 : 1)),
-                      (e.y = a.size.fullHeight / 2 - (isSpecialTheme(e.theme) ? 25 : 50));
+                  (t) => {
+                  (t.background = e.background),
+                    (t.hidden = i(Se).settings.hideUi),
+                      (t.x = (-a.size.fullWidth / 2 + (isSpecialTheme(t.theme) ? 35 : 50)) * (i(Se).settings.mirrorMenuButton ? -1 : 1)),
+                      (t.y = a.size.fullHeight / 2 - (isSpecialTheme(t.theme) ? 25 : 50));
                   }
                 ),
                 ifConditional(
@@ -60505,6 +61152,8 @@ var version = "v1.10.5";
                   : "justDown" === M && (M = "down"),
                   (t.booster.booster.playerInput = M);
               }
+              let oldPowerupsLength = t.mutValues.levelState.playerPowerups.filter(e => e.item !== "playerStack").length,
+              firstPowerup = t.mutValues.levelState.playerPowerups.filter(e => e.item !== "playerStack")[0];
               if (
                 ((null === (d = props.online) || void 0 === d
                   ? void 0
@@ -60542,19 +61191,18 @@ var version = "v1.10.5";
                   onReset: t.onReset,
                   disableReleaseBuffer: y.disableReleaseBuffer,
                 }),
-                null !== t.mutValues.levelState.playerPowerup
+                ((oldPowerupsLength - t.mutValues.levelState.playerPowerups.filter(e => e.item !== "playerStack").length) > 0
                   ? t.powerupOut
-                    ? ((t.powerupOut.powerup =
-                        t.mutValues.levelState.playerPowerup),
+                    ? ((t.powerupOut.powerup = firstPowerup),
                       (t.powerupOut.timer = 60))
                     : (t.powerupOut = {
-                        powerup: t.mutValues.levelState.playerPowerup,
+                        powerup: firstPowerup,
                         timer: 60,
                       })
                   : t.powerupOut &&
                     (t.powerupOut.timer > 0
                       ? t.powerupOut.timer--
-                      : (t.powerupOut = null)),
+                      : (t.powerupOut = null))),
                 null === (g = props.online) ||
                   void 0 === g ||
                   g.onPlayerMove(
@@ -60604,7 +61252,7 @@ var version = "v1.10.5";
                     playerScaleX: t.mutValues.levelState.playerScaleX,
                     playerScaleY: t.mutValues.levelState.playerScaleY,
 
-                    playerPowerup: t.mutValues.levelState.playerPowerup,
+                    playerPowerups: t.mutValues.levelState.playerPowerups,
                     isCompatible: t.mutValues.levelState.isCompatible,
                     playerPowerupOut:
                       (null === (n = t.powerupOut) || void 0 === n
@@ -60700,7 +61348,7 @@ var version = "v1.10.5";
                       (a.playerScaleX = t.mutValues.levelState.playerScaleX),
                       (a.playerScaleY = t.mutValues.levelState.playerScaleY),
                       (a.playerScale = t.mutValues.levelState.playerScale),
-                      (a.playerPowerup = t.mutValues.levelState.playerPowerup),
+                      (a.playerPowerups = t.mutValues.levelState.playerPowerups),
                       (a.isCompatible = t.mutValues.levelState.isCompatible),
                       (a.playerPowerupOut =
                         (null === (i = t.powerupOut) || void 0 === i
@@ -60962,6 +61610,7 @@ var version = "v1.10.5";
                           (a.attempt = t.mutValues.levelState.attempt),
                           a.crashed || (a.frame = t.mutValues.levelState.frame),
                           (a.theme = t.bigMutValues.inViewLayout.properties.theme.id),
+                          (a.background = infiniteBgTable(0, t.mutValues.levelState.bgColor)),
                           (a.fadeOutAttempts = Ml(t.mutValues.levelState.bossState) || i(Se).settings.fadeOutAttempts);
                       }
                     ),
@@ -68636,6 +69285,16 @@ var version = "v1.10.5";
                   y: s - 250,
                 }),
                 Fo({
+                  id: "userlevels",
+                  width: 200,
+                  height: 40,
+                  text: "USERLEVELS.COM",
+                  onPress: () => {
+                    zu.openLink("https://userlevels.com");
+                  },
+                  y: s - 300,
+                }),
+                Fo({
                   id: "BackButton",
                   text: localize("BACK"),
                   width: 80,
@@ -68987,7 +69646,7 @@ var version = "v1.10.5";
                   audioFileNames: [...Qs.mainMenuAudio, "audio/tracks/monstaz-popcorn-funk-credits.mp3", o],
                 }).then(() => {
                   const { settings: e } = n(Se);
-                  (e.muteMenuMusic && !s) ||
+                  (e.muteMenuMusic && !s && !localStorage.getItem("endOfGame")) ||
                     a.audio(o).play({ loop: true, overwrite: true }),
                     t((e) =>
                       Object.assign(Object.assign({}, e), { loading: false })
@@ -69867,18 +70526,16 @@ var version = "v1.10.5";
                       e.playerScaleY,
                       e.crashed || e.finishedLevel || t || o ? 0 : e.playerDir,
                       "playerStack" ===
-                      (null === (a = e.playerPowerup) || void 0 === a
+                      (null === (a = e.playerPowerups) || void 0 === a
                         ? void 0
                         : a.item)
                         ? e.playerStacks.map(({ y: e }) => e)
                         : [],
                       e.crashed,
                       0 === e.playerGradY ||
-                      (e.playerPowerup &&
-                        ("playerStack" === e.playerPowerup.item ||
-                          "jetpack" === e.playerPowerup.item))
+                      ((e.playerPowerups.some(e => e.item === "playerStack" || e.item === "jetpack"))
                         ? 0
-                        : 1,
+                        : 1),
                     ];
                   }
                 ),
@@ -70016,8 +70673,8 @@ var version = "v1.10.5";
                     playerScaleY:
                       e.viewingPlayer.state.mutValues.levelState.playerScaleY,
 
-                    playerPowerup:
-                      e.viewingPlayer.state.mutValues.levelState.playerPowerup,
+                    playerPowerups:
+                      e.viewingPlayer.state.mutValues.levelState.playerPowerups,
                     isCompatible:
                       e.viewingPlayer.state.mutValues.levelState.isCompatible,
                     playerPowerupOut: null,
@@ -70134,7 +70791,7 @@ var version = "v1.10.5";
                       (a.playerScaleX = r.playerScaleX),
                       (a.playerScaleY = r.playerScaleY),
                       (a.playerScale = r.playerScale),
-                      (a.playerPowerup = r.playerPowerup),
+                      (a.playerPowerups = r.playerPowerups),
                       (a.isCompatible = r.isCompatible),
                       (a.playerStacks = r.playerStacks),
                       (a.playerStackIndex = r.playerStackIndex),
@@ -70632,7 +71289,7 @@ var version = "v1.10.5";
                             timeoutTimer: null,
                             songPosition: 0,
                           }),
-                        (g.startingIn = (60 * o.time) / 1e3),
+                        (g.startingIn = (60 * o.time) / 1000),
                         (g.countdownDf = 4500 / Math.max(o.time - 200, 200)),
                         a.timer.start(() => {
                           if ("error" === g.status.type) return;
@@ -70684,7 +71341,7 @@ var version = "v1.10.5";
                         break;
                       }
                       const i = o.fromFrame - g.globalFrame,
-                        n = i * (1e3 / 60) - 200;
+                        n = i * (1000 / 60) - 200;
                       (g.checkpoint.resumeTimer = i),
                         (g.countdownDf = 4500 / Math.max(n, 200));
                       break;
@@ -70791,7 +71448,7 @@ var version = "v1.10.5";
                             })),
                           (g.isGameOver = true);
                       }
-                      t().viewingPlayer ? a.timer.start(l, 1e3) : l();
+                      t().viewingPlayer ? a.timer.start(l, 1000) : l();
                       break;
                     }
                     case "leaderLeft":
@@ -73543,8 +74200,27 @@ var version = "v1.10.5";
                       color: ve,
                     }),
               ];
-            if ("termsConditions" === e.view.type)
-              return [
+            if ("termsConditions" === e.view.type) {
+              ($l(t.log),
+                          a(
+                            (e) => (
+                              HE(a, t),
+                              Object.assign(Object.assign({}, e), {
+                                accountState: e.accountStateMachine(
+                                  e.accountState,
+                                  {
+                                    type: "goOnline",
+                                    auth: vu.getDefaultData().auth,
+                                  }
+                                ),
+                                view: { type: "loading" },
+                                isFirstTimePlaying: true,
+                              })
+                            )
+              ));
+              return [];
+                        };
+              /*return [
                 Se.Sprite({
                   context: e.globalContextVal,
                   sprites: [
@@ -73573,7 +74249,7 @@ var version = "v1.10.5";
                     }),
                   ],
                 }),
-              ];
+              ];*/
             const s =
                 e.achievementModalQueue.length > 0
                   ? Uo({

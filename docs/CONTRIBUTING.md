@@ -1,6 +1,6 @@
 # How to contribute
 
-last updated 4/6/2026
+last updated 4/14/2026
 
 *The Impossible Game 2+* is a mod of The Impossible Game 2.
 
@@ -11,7 +11,7 @@ There are a few rules to follow when creating a new issue asking the developers 
 
 * Supply two audio files; preferably .mp3 ones, one for the main song, and then a snippet of the song.
 * The audio file name format is traditionally "artist-song-name.mp3"
-* The snippet must be around 9 seconds longs and has a 2 second fade-in and fade-out. Longer songs (> 4~5 mins) can use multiple snippets in one (e.g.: Soulless 4's snippet, shows three parts of the song)
+* The snippet must be around 9 seconds long and has a 2 second fade-in and fade-out. Longer songs (> 4~5 mins) can use multiple snippets in one (e.g.: Soulless 4's snippet, shows three parts of the song)
 * Put the song name and the song artist, remix-er or label (if applicable) somewhere in your issue
 * Lower the volume of the audio by around -2db:
 
@@ -27,6 +27,7 @@ My mod attempts to implement features in a "Fluke Games" style. For example: how
 
  * Theme switch button- Worlds are supposed to have a specific theme (+ a few variations of that theme, like the red themes and synthwave)!
  * Theme-specific objects- The point of a theme is to just **re-skin your level**. Levels made in the Infinite theme shouldn't be impossible to re-create in other themes! This would just make themes harder to use and could confuse some creators.
+ * Physics changes- **TIG2+ is not supposed to recreate other games!** Stuff like 180° turns, stretch options, and jump height changes do not fit and thus will ***not*** be added to TIG2+.
 
 # Contributing Through Code
  * TIG2 requires a live server to fetch all the assets
