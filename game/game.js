@@ -38923,10 +38923,10 @@ var version = "v1.10.10";
           Br = makePureSprite({
             shouldRerender: (e, t) =>
               e.levelSpeeds.jumpFrames !== t.levelSpeeds.jumpFrames,
-            render: ({ props: { levelSpeeds: e } }) => [
+            render: ({ props: { levelSpeeds: e, playerSpeedMultiplier } }) => [
               s({ radius: 2, color: Te, opacity: 0.3 }),
-              Fr({ id: "SingleProjection", levelSpeeds: e }),
-              Fr({ id: "SingleProjectionReverse", levelSpeeds: e, scaleX: -1 }),
+              Fr({ id: "SingleProjection", levelSpeeds: e, playerSpeedMultiplier: playerSpeedMultiplier }),
+              Fr({ id: "SingleProjectionReverse", levelSpeeds: e, scaleX: -1, playerSpeedMultiplier: playerSpeedMultiplier }),
             ],
           }),
           Fr = makePureSprite({
@@ -38938,6 +38938,7 @@ var version = "v1.10.10";
                   jumpFrames: t,
                   coefficients: { a, b: i },
                 },
+                playerSpeedMultiplier,
               },
             }) {
               const n = [];
@@ -38946,7 +38947,7 @@ var version = "v1.10.10";
                 l = 0;
               for (let i = 0; i < 1.5 * t; i++)
                 ({ y: r, gradY: o } = G.stepY(r, o, a, 1, 1)),
-                  (l += e),
+                  (l += e * playerSpeedMultiplier),
                   n.push({ x: l, y: r });
               return n.map(({ x: e, y: t }) =>
                 s({ radius: 2, color: Te, x: e, y: t, opacity: 0.3 })
@@ -40095,6 +40096,7 @@ var version = "v1.10.10";
                       x: S.x,
                       y: S.y + S.height / 2 + 15,
                       levelSpeeds: u,
+                      playerSpeedMultiplier: runHistory[i].playerSpeedMultiplier,
                     })
                   : a || 1 !== b.length || "block" !== b[0].type
                   ? null
@@ -40103,6 +40105,7 @@ var version = "v1.10.10";
                       x: b[0].x,
                       y: b[0].y + b[0].height / 2 + 15,
                       levelSpeeds: u,
+                      playerSpeedMultiplier: runHistory[i].playerSpeedMultiplier,
                     }),
               ];
             },
