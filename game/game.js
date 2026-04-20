@@ -20410,8 +20410,8 @@ var version = "v1.10.10";
                           (a.x = i.x),
                           (a.y = getBlockFallY(i.x, i.midY, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
-                          (a.width = i.width * t * 0.9),
-                          (a.height = i.height * t * 0.9);
+                          (a.width = i.width * 0.9),
+                          (a.height = i.height * 0.9);
                       },
                       array: () => e.spikes,
                       testId: (t, a) => {
@@ -20440,8 +20440,8 @@ var version = "v1.10.10";
                           (a.x = i.x),
                           (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
-                          (a.width = i.width * t),
-                          (a.height = i.height * t);
+                          (a.width = i.width),
+                          (a.height = i.height);
                       },
                       array: () => e.spikes,
                       testId: (t, a) => {
@@ -20470,8 +20470,8 @@ var version = "v1.10.10";
                           (a.x = i.x),
                           (a.y = getBlockFallY(i.x, i.midY, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
-                          (a.width = i.width * t * 0.9),
-                          (a.height = i.height * t * 0.9);
+                          (a.width = i.width * 0.9),
+                          (a.height = i.height * 0.9);
                       },
                       array: () => e.spikes,
                       testId: (t, a) => {
@@ -20500,8 +20500,8 @@ var version = "v1.10.10";
                           (a.x = i.x),
                           (a.y = getBlockFallY(i.x, i.y, s && s.playerX, s && s.fallTypes, e.inGame && e.inGame.playerDir)),
                           (a.rotation = i.rotation),
-                          (a.width = i.width * t),
-                          (a.height = i.height * t);
+                          (a.width = i.width),
+                          (a.height = i.height);
                       },
                       array: () => e.spikes,
                       testId: (t, a) => {
