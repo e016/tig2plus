@@ -68737,7 +68737,7 @@ var version = "v1.10.10";
                         text:
                           "loading" === i
                             ? `${localize("LOADING")}...`
-                            : "COLLECTED!",
+                            : localize("COLLECTED!"),
                         color: Ye,
                         font: { size: 16 },
                         x: t / 2 - 90,
@@ -73328,7 +73328,7 @@ var version = "v1.10.10";
                           f
                             ? n({
                                 text:
-                                  "loading" === f ? "LOADING" : "COLLECTED!",
+                                  "loading" === f ? localize("LOADING") : localize("COLLECTED!"),
                                 color: Ye,
                                 font: { size: 16 },
                                 x: zu.hasIAP() ? 130 : 0,
@@ -73336,7 +73336,7 @@ var version = "v1.10.10";
                               })
                             : Fo({
                                 id: "CollectButton",
-                                text: "COLLECT",
+                                text: localize("COLLECT"),
                                 width: 120,
                                 height: 60,
                                 x: zu.hasIAP() ? 130 : 0,
