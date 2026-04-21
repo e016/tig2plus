@@ -33890,14 +33890,22 @@ var version = "v1.10.10";
               } = props
               const { addToOnScrollQueue } = getContext(Se),
               n = (e) => addToOnScrollQueue(() => 
-                (0 === e.deltaMode &&
-                  i((t) =>
-                    Object.assign(Object.assign({}, t), {
-                      scrollY: B.clamp([0, props.contentHeight - props.containerHeight])(t.scrollY + e.deltaY),
-                    })
-                  ))
+                  {
+                    1 === e.deltaMode &&
+                      i((t) =>
+                        Object.assign(Object.assign({}, t), {
+                          scrollY: B.clamp([0, props.contentHeight - props.containerHeight])(t.scrollY + e.deltaY * (100 / 6)),
+                        })
+                      );
+                    0 === e.deltaMode &&
+                      i((t) =>
+                        Object.assign(Object.assign({}, t), {
+                          scrollY: B.clamp([0, props.contentHeight - props.containerHeight])(t.scrollY + e.deltaY),
+                        })
+                      );
+                  }
                 );
-              document.addEventListener("wheel", n, false);
+              document.addEventListener("wheel", n, {passive: true});
               const s = a - t;
               return {
                 scrollY: B.clamp([0, s])(e),
@@ -33990,10 +33998,12 @@ var version = "v1.10.10";
               const { addToOnScrollQueue } = getContext(Se);
               const n = (e) => addToOnScrollQueue(() => {
                 const t = i();
+                1 === e.deltaMode && 
+                  (t.scrollY = B.clamp([0, s])(t.scrollY + e.deltaY * (100 / 6)));
                 0 === e.deltaMode &&
                   (t.scrollY = B.clamp([0, s])(t.scrollY + e.deltaY));
               });
-              document.addEventListener("wheel", n, false);
+              document.addEventListener("wheel", n, {passive: true});
               const s = a - t;
               return {
                 scrollY: B.clamp([0, s])(e),
@@ -40331,15 +40341,16 @@ var version = "v1.10.10";
         const ScrollHandler = makeSprite({
             init({ props: e}) {
               const t = (t) => e.addToOnScrollQueue(() => {
+                1 === t.deltaMode && e.onScaleDelta(t.deltaY * (100 / 6));
                 0 === t.deltaMode && e.onScaleDelta(t.deltaY);
               });
               return (
-                document.addEventListener("wheel", t, false), { onScroll: t }
+                document.addEventListener("wheel", t, {passive: true}), { onScroll: t }
               );
             },
             render: () => [],
             cleanup({ state: e }) {
-              document.removeEventListener("wheel", e.onScroll, false);
+              document.removeEventListener("wheel", e.onScroll, {passive: true});
             },
           }),
           Zr = function (layout, boss, assets, state, playSound, pauseSound) {
