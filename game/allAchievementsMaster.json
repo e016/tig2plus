@@ -22,8 +22,8 @@
         }
     },
     {
-        "id": "glitched_out_checkpoints",
-        "name": "Beat Glitched Out",
+        "id": "switch_test_2_nocheckpoints",
+        "name": "AAA Beat Switch Block Test 2 Without Checkpoints",
         "unlocked": false,
         "category": "bronze",
         "rewards": {
@@ -39,6 +39,23 @@
                     "name": "Pixel Skin",
                     "blocksPrice": 0,
                     "defId": "skin_pixel"
+                }
+            ]
+        }
+    },
+    {
+        "id": "glitched_out_checkpoints",
+        "name": "Beat Glitched Out",
+        "unlocked": false,
+        "category": "bronze",
+        "rewards": {
+            "collected": false,
+            "blocks": 11,
+            "items": [
+                {
+                    "name": "Synthwave Theme",
+                    "blocksPrice": 0,
+                    "defId": "theme_synthwave"
                 }
             ]
         }
@@ -248,7 +265,7 @@
             "blocks": 10,
             "items": [
                 {
-                    "name": "Switch Button and Platform in Level Editor",
+                    "name": "Switch Button and Trigger in Level Editor",
                     "blocksPrice": 0,
                     "defId": "editor_switch_button"
                 },
@@ -1010,6 +1027,11 @@
                     "defId": "editor_punch"
                 },
                 {
+                    "name": "Drill in Level Editor",
+                    "blocksPrice": 0,
+                    "defId": "editor_drill"
+                },
+                {
                     "name": "Giant Enemy in Level Editor",
                     "blocksPrice": 0,
                     "defId": "editor_giant_enemy"
@@ -1049,9 +1071,9 @@
             "blocks": 0,
             "items": [
                 {
-                    "name": "Switch Block Spikes in Level Editor",
+                    "name": "Switch Size in Level Editor",
                     "blocksPrice": 0,
-                    "defId": "editor_switch_block_spike"
+                    "defId": "editor_switch_size"
                 },
                 {
                     "name": "Dreamy Theme",
@@ -1070,6 +1092,11 @@
             "collected": false,
             "blocks": 0,
             "items": [
+                {
+                    "name": "Switch Block Spikes in Level Editor",
+                    "blocksPrice": 0,
+                    "defId": "editor_switch_block_spike"
+                },
                 {
                     "name": "Dreamy Skin",
                     "blocksPrice": 0,
