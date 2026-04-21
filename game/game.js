@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.10.10";
+var version = "v1.10.11";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -15596,11 +15596,11 @@ var version = "v1.10.10";
               return { a: t, b: -t * e };
             },
             initGrad: (e, t) => e * (t ? t : (globalPlayerScale === 1 ? 1 : 0.75)),
-            stepY: (e, t, a, i, g) => {
+            stepY: (y, gradY, a, df, g) => {
               g = g || 1;
-              let n = Math.max(((t * g) + (U(a) * i) / 2), -30) * g;
-              const s = e + n * i;
-              return (n += ((U(a) * i) / 2) * g), (j.y = s), (j.gradY = n), j;
+              let n = Math.max(((gradY * g) + (U(a) * df) / 2), -30) * g;
+              const s = y + n * df;
+              return (n += ((U(a) * df) / 2) * g), (j.y = s), (j.gradY = n), j;
             },
             getOvershootPercent: (e, t, a) => {
               const i = t - U(a) / 2;
@@ -34443,6 +34443,19 @@ var version = "v1.10.10";
                                     ));
                                 }
                               ),
+                              p(
+                                {
+                                  x: e.collectible.x,
+                                  y: e.collectible.y,
+                                  width: 50,
+                                  height: 30,
+                                  opacity: 0.5,
+                                  color: "green"
+                                }, (t) => {
+                                  t.x = e.collectible.x;
+                                  t.y = e.collectible.y;
+                                }
+                              )
                             ];
                           const { animationAssets: a, animationRenderer: i } =
                             t(Ws);
@@ -34626,6 +34639,18 @@ var version = "v1.10.10";
                                     (t.frame = e.spinFrame || 0);
                                 }
                               ),
+                              e.isEditor ? p({
+                                x: e.collectible.x,
+                                y: e.collectible.y,
+                                width: 20,
+                                height: 20,
+                                color: "green",
+                                opacity: 0.5,
+                              },
+                              (t) => {
+                                t.x = e.collectible.x;
+                                t.y = e.collectible.y;
+                              }) : null
                             ]
                           ),
                         ];
@@ -38930,37 +38955,137 @@ var version = "v1.10.10";
               var g;
             },
           }),
-          Br = makePureSprite({
+          BlockProjection = makePureSprite({
             shouldRerender: (e, t) =>
-              e.levelSpeeds.jumpFrames !== t.levelSpeeds.jumpFrames,
-            render: ({ props: { levelSpeeds: e, playerSpeedMultiplier } }) => [
-              s({ radius: 2, color: Te, opacity: 0.3 }),
-              Fr({ id: "SingleProjection", levelSpeeds: e, playerSpeedMultiplier: playerSpeedMultiplier }),
-              Fr({ id: "SingleProjectionReverse", levelSpeeds: e, scaleX: -1, playerSpeedMultiplier: playerSpeedMultiplier }),
+              e.levelSpeeds.jumpFrames !== t.levelSpeeds.jumpFrames || 
+              e.playerSpeedMultiplier !== t.playerSpeedMultiplier ||
+              e.playerScale !== t.playerScale,
+            render: ({ props: { levelSpeeds: e, playerSpeedMultiplier, playerScale } }) => [
+              SingleBlockProjection({ id: "SingleProjection", 
+                levelSpeeds: e, 
+                playerSpeedMultiplier: playerSpeedMultiplier,
+                playerScale: playerScale,
+              }),
+              SingleBlockProjection({ id: "SingleProjectionReverse", 
+                levelSpeeds: e, 
+                scaleX: -1, 
+                playerSpeedMultiplier: playerSpeedMultiplier,
+                playerScale: playerScale,
+              }),
             ],
           }),
-          Fr = makePureSprite({
+          SingleBlockProjection = makePureSprite({
             shouldRerender: () => true,
             render({
               props: {
                 levelSpeeds: {
-                  speed: e,
-                  jumpFrames: t,
-                  coefficients: { a, b: i },
+                  speed: speed,
+                  jumpFrames: jumpFrames,
+                  coefficients: { a, b },
                 },
                 playerSpeedMultiplier,
+                playerScale,
               },
             }) {
-              const n = [];
-              let o = G.initGrad(i),
-                r = 0,
-                l = 0;
-              for (let i = 0; i < 1.5 * t; i++)
-                ({ y: r, gradY: o } = G.stepY(r, o, a, 1, 1)),
-                  (l += e * playerSpeedMultiplier),
-                  n.push({ x: l, y: r });
-              return n.map(({ x: e, y: t }) =>
-                s({ radius: 2, color: Te, x: e, y: t, opacity: 0.3 })
+              const dots = [];
+              let gradY = G.initGrad(b, playerScale === 1 ? 1 : 0.75),
+                y = -30 + 15 + 15 * playerScale,
+                x = 0;
+                dots.push({ x: x, y: y, color: Te });
+              // jumping
+              for (let i = 0; i < 1.5 * jumpFrames; i++)
+                ({ y: y, gradY: gradY } = G.stepY(y, gradY, a, 1, 1)),
+                  (x += speed * playerSpeedMultiplier),
+                  dots.push({ x: x, y: y, color: Te });
+              
+              // falling
+              gradY = 0,
+                y = -30 + 15 + 15 * playerScale,
+                x = 15 + 15 * playerScale - speed * playerSpeedMultiplier;
+              dots.push({ x: x, y: y, color: Re });
+              for (let i = 0; i < 1.5 * jumpFrames; i++)
+                ({ y: y, gradY: gradY } = G.stepY(y, gradY, a, 1, 1)),
+                  (x += speed * playerSpeedMultiplier),
+                  dots.push({ x: x, y: y, color: Re });
+              return dots.map(({ x, y, color }) =>
+                s({ radius: 2, color: color, x: x, y: y, opacity: 0.3 })
+              );
+            },
+          }),
+          SpringProjection = makePureSprite({
+            shouldRerender: (e, t) =>
+              e.levelSpeeds.jumpFrames !== t.levelSpeeds.jumpFrames || 
+              e.playerSpeedMultiplier !== t.playerSpeedMultiplier ||
+              e.playerScale !== t.playerScale ||
+              e.playerGradY !== t.playerGradY ||
+              e.direction !== t.direction,
+            render: ({ props: { levelSpeeds: e, playerSpeedMultiplier, playerScale, playerGradY, direction } }) => [
+              SingleSpringProjection({ id: "SingleProjection", 
+                levelSpeeds: e, 
+                playerSpeedMultiplier: playerSpeedMultiplier,
+                playerScale: playerScale,
+                playerGradY: playerGradY,
+                direction: direction,
+              }),
+              SingleSpringProjection({ id: "SingleProjectionReverse", 
+                levelSpeeds: e, 
+                scaleX: -1, 
+                playerSpeedMultiplier: playerSpeedMultiplier,
+                playerScale: playerScale,
+                playerGradY: playerGradY,
+                direction: direction,
+              }),
+            ],
+          }),
+          SingleSpringProjection = makePureSprite({
+            shouldRerender: () => true,
+            render({
+              props: {
+                levelSpeeds: {
+                  speed: speed,
+                  jumpFrames: jumpFrames,
+                  coefficients: { a, b },
+                },
+                playerSpeedMultiplier,
+                playerScale,
+                playerGradY,
+                direction: dir,
+              },
+            }) {
+              const dots = [];
+              let gradY = G.initGrad(b, playerScale === 1 ? 1 : 0.75) * (dir > 0 ? 1.5 : -1),
+                y = 0,
+                x = 0;
+                dots.push({ x: x, y: y, color: Te });
+              // low jump
+              for (let i = 0; i < 2 * jumpFrames; i++)
+                ({ y: y, gradY: gradY } = G.stepY(y, gradY, a, 1, 1)),
+                  (x += speed * playerSpeedMultiplier),
+                  dots.push({ x: x, y: y, color: Te });
+              
+              // current grad y jump
+              /*
+              (dir > 0
+                      ? Math.max(1.5 * G.initGrad(b, playerScale === 1 ? 1 : 0.75), Math.abs(playerGradY))
+                      : -Math.min(1 * G.initGrad(b, playerScale === 1 ? 1 : 0.75), -playerGradY)) *
+                    dir
+              */
+             gradY = dir > 0
+                      ? Math.max(1.5 * G.initGrad(b, playerScale === 1 ? 1 : 0.75), Math.abs(playerGradY))
+                      : -Math.min(1 * G.initGrad(b, playerScale === 1 ? 1 : 0.75), -Math.abs(playerGradY)) *
+                    dir;
+              if (playerGradY != gradY) {
+                  y = 0,
+                  x = 0;
+                  dots.push({ x: x, y: y, color: Te });
+                // low jump
+                for (let i = 0; i < 3 * jumpFrames; i++)
+                  ({ y: y, gradY: gradY } = G.stepY(y, gradY, a, 1, 1)),
+                    (x += speed * playerSpeedMultiplier),
+                    dots.push({ x: x, y: y, color: Re });
+              }
+              return dots.map(({ x, y, color }) =>
+                s({ radius: 2, color: color, x: x, y: y, opacity: 0.3 })
               );
             },
           });
@@ -40100,22 +40225,47 @@ var version = "v1.10.10";
                       noSpace: f && (!placingItem || a),
                     })
                   ),
-                S && "block" === S.type
-                  ? Br({
+                S && (runHistory[i].switchBlockSpikes ? "spike" : "block") === S.type
+                  ? BlockProjection({
                       id: "BlockProjection",
                       x: S.x,
                       y: S.y + S.height / 2 + 15,
                       levelSpeeds: u,
                       playerSpeedMultiplier: runHistory[i].playerSpeedMultiplier,
+                      playerScale: runHistory[i].playerScale,
                     })
-                  : a || 1 !== b.length || "block" !== b[0].type
+                  : a || 1 !== b.length || (runHistory[i].switchBlockSpikes ? "spike" : "block") !== b[0].type
                   ? null
-                  : Br({
+                  : BlockProjection({
                       id: "BlockProjection",
                       x: b[0].x,
                       y: b[0].y + b[0].height / 2 + 15,
                       levelSpeeds: u,
                       playerSpeedMultiplier: runHistory[i].playerSpeedMultiplier,
+                      playerScale: runHistory[i].playerScale,
+                    }),
+                S && "spring" === S.type
+                  ? SpringProjection({
+                      id: "SpringProjection",
+                      x: S.x,
+                      y: S.y + S.height / 2 * S.direction + 15 * S.direction,
+                      levelSpeeds: u,
+                      playerSpeedMultiplier: runHistory[i].playerSpeedMultiplier,
+                      playerScale: runHistory[i].playerScale,
+                      playerGradY: runHistory[i].playerGradY,
+                      direciton: S.direction,
+                    })
+                  : a || 1 !== b.length || "spring" !== b[0].type
+                  ? null
+                  : SpringProjection({
+                      id: "SpringProjection",
+                      x: b[0].x,
+                      y: b[0].y + b[0].height / 2 * b[0].direction + 15 * b[0].direction,
+                      levelSpeeds: u,
+                      playerSpeedMultiplier: runHistory[i].playerSpeedMultiplier,
+                      playerScale: runHistory[i].playerScale,
+                      playerGradY: runHistory[i].playerGradY,
+                      direction: b[0].direction
                     }),
               ];
             },
@@ -41603,7 +41753,7 @@ var version = "v1.10.10";
                 (stack || (U.gravity = 1)),
                 (setGradY((spring.direction > 0
                       ? Math.max(1.5 * G.initGrad(V), Math.abs((gradY)))
-                      : -Math.min(1 * G.initGrad(V), -gradY)) *
+                      : -Math.min(1 * G.initGrad(V), -Math.abs(gradY))) *
                     spring.direction)),
                     (setY(spring.y + (spring.height / 2) * spring.direction + 15 * spring.direction)),
                     (stack || (U.isGravity = false)),
@@ -60319,7 +60469,7 @@ var version = "v1.10.10";
           uf = JSON.parse(
             '{"36":1,"43":0,"87":1,"92":0,"149":1,"201":0,"241":1,"246":0,"254":0,"383":1,"392":0,"436":1,"443":0,"482":1,"488":0,"533":1,"539":0,"586":1,"592":0,"634":1,"640":0,"662":1,"669":0,"827":1,"835":0,"870":1,"878":0,"921":1,"928":0,"970":1,"978":0,"1014":1,"1029":0,"1078":1,"1133":0,"1162":1,"1170":0,"1228":1,"1234":0,"1274":1,"1281":0,"1315":1,"1321":0,"1370":1,"1378":0,"1416":1,"1426":0,"1460":1,"1466":0,"1580":1,"1648":0,"1675":1,"1684":0,"1726":1,"1734":0,"1797":1,"1806":0,"1827":1,"1835":0,"1836":0,"1881":1,"1933":0,"2016":1,"2024":0,"2049":1,"2057":0,"2075":1,"2084":0,"2122":1,"2130":0,"2157":1,"2166":0,"2207":1,"2216":0,"2267":1,"2273":0,"2300":1,"2306":0,"2383":1,"2412":0,"2454":1,"2464":0,"2502":1,"2511":0,"2554":1,"2561":0,"2590":1,"2596":0,"2623":1,"2631":0,"2642":1,"2659":0,"2702":1,"2712":0,"2731":1,"2738":0,"2769":1,"2776":0,"2794":1,"2803":0,"2818":1,"2829":0,"2854":1,"2932":0,"2973":1,"2984":0,"2995":1,"3058":0,"3163":1,"3171":0,"3202":1,"3210":0,"3255":1,"3262":0,"3302":1,"3310":0,"3380":1,"3388":0,"3414":1,"3421":0,"3453":1,"3607":0,"3624":1,"3663":0,"3697":1,"3734":0,"3764":1,"3801":0,"3821":1,"3857":0,"3880":1,"3890":0,"3907":1,"3917":0,"4021":1,"4030":0,"4071":1,"4152":0,"4247":1,"4253":0,"4294":1,"4303":0,"4323":1,"4332":0,"4367":1,"4444":0,"4497":1,"4507":0,"4547":1,"4556":0,"4592":1,"4603":0,"4647":1,"4706":0,"4737":1,"4744":0,"4773":1,"4782":0,"4847":1,"4855":0,"4893":1,"4952":0,"5052":1,"5060":0,"5196":1,"5204":0,"5247":1,"5256":0,"5331":1,"5379":0,"5443":1,"5452":0,"5549":1,"5560":0,"5605":1,"5613":0,"5648":1,"5655":0,"5701":1,"5709":0,"5746":1,"5754":0,"5792":1,"5824":0,"5882":1,"5885":1,"5891":0,"5892":0,"5926":1,"6002":0,"6027":1,"6062":0,"6101":1,"6136":0,"6177":1,"6191":0,"6206":1,"6244":0,"6294":1,"6301":0,"6346":1,"6354":0,"6423":1,"6430":0,"6551":1,"6557":0,"6578":1,"6585":0,"6607":1,"6616":0,"6641":1,"6651":0,"6666":1,"6674":0,"6752":1,"6760":0,"6790":1,"6801":0,"6825":1,"6833":0,"6884":1,"6895":0,"6914":1,"6924":0,"6943":1,"6950":0,"6973":1,"6982":0,"7027":1,"7033":0,"7058":1,"7066":0,"7184":1,"7190":0,"7211":1,"7219":0,"7225":1,"7243":0,"7269":1,"7278":0,"7321":1,"7331":0,"7360":1,"7367":0,"7389":1,"7398":0,"7424":1,"7432":0,"7469":1,"7477":0,"7505":1,"7514":0,"7580":1,"7589":0,"7610":1,"7618":0,"7630":1,"7640":0,"7665":1,"7697":0,"7719":1,"7727":0,"7782":1,"7789":0,"7834":1,"7843":0,"8131":1,"8137":0,"8181":1,"8190":0,"8218":1,"8225":0,"8373":1,"8379":0,"8570":1,"8579":0,"8623":1,"8629":0,"8660":1,"8667":0,"8703":1,"8712":0}'
           ),
-          hf = function (e, t, a = 1) {
+          getAutopilotInputs = function (e, t, a = 1) {
             const i = (function (e, t) {
                 switch (e) {
                   case "Dragonfly":
@@ -61123,7 +61273,7 @@ var version = "v1.10.10";
                   : c.booster.type)
               ) {
                 M = t.booster.booster.playerInput;
-                const e = hf(t.mutValues.levelState.frame, E.name, _);
+                const e = getAutopilotInputs(t.mutValues.levelState.frame, E.name, _);
                 null !== e
                   ? (M = e ? "justDown" : "up")
                   : "justDown" === M && (M = "down"),
@@ -70444,8 +70594,8 @@ var version = "v1.10.10";
                     let { playerInput: i, atNextCheckpoint: n } = e;
                     const { frameOffset: s, mutValues: o, eliminated: r } = e;
                     if (r) return e;
-                    const l = hf(o.levelState.frame, t.name),
-                      c = hf(o.levelState.frame + s, t.name),
+                    const l = getAutopilotInputs(o.levelState.frame, t.name),
+                      c = getAutopilotInputs(o.levelState.frame + s, t.name),
                       d = c || (false === l ? l : c);
                     return (
                       null !== d
