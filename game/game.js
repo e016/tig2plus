@@ -39296,15 +39296,15 @@ var version = "v1.10.11";
                 selectedObjects: slctedObjs,
                 pointerReleasedAfterSelectingObject: m,
                 justPlacedObject: f,
-                dragStart: y,
-                dragSelectPos: E,
+                dragStart: dragStart,
+                dragSelectPos: dragSelectPos,
                 isDraggingSelected: b,
                 lastTwoTaps: S,
                 didMoveView: I,
-                isMultiTouching: _,
+                isMultiTouching: isMultiTouching,
                 canMoveSelectedObjects: v,
                 selectedTool: T,
-                toolsMenuView: R,
+                toolsMenuView: toolsMenuView,
               } = t;
               const O = a.size.width + 2 * a.size.widthMargin,
                 C = {
@@ -39318,65 +39318,65 @@ var version = "v1.10.11";
                   (r.keysDown.Control || r.keysDown.Meta) &&
                   u({ viewOffset: zoomOut(d) }),
                 r.keysJustPressed[1] &&
-                  ((R = "closed"), (T = { type: "pointer" })),
+                  ((toolsMenuView = "closed"), (T = { type: "pointer" })),
                 r.keysJustPressed[2] &&
-                  ((R = "closed"), (T = { type: "selectDrag" })),
-                r.keysJustPressed[3] && (R = "objects"),
+                  ((toolsMenuView = "closed"), (T = { type: "selectDrag" })),
+                r.keysJustPressed[3] && (toolsMenuView = "objects"),
                 r.keysJustPressed[4] &&
-                  ((R = "closed"), (T = { type: "erase" })),
-                r.keysJustPressed[6] && (R = "theme"),
+                  ((toolsMenuView = "closed"), (T = { type: "erase" })),
+                r.keysJustPressed[6] && (toolsMenuView = "theme"),
                 r.keysJustPressed.b &&
-                  ((R = "closed"),
+                  ((toolsMenuView = "closed"),
                   (T = { type: "placeLevelObject", object: $.newBlock() })),
                 r.keysJustPressed["b"] &&
                   (r.keysDown.Control || r.keysDown.Meta) &&
-                  ((R = "closed"),
+                  ((toolsMenuView = "closed"),
                   (T = { type: "placeLevelObject", object: $.newMiniBlock() })),
                 r.keysJustPressed["s"] &&
-                  ((R = "closed"),
+                  ((toolsMenuView = "closed"),
                   (T = { type: "placeLevelObject", object: $.newSpike() })),
                 r.keysJustPressed.s &&
                   (r.keysDown.Control || r.keysDown.Meta) &&
-                  ((R = "closed"),
+                  ((toolsMenuView = "closed"),
                   (T = { type: "placeLevelObject", object: $.newMiniSpike() })),
                 r.keysJustPressed.z &&
                   (r.keysDown.Control || r.keysDown.Meta) &&
                   ((slctedObjs = []), c({ type: "undo" }));
-              const w = r.keysJustPressed.ArrowDown,
-                A = r.keysJustPressed.ArrowUp,
-                k = r.keysJustPressed.ArrowLeft,
-                N = r.keysJustPressed.ArrowRight,
-                ctrl = r.keysDown.Shift ? 1 : 0.5;
-              if (w || A || k || N) {
-                R = "closed";
-                const e = (k ? -1 : N ? 1 : 0) * ctrl,
-                  t = (w ? -1 : A ? 1 : 0) * ctrl;
+              const arrowDown = r.keysJustPressed.ArrowDown,
+                arrowUp = r.keysJustPressed.ArrowUp,
+                arrowLeft = r.keysJustPressed.ArrowLeft,
+                arrowRight = r.keysJustPressed.ArrowRight,
+                unitStep = r.keysDown.Shift ? 1 : 0.5;
+              if (arrowDown || arrowUp || arrowLeft || arrowRight) {
+                toolsMenuView = "closed";
+                const moveHorizontal = (arrowLeft ? -1 : arrowRight ? 1 : 0) * unitStep,
+                  moveVertical = (arrowDown ? -1 : arrowUp ? 1 : 0) * unitStep;
                 Jr(
                   p,
                   slctedObjs.map((a) => {
                     var i, n;
-                    const s = p[a.array][a.index];
+                    const object = p[a.array][a.index];
                     let o, l;
                     if (
                       r.keysDown.Control ||
                       (r.keysDown.Meta &&
-                        !["directionChange", "flag"].includes(s.type))
+                        !["directionChange", "flag"].includes(object.type))
                     )
-                      (o = s.x + e), (l = s.y + t);
+                      (o = object.x + moveHorizontal), (l = object.y + moveVertical);
                     else {
                       const a =
-                          e *
-                          ((null === (i = s.snapSize) || void 0 === i
+                          Math.sign(moveHorizontal) *
+                          ((null === (i = object.snapSize) || void 0 === i
                             ? void 0
                             : i.x) || M),
                         r =
-                          t *
-                          ((null === (n = s.snapSize) || void 0 === n
+                          moveVertical *
+                          ((null === (n = object.snapSize) || void 0 === n
                             ? void 0
                             : n.y) || M);
                       ({ x: o, y: l } = V(
-                        { x: s.x + a, y: s.y + r },
-                        s.snapSize
+                        { x: object.x + a, y: object.y + r },
+                        object.snapSize
                       ));
                     }
                     return { selectedObject: a, toX: o, toY: l };
@@ -39386,12 +39386,12 @@ var version = "v1.10.11";
               }
               if (
                 (pointer.numberPressed > 1
-                  ? (_ = true)
-                  : 0 === pointer.numberPressed && (_ = false),
+                  ? (isMultiTouching = true)
+                  : 0 === pointer.numberPressed && (isMultiTouching = false),
                 pointer.justReleased &&
                   ("pointer" === t.selectedTool.type ||
                     "selectDrag" === t.selectedTool.type) &&
-                  !_)
+                  !isMultiTouching)
               ) {
                 if (!I) {
                   const t = e.runHistory.findIndex((e) =>
@@ -39409,7 +39409,7 @@ var version = "v1.10.11";
                 }
                 I = false;
               }
-              if (pointer.pressed && !t.isPinching && !_)
+              if (pointer.pressed && !t.isPinching && !isMultiTouching)
                 switch (t.selectedTool.type) {
                   case "selectDrag":
                   case "pointer":
@@ -39426,7 +39426,7 @@ var version = "v1.10.11";
                           var t;
                         });
                         if (((f = null), e))
-                          (y = { type: "dragObject", x: C.x, y: C.y }),
+                          (dragStart = { type: "dragObject", x: C.x, y: C.y }),
                             (slctedObjs = slctedObjs.map((e) => {
                               const t = p[e.array][e.index];
                               return Object.assign(Object.assign({}, e), {
@@ -39475,7 +39475,7 @@ var version = "v1.10.11";
                                 (m = false);
                             }
                           }
-                          y =
+                          dragStart =
                             0 === slctedObjs.length
                               ? "pointer" !== t.selectedTool.type ||
                                 r.keysDown.Shift
@@ -39490,7 +39490,7 @@ var version = "v1.10.11";
                         n((e) =>
                           Object.assign(Object.assign({}, e), {
                             selectedObjects: slctedObjs,
-                            dragStart: y,
+                            dragStart: dragStart,
                             justPlacedObject: f,
                             pointerReleasedAfterSelectingObject: m,
                           })
@@ -39499,9 +39499,9 @@ var version = "v1.10.11";
                     break;
                   case "erase":
                     pointer.justPressed
-                      ? (y = { type: "erase", x: C.x, y: C.y })
-                      : "erase" === (null == y ? void 0 : y.type) &&
-                        (Math.abs(C.x - y.x) > 5 || Math.abs(C.y - y.y) > 5) &&
+                      ? (dragStart = { type: "erase", x: C.x, y: C.y })
+                      : "erase" === (null == dragStart ? void 0 : dragStart.type) &&
+                        (Math.abs(C.x - dragStart.x) > 5 || Math.abs(C.y - dragStart.y) > 5) &&
                         (Kr(p, C, o, a, c), (slctedObjs = []));
                     break;
                   case "placeLevelObject": {
@@ -39541,31 +39541,31 @@ var version = "v1.10.11";
               if (
                 (!pointer.justReleased ||
                   t.isPinching ||
-                  _ ||
+                  isMultiTouching ||
                   "erase" !== t.selectedTool.type ||
                   (Kr(p, C, o, a, c), (slctedObjs = [])),
                 pointer.justPressed && (S = [S[1], [pointer.x, pointer.y]]),
-                y && !t.isPinching && !_)
+                dragStart && !t.isPinching && !isMultiTouching)
               )
                 if (pointer.pressed) {
-                  if ("dragSelect" === y.type) E = { x: C.x, y: C.y };
-                  else if ("view" === y.type) {
-                    const e = pointer.x - y.x,
-                      t = pointer.y - y.y;
+                  if ("dragSelect" === dragStart.type) dragSelectPos = { x: C.x, y: C.y };
+                  else if ("view" === dragStart.type) {
+                    const e = pointer.x - dragStart.x,
+                      t = pointer.y - dragStart.y;
                     (d.x === e && d.y === t) ||
                       ((I = true),
                       u({ viewOffset: { x: e, y: t, scale: d.scale } }));
                   } else if (
-                    "dragObject" === y.type &&
+                    "dragObject" === dragStart.type &&
                     slctedObjs.length > 0 &&
-                    (b || y.x !== C.x || y.y !== C.y)
+                    (b || dragStart.x !== C.x || dragStart.y !== C.y)
                   ) {
                     (b = true),
                       (slctedObjs = slctedObjs.map((e) => {
-                        if (!y) return e;
+                        if (!dragStart) return e;
                         const t = p[e.array][e.index],
                           { x: a, y: i } = V(
-                            { x: C.x - y.x, y: C.y - y.y },
+                            { x: C.x - dragStart.x, y: C.y - dragStart.y },
                             Object.assign(Object.assign({}, t.snapSize), {
                               offsetX: 0,
                               offsetY: 0,
@@ -39594,13 +39594,13 @@ var version = "v1.10.11";
                       })
                     );
                   }, 0),
-                  "dragSelect" === y.type && E)
+                  "dragSelect" === dragStart.type && dragSelectPos)
                 ) {
                   const e = be.pointInBox({
-                      width: Math.abs(E.x - y.x),
-                      height: Math.abs(E.y - y.y),
-                      x: (E.x + y.x) / 2,
-                      y: (E.y + y.y) / 2,
+                      width: Math.abs(dragSelectPos.x - dragStart.x),
+                      height: Math.abs(dragSelectPos.y - dragStart.y),
+                      x: (dragSelectPos.x + dragStart.x) / 2,
+                      y: (dragSelectPos.y + dragStart.y) / 2,
                     }),
                     t = Ca.getAllObjects(p).filter(e);
                   slctedObjs = t.map((e) => ({
@@ -39612,7 +39612,7 @@ var version = "v1.10.11";
                     startDraggingY: e.y,
                   }));
                 } else if (
-                  "dragObject" === y.type &&
+                  "dragObject" === dragStart.type &&
                   slctedObjs.length > 0 &&
                   pointer.justReleased &&
                   (slctedObjs.some(
@@ -39658,17 +39658,17 @@ var version = "v1.10.11";
                 Object.assign(Object.assign({}, t), {
                   selectedObjects: slctedObjs,
                   justPlacedObject: f,
-                  dragStart: y,
-                  dragSelectPos: E,
+                  dragStart: dragStart,
+                  dragSelectPos: dragSelectPos,
                   viewOffset: d,
                   isDraggingSelected: b,
                   lastTwoTaps: S,
                   didMoveView: I,
                   pointerReleasedAfterSelectingObject: m,
-                  isMultiTouching: _,
+                  isMultiTouching: isMultiTouching,
                   canMoveSelectedObjects: v,
                   selectedTool: T,
-                  toolsMenuView: R,
+                  toolsMenuView: toolsMenuView,
                   frame: s(Se).settings.animateEditor ? t.frame + 1 : 0
                 })
               );
