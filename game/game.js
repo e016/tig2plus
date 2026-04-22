@@ -51971,8 +51971,8 @@ var version = "v1.10.11";
                             {
                               playerX: e.playerX,
                               playerY: e.playerY,
-                              radius: 4,
-                              offset: 10.5,
+                              radius: 4 * e.playerScale,
+                              offset: 10.5 * e.playerScale,
                               playerDir: e.playerDir,
                               paused: e.paused,
                               crashed: e.crashed,
@@ -51981,6 +51981,8 @@ var version = "v1.10.11";
                               touchingPortals: e.touchingPortals,
                             },
                             (t) => {
+                              (t.radius = 4 * e.playerScale),
+                              (t.offset = 10.5 * e.playerScale),
                               (t.playerX = e.playerX),
                                 (t.playerY = e.playerY),
                                 (t.playerDir = e.playerDir),
@@ -51995,8 +51997,8 @@ var version = "v1.10.11";
                             {
                               playerX: e.playerX,
                               playerY: e.playerY,
-                              radius: 4,
-                              offset: -10.5,
+                              radius: 4 * e.playerScale,
+                              offset: -10.5 * e.playerScale,
                               playerDir: e.playerDir,
                               paused: e.paused,
                               crashed: e.crashed,
@@ -52005,6 +52007,8 @@ var version = "v1.10.11";
                               touchingPortals: e.touchingPortals
                             },
                             (t) => {
+                              (t.radius = 4 * e.playerScale),
+                              (t.offset = -10.5 * e.playerScale),
                               (t.playerX = e.playerX),
                                 (t.playerY = e.playerY),
                                 (t.playerDir = e.playerDir),
@@ -52042,6 +52046,7 @@ var version = "v1.10.11";
                         (t.crashed = e.crashed),
                         (t.paused = e.paused),
                         (t.skin = e.skin);
+                        (t.playerScaleOff = e.playerScale === 0.5);
                     }
                   ),
                   playerTrailStrip.Single(
@@ -52091,6 +52096,7 @@ var version = "v1.10.11";
                       crashed: e.crashed,
                       paused: e.paused,
                       skin: e.skin,
+                      playerScaleOff: e.playerScale === 0.5
                     },
                     (t) => {
                       (t.playerX = e.playerX),
@@ -52099,6 +52105,7 @@ var version = "v1.10.11";
                         (t.crashed = e.crashed),
                         (t.paused = e.paused),
                         (t.skin = e.skin);
+                        (t.playerScaleOff = e.playerScale === 0.5);
                     }
                   ),
                 ]
@@ -52128,12 +52135,19 @@ var version = "v1.10.11";
             }),
             loop({ state: e, props: t, device: a }) {
               if (t.paused) return;
-              if (t.crashed)
+              if (t.crashed || t.playerScaleOff)
                 return (
                   e.bottomPath.shift(),
                   e.middlePath.shift(),
                   void e.topPath.shift()
                 );
+              if (t.playerScaleOff) {
+                  return (
+                    e.bottomPath.pop(),
+                    e.middlePath.pop(),
+                    void e.topPath.pop()
+                  );
+              };
               (e.followY = B.clamp2(
                 t.playerY - 15,
                 t.playerY + 15,
@@ -52383,6 +52397,7 @@ var version = "v1.10.11";
                   e.path.push({
                     x: props.playerX, //e.space,
                     y: props.playerY + (props.offset || 0),
+                    radius: props.radius
                   });
                 };
                 
@@ -52408,6 +52423,7 @@ var version = "v1.10.11";
                       ],
                     }),
                     update: (a, n, index) => {
+                      (a.thickness = n.radius * 2),
                       (a.x = 0),
                       (a.color = e.trail.topColour),
                       (a.path = t.path[index + 1] ? [[n.x, n.y], [t.path[index + 1].x, t.path[index + 1].y]] : [[n.x, n.y], [n.x, n.y]]),
@@ -57759,9 +57775,11 @@ var version = "v1.10.11";
                         skin: e.playerSkin,
                         isFront: false,
                         attempt: e.attempt,
-                        touchingPortals: null !== e.touchingPortals
+                        touchingPortals: null !== e.touchingPortals,
+                        playerScale: e.playerScale,
                       },
                       (t) => {
+                        (t.playerScale = e.playerScale),
                         (t.playerX = e.playerX),
                           (t.playerY = e.playerY),
                           (t.playerDir = e.playerDir),
@@ -57893,8 +57911,10 @@ var version = "v1.10.11";
                                     isFront: false,
                                     attempt: e.attempt,
                                     touchingPortals: null !== e.touchingPortals,
+                                    playerScale: e.playerScale,
                                   }),
                                   update: (t, { y: a }) => {
+                                    (t.playerScale = e.playerScale),
                                     (t.playerX = e.playerX),
                                       (t.playerY = a),
                                       (t.playerDir = e.playerDir),
@@ -57925,8 +57945,10 @@ var version = "v1.10.11";
                                     crashed: false,
                                     paused: e.paused,
                                     isFront: true,
+                                    playerScale: e.playerScale,
                                   }),
                                   update: (t, { y: a }) => {
+                                    (t.playerScale = e.playerScale),
                                     (t.playerX = e.playerX),
                                       (t.playerY = a),
                                       (t.playerDir = e.playerDir),
@@ -58101,9 +58123,11 @@ var version = "v1.10.11";
                         paused: e.paused,
                         skin: e.playerSkin,
                         isFront: true,
-                        touchingPortals: null !== e.touchingPortals
+                        touchingPortals: null !== e.touchingPortals,
+                        playerScale: e.playerScale,
                       },
                       (t) => {
+                        (t.playerScale = e.playerScale),
                         (t.playerX = e.playerX),
                           (t.playerY = e.playerY),
                           (t.playerDir = e.playerDir),
@@ -66163,7 +66187,7 @@ var version = "v1.10.11";
                       paused: false,
                       skin: e.skin,
                       isFront: e.isFront,
-                      
+                      playerScale: 1,
                     },
                     (t) => {
                       (t.x = 20 - e.mockPlayerX),
