@@ -2,16 +2,18 @@
   "name": "The Impossible Game 2+",
   "description": "A mod of The Impossible Game 2",
   "short_name": "TIG2+",
-  "icons": [{
+  "icons": [
+    {
       "src": "favicon.ico",
       "sizes": "1024x1024",
       "type": "image/png"
-    }],
-    "developer": {
-  "name": "d016 (e016)",
-  "url": "https://www.github.com/e016"
-},
-    "version": "v1.4.3",
+    }
+  ],
+  "developer": {
+    "name": "d016 (e016)",
+    "url": "https://www.github.com/e016"
+  },
+  "version": "v1.4.3",
   "lang": "en-US",
   "display": "standalone",
   "background_color": "white",

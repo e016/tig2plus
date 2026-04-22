@@ -15681,7 +15681,7 @@ var version = "v1.10.11";
                 movement: x,
               }) {
                 return "static" === x || "falling" === x
-                  ? [{ x: e, y: t, width: a, height: i }]
+                  ? [{ x: e, y: t, width: a, height: i, ignore: "static" === x }]
                   : [
                       { x: e, y: t + z / 2, width: a, height: i },
                       { x: e, y: t - z / 2, width: a, height: i },
@@ -16442,6 +16442,20 @@ var version = "v1.10.11";
                 height: a,
               };
             },
+            getSwitchPlatformDownRectangle: function ({
+              x: e,
+              y: t,
+              width: a,
+              height: i,
+            }) {
+              const n = i / 2;
+              return {
+                x: e - a / 2 + n,
+                y: t - n + a / 2 - a + i,
+                width: i,
+                height: a,
+              };
+            },
             maxJetpackFuel: 60,
             skateboardHeight: 7,
             explosionTime: 90,
@@ -17020,7 +17034,7 @@ var version = "v1.10.11";
                 de.pooledPlayerPoly1
               );
               return (t) => {
-                if (t.x > e + t.width + ue || t.x < e - t.width - ue)
+                if (t.x > e + t.width + ue || t.x < e - t.width - ue * 2)
                   return false;
                 const a = de.getObjectPolygon(t, o);
                 return de.polygonHitSomething(r, a);
@@ -17803,7 +17817,7 @@ var version = "v1.10.11";
           $t = Object.assign(Object.assign({}, qt), {
             id: "world2Red",
             name: "World 2 Red",
-            colour: "#722431",
+            colour: "#952730",
             background: "world2Red",
           }),
           Jt = {
@@ -17862,7 +17876,7 @@ var version = "v1.10.11";
           ea = Object.assign(Object.assign({}, Zt), {
             id: "world3Red",
             name: "World 3 Red",
-            colour: "#5F1A09",
+            colour: "#510602",
             background: "world3Red",
           }),
           ta = Object.assign(Object.assign({}, Zt), {
@@ -17899,7 +17913,7 @@ var version = "v1.10.11";
           na = Object.assign(Object.assign({}, aa), {
             id: "world4Red",
             name: "World 4 Red",
-            colour: "#5F1A09",
+            colour: "#5b0211",
             background: "world4Red",
           }),
           sa = {
@@ -17924,7 +17938,7 @@ var version = "v1.10.11";
           oa = {
             id: "speed",
             name: "Moon",
-            colour: "#281F29",
+            colour: "#1B222D",
             background: "speed",
             player: bgOnly ? Wt.skins.blank : Wt.skins.space,
             objects: {
@@ -19150,10 +19164,10 @@ var version = "v1.10.11";
         };
         const Pa = (e, t) => {
             if (overlapObjects) return true;
-            const a = t.flatMap($.getRectangles);
+            const allRectangles = t.flatMap($.getRectangles);
             let i;
-            if (a.length > 1) {
-              const t = a.reduce(
+            if (allRectangles.length > 1) {
+              const t = allRectangles.reduce(
                 (e, t) => ({
                   minX: Math.min(t.x - t.width / 2, e.minX),
                   maxX: Math.max(t.x + t.width / 2, e.maxX),
@@ -19174,13 +19188,13 @@ var version = "v1.10.11";
                 height: t.maxY - t.minY,
               });
             } else i = Ma(e);
-            const n = i.some((e) => a.some(be.rectTouchesRect(e))),
+            const n = i.some((e) => allRectangles.some((t) => be.rectTouchesRect(e)(t) && !t.ignore)),
               s = t.some((e, a) => {
                 const i = $.getRectangles(e);
                 return t
                   .filter((e, t) => a !== t)
                   .flatMap($.getRectangles)
-                  .some((e) => i.some(be.rectTouchesRect(e)));
+                  .some((e) => i.some((t) => be.rectTouchesRect(e)(t) && !t.ignore));
               });
             return !n && !s;
           },
@@ -31578,7 +31592,7 @@ var version = "v1.10.11";
             }
             let n = e;
             if ("switchPlatform" === e.type && 0 !== e.rotation) {
-              if (-90 !== e.rotation) {
+              if (-90 !== e.rotation && 90 !== e.rotation) {
                 const a = be.hitObject(
                   p,
                   g + t.height / 4,
@@ -31591,7 +31605,7 @@ var version = "v1.10.11";
                 //**
                 be.hitObject(
                   p,
-                  g - t.height / (e.rotation > 90 ? -4 : 4),
+                  g - t.height / (e.rotation > 90 ? 4 : 4),
                   1,
                   0.5,
                   0,
@@ -31602,7 +31616,7 @@ var version = "v1.10.11";
                   : a && (y = true);
                 continue;
               }
-              n = $.getSwitchPlatformUpRectangle(e);
+              n = -90 === e.rotation ? $.getSwitchPlatformUpRectangle(e) : $.getSwitchPlatformDownRectangle(e);
             }
             (n.canJumpThrough && !t.isCompatible) || (be.rectTouchesRect2(
               p - t.width / 4,
@@ -31681,7 +31695,7 @@ var version = "v1.10.11";
             if ("enemy" === e.type && a === i) continue;
             let n = e;
             if ("switchPlatform" === e.type && 0 !== e.rotation) {
-              if (-90 !== e.rotation) {
+              if (-90 !== e.rotation && 90 !== e.rotation) {
                 const a = be.hitObject(
                   newX,
                   newY + t.height / 4,
@@ -31694,7 +31708,7 @@ var version = "v1.10.11";
                 //**
                 be.hitObject(
                   newX,
-                  newY - t.height / (e.rotation > 90 ? -4 : 4),
+                  newY - t.height / (e.rotation > 90 ? 4 : 4),
                   1,
                   0.5,
                   0,
@@ -31705,7 +31719,7 @@ var version = "v1.10.11";
                   : a && (y = true);
                 continue;
               }
-              n = $.getSwitchPlatformUpRectangle(e);
+              n = -90 === e.rotation ? $.getSwitchPlatformUpRectangle(e) : $.getSwitchPlatformDownRectangle(e);
             }
             (n.canJumpThrough && !t.isCompatible) || (be.rectTouchesRect2(
               newX - t.width / 4,
@@ -44698,6 +44712,18 @@ var version = "v1.10.11";
               difficulty: 9,
             },
             {
+              levelName: "Octane (Full Version)",
+              levelFileName: "octane-extended",
+              author: "WaterFire",
+              song: hl.songs.octaneExtended,
+              unlockedByIndex: null,
+              x: 0,
+              y: 0,
+              pathToLevel: [],
+              maxFrames: 15960,
+              difficulty: 6,
+            },
+            {
               levelName: "Challenge 2",
               levelFileName: "challenge-2",
               author: "lkjhasdf",
@@ -54197,30 +54223,114 @@ var version = "v1.10.11";
                 conditional(
                   () => e.plain,
                   () => [
-                    p(
-                      {
-                        color: e.theme.id == "classic" ? (e.bgColor || "#00FFFF") : e.theme.colour,
-                        width: t.size.fullWidth,
-                        height: t.size.fullHeight,
-                      },
-                      (k) => {
-                        (k.color = e.theme.id == "classic" ? (e.bgColor || "#00FFFF") : e.theme.colour),
-                        (k.width = t.size.fullWidth),
-                          (k.height = t.size.fullHeight);
-                      }
-                    ),
-                    p(
-                      {
-                        color: "black",
-                        width: t.size.fullWidth,
-                        height: t.size.fullHeight,
-                        opacity: e.theme.id == "classic" ? 0.2 : 0
-                      },
-                      (k) => {
-                        (k.width = t.size.fullWidth),
-                          (k.height = t.size.fullHeight),
-                          (k.opacity = e.theme.id == "classic" ? 0.2 : 0);
-                      }
+                    conditional(
+                      () => e.theme.id === "speed",
+                      () => [
+                        p(
+                          {
+                            color: e.theme.colour,
+                            width: t.size.fullWidth,
+                            height: t.size.fullHeight,
+                          },
+                          (k) => {
+                            (k.color = e.theme.colour),
+                            (k.width = t.size.fullWidth),
+                              (k.height = t.size.fullHeight);
+                          }
+                        ),
+                        Go.Single(
+                          {
+                            targetOpacity: e.speedMultiplier / 10,
+                            sprite: (e) => [
+                              p(
+                                {
+                                  color: "#9D0808",
+                                  width: t.size.fullWidth,
+                                  height: t.size.fullHeight,
+                                },
+                                (a) => {
+                                  (a.opacity = e.ref),
+                                    (a.width = t.size.fullWidth),
+                                    (a.height = t.size.fullHeight);
+                                }
+                              ),
+                            ],
+                          },
+                          (t) => {
+                            t.targetOpacity = Math.min(
+                              0.5,
+                              e.speedMultiplier / 10
+                            );
+                          }
+                        ),
+                      ],
+                    () => [conditional(
+                      () => e.theme.id === "dreamy",
+                      () => [
+                        p(
+                          {
+                            color: e.theme.colour,
+                            width: t.size.fullWidth,
+                            height: t.size.fullHeight,
+                          },
+                          (k) => {
+                            (k.color = e.theme.colour),
+                            (k.width = t.size.fullWidth),
+                              (k.height = t.size.fullHeight);
+                          }
+                        ),
+                        jo.Single({
+                          shouldShow: e.switchBlockSpikes ==
+                                  (globalPlayerScale == 1),
+                          initShow: e.switchBlockSpikes ==
+                                  (globalPlayerScale == 1),
+                          fadeFrames: 15,
+                          sprite: (a) => [
+                            p(
+                              {
+                                color: "#250B05",
+                                width: t.size.fullWidth,
+                                height: t.size.fullHeight,
+                              },
+                              (k) => {
+                                (k.opacity = a.ref),
+                                (k.width = t.size.fullWidth),
+                                  (k.height = t.size.fullHeight);
+                              }
+                            ),
+                          ],
+                        }, (t) => {
+                          t.shouldShow = e.switchBlockSpikes ==
+                                  (globalPlayerScale == 1);
+                        }),
+                      ],
+                      () => [
+                      p(
+                        {
+                          color: e.theme.id == "classic" ? (e.bgColor || "#00FFFF") : e.theme.colour,
+                          width: t.size.fullWidth,
+                          height: t.size.fullHeight,
+                        },
+                        (k) => {
+                          (k.color = e.theme.id == "classic" ? (e.bgColor || "#00FFFF") : e.theme.colour),
+                          (k.width = t.size.fullWidth),
+                            (k.height = t.size.fullHeight);
+                        }
+                      ),
+                      p(
+                        {
+                          color: "black",
+                          width: t.size.fullWidth,
+                          height: t.size.fullHeight,
+                          opacity: e.theme.id == "classic" ? 0.2 : 0
+                        },
+                        (k) => {
+                          (k.width = t.size.fullWidth),
+                            (k.height = t.size.fullHeight),
+                            (k.opacity = e.theme.id == "classic" ? 0.2 : 0);
+                        }
+                      )]),
+                      ],
                     ),
                   ],
                   () => {
@@ -58029,7 +58139,7 @@ var version = "v1.10.11";
                               () => null !== e.playerPowerupOut,
                               () => [
                                 onChange(
-                                  () => e.playerPowerups.length,
+                                  () => e.playerPowerupOut,
                                 () => [ko.Single(
                                   {
                                     x: e.playerX,
@@ -62728,6 +62838,50 @@ var version = "v1.10.11";
                     height: l,
                     color: t.layout.properties.theme.colour,
                   }),
+                  o(
+                    {
+                      color: infiniteBgTable(0, t.runHistory[t.runHistoryIndex].bgColor || "#00FFFF"),
+                      width: r,
+                      height: l,
+                      show: t.layout.properties.theme.id === "infinite"
+                    },
+                  ),
+                  o({
+                    color: "#250b05",
+                    width: r,
+                    height: l,
+                    show: (t.layout.properties.theme.id === "dreamy" && (t.runHistory[t.runHistoryIndex].switchBlockSpikes === (t.runHistory[t.runHistoryIndex].playerScale === 1)))
+                  }),
+                  o(
+                    {
+                      color: "#9D0808",
+                      width: r,
+                      height: l,
+                      opacity: Math.min(
+                              0.5,
+                              t.runHistory[t.runHistoryIndex].playerSpeedMultiplier / 10
+                            ),
+                      show: t.layout.properties.theme.id === "speed"
+                    },
+                  ),
+                  o(
+                    {
+                      color: t.runHistory[t.runHistoryIndex].bgColor || "#00FFFF",
+                      width: r,
+                      height: l,
+                      show: t.layout.properties.theme.id === "classic"
+                    },
+                  ),
+                  o(
+                    {
+                      color: "black",
+                      width: r,
+                      height: l,
+                      opacity: 0.3,
+                      show: t.layout.properties.theme.id === "classic"
+                    },
+                  ),
+                  
                   zr({
                     id: "LevelEditor",
                     settings: t.levelEditorSettings,
