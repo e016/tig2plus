@@ -52233,7 +52233,7 @@ var version = "v1.11.0";
               r && ((r[0] = i), (r[1] = n), e.middlePath.push(r));
               const l = e.topPath.shift();
               l && ((l[0] = i), (l[1] = n), e.topPath.push(l)),
-                (!o || !fullTopPath || Math.abs(i - o[0]) > 60 || Math.abs(n - o[1]) > 60) &&
+                (!o || !fullTopPath || Math.abs(i - o[0]) > 60 * t.playerSpeedMultiplier || Math.abs(n - o[1]) > 60) &&
                   ((e.bottomPath = Array.from({ length: eg }, () => [
                     t.playerX,
                     t.playerY,
@@ -57046,9 +57046,11 @@ var version = "v1.11.0";
                   cameraY: t.cameraY,
                   cameraXOffset: t.cameraXOffset,
                   fallTypes: t.fallTypes,
-                  flyingAnchor: t.flyingAnchor
+                  flyingAnchor: t.flyingAnchor,
+                  playerSpeedMultiplier: t.playerSpeedMultiplier,
                 },
                 (e) => {
+                  (e.playerSpeedMultiplier = t.playerSpeedMultiplier),
                   (e.cameraX = t.cameraX),
                   (e.cameraXOffset = t.cameraXOffset),
                   (e.cameraY = t.cameraY),
