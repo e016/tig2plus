@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.10.11";
+var version = "v1.11.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -31955,34 +31955,34 @@ var version = "v1.10.11";
               }
               return lo.ref;
             },
-            didLandOnHead: function (e, t, a, i, n, s, o) {
-              if (n <= 0) {
+            didLandOnHead: function (frame, enemy, enemyState, playerY, playerGradY, initGrad, collide) {
+              if (playerGradY <= 0) {
                 const r = {
-                  x: t.x,
-                  y: t.y + t.height / 4,
-                  width: t.width,
-                  height: t.height / 2,
+                  x: enemy.x,
+                  y: enemy.y + enemy.height / 4,
+                  width: enemy.width,
+                  height: enemy.height / 2,
                 };
-                if (i > (t.giant ? t.y + t.height / 2 + 3 : t.y) && o(r))
+                if (playerY > (enemy.giant ? enemy.y + enemy.height / 2 + 3 : enemy.y) && collide(r))
                   return (
                     (r.height /= 2),
-                    t.giant && (r.y += t.height / 8),
-                    o(r)
-                      ? 0 === n
-                        ? { enemyState: a, playerCrashed: true, playerGradY: n }
+                    enemy.giant && (r.y += enemy.height / 8),
+                    collide(r)
+                      ? 0 === playerGradY
+                        ? { enemyState: enemyState, playerCrashed: true, playerGradY: playerGradY }
                         : {
-                            enemyState: Object.assign(Object.assign({}, a), {
+                            enemyState: Object.assign(Object.assign({}, enemyState), {
                               destroyed: {
-                                frame: e,
-                                x: t.x,
-                                y: t.y,
+                                frame: frame,
+                                x: enemy.x,
+                                y: enemy.y,
                                 by: "stomped",
                               },
                             }),
                             playerCrashed: false,
-                            playerGradY: G.initGrad(s),
+                            playerGradY: G.initGrad(initGrad),
                           }
-                      : { enemyState: a, playerCrashed: false, playerGradY: n }
+                      : { enemyState: enemyState, playerCrashed: false, playerGradY: playerGradY }
                   );
               }
               return null;
@@ -39207,7 +39207,7 @@ var version = "v1.10.11";
               }
             return { gridLinesVert: o, gridLinesHoriz: r, beatLines: d };
           },
-          Xr = makeSprite({
+          GridLines = makeSprite({
             init({ props: e, device: t }) {
               const a =
                   t.size.fullHeight / e.parentOffset.scale + 2 * G.jumpDistance,
@@ -39255,13 +39255,23 @@ var version = "v1.10.11";
                   (t.fullWidth = a.size.fullWidth);
               }
             },
-            render: ({ state: e }) => [
-              m({ color: "#394764", thickness: 1 }, (t) => {
+            render: ({ state: e, device: a }) => [
+              m({ color: "#394764", thickness: 1, opacity: 0.8 }, (t) => {
                 t.path = e.gridLinesHoriz;
               }),
-              m({ color: "#394764", thickness: 1 }, (t) => {
+              m({ color: "#394764", thickness: 1, opacity: 0.8 }, (t) => {
                 t.path = e.gridLinesVert;
               }),
+              /*p({
+                color: "black",
+                width: 30 * e.parentOffset.scale,
+                height: a.size.fullHeight / e.parentOffset.scale,
+                y: -e.parentOffset.y / e.parentOffset.scale,
+              }, (i) => {
+                i.width = 30 * e.parentOffset.scale;
+                i.height = a.size.fullHeight / e.parentOffset.scale;
+                i.y = -e.parentOffset.y / e.parentOffset.scale;
+              }),*/
               m({ color: Ye, thickness: 2, opacity: 0.8 }, (t) => {
                 t.path = e.beatLines;
               }),
@@ -40050,7 +40060,7 @@ var version = "v1.10.11";
               let pauseAnimations = !getContext(Se).settings.animateEditor;
               if (y)
                 return [
-                  Xr.Single({ id: "GridLines", parentOffset: parentOffset }),
+                  GridLines.Single({ id: "GridLines", parentOffset: parentOffset }),
                   n({
                     text: `${localize('LOADING')}...`,
                     font: { size: 15 },
@@ -40072,7 +40082,7 @@ var version = "v1.10.11";
                 R = "default" === E.fileName ? T : E;
                 overlapObjects = getContext(Se).settings.overlapObjects;
               return [
-                Xr.Single({ id: "GridLines", parentOffset: parentOffset }),
+                GridLines.Single({ id: "GridLines", parentOffset: parentOffset }),
                 g.properties.useGround 
                 ? renderGround.Single({
                   id: "Ground", 
@@ -52064,6 +52074,7 @@ var version = "v1.10.11";
                       crashed: e.crashed,
                       paused: e.paused,
                       skin: e.skin,
+                      playerScaleOff: e.playerScale === 0.5
                     },
                     (t) => {
                       (t.playerX = e.playerX),
@@ -52073,6 +52084,7 @@ var version = "v1.10.11";
                         (t.paused = e.paused),
                         (t.skin = e.skin);
                         (t.playerScaleOff = e.playerScale === 0.5);
+                        (t.playerSpeedMultiplier = e.playerSpeedMultiplier);
                     }
                   ),
                   playerTrailStrip.Single(
@@ -52092,6 +52104,7 @@ var version = "v1.10.11";
                         (t.crashed = e.crashed),
                         (t.paused = e.paused),
                         (t.skin = e.skin);
+                        (t.playerSpeedMultiplier = e.playerSpeedMultiplier);
                     }
                   ),
                   playerTrailStrip.Single(
@@ -52111,6 +52124,7 @@ var version = "v1.10.11";
                         (t.crashed = e.crashed),
                         (t.paused = e.paused),
                         (t.skin = e.skin);
+                        (t.playerSpeedMultiplier = e.playerSpeedMultiplier);
                     }
                   ),
                   playerTrailStrip.Single(
@@ -52132,6 +52146,7 @@ var version = "v1.10.11";
                         (t.paused = e.paused),
                         (t.skin = e.skin);
                         (t.playerScaleOff = e.playerScale === 0.5);
+                        (t.playerSpeedMultiplier = e.playerSpeedMultiplier);
                     }
                   ),
                 ]
@@ -52148,15 +52163,15 @@ var version = "v1.10.11";
               offsetXDir: -0.5 - 1.5 * t.random(),
               offsetY: 3.75 * t.random() * 2 - 3.75,
               offsetYDir: -0.005 - 0.005 * t.random(),
-              bottomPath: Array.from({ length: eg }, () => [
+              bottomPath: Array.from({ length: e.playerScaleOff ? 0 : eg }, () => [
                 e.playerX,
                 e.playerY,
               ]),
-              middlePath: Array.from({ length: 6 }, () => [
+              middlePath: Array.from({ length: e.playerScaleOff ? 0 : 6 }, () => [
                 e.playerX,
                 e.playerY,
               ]),
-              topPath: Array.from({ length: 2 }, () => [e.playerX, e.playerY]),
+              topPath: Array.from({ length: e.playerScaleOff ? 0 : 2 }, () => [e.playerX, e.playerY]),
               bottomWidth: eg,
             }),
             loop({ state: e, props: t, device: a }) {
@@ -52203,7 +52218,9 @@ var version = "v1.10.11";
                 s = Math.ceil(eg * e.width),
                 o =
                   e.bottomPath.length > 0 &&
-                  e.bottomPath[e.bottomPath.length - 1];
+                  e.bottomPath[e.bottomPath.length - 1],
+                fullTopPath = e.topPath.length > 0 &&
+                  e.topPath[e.topPath.length - 1];
               if (s >= e.bottomWidth) {
                 const t = e.bottomPath.shift();
                 t &&
@@ -52216,7 +52233,7 @@ var version = "v1.10.11";
               r && ((r[0] = i), (r[1] = n), e.middlePath.push(r));
               const l = e.topPath.shift();
               l && ((l[0] = i), (l[1] = n), e.topPath.push(l)),
-                (!o || Math.abs(i - o[0]) > 60 || Math.abs(n - o[1]) > 60) &&
+                (!o || !fullTopPath || Math.abs(i - o[0]) > 60 || Math.abs(n - o[1]) > 60) &&
                   ((e.bottomPath = Array.from({ length: eg }, () => [
                     t.playerX,
                     t.playerY,
@@ -55190,13 +55207,14 @@ var version = "v1.10.11";
                                 frame: e.frame,
                                 bgSwitch:
                                   e.switchBlockSpikes ==
-                                  (globalPlayerScale == 1),
+                                  (e.playerScale == 1),
+                                
                               },
                               (t) => {
                                 (t.frame = e.frame),
                                   (t.bgSwitch =
                                     e.switchBlockSpikes ==
-                                    (globalPlayerScale == 1));
+                                    (e.playerScale == 1));
                               }
                             ),
                           ];
@@ -56889,6 +56907,7 @@ var version = "v1.10.11";
                   isGravity: t.isGravity
                 },
                 (e) => {
+                  (e.playerScale = t.playerScale),
                   (e.isGravity = t.isGravity),
                   (e.dashing = t.dashing),
                   (e.cameraX = t.cameraX),
@@ -57889,6 +57908,7 @@ var version = "v1.10.11";
                         playerScale: e.playerScale,
                       },
                       (t) => {
+                        (t.playerSpeedMultiplier = e.playerSpeedMultiplier),
                         (t.playerScale = e.playerScale),
                         (t.playerX = e.playerX),
                           (t.playerY = e.playerY),
@@ -58024,6 +58044,7 @@ var version = "v1.10.11";
                                     playerScale: e.playerScale,
                                   }),
                                   update: (t, { y: a }) => {
+                                    (t.playerSpeedMultiplier = e.playerSpeedMultiplier),
                                     (t.playerScale = e.playerScale),
                                     (t.playerX = e.playerX),
                                       (t.playerY = a),
@@ -58058,6 +58079,7 @@ var version = "v1.10.11";
                                     playerScale: e.playerScale,
                                   }),
                                   update: (t, { y: a }) => {
+                                    (t.playerSpeedMultiplier = e.playerSpeedMultiplier),
                                     (t.playerScale = e.playerScale),
                                     (t.playerX = e.playerX),
                                       (t.playerY = a),
@@ -58237,6 +58259,7 @@ var version = "v1.10.11";
                         playerScale: e.playerScale,
                       },
                       (t) => {
+                        (t.playerSpeedMultiplier = e.playerSpeedMultiplier),
                         (t.playerScale = e.playerScale),
                         (t.playerX = e.playerX),
                           (t.playerY = e.playerY),
@@ -61512,7 +61535,7 @@ var version = "v1.10.11";
                     playerDir: t.mutValues.levelState.playerDir,
                     playerScaleX: t.mutValues.levelState.playerScaleX,
                     playerScaleY: t.mutValues.levelState.playerScaleY,
-
+                    playerScale: t.mutValues.levelState.playerScale,
                     playerPowerups: t.mutValues.levelState.playerPowerups,
                     isCompatible: t.mutValues.levelState.isCompatible,
                     playerPowerupOut:
@@ -61576,7 +61599,6 @@ var version = "v1.10.11";
                       t.mutValues.levelState.crashed
                     ),
                     fadeOutAttempts: Ml(t.mutValues.levelState.bossState),
-                    playerScale: t.mutValues.levelState.playerScale,
                     bgColor: t.mutValues.levelState.bgColor,
                     flash: t.flash,
                     gravity: t.gravity,
@@ -62225,7 +62247,7 @@ var version = "v1.10.11";
                 g = e.size.height + 2 * e.size.heightMargin,
                 m = [
                   o({ width: p, height: g, color: "#091045" }),
-                  Xr.Single({
+                  GridLines.Single({
                     id: "GridLines",
                     parentOffset: t,
                     x: t.x,
@@ -62838,12 +62860,52 @@ var version = "v1.10.11";
                     height: l,
                     color: t.layout.properties.theme.colour,
                   }),
+                  ...(s(Se).settings.animateEditor && t.themeLoaded ? [
+                    xg.Single(
+                      {
+                        id: "Background",
+                        theme: t.layout.properties.theme,
+                        cameraX: -t.levelEditorSettings.viewOffset.x / t.levelEditorSettings.viewOffset.scale,
+                        cameraY: -t.levelEditorSettings.viewOffset.y / t.levelEditorSettings.viewOffset.scale,
+                        paused: false,
+                        switchBlockSpikes: t.runHistory[t.runHistoryIndex].switchBlockSpikes,
+                        playerScale: t.runHistory[t.runHistoryIndex].playerScale,
+                        bgColor:t.runHistory[t.runHistoryIndex].bgColor,
+                        flash: 0,
+                        speedMultiplier: t.runHistory[t.runHistoryIndex].playerSpeedMultiplier,
+                        plain: s(Se).settings.plainBackground,
+                        frame: t.levelEditorSettings.viewOffset.x + t.levelEditorSettings.viewOffset.y,
+                        jumpFrames: t.jumpFrames,
+                        playerDir: 1,
+                        crashed: false,
+                        gravity: 1,
+                        dashing: false,
+                        isGravity: false,
+                        scaleX: Math.max(1, t.levelEditorSettings.viewOffset.scale),
+                        scaleY: Math.max(1, t.levelEditorSettings.viewOffset.scale),
+                      },
+                      (e) => {
+                        (e.theme = t.layout.properties.theme),
+                        (e.cameraX = -t.levelEditorSettings.viewOffset.x / t.levelEditorSettings.viewOffset.scale),
+                          (e.cameraY = -t.levelEditorSettings.viewOffset.y / t.levelEditorSettings.viewOffset.scale),
+                          (e.paused = t.paused),
+                          (e.speedMultiplier = t.runHistory[t.runHistoryIndex].playerSpeedMultiplier),
+                          (e.bgColor = t.runHistory[t.runHistoryIndex].bgColor),
+                          (e.switchBlockSpikes = t.runHistory[t.runHistoryIndex].switchBlockSpikes),
+                          (e.playerScale = t.runHistory[t.runHistoryIndex].playerScale),
+                          (e.frame = 0),
+                          (e.jumpFrames = t.jumpFrames),
+                          (e.scaleX = Math.max(1, t.levelEditorSettings.viewOffset.scale)),
+                         (e.scaleY = Math.max(1, t.levelEditorSettings.viewOffset.scale));
+                      }
+                    ),
+                  ] : [
                   o(
                     {
                       color: infiniteBgTable(0, t.runHistory[t.runHistoryIndex].bgColor || "#00FFFF"),
                       width: r,
                       height: l,
-                      show: t.layout.properties.theme.id === "infinite"
+                      show: t.layout.properties.theme.id === "infinite",
                     },
                   ),
                   o({
@@ -62880,7 +62942,7 @@ var version = "v1.10.11";
                       opacity: 0.3,
                       show: t.layout.properties.theme.id === "classic"
                     },
-                  ),
+                  )]),
                   
                   zr({
                     id: "LevelEditor",
@@ -63087,7 +63149,7 @@ var version = "v1.10.11";
           Yf = makeCustomSprite({
             init({ preloadFiles: e, props: t }) {
               e({
-                imageFileNames: Qs.getThemeImages(t.theme),
+                imageFileNames: [...Qs.getThemeImages(t.theme), ...qs(t.theme.background)],
                 imageFileNamesScaleNearestPixel: Qs.getThemeImagesPixel(
                   t.theme
                 ),
@@ -66178,7 +66240,7 @@ var version = "v1.10.11";
                   rankPercent: c,
                   y: t / 2 - 65,
                 }),
-                Ry.Single({
+                MockPlayerTrail.Single({
                   id: "PlayerTrail",
                   skin: o,
                   mockPlayerX: u,
@@ -66186,7 +66248,7 @@ var version = "v1.10.11";
                   isFront: false,
                 }),
                 To.Single({ id: "Player", skin: o, x: 20 }),
-                Ry.Single({
+                MockPlayerTrail.Single({
                   id: "PlayerTrail",
                   skin: o,
                   mockPlayerX: u,
@@ -66302,7 +66364,7 @@ var version = "v1.10.11";
               }),
               We({ color: Re, width: e, height: t - 31, x: 3, y: -20 }),
               We({ color: Be, width: e, height: t - 30, y: -20 }),
-              Ry.Single({
+              MockPlayerTrail.Single({
                 id: "PlayerTrailBack",
                 skin: a,
                 mockPlayerX: i,
@@ -66310,7 +66372,7 @@ var version = "v1.10.11";
                 isFront: false
               }),
               To.Single({ id: "Player", skin: a, x: 20 }),
-              Ry.Single({
+              MockPlayerTrail.Single({
                 id: "PlayerTrail",
                 skin: a,
                 mockPlayerX: i,
@@ -66326,7 +66388,7 @@ var version = "v1.10.11";
               _m({ id: "GoOnline", y: -t / 2 + 40 }),*/
             ],
           }),
-          Ry = makeSprite({
+          MockPlayerTrail = makeSprite({
             render: ({ props: e }) => [
               Se.Single({
                 context: () => e.globalContextVal,
@@ -66342,6 +66404,7 @@ var version = "v1.10.11";
                       skin: e.skin,
                       isFront: e.isFront,
                       playerScale: 1,
+                      playerSpeedMultiplier: 1,
                     },
                     (t) => {
                       (t.x = 20 - e.mockPlayerX),
