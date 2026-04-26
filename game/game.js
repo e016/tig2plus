@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
 showcaseOnly = false;
 
-var version = "v1.11.0";
+var version = "v1.11.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -42996,7 +42996,31 @@ var version = "v1.11.0";
                 author: "TheFatRat",
                 bpm: 103,
                 fileName: "audio/tracks/the-fat-rat-jackpot.mp3"
-              }
+              },
+              carnival: {
+                name: "Carnival",
+                author: "DJVI",
+                bpm: 128,
+                fileName: "audio/tracks/djvi-carnival.mp3"
+              },
+              robotLanguage: {
+                name: "Robot Language",
+                author: "meganeko",
+                bpm: 132,
+                fileName: "audio/tracks/meganeko-robot-language.mp3"
+              },
+              dryOut: {
+                name: "Dry Out",
+                author: "DJVI",
+                bpm: 145,
+                fileName: "audio/tracks/djvi-dry-out.mp3"
+              },
+              carnivores: {
+                name: "Carnivores",
+                author: "Creo",
+                bpm: 120,
+                fileName: "audio/tracks/djvi-dry-out.mp3"
+              },
               
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
@@ -46574,6 +46598,10 @@ var version = "v1.11.0";
              e[(e.LastTile = 58)] = "LastTile";
              e[(e.Hellidox = 59)] = "Hellidox";
              e[(e.Jackpot = 60)] = "Jackpot";
+             e[(e.Carnival = 61)] = "Carnival";
+             e[(e.RobotLanguage = 62)] = "RobotLanguage";
+             e[(e.DryOut = 63)] = "DryOut";
+             e[(e.Carnivores = 64)] = "Carnivores";
           })(Nd || (Nd = {})),
           (function (e) {
             (e[(e.World1 = 0)] = "World1"),
@@ -47429,7 +47457,11 @@ var version = "v1.11.0";
             [Nd.GlitchedOut]: hl.songs.glitchedOut,
             [Nd.LastTile]: hl.songs.lastTile,
             [Nd.Hellidox]: hl.songs.hellidox,
-            [Nd.Jackpot]: hl.songs.jackpot
+            [Nd.Jackpot]: hl.songs.jackpot,
+            [Nd.Carnival]: hl.songs.carnival,
+            [Nd.RobotLanguage]: hl.songs.robotLanguage,
+            [Nd.DryOut]: hl.songs.dryOut,
+            [Nd.Carnivores]: hl.songs.carnivores
           },
           Hd = {
             [ld.Rot0]: 0,
