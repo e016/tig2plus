@@ -28,6 +28,18 @@ var version = "1.1.2",
     "fonts/Montserrat-Medium.ttf",
     "fonts/Montserrat-MediumItalic.ttf",
     "fonts/Montserrat-SemiBold.ttf",
+    "fonts/Poppins-Black.ttf",
+    "fonts/Poppins-BlackItalic.ttf",
+    "fonts/Poppins-ExtraBold.ttf",
+    "fonts/Poppins-ExtraBoldItalic.ttf",
+    "fonts/Poppins-Medium.ttf",
+    "fonts/Poppins-MediumItalic.ttf",
+    "fonts/Poppins-Regular.ttf",
+    "fonts/Poppins-SemiBold.ttf",
+    "fonts/Poppins-SemiBoldItalic.ttf",
+
+    // favicon
+    "./favicon.ico",
   ],
   audioFiles = [
     // achievement
