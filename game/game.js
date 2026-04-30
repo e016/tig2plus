@@ -54520,6 +54520,14 @@ var version = "v1.11.1";
                     bottomY: t.playerY - 8,
                   }),
                   (function (renderPath, path) {
+                    let topPart = path.map((point) => [point.x, point.topY]),
+                    bottomPart = path.map((point) => [point.x, point.bottomY]).reverse();
+                    e.renderPath = [...topPart, ...bottomPart];
+                    for (let a = 0; a < Math.ceil(path.length / 2); a++) {
+                      e.renderPath.push(e.renderPath[0]);
+                      e.renderPath.shift();
+                    }
+                    return;
                     const pathLength = path.length,
                       halfPathLength = Math.ceil(pathLength / 2),
                       twicePathLength = 2 * pathLength,
