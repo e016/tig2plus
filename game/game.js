@@ -19934,6 +19934,8 @@ var version = "v1.11.1";
                       paused: e.paused,
                       rotation: e.playerRot,
                       df: e.df,
+                      scaleX: e.playerScale,
+                      scaleY: e.playerScale
                     },
                     (t) => {
                       ((t.paused = e.paused),
@@ -19949,6 +19951,8 @@ var version = "v1.11.1";
                       colour: e.trail.topColour,
                       bottomColour: e.trail.bottomColour,
                       paused: e.paused,
+                      scaleX: e.playerScale,
+                      scaleY: e.playerScale
                     },
                     (t) => {
                       ((t.justDestroyed = e.justDestroyed),
@@ -55203,6 +55207,7 @@ var version = "v1.11.1";
                             justDestroyed: true,
                             playerRot: 0,
                             sfx: false,
+                            playerScale: 1,
                           },
                           (t) => {
                             const a = e.bossState;
@@ -60297,6 +60302,7 @@ var version = "v1.11.1";
                                     bottomColour: "#FCDA45",
                                   }, // for now, hehehe...
                             playerRot: e.playerRot,
+                            playerScale: e.playerScale,
                             df: e.df,
                           },
                           (t) => {
@@ -60687,6 +60693,7 @@ var version = "v1.11.1";
                     trail: e.playerSkin.trail,
                     playerRot: e.playerRot,
                     df: e.df,
+                    playerScale: e.playerScale,
                   }),
                   update: (t) => {
                     ((t.paused = e.paused), (t.df = e.df));
