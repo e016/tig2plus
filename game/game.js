@@ -34509,7 +34509,6 @@ var version = "v1.11.1";
                         ],
                       ),
                     );
-                  console.warn(t, e.powerup);
                   return t;
                 },
               ),
@@ -41418,6 +41417,55 @@ var version = "v1.11.1";
                       opacity: 0.3,
                     })
                   : null,
+                  ...(false ? [vo({
+                    id: "Autopilot",
+                    fileName: "images/achievement/rewards/autopilot.png",
+                    noSound: false,
+                    onPress: () => {
+                      let autopilot = JSON.stringify(e.runHistory[e.runHistoryIndex].boosterDebug.autopilot);
+                      i.clipboard.copy(autopilot, (e) => {
+                        if (e)
+                          return (
+                            i.alert.ok(
+                              `Error copying autopilot JSON to clipboard: ${e.message}`,
+                            ),
+                            void i.log(autopilot)
+                          );
+                        i.alert.ok(
+                          "Autopilot JSON copied to clipboard.",
+                        );
+                      });
+                    },
+                    isSelected: false,
+                    isOpen: false,
+                    x: l / 2 - 210,
+                    y: c / 2 - 50
+                  }),
+                  vo({
+                    id: "JumpIndicator",
+                    fileName: "images/achievement/rewards/slowmo.png",
+                    noSound: false,
+                    onPress: () => {
+                      let autopilot = JSON.stringify(e.runHistory[e.runHistoryIndex].boosterDebug.jumpIndicators);
+                      i.clipboard.copy(autopilot, (e) => {
+                        if (e)
+                          return (
+                            i.alert.ok(
+                              `Error copying jump indicator JSON to clipboard: ${e.message}`,
+                            ),
+                            void i.log(autopilot)
+                          );
+                        i.alert.ok(
+                          "Jump Indicator JSON copied to clipboard.",
+                        );
+                      });
+                    },
+                    isSelected: false,
+                    isOpen: false,
+                    x: l / 2 - 250,
+                    y: c / 2 - 50
+                  })] : []),
+                  
                 ...(i.isTouchScreen
                   ? [
                       PinchRecogniser({
@@ -42158,6 +42206,10 @@ var version = "v1.11.1";
                   isGravity: false,
                   fallTypes: [null, null],
                   flyingAnchor: null,
+                  boosterDebug: {
+                    autopilot: {},
+                    jumpIndicators: [],
+                  }
                 };
           },
           el = function (e, t) {
@@ -42241,6 +42293,10 @@ var version = "v1.11.1";
               isGravity: e.isGravity,
               fallTypes: [e.fallTypes[0], e.fallTypes[1]],
               flyingAnchor: e.flyingAnchor,
+              boosterDebug: null, /*{
+                autopilot: Object.assign({}, e.boosterDebug.autopilot),
+                jumpIndicators: e.boosterDebug.jumpIndicators.map((indicator) => Object.assign({}, indicator)),
+              }*/
             };
           },
           menuButtonSprite = makeSprite({
@@ -42686,6 +42742,13 @@ var version = "v1.11.1";
               { levelState: U } = L;
             U.frame += df;
             const { a: j, b: V } = A;
+            if (U.boosterDebug) {
+            if (playerInput === "justDown") {
+              U.boosterDebug.autopilot[U.frame] = 1;
+            } else if (playerInput === "up" && Object.values(U.boosterDebug.autopilot).at(-1) === 1) {
+              U.boosterDebug.autopilot[U.frame] = 0;
+            };
+          }
             L.blockJumpUntilReleased &&
               "up" === playerInput &&
               (L.blockJumpUntilReleased = false);
@@ -42876,6 +42939,7 @@ var version = "v1.11.1";
                   e &&
                   ((U.dashing = false),
                   (U.jumping = true),
+                  (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: U.playerY, inAir: true}))),
                   (U.playerPowerups.length === 0 &&
                     !U.playerPowerups.some((e) => e.item === "playerStack") &&
                     (L.blockJumpUntilReleased = true),
@@ -42949,6 +43013,7 @@ var version = "v1.11.1";
                       : i.item)
                 )
                   (null == v || v.useUpPowerup("punch"),
+                  (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: U.playerY, inAir: true}))),
                     (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0),
@@ -42991,6 +43056,7 @@ var version = "v1.11.1";
                     (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0),
+                    (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: U.playerY, inAir: true}))),
                     U.playerPowerups.shift(),
                     xa.updateHitDrillState(
                       U.frame,
@@ -43014,6 +43080,7 @@ var version = "v1.11.1";
                       : n.item)
                 )
                   (null == v || v.useUpPowerup("gun"),
+                  (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: U.playerY, inAir: true}))),
                     (L.blockJumpUntilReleased = true),
                     (isDown = false),
                     (U.justDownInputTimer = 0),
@@ -43040,6 +43107,7 @@ var version = "v1.11.1";
                     (U.jumpSwitch.delay = 2),
                     U.playerPowerups.shift(),
                     (U.justDownInputTimer = 0),
+                    (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: U.playerY, inAir: true}))),
                     null == v || v.useUpPowerup("doubleJump"),
                     (U.jumping = true));
                 else if (U.playerPowerups.some((e) => e.item === "jetpack")) {
@@ -43049,7 +43117,9 @@ var version = "v1.11.1";
                       U.playerGradY += (e * (V - U.playerGradY)) / 5;
                     }
                   } else
-                    ((U.jumping = true),
+                    ((
+                      (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: U.playerY, inAir: true})))
+                    ),(U.jumping = true),
                       (U.playerGradY = G.initGrad(V) / 2),
                       U.playerJetpackFuel < 8 &&
                         ((U.playerGradY = G.initGrad(V)),
@@ -43095,6 +43165,7 @@ var version = "v1.11.1";
                     U.isGravity = false;
                     U.jumping = U.flyingAnchor === null ? true : U.jumping;
                     U.playerGradY = -1;
+                    (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: U.playerY, inAir: true})));
                     ((L.blockJumpUntilReleased = true),
                       (isDown = false),
                       (U.justDownInputTimer = 0));
@@ -43107,6 +43178,7 @@ var version = "v1.11.1";
                     U.dashing &&
                       e &&
                       ((U.dashing = false),
+                      (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: U.playerY, inAir: true}))),
                       (L.blockJumpUntilReleased = true),
                       (isDown = false),
                       (U.justDownInputTimer = 0));
@@ -43115,8 +43187,10 @@ var version = "v1.11.1";
                       0 !== U.playerGradY ||
                       (skating
                         ? (U.skateboardJumpCharge += df)
-                        : ((U.jumping = true),
+                        : (
                           (U.playerGradY = G.initGrad(V)),
+                          (U.jumping = true),
+                          (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({ x: U.playerX, y: U.playerY }))),
                           (U.jumpSwitch.on = !U.jumpSwitch.on),
                           (U.jumpSwitch.delay = 2),
                           (U.justDownInputTimer = 0),
@@ -43128,10 +43202,11 @@ var version = "v1.11.1";
                   !U.jumping &&
                   0 === U.playerGradY &&
                   ((U.jumping = true),
+                  (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: U.playerY}))),
                   (U.playerGradY =
                     G.initGrad(V) *
                     B.clamp2(1, 1.4, 1 + U.skateboardJumpCharge / 60)),
-                  (U.jumpSwitch.on = !U.jumpSwitch.on),
+                    (U.jumpSwitch.on = !U.jumpSwitch.on),
                   (U.jumpSwitch.delay = 2),
                   (U.justDownInputTimer = 0),
                   (U.skateboardJumpCharge = 0),
@@ -43198,6 +43273,7 @@ var version = "v1.11.1";
                 ? ("justDown" === playerInput &&
                     !L.blockJumpUntilReleased &&
                     ((U.jumping = !U.jumping),
+                    (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: U.playerY, inAir: true}))),
                     (U.jumpSwitch.on = !U.jumpSwitch.on),
                     (U.jumpSwitch.delay = 0),
                     (L.blockJumpUntilReleased = true),
@@ -43901,7 +43977,9 @@ var version = "v1.11.1";
                   1,
                 );
                 ((U.playerY = t),
+                (U.boosterDebug && (U.boosterDebug.jumpIndicators.push({x: U.playerX, y: Q}))),
                   (U.playerGradY = a),
+                  
                   U.jumpSwitch.timeout <= 0 &&
                     ((U.jumpSwitch.on = !U.jumpSwitch.on),
                     (U.jumpSwitch.delay = 2),
@@ -49009,8 +49087,7 @@ var version = "v1.11.1";
                               skipMissiles: 1 === i,
                               isLaser: 1 === laser,
                             })
-                        : (console.warn(tr, zd[tr], ini, laser),
-                          $.newSwitchSpike({
+                        : $.newSwitchSpike({
                             x: e,
                             y: t,
                             rotation: Hd[a],
@@ -49018,7 +49095,7 @@ var version = "v1.11.1";
                             isLaser: false,
                             init: ini == 0 ? "blue" : "red",
                             trigger: zd[tr],
-                          })),
+                          }),
                     ),
                     platforms: c.map(([e, t, a, i]) =>
                       $.newPlatform({
@@ -49888,6 +49965,10 @@ var version = "v1.11.1";
                 Object.assign(Object.assign({}, e), {
                   playerPowerups: e.playerPowerup ? [e.playerPowerup] : [],
                 }),
+              (e) =>
+                Object.assign(Object.assign({}, e), {
+                  boosterDebug: null
+                }),
             ],
             finalSchema: kc({
               frame: fc,
@@ -49962,6 +50043,7 @@ var version = "v1.11.1";
               isGravity: Bc([Hc, yc, hc]),
               fallTypes: Hc, //kc(Bc([hc, mc]), Bc([hc, mc]))
               flyingAnchor: Bc([fc, hc]),
+              boosterDebug: Bc([kc({ autopilot: Hc, jumpIndicators: Hc }), hc]),
             }),
             uncompress: (e) => e,
             compress: (e) =>
@@ -59342,9 +59424,12 @@ var version = "v1.11.1";
                     fallTypes: t.fallTypes,
                     flyingAnchor: t.flyingAnchor,
                     playerSpeedMultiplier: t.playerSpeedMultiplier,
+                    boosterDebug: t.boosterDebug,
                   },
                   (e) => {
-                    ((e.playerSpeedMultiplier = t.playerSpeedMultiplier),
+                    (
+                      (e.boosterDebug = t.boosterDebug),
+                      (e.playerSpeedMultiplier = t.playerSpeedMultiplier),
                       (e.cameraX = t.cameraX),
                       (e.cameraXOffset = t.cameraXOffset),
                       (e.cameraY = t.cameraY),
@@ -60276,6 +60361,22 @@ var version = "v1.11.1";
                     ),
                   ],
                 ),
+                g({
+                  props: (t) => ({
+                    color: e.playerSkin.trail.topColour,
+                    width: 30,
+                    height: 30,
+                    x: t.x,
+                    y: t.y,
+                    opacity: 0.4
+                  }),
+                  update: (a, t) => {
+                    a.x = t.x;
+                    a.y = t.y;
+                    a.rotation = e.frame;
+                  },
+                  array: () => e.boosterDebug ? e.boosterDebug.jumpIndicators : [],
+                }),
                 ifConditional(
                   () => !e.hidePlayer,
                   () => [
@@ -64081,6 +64182,7 @@ var version = "v1.11.1";
                     ((a.justDownInputTimer =
                       t.mutValues.levelState.justDownInputTimer),
                       (a.levelSpeeds = t.levelSpeeds),
+                      (a.boosterDebug = t.mutValues.levelState.boosterDebug),
                       (a.jumping = t.mutValues.levelState.jumping),
                       (a.isGravity = t.mutValues.levelState.isGravity),
                       (a.flyingAnchor = t.mutValues.levelState.flyingAnchor),
