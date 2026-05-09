@@ -42362,7 +42362,7 @@ var version = "v1.12.0";
                   isGravity: false,
                   fallTypes: [null, null],
                   flyingAnchor: null,
-                  boosterDebug: null, /*{
+                  boosterDebug: null,/*{
                     autopilot: {},
                     jumpIndicators: [],
                   }*/
@@ -59972,6 +59972,7 @@ var version = "v1.12.0";
                       (t.inGame.frame = e.frame),
                       (t.inGame.paused = e.paused),
                       (t.inGame.df = e.df),
+                      (t.inGame.crashed = e.crashed),
                       (t.inGame.playerX = e.playerX),
                       (t.inGame.fallTypes = e.fallTypes),
                       (t.inGame.playerDir = e.playerDir),
@@ -60003,6 +60004,7 @@ var version = "v1.12.0";
                       (t.inGame.frame = e.frame),
                       (t.inGame.paused = e.paused),
                       (t.inGame.df = e.df),
+                      (t.inGame.crashed = e.crashed),
                       (t.inGame.playerX = e.playerX),
                       (t.inGame.playerY = e.playerY),
                       (t.inGame.crashed = e.crashed),
