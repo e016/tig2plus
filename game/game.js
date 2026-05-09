@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.12.0";
+var version = "v1.12.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -17911,6 +17911,13 @@ var version = "v1.12.0";
               size: 30,
               author: "GatoNegro",
               trail: ct({ topColour: "#9f1960", bottomColour: "#691d96" }),
+            },
+            gd: {
+              name: "Geometry Dash",
+              fileName: "gd",
+              size: 31,
+              author: "RoadHogStudios",
+              trail: ct({ topColour: "#7dff00", bottomColour: "#7dff00" })
             },
             blank: {
               name: "Blank",
@@ -70150,11 +70157,11 @@ var version = "v1.12.0";
             ),
             render({
               props: { width: e, height: t, playerSkin: a, profileId: i },
-              state: { allSkinItems: s, selectedSkinItem: o, updatingSkin: r },
+              state: { allSkinItems: allSkinItems, selectedSkinItem: o, updatingSkin: r },
               updateState: c,
               getContext: d,
             }) {
-              if ("loading" === s)
+              if ("loading" === allSkinItems)
                 return [n({ text: `${localize("LOADING")}...`, color: Be })];
               const u = 0.6 * e,
                 h = 0.2 * -e;
@@ -70172,6 +70179,8 @@ var version = "v1.12.0";
                   color: ve,
                   x: 110,
                   y: t / 2 - 40,
+                  strokeColor: Fe,
+                  strokeThickness: 8,
                 }),
                 l({
                   fileName: `images/player/skins/${o.skin.fileName}.png`,
@@ -70247,11 +70256,11 @@ var version = "v1.12.0";
                   id: "ScrollContainer",
                   containerHeight: t,
                   containerWidth: u,
-                  contentHeight: 70 * Math.ceil(s.length / 3) + 30,
+                  contentHeight: 70 * Math.ceil(allSkinItems.length / 3) + 30,
                   y: t / 2,
                   x: h,
                   sprites: (e) => [
-                    ...s.map((t, a) => {
+                    ...allSkinItems.map((t, a) => {
                       const i = (a % 3) - 1,
                         n = Math.floor(a / 3),
                         s = t.skin.fileName === o.skin.fileName;
