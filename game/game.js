@@ -17917,7 +17917,7 @@ var version = "v1.12.1";
               name: "Geometry Dash",
               fileName: "gd",
               size: 31,
-              author: "RoadHogStudios",
+              author: "KDSealock",
               trail: ct({ topColour: "#7dff00", bottomColour: "#7dff00" })
             },
             blank: {
