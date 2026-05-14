@@ -20536,7 +20536,36 @@ var version = "v1.12.1";
                                 e.inGame && e.inGame.playerDir,
                               )),
                               (a.opacity = n),
-                              void (a.show = !i.steel && !i.isFade)
+                              void (a.show = !i.steel && !i.isFade && !i.isBoss)
+                            );
+                        }
+                        a.show = false;
+                      },
+                      array: () => e.blocks,
+                    }),
+                    imageArray({
+                      fileName: `images/themes/${e.theme}/boss-light.png`,
+                      props: () => ({}),
+                      update: (a, i, n) => {
+                        const s = e.inGame.blockStates[n];
+                        if (s && !s.destroyed && s.hitFrame) {
+                          const n = B.zeroTo1(
+                            1 - (e.inGame.frame - s.hitFrame) / 20,
+                          );
+                          if (n > 0)
+                            return (
+                              (a.width = i.width * t),
+                              (a.height = i.height * t),
+                              (a.x = i.x),
+                              (a.y = getBlockFallY(
+                                i.x,
+                                i.y,
+                                e.inGame && e.inGame.playerX,
+                                e.inGame && e.inGame.fallTypes,
+                                e.inGame && e.inGame.playerDir,
+                              )),
+                              (a.opacity = n),
+                              void (a.show = !i.steel && !i.isFade && i.isBoss)
                             );
                         }
                         a.show = false;
@@ -30671,6 +30700,7 @@ var version = "v1.12.1";
               `images/themes/${e.objects.block}/boss.png`,
               `images/themes/${e.objects.block}/steel.png`,
               `images/themes/${e.objects.block}/block-light.png`,
+              `images/themes/${e.objects.block}/boss-light.png`,
               `images/themes/${e.objects.platform}/platform.png`,
               `images/themes/${e.objects.platform}/platform-rail.png`,
               `images/themes/${e.objects.saw}/saw.png`,
