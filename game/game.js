@@ -30776,6 +30776,7 @@ var version = "v1.13.0";
               `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-yellow.png`,
               `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-red.png`,
               `images/themes/${e.objects.switch == "world2" ? "world2" : "world4"}/portal-blue.png`,
+              "images/themes/infinite/collectible.png",
               "images/themes/synthwave/collectible.png",
               "images/themes/world2/collectible-solid.png",
               "images/themes/synthwave/collectible-pickup.png",
@@ -36085,92 +36086,126 @@ var version = "v1.13.0";
                         }
                         return [
                           conditional(
-                            () => e.wasPickedUp,
+                            () => e.theme === "infinite",
                             () => [
-                              triggerableSpriteSheet.Single(
-                                {
-                                  fileName:
-                                    "images/themes/synthwave/collectible-pickup.png",
-                                  columns: 4,
-                                  rows: 3,
-                                  frameRate: 3,
-                                  width: 27,
-                                  height: 52,
-                                  x: e.collectible.x,
-                                  y: getBlockFallY(
-                                    e.collectible.x,
-                                    e.collectible.y,
-                                    e.playerX,
-                                    e.fallTypes,
-                                    e.playerDir,
-                                  ),
-                                  paused: false,
-                                  df: 1,
-                                  hideOnEnd: true,
-                                },
-                                (t) => {
-                                  ((t.x = e.collectible.x),
-                                    (t.y = getBlockFallY(
-                                      e.collectible.x,
-                                      e.collectible.y,
-                                      e.playerX,
-                                      e.fallTypes,
-                                      e.playerDir,
-                                    )));
-                                },
-                              ),
-                            ],
-                            () => [
-                              loopingSpriteSheet.Single(
-                                {
-                                  fileName: `images/themes/synthwave/collectible.png`,
-                                  width: 29,
-                                  height: 29,
-                                  columns: 4,
-                                  rows: 2,
-                                  x: e.collectible.x,
-                                  y: getBlockFallY(
-                                    e.collectible.x,
-                                    e.collectible.y,
-                                    e.playerX,
-                                    e.fallTypes,
-                                    e.playerDir,
-                                  ),
-                                  scaleX: 1,
-                                  frame: 0,
-                                  frameRate: 3,
-                                },
-                                (t) => {
-                                  ((t.x = e.collectible.x),
-                                    (t.y = getBlockFallY(
-                                      e.collectible.x,
-                                      e.collectible.y,
-                                      e.playerX,
-                                      e.fallTypes,
-                                      e.playerDir,
-                                    )),
-                                    (t.scaleX = e.flipX ? -1 : 1),
-                                    (t.frame = e.spinFrame || 0));
-                                },
-                              ),
-                              e.isEditor
-                                ? p(
+                              conditional(
+                                () => e.wasPickedUp,
+                                () => [
+                                  // not yet
+                                ],
+                                () => [
+                                  y(
                                     {
-                                      x: e.collectible.x,
-                                      y: e.collectible.y,
-                                      width: 20,
-                                      height: 20,
-                                      color: "green",
-                                      opacity: 0.5,
+                                      fileName: "images/themes/infinite/collectible.png",
+                                      width: 25,
+                                      height: 25,
                                     },
                                     (t) => {
-                                      t.x = e.collectible.x;
-                                      t.y = e.collectible.y;
+                                      ((t.x = e.collectible.x),
+                                        (t.y = getBlockFallY(
+                                          e.collectible.x,
+                                          e.collectible.y,
+                                          e.playerX,
+                                          e.fallTypes,
+                                          e.playerDir,
+                                        )));
                                     },
-                                  )
-                                : null,
+                                  ),
+                                ],
+                              ),
                             ],
+                            () => [
+                              conditional(
+                                () => e.wasPickedUp,
+                                () => [
+                                  triggerableSpriteSheet.Single(
+                                    {
+                                      fileName:
+                                        "images/themes/synthwave/collectible-pickup.png",
+                                      columns: 4,
+                                      rows: 3,
+                                      frameRate: 3,
+                                      width: 27,
+                                      height: 52,
+                                      x: e.collectible.x,
+                                      y: getBlockFallY(
+                                        e.collectible.x,
+                                        e.collectible.y,
+                                        e.playerX,
+                                        e.fallTypes,
+                                        e.playerDir,
+                                      ),
+                                      paused: false,
+                                      df: 1,
+                                      hideOnEnd: true,
+                                    },
+                                    (t) => {
+                                      ((t.x = e.collectible.x),
+                                        (t.y = getBlockFallY(
+                                          e.collectible.x,
+                                          e.collectible.y,
+                                          e.playerX,
+                                          e.fallTypes,
+                                          e.playerDir,
+                                        )));
+                                    },
+                                  ),
+                                ],
+                                () => [
+                                  loopingSpriteSheet.Single(
+                                    {
+                                      fileName: `images/themes/synthwave/collectible.png`,
+                                      width: 29,
+                                      height: 29,
+                                      columns: 4,
+                                      rows: 2,
+                                      x: e.collectible.x,
+                                      y: getBlockFallY(
+                                        e.collectible.x,
+                                        e.collectible.y,
+                                        e.playerX,
+                                        e.fallTypes,
+                                        e.playerDir,
+                                      ),
+                                      scaleX: 1,
+                                      frame: 0,
+                                      frameRate: 3,
+                                    },
+                                    (t) => {
+                                      ((t.x = e.collectible.x),
+                                        (t.y = getBlockFallY(
+                                          e.collectible.x,
+                                          e.collectible.y,
+                                          e.playerX,
+                                          e.fallTypes,
+                                          e.playerDir,
+                                        )),
+                                        (t.scaleX = e.flipX ? -1 : 1),
+                                        (t.frame = e.spinFrame || 0));
+                                    },
+                                  ),
+                                  
+                                ],
+                              ),
+                            ]
                           ),
+                          
+                          e.isEditor
+                            ? p(
+                                {
+                                  x: e.collectible.x,
+                                  y: e.collectible.y,
+                                  width: 20,
+                                  height: 20,
+                                  color: "green",
+                                  opacity: 0.5,
+                                },
+                                (t) => {
+                                  t.x = e.collectible.x;
+                                  t.y = e.collectible.y;
+                                },
+                              )
+                            : null,
                         ];
                       },
                     ),
@@ -61138,7 +61173,7 @@ var version = "v1.13.0";
                       (t.playerDir = e.playerDir),
                       (t.paused = e.paused),
                       (t.df = e.df),
-                      (t.theme = e.layout.properties.theme.objects.switch));
+                      (t.theme = e.layout.properties.theme === "infinite" ? "infinite" : e.layout.properties.theme.objects.switch));
                   },
                 ),
                 qa.Array({
