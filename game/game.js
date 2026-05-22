@@ -33990,7 +33990,46 @@ var version = "v1.13.0";
           }),
           To = makeSprite({
             render: ({ props: e, getContext }) => [
-              onChange(
+              conditional(
+              () => e.isInfinite,
+              () => [
+                onChange(
+                  () => e.bgColor,
+                  () => [
+                    y(
+                      {
+                        testId: e.testId || "Player",
+                        fileName: `images/themes/${getInfiniteThemePath(e.bgColor)}/player.png`,
+                        width: 30,
+                        height: 30,
+                      },
+                      (t) => {
+                        t.y = e.onSkateboard ? $.skateboardHeight : 0;
+                      },
+                    ),
+                    ifConditional(
+                      () =>
+                        Boolean(e.landTimer) &&
+                        !getContext(Se).settings.hidePlayerGlow,
+                      () => [
+                        y(
+                          {
+                            fileName: bgOnly
+                              ? "images/themes/blank/block.png"
+                              : "images/player/glow.png",
+                            width: 85,
+                            height: 52,
+                          },
+                          (t) => {
+                            t.opacity = e.landTimer / et.landTimerLimit;
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              ],
+              () => [onChange(
                 () => e.skin.fileName,
                 () => [
                   y(
@@ -34024,7 +34063,8 @@ var version = "v1.13.0";
                     ],
                   ),
                 ],
-              ),
+              )]
+              )
             ],
           }),
           Ro = makeSprite({
@@ -34450,6 +34490,8 @@ var version = "v1.13.0";
                       return [
                         To.Single({ skin: e.skin }, (t) => {
                           ((t.x = e.powerup.x),
+                          (t.isInfinite = false),
+                                      (t.bgColor = e.bgColor),
                             (t.y = getBlockFallY(
                               e.powerup.x,
                               e.powerup.y,
@@ -34470,6 +34512,8 @@ var version = "v1.13.0";
                               e.inGame && e.inGame.fallTypes,
                               e.inGame && e.inGame.playerDir,
                             )),
+                            (t.isInfinite = false),
+                            (t.bgColor = e.bgColor),
                             (t.opacity = 0.5));
                         }),
                       ];
@@ -59199,6 +59243,8 @@ var version = "v1.13.0";
                     (t.playerDir = e.playerDir),
                     (t.skin = e.skin),
                     (t.landTimer = e.landTimer),
+                    (t.isInfinite = e.isInfinite),
+                        (t.bgColor = e.bgColor),
                     (t.onSkateboard = e.onSkateboard),
                     (t.mask = circleMask(
                       Zg(e.touchingPortals[0], e.playerX, e.playerY),
@@ -59228,6 +59274,8 @@ var version = "v1.13.0";
                     (a.skin = e.skin),
                     (a.landTimer = e.landTimer),
                     (a.onSkateboard = e.onSkateboard),
+                    (t.isInfinite = e.isInfinite),
+                        (t.bgColor = e.bgColor),
                     (a.mask = circleMask(
                       Zg(
                         e.touchingPortals[1],
@@ -59266,6 +59314,8 @@ var version = "v1.13.0";
                         (t.scaleY = e.playerScaleY),
                         (t.skin = e.skin),
                         (t.landTimer = e.landTimer),
+                        (t.isInfinite = e.isInfinite),
+                        (t.bgColor = e.bgColor),
                         (t.onSkateboard = e.onSkateboard));
                     },
                   ),
@@ -60937,6 +60987,8 @@ var version = "v1.13.0";
                                   (t.playerScale = e.playerScale),
                                   (t.playerScaleY = e.playerScaleY),
                                   (t.onSkateboard = i),
+                                  (t.isInfinite = e.layout.properties.theme.id === "infinite"),
+                                  (t.bgColor = e.bgColor),
                                   (t.touchingPortals = e.touchingPortals));
                               },
                             ),
@@ -60974,6 +61026,8 @@ var version = "v1.13.0";
                                     (t.scaleX = e.playerScaleX * e.playerDir),
                                     (t.scaleY = e.playerScaleY),
                                     (t.skin = e.playerSkin),
+                                    (t.isInfinite = e.layout.properties.theme.id === "infinite"),
+                                      (t.bgColor = e.bgColor),
                                     (t.opacity = e.playerPowerups.some(
                                       (e) => e.item == "ghost",
                                     )
@@ -61035,7 +61089,9 @@ var version = "v1.13.0";
                                         (e.isCompatible ? 1 : e.playerScale)),
                                       (t.scaleY = e.isCompatible
                                         ? 1
-                                        : e.playerScale));
+                                        : e.playerScale),
+                                      (t.isInfinite = e.layout.properties.theme.id === "infinite"),
+                                      (t.bgColor = e.bgColor));
                                   },
                                   array: () => e.playerStacks,
                                   key: (e, t) => t,
