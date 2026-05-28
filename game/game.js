@@ -34061,7 +34061,7 @@ var version = "v1.13.0";
           To = makeSprite({
             render: ({ props: e, getContext }) => [
               conditional(
-              () => e.isInfinite,
+              () => e.isInfinite && ["world1", "default", "headphone"].includes(e.skin.fileName),
               () => [
                 onChange(
                   () => e.bgColor,
@@ -34069,9 +34069,9 @@ var version = "v1.13.0";
                     y(
                       {
                         testId: e.testId || "Player",
-                        fileName: `images/themes/${getInfiniteThemePath(e.bgColor)}/player.png`,
-                        width: 30,
-                        height: 30,
+                        fileName: `images/themes/${getInfiniteThemePath(e.bgColor)}/player${e.skin.fileName === "headphone" ? "-collecting" : ""}.png`,
+                        width: e.skin.fileName === "headphone" ? e.skin.size : 30,
+                        height: e.skin.fileName === "headphone" ? e.skin.size : 30,
                       },
                       (t) => {
                         t.y = e.onSkateboard ? $.skateboardHeight : 0;
@@ -60963,7 +60963,7 @@ var version = "v1.13.0";
                           (t.touchingPortals = null !== e.touchingPortals),
                           (t.skin = Object.assign({}, e.playerSkin)),
                           (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
-                          (e.layout.properties.theme.id === "infinite") && (t.skin.trail = {
+                          (e.layout.properties.theme.id === "infinite") && ["world1", "default", "headphone"].includes(t.skin.fileName) && (t.skin.trail = {
                             form: "default",
                             topColour: getInfinitePlayerColors(e.bgColor),
                             bottomColour: getInfinitePlayerColors(e.bgColor),
@@ -61163,7 +61163,7 @@ var version = "v1.13.0";
                                         null !== e.touchingPortals),
                                       (t.skin = Object.assign({}, e.playerSkin)),
                                       (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
-                                      (e.layout.properties.theme.id === "infinite") && (t.skin.trail = {
+                                      (e.layout.properties.theme.id === "infinite") && ["world1", "default", "headphone"].includes(t.skin.fileName) && (t.skin.trail = {
                                         form: "default",
                                         topColour: getInfinitePlayerColors(e.bgColor),
                                         bottomColour: getInfinitePlayerColors(e.bgColor),
@@ -61212,7 +61212,7 @@ var version = "v1.13.0";
                                       (t.attempt = e.attempt),
                                       (t.skin = Object.assign({}, e.playerSkin)),
                                       (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
-                                      (e.layout.properties.theme.id === "infinite") && (t.skin.trail = {
+                                      (e.layout.properties.theme.id === "infinite") && ["world1", "default", "headphone"].includes(t.skin.fileName) && (t.skin.trail = {
                                         form: "default",
                                         topColour: getInfinitePlayerColors(e.bgColor),
                                         bottomColour: getInfinitePlayerColors(e.bgColor),
@@ -61401,7 +61401,7 @@ var version = "v1.13.0";
                           (t.touchingPortals = null !== e.touchingPortals),
                           (t.skin = Object.assign({}, e.playerSkin)),
                           (t.skin.trail = Object.assign({}, e.playerSkin.trail)),
-                          (e.layout.properties.theme.id === "infinite") && (t.skin.trail = {
+                          (e.layout.properties.theme.id === "infinite") && ["world1", "default", "headphone"].includes(t.skin.fileName) && (t.skin.trail = {
                             form: "default",
                             topColour: getInfinitePlayerColors(e.bgColor),
                             bottomColour: getInfinitePlayerColors(e.bgColor),
