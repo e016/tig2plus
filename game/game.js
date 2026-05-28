@@ -58366,14 +58366,14 @@ var version = "v1.13.0";
                               {
                                 fileName:
                                   "images/themes/punch/background/water.png",
-                                playerX: 0.03 * e.cameraX,
-                                playerY: 0.03 * e.cameraY,
+                                playerX: 0 * e.cameraX,
+                                playerY: 0 * e.cameraY,
                                 height: 177,
                                 y: -100,
                               },
                               (t) => {
-                                ((t.playerX = 0.03 * e.cameraX),
-                                  (t.playerY = 0.03 * e.cameraY));
+                                ((t.playerX = 0 * e.cameraX),
+                                  (t.playerY = 0 * e.cameraY));
                               },
                             ),
                             y({
