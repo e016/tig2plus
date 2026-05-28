@@ -31454,7 +31454,7 @@ var version = "v1.13.0";
                                 (a.y = n.midY),
                                 (a.show =
                                 "upDown" === n.movement || "downUp" === n.movement),
-                              (a.color = e.bgColor));
+                              (a.color = e.bgColor || "9b2e4b"));
                             },
                             array: () => e.saws,
                           })
@@ -31862,7 +31862,7 @@ var version = "v1.13.0";
                           testId: (e, t) => `Saw-${t}`,
                         }),
                         imageArray({
-                          fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme == "infinite" ? "infinite" : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
+                          fileName: `images/themes/${e.bigTheme == "classic" ? "classic" : e.bigTheme.includes("infinite") ? e.bigTheme : e.bigTheme == "world3" ? "world3" : "world1"}/saw-big.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.width * sawRatio),
@@ -31882,7 +31882,7 @@ var version = "v1.13.0";
                           testId: (e, t) => `Saw-${t}`,
                         }),
                         imageArray({
-                          fileName: `images/themes/${e.theme == "classic" ? "classic" : "infinite"}/saw-bar.png`,
+                          fileName: `images/themes/${e.theme == "classic" ? "classic" : e.theme.includes("infinite") ? e.theme : "infinite"}/saw-bar.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.height),
@@ -42239,8 +42239,9 @@ var version = "v1.13.0";
                     previewYs: inViewLayoutAtTime.saws.map((e) => e.y),
                     previewRots: inViewLayoutAtTime.saws.map((e) => e.rotation),
                   },
-                  bigTheme: v.spike,
+                  bigTheme: spikeTheme,
                   frame: frame,
+                  bgColor: getInfiniteThemeColors(runHistory[i].bgColor)
                 }),
                 ...inViewLayoutAtTime.enemies.map((e, t) =>
                   runHistory[i].layoutState.enemies[t].destroyed
