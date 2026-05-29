@@ -32731,7 +32731,7 @@ var version = "v1.14.0";
         function bombEnemyKind(
           e,
           t,
-          a,
+          state,
           i,
           n,
           s,
@@ -32743,21 +32743,21 @@ var version = "v1.14.0";
           springs,
           jumpHeight,
         ) {
-          if (a.destroyed && a.destroyed?.by == "gun") {
-            return a;
+          if (state.destroyed && state.destroyed?.by == "gun") {
+            return state;
           }
           // 130 BPM is 4.875
           // 1.95
           let d = be.rectTouchesRect(t),
             u = df * (l / 1.625),
-            h = df * a.speedY,
-            newX = t.x + a.direction * u,
+            h = df * state.speedY,
+            newX = t.x + state.direction * u,
             newY = t.y - h;
           let edge = null,
-            newDirection = a.direction,
+            newDirection = state.direction,
             y = false;
-          for (const { object: e, index: a } of n) {
-            if ("enemy" === e.type && a === i) continue;
+          for (const { object: e, index: index } of n) {
+            if ("enemy" === e.type && index === i) continue;
             let n = e;
             if ("switchPlatform" === e.type && 0 !== e.rotation) {
               if (-90 !== e.rotation && 90 !== e.rotation) {
@@ -32808,7 +32808,7 @@ var version = "v1.14.0";
                   t.height / 4,
                   n,
                 ) &&
-                ((newY = be.getObjectTopY(e, t.x, t.y) - t.height / 2), (a.speedY = 0)),
+                ((newY = be.getObjectTopY(e, t.x, t.y) - t.height / 2), (state.speedY = 0), (h = 0)),
               (n.canJumpThrough && !t.isCompatible) ||
               (be.rectTouchesRect2(
                 newX - t.width / 4,
@@ -32829,7 +32829,8 @@ var version = "v1.14.0";
                   (newDirection = -1))
               );
           }
-          for (const spring of springs) {
+          for (const pair of springs) {
+            let spring = pair.object;
             be.rectTouchesRect2(
                 newX,
                 newY,
@@ -32837,32 +32838,32 @@ var version = "v1.14.0";
                 t.height,
                 spring
             ) && (
-              (a.speedY = -(spring.direction > 0
-                      ? Math.max(l * 3, Math.abs((a.speedY)) * 1.25)
-                      : Math.min(l, Math.abs(a.speedY))) *
+              (state.speedY = -(spring.direction > 0
+                      ? Math.max(l, Math.abs((state.speedY)) * 1.25)
+                      : Math.max(l, Math.abs(state.speedY))) *
                     spring.direction),
               (h = 0),
               (newY = spring.y + (spring.height / 2) * spring.direction + 16 * spring.direction),
-              (a.offsetY = newY - o[r[i]].y),
+              (state.offsetY = newY - o[r[i]].y),
               (edge = null)
             )
           }
           if (edge !== null) {
-            if (a.speedY > 1) {
+            if (state.speedY > 1) {
               h *= -0.25;
-              a.speedY *= -0.25;
+              state.speedY *= -0.25;
               newY = t.y - h;
               edge = null;
             } else {
-              a.speedY = 0;
+              state.speedY = 0;
               h = 0;
               newY = t.y;
             }
           }
           const E = o[r[i]].y;
-          if (ho(a, e))
-            return Object.assign(Object.assign({}, a), {
-              offsetY: null === edge ? a.offsetY - h : edge - E,
+          if (ho(state, e))
+            return Object.assign(Object.assign({}, state), {
+              offsetY: null === edge ? state.offsetY - h : edge - E,
               direction: newDirection,
             });
           for (const { object: i } of [
@@ -32881,26 +32882,26 @@ var version = "v1.14.0";
                   false,
                 )(i)
               ) {
-                return Object.assign(Object.assign({}, a), {
+                return Object.assign(Object.assign({}, state), {
                   destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
                 });
               }
             } else if ("enemy" !== i?.type && d(i))
-              return Object.assign(Object.assign({}, a), {
+              return Object.assign(Object.assign({}, state), {
                 destroyed: { frame: e, x: t.x, y: t.y, by: "object" },
               });
           return y
-            ? Object.assign(Object.assign({}, a), {
+            ? Object.assign(Object.assign({}, state), {
                 destroyed: { frame: e, x: newX, y: newY, by: "object" },
               })
-            : Object.assign(Object.assign({}, a), {
-                framesSeen: a.framesSeen + df,
-                offsetX: a.offsetX + newDirection * u,
-                offsetY: null === edge ? a.offsetY - h : edge - E,
+            : Object.assign(Object.assign({}, state), {
+                framesSeen: state.framesSeen + df,
+                offsetX: state.offsetX + newDirection * u,
+                offsetY: null === edge ? state.offsetY - h : edge - E,
                 direction: newDirection,
                 speedY:
                   null === edge
-                    ? Math.min(a.speedY + l * (0.4 / 4.875), df * l * 2) * df
+                    ? Math.min(state.speedY + l * (0.4 / 4.875), df * l * 2) * df
                     : 0,
               });
         }
