@@ -32756,7 +32756,7 @@ var version = "v1.14.0";
           let edge = null,
             newDirection = a.direction,
             y = false;
-          for (const { object: e, index: a } of [...n, ...springs]) {
+          for (const { object: e, index: a } of n) {
             if ("enemy" === e.type && a === i) continue;
             let n = e;
             if ("switchPlatform" === e.type && 0 !== e.rotation) {
@@ -32800,6 +32800,15 @@ var version = "v1.14.0";
                 ) &&
                 ((edge = be.getObjectTopY(e, t.x, t.y) + t.height / 2), (newY = edge),
                 n.kind == "walkerHelmet" && !t.isCompatible && (y = true)),
+              !n.canJumpThrough &&
+                be.rectTouchesRect2(
+                  newX,
+                  newY + t.height * (3 / 8),
+                  t.width / 2,
+                  t.height / 4,
+                  n,
+                ) &&
+                ((newY = be.getObjectTopY(e, t.x, t.y) - t.height / 2), (a.speedY = 0)),
               (n.canJumpThrough && !t.isCompatible) ||
               (be.rectTouchesRect2(
                 newX - t.width / 4,
@@ -32821,20 +32830,22 @@ var version = "v1.14.0";
               );
           }
           for (const spring of springs) {
-            /*be.rectTouchesRect2(
+            be.rectTouchesRect2(
                 newX,
                 newY,
                 t.width,
                 t.height,
                 spring
             ) && (
-              a.speedY = -(spring.direction > 0
-                      ? Math.max(1.5 * G.initGrad(jumpHeight, 1), -Math.abs((a.speedY)))
-                      : -Math.min(1 * G.initGrad(jumpHeight, 1), a.speedY)) *
-                    spring.direction,
-              h *= df * a.speedY,
-              newY = spring.y + (spring.height / 2) * spring.direction + 15 * spring.direction
-            )*/
+              (a.speedY = -(spring.direction > 0
+                      ? Math.max(l * 3, Math.abs((a.speedY)) * 1.25)
+                      : Math.min(l, Math.abs(a.speedY))) *
+                    spring.direction),
+              (h = 0),
+              (newY = spring.y + (spring.height / 2) * spring.direction + 16 * spring.direction),
+              (a.offsetY = newY - o[r[i]].y),
+              (edge = null)
+            )
           }
           if (edge !== null) {
             if (a.speedY > 1) {
@@ -42868,16 +42879,6 @@ var version = "v1.14.0";
                               e.onPress());
                           },
                           sprites: (t) => [
-                            conditional(
-                              () => t,
-                              () => [
-                                y({
-                                  fileName: `images/themes/${e.theme}/menu-button-pressed.png`,
-                                  width: 50,
-                                  height: 28,
-                                }),
-                              ],
-                              () => [
                                 e.theme === "infinite"
                                   ? p(
                                       {
@@ -42894,9 +42895,9 @@ var version = "v1.14.0";
                                   fileName: `images/themes/${e.theme}/menu-button.png`,
                                   width: 50,
                                   height: 28,
-                                }),
-                              ],
-                            ),
+                                }, (a) => {
+                                  a.opacity = t ? 0.5 : 1
+                                })
                           ],
                         }),
                       ]
