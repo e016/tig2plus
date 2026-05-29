@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.13.0";
+var version = "v1.14.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -30823,6 +30823,7 @@ var version = "v1.13.0";
                 e + "/saw-big.png",
                 e + "/saw-medium.png",
                 e + "/saw-bar.png",
+                e + "/saw.png"
               ]).flat() : []),
               `images/themes/${e.objects.block}/block.png`,
               `images/themes/${e.objects.block}/boss.png`,
@@ -31487,7 +31488,7 @@ var version = "v1.13.0";
                   () => [onChange(
                   () => e.theme, () => [
                     imageArray({
-                      fileName: `images/themes/${e.theme.split("/")[0]}/saw.png`,
+                      fileName: `images/themes/${e.theme}/saw.png`,
                       props: () => ({}),
                       update: (t, a, i) => {
                         var n, s, o;
@@ -31741,7 +31742,7 @@ var version = "v1.13.0";
                                 )
                               : y(
                                   {
-                                    fileName: `images/themes/${e.theme.split("/")[0]}/saw.png`,
+                                    fileName: `images/themes/${e.theme}/saw.png`,
                                     width: t.width,
                                     height: t.height,
                                   },
@@ -31787,7 +31788,7 @@ var version = "v1.13.0";
                       () => e.theme,
                       () => [
                         imageArray({
-                          fileName: `images/themes/${e.theme.split("/")[0]}/saw.png`,
+                          fileName: `images/themes/${e.theme}/saw.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.width),
@@ -31805,7 +31806,7 @@ var version = "v1.13.0";
                           testId: (e, t) => `Saw-${t}`,
                         }),
                         imageArray({
-                          fileName: `images/themes/${e.theme.split("/")[0]}/saw.png`,
+                          fileName: `images/themes/${e.theme}/saw.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.width),
@@ -31822,7 +31823,7 @@ var version = "v1.13.0";
                           array: () => e.saws,
                         }),
                         imageArray({
-                          fileName: `images/themes/${e.theme.split("/")[0]}/saw.png`,
+                          fileName: `images/themes/${e.theme}/saw.png`,
                           props: () => ({}),
                           update: (e, t) => {
                             ((e.width = t.width),
