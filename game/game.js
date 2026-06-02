@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.14.1";
+var version = "v1.14.2";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -45434,7 +45434,7 @@ var version = "v1.14.1";
               },
 
               rummy: {
-                name: "Rum n Bass",
+                name: "Rum n' Bass",
                 author: "BoomKitty",
                 fileName: "audio/tracks/boomkitty-rum-and-bass.mp3",
                 bpm: 132,
@@ -47257,7 +47257,6 @@ var version = "v1.14.1";
             {
               levelName: "Rum n' Bass",
               levelFileName: "rum-and-bass",
-
               song: hl.songs.rummy,
               unlockedByIndex: null,
               x: 0,
