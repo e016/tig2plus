@@ -36024,6 +36024,9 @@ var version = "v1.14.3";
                     : zo.arrowValues.ok;
               e.multiplier++;
               const n = Math.min(8, Math.ceil(e.multiplier / 4));
+              if (i < zo.arrowValues.perfect) {
+                e.perfectCombo = false
+              };
               return ((e.total += Math.round(n * i)), i);
             },
             arrowValues: { perfect: 400, great: 250, ok: 100 },
@@ -42715,7 +42718,7 @@ var version = "v1.14.3";
                   explosions: [],
                   bottomLine: null,
                   collectibles: 0,
-                  score: { local: 0, total: 0, multiplier: 0 },
+                  score: { local: 0, total: 0, multiplier: 0, fullCombo: true, perfectCombo: true },
                   switchButtons: { on: false, rot: 0 },
                   jumpSwitch: { on: false, ratio: 0, delay: 0, timeout: 0 },
                   switchBlockSpikes: false,
@@ -42785,6 +42788,8 @@ var version = "v1.14.3";
                 local: e.score.local,
                 total: e.score.total,
                 multiplier: e.score.multiplier,
+                fullCombo: "fullCombo" in e.score ? true : e.score.fullCombo,
+                perfectCombo: "perfectCombo" in e.score ? true : e.score.perfectCombo
               },
               switchButtons: {
                 on: e.switchButtons.on,
@@ -43276,6 +43281,10 @@ var version = "v1.14.3";
             if (!useBoosterDebug || N) {
               U.boosterDebug = null;
             };
+            if (!("fullCombo" in U.score)) {
+              U.score.fullCombo = true
+              U.score.perfectCombo = true
+            }
             U.frame += df;
             const { a: j, b: V } = A;
             if (U.boosterDebug) {
@@ -43516,7 +43525,7 @@ var version = "v1.14.3";
                               (e) => e.item === "playerStack",
                             ) &&
                               be.hitStack(e, U.playerX - M, U.playerStacks))) &&
-                            ((U.score.fullCombo = false), (U.score.multiplier = 0),
+                            ((U.score.fullCombo = false), (U.score.perfectCombo = false), (U.score.multiplier = 0),
                             xa.updateLayoutStateField(
                               "collectibles",
                               a,
@@ -44133,7 +44142,7 @@ var version = "v1.14.3";
               "arrow" === t.form
                 ? !inViewLayoutState.collectibles[e].wasPickedUp &&
                   t.x < U.playerX - 60 &&
-                  ((U.score.multiplier = 0),
+                  ((U.score.fullCombo = false), (U.score.perfectCombo = false), (U.score.multiplier = 0),
                   xa.updateLayoutStateField(
                     "collectibles",
                     e,
@@ -50579,7 +50588,7 @@ var version = "v1.14.3";
                 }),
               ]),
               collectibles: fc,
-              score: kc({ local: fc, total: fc, multiplier: fc }),
+              score: Hc, // kc({ local: fc, total: fc, multiplier: fc, fullCombo: yc }),
               bossState: Bc([hc, gu, fu, yu]),
               switchButtons: kc({ on: yc, rot: fc }),
               jumpSwitch: kc({ on: yc, ratio: fc, delay: fc, timeout: fc }),
@@ -55175,7 +55184,7 @@ var version = "v1.14.3";
                             }),
                             update: (k, [a, i]) => {
                               ((k.x = a), (k.y = i + e.offsetY));
-                              k.color = a.skin.trail.topColour;
+                              k.color = t.skin.trail.topColour;
                             },
                             array: () => e.topPath,
                           }),
@@ -59663,6 +59672,23 @@ var version = "v1.14.3";
                       t.text = `${e.combo} combo`;
                     },
                   ),
+                  ifConditional(
+                    () => e.fullCombo,
+                    () => [
+                      c(
+                        {
+                          color: Te,
+                          strokeColor: He,
+                          strokeThickness: 4,
+                          font: { size: 28 },
+                          y: -130,
+                        },
+                        (t) => {
+                          t.text = localize(e.perfectCombo ? "PERFECT FULL COMBO!" : "FULL COMBO");
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ],
@@ -60294,12 +60320,17 @@ var version = "v1.14.3";
                           {
                             totalScore: t.score.total,
                             combo: t.score.multiplier,
+                            fullCombo: t.score.fullCombo,
+                            perfectCombo: t.score.perfectCombo,
                             highScore: t.highScore,
                           },
                           (e) => {
                             ((e.totalScore = t.score.total),
                               (e.combo = t.crashed ? 0 : t.score.multiplier),
-                              (e.highScore = t.highScore));
+                              (e.highScore = t.highScore),
+                              (e.fullCombo = t.score.fullCombo),
+                              (e.perfectCombo = t.score.perfectCombo)
+                            );
                           },
                         ),
                       ],
@@ -60802,7 +60833,7 @@ var version = "v1.14.3";
                       fallTypes: e.fallTypes,
                     },
                   }),
-                  filter: (t, a) => !e.layoutState.powerups[a].wasPickedUp,
+                  filter: (t, a) => !e.layoutState.powerups[a]?.wasPickedUp,
                   update: (t, a) => {
                     ((t.powerup = a),
                       (t.frame = e.frame),
