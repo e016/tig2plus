@@ -67797,8 +67797,8 @@ var version = "v1.14.3";
                         },
                         arrow: { y: 0, facingLeft: false },
                         showHighScore:
-                          "cloud-9" === l.levelFileName ||
-                          "nacreous-snowmelt" === l.levelFileName,
+                          "carnival" === l.levelFileName ||
+                          "funky-adventures" === l.levelFileName,
                         showStartArrows: false,
                       })
                     : "cloud-9" === l.levelFileName
