@@ -42176,6 +42176,11 @@ var version = "v1.14.3";
                   id: "GridLines",
                   parentOffset: parentOffset,
                 }),
+                runHistory[i].bossState
+                  ? hg.Single(
+                      { id: "BossBackdrop", bossState: runHistory[i].bossState, playerX: -propsX / propsScale },
+                    )
+                  : null,
                 g.properties.useGround
                   ? renderGround.Single({
                       id: "Ground",
@@ -42271,17 +42276,7 @@ var version = "v1.14.3";
                         opacity: 0.5,
                       }),
                 ),
-                ...h.enemies.map((e, t) =>
-                  yo.Single({
-                    id: `Enemy-${t}`,
-                    enemy: e,
-                    showArea: !a && I.includes(t),
-                    frame: frame,
-                    spineContext: getContext(Ws),
-                    paused: pauseAnimations,
-                    scale: propsScale,
-                  }),
-                ),
+                
 
                 ...h.switchButtons.map((e, t) =>
                   xo.Single({
@@ -42339,6 +42334,33 @@ var version = "v1.14.3";
                     theme: v.switch,
                   }),
                 ),
+                ...h.enemies.map((e, t) =>
+                  yo.Single({
+                    id: `Enemy-${t}`,
+                    enemy: e,
+                    showArea: !a && I.includes(t),
+                    frame: frame,
+                    spineContext: getContext(Ws),
+                    paused: pauseAnimations,
+                    scale: propsScale,
+                  }),
+                ),
+                runHistory[i].bossState
+                  ? ug.Single(
+                      {
+                        id: "bossStateRenderer",
+                        bossState: runHistory[i].bossState,
+                        frame: runHistory[i].frame,
+                        paused: pauseAnimations,
+                        playerX: -propsX / propsScale,
+                        playerRot: runHistory[i].playerRot,
+                        playerCrashed: runHistory[i].crashed,
+                        df: runHistory[i].df,
+                        spineContext: getContext(Ws),
+                        scale: propsScale,
+                      }
+                    )
+                  : null,
                 ...runHistory[i].playerBullets.map((e) =>
                   e.frame == 0
                     ? l({
@@ -55314,7 +55336,13 @@ var version = "v1.14.3";
             },
             render: ({ props: e, state: t, getContext: a }) => [
               ifConditional(
-                () => !a(Se).settings.hidePlayerTrail,
+                () => {
+                  try {
+                    return !a(Se).settings.hidePlayerTrail
+                  } catch (e) {
+                    return true
+                  }
+                },
                 () => [
                   m(
                     {
@@ -55640,7 +55668,7 @@ var version = "v1.14.3";
             render({ props: e, getContext: t }) {
               switch (e.bossState.type) {
                 case "robot":
-                  const { animationRenderer: a } = t(Ws);
+                  const { animationRenderer: a } = e.spineContext || t(Ws);
                   return [
                     Vs(
                       {
@@ -55972,6 +56000,8 @@ var version = "v1.14.3";
                             gunView: t.shootFrames > 0 ? "shoot" : t.gunView,
                             paused: e.paused,
                             df: e.df,
+                            spineContext: e.spineContext,
+                            scale: e.scale,
                           },
                           (t) => {
                             const a = e.bossState;
@@ -55980,7 +56010,8 @@ var version = "v1.14.3";
                               (t.gunView =
                                 a.shootFrames > 0 ? "shoot" : a.gunView),
                               (t.paused = e.paused),
-                              (t.df = e.df));
+                              (t.df = e.df), (t.scale = e.scale)
+                              );
                           },
                         ),
                       ],
@@ -55988,7 +56019,7 @@ var version = "v1.14.3";
                   ];
                 }
                 case "demon": {
-                  const { animationRenderer: a, animationAssets: i } = t(Ws);
+                  const { animationRenderer: a, animationAssets: i } = e.spineContext || t(Ws);
                   return [
                     bg.Array({
                       props: (t, n) => ({
@@ -56490,7 +56521,7 @@ var version = "v1.14.3";
           }),
           fg = makeSprite({
             render({ getContext: e, props: t }) {
-              const { animationAssets: a, animationRenderer: i } = e(Ws);
+              const { animationAssets: a, animationRenderer: i } = t.spineContext || e(Ws);
               return [
                 onChange(
                   () => t.gunView,
@@ -56515,7 +56546,10 @@ var version = "v1.14.3";
                               height: 30,
                             },
                             (e) => {
-                              ((e.paused = t.paused), (e.df = t.df));
+                              ((e.paused = t.paused), (e.df = t.df), (e.scale = {
+                                x: t.scale || 1,
+                                y: t.scale || 1
+                              }));
                             },
                           ),
                         ];
@@ -56538,7 +56572,10 @@ var version = "v1.14.3";
                               height: 30,
                             },
                             (e) => {
-                              ((e.paused = t.paused), (e.df = t.df));
+                              ((e.paused = t.paused), (e.df = t.df), (e.scale = {
+                                x: t.scale || 1,
+                                y: t.scale || 1
+                              }));
                             },
                           ),
                         ];
@@ -56559,7 +56596,10 @@ var version = "v1.14.3";
                               height: 30,
                             },
                             (e) => {
-                              ((e.paused = t.paused), (e.df = t.df));
+                              ((e.paused = t.paused), (e.df = t.df), (e.scale = {
+                                x: t.scale || 1,
+                                y: t.scale || 1
+                              }));
                             },
                           ),
                         ];
