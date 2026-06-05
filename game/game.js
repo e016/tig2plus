@@ -47272,7 +47272,7 @@ var version = "v1.14.3";
               y: 0,
               pathToLevel: [],
               maxFrames: 9637,
-              difficulty: 6,
+              difficulty: 7,
             },
             {
               levelName: "Normal Polymorph",
