@@ -45859,6 +45859,7 @@ var version = "v1.14.3";
             [34139, 84, 28],
             [34230, -32, 11],
             [34521, -61, 17],
+            [58180, -50, 21],
           ],
           _l = [
             { type: "top", count: 4 },
@@ -46557,6 +46558,7 @@ var version = "v1.14.3";
                   y: t,
                   radius: a,
                   index: i,
+                  destroyed: false
                 })),
                 allInsideAsteroid: Tl(),
                 asteroids: [],
@@ -46589,37 +46591,51 @@ var version = "v1.14.3";
                 }),
               loop: ({
                 bossState: e,
-                playerX: t,
-                frame: a,
+                playerX: playerX,
+                frame: frame,
                 df: i,
                 playSound: n,
-                crashed: s,
+                crashed: crashed,
                 playerY,
               }) => {
                 const o = 3937;
-                s && e.playerDestroyed && !e.destroyed && ((n("audio/levels/boss3/death.wav")), (e.destroyed = true));
-                let r = s && !e.playerDestroyed
+                crashed && e.playerDestroyed && !e.destroyed && ((n("audio/levels/boss3/death.wav")), (e.destroyed = true));
+                let r = crashed && !e.playerDestroyed
                   ? e.bossX + 6.6
-                  : a > o
-                    ? t +
+                  : frame > o
+                    ? playerX +
                       Math.max(0, 300 *
                         (function (e, t, a) {
                           return 1 - (a - 3937) / 1475;
-                        })(0, 0, a))
-                    : t + 300;
-                for (const t of e.bullets)
-                  t.x += s ? Math.min(-3, t.speed) : t.speed;
-                if ((lt(e.bullets, (t) => t.x > e.bossX - 1000), a < 1286))
+                        })(0, 0, frame))
+                    : playerX + 300;
+                for (const t of e.bullets) {
+                  t.x += crashed ? Math.min(-3, t.speed) : t.speed;
+                  for (const n of e.asteroids) {
+                    const a = be.pointInCircle(n);
+                    n.x > t.x + n.radius + El ||
+                      n.x < t.x - n.radius - El ||
+                      !(
+                        a({ x: t.x, y: t.y }) ||
+                        a({ x: t.x + t.width / 2, y: t.y + t.height / 2 }) ||
+                        a({ x: t.x - t.width / 2, y: t.y + t.height / 2 }) ||
+                        a({ x: t.x - t.width / 2, y: t.y - t.height / 2 }) ||
+                        a({ x: t.x + t.width / 2, y: t.y - t.height / 2 })
+                      ) ||
+                      (n.destroyed = true);
+                  }
+                }
+                if ((lt(e.bullets, (t) => t.x > e.bossX - 1000), frame < 1286))
                   r = Math.max(r, e.bossX + 1);
-                else if (a < 2574) {
-                  const t = yl * (a < 1600 ? 2.5 : a < 1950 ? 2 : 3);
-                  (1306 === a
+                else if (frame < 2574) {
+                  const t = yl * (frame < 1600 ? 2.5 : frame < 1950 ? 2 : 3);
+                  (1306 === frame
                     ? (n("audio/levels/boss3/rotate.wav"),
                       (e.gunView = "toDown"))
-                    : 1326 === a && (e.gunView = "down"),
-                    a % t < i &&
-                      a < 2514 &&
-                      a > 1346 &&
+                    : 1326 === frame && (e.gunView = "down"),
+                    frame % t < i &&
+                      frame < 2514 &&
+                      frame > 1346 &&
                       (n("audio/levels/boss3/shoot.mp3"),
                       (e.shootFrames = 10),
                       e.bullets.push({
@@ -46629,19 +46645,19 @@ var version = "v1.14.3";
                         height: 10,
                         speed: -3,
                       })));
-                } else
-                  a < o
-                    ? (2594 === a
+                } else if (frame < 5290) {
+                  frame < o
+                    ? (2594 === frame
                         ? (n("audio/levels/boss3/rotate.wav"),
                           (e.gunView = "toUp"))
-                        : 2614 === a && (e.gunView = "up"),
-                      3320 === a
+                        : 2614 === frame && (e.gunView = "up"),
+                      3320 === frame
                         ? (n("audio/levels/boss3/rotate.wav"),
                           (e.gunView = "toDown"))
-                        : 3340 === a && (e.gunView = "down"),
-                      a > 3300 &&
-                        a < 3877 &&
-                        a % (4 * yl) < i &&
+                        : 3340 === frame && (e.gunView = "down"),
+                      frame > 3300 &&
+                        frame < 3877 &&
+                        frame % (4 * yl) < i &&
                         (n("audio/levels/boss3/shoot.mp3"),
                         (e.shootFrames = 10),
                         e.bullets.push({
@@ -46651,28 +46667,52 @@ var version = "v1.14.3";
                           height: 10,
                           speed: 1,
                         })))
-                    : 3957 === a
+                    : 3957 === frame
                       ? (n("audio/levels/boss3/rotate.wav"),
                         (e.gunView = "toUp"))
-                      : 3977 === a && (e.gunView = "up");
+                      : 3977 === frame && (e.gunView = "up");
+                } else {
+                  true//a < o
+                    ? (5840 === frame
+                        ? (n("audio/levels/boss3/rotate.wav"),
+                          (e.gunView = "toDown"))
+                        : 5860 === frame && (e.gunView = "down"),
+                      frame > 5900 &&
+                        //frame < 3877 &&
+                        frame % (4 * yl) < i &&
+                        (n("audio/levels/boss3/shoot.mp3"),
+                        (e.shootFrames = 10),
+                        e.bullets.push({
+                          x: e.bossX,
+                          y: e.bossY,
+                          width: 30,
+                          height: 10,
+                          speed: 20,
+                          isPlayer: true
+                        })))
+                    : 3957 === frame
+                      ? (n("audio/levels/boss3/rotate.wav"),
+                        (e.gunView = "toUp"))
+                      : 3977 === frame && (e.gunView = "up");
+                };
                 if (
-                  (e.moveFrames[0] <= a &&
+                  (e.moveFrames[0] <= frame &&
                     ((e.isUp = !e.isUp), e.moveFrames.shift()),
                   e.asteroids.length > 0 &&
-                    e.asteroids[0].x < t - 1000 &&
+                    e.asteroids[0].x < playerX - 1000 &&
                     e.asteroids.shift(),
                   e.insideAsteroid.length > 0 &&
-                    e.insideAsteroid[0].x < t - 1000 &&
+                    e.insideAsteroid[0].x < playerX - 1000 &&
                     e.insideAsteroid.shift(),
                   e.allAsteroids.length > 0)
                 ) {
                   const a = e.allAsteroids[0];
-                  a.x < t + 1000 &&
+                  a.x < playerX + 1000 &&
                     (e.asteroids.push(a), e.allAsteroids.shift());
                 }
                 if (e.allInsideAsteroid.length > 0) {
                   const a = e.allInsideAsteroid[0];
-                  a.x < t + 1000 &&
+                  a.x < playerX + 1000 &&
                     (e.insideAsteroid.push(a), e.allInsideAsteroid.shift());
                 }
                 (e.isUp
@@ -46684,7 +46724,7 @@ var version = "v1.14.3";
                     ? ((e.bossY += 2 * i * ((-5 + Sl - e.bossY) / 6)),
                       (e.bossY = B.clamp2(Sl, bl, e.bossY)))
                     : (e.bossY = Sl),
-                    r < t + 38 &&
+                    r < playerX + 38 &&
                     !e.playerDestroyed &&
                     ((e.playerDestroyed = true)),
                     e.shootFrames > 0 && (e.shootFrames -= i),
@@ -46696,7 +46736,8 @@ var version = "v1.14.3";
                 let i = false;
                 for (const n of a.asteroids) {
                   const a = be.pointInCircle(n);
-                  n.x > e + n.radius + El ||
+                  n.destroyed ||
+                    n.x > e + n.radius + El ||
                     n.x < e - n.radius - El ||
                     !(
                       a({ x: e, y: t }) ||
@@ -46733,7 +46774,7 @@ var version = "v1.14.3";
                     ("bottomStalecmite" === e.hitType &&
                       n({ x: e.x, y: Sl - 25 + 45, width: 40, height: 90 }))) &&
                     (i = true);
-                for (const e of a.bullets) n(e) && (i = true);
+                for (const e of a.bullets) !e.isPlayer && n(e) && (i = true);
                 return i;
               },
             };
@@ -55923,7 +55964,7 @@ var version = "v1.14.3";
                     yg.Array({
                       props: (t) => ({ asteroid: t, frame: e.frame }),
                       update: (t, a) => {
-                        ((t.asteroid = a), (t.frame = e.frame));
+                        ((t.asteroid = a), (t.frame = e.frame), (t.paused = e.paused), (t.df = e.df));
                       },
                       array: () => e.bossState.asteroids,
                       key: (e) => e.index,
@@ -55943,7 +55984,9 @@ var version = "v1.14.3";
                         ((e.x = t.x),
                           (e.y = t.y),
                           (e.width = t.width),
-                          (e.height = t.height));
+                          (e.height = t.height),
+                          (e.scaleX = -Math.sign(t.speed))
+                        );
                       },
                       array: () => e.bossState.bullets,
                     }),
@@ -56611,24 +56654,51 @@ var version = "v1.14.3";
           }),
           yg = makeSprite({
             render: ({ props: e }) => [
-              y(
-                {
-                  fileName: `images/level/boss3/asteroid${
-                    e.asteroid.radius <= 15
-                      ? "60"
-                      : e.asteroid.radius <= 25
-                        ? "120"
-                        : "210"
-                  }.png`,
-                  width: 2.4 * e.asteroid.radius,
-                  height: 2.4 * e.asteroid.radius,
-                },
-                (t) => {
-                  ((t.x = e.asteroid.x),
-                    (t.y = e.asteroid.y),
-                    (t.rotation = e.asteroid.x + e.frame));
-                },
-              ),
+              conditional(
+                () => e.asteroid.destroyed,
+                () => [
+                  qa.Single(
+                    {
+                      trail: {
+                        form: "default",
+                        topColour: "#868a99",
+                        bottomColour: "#3a3a43",
+                      },
+                      paused: e.paused,
+                      df: e.df,
+                      justDestroyed: true,
+                      playerRot: 0,
+                      sfx: false,
+                      playerScale: 1,
+                    },
+                    (t) => {
+                      const a = e.bossState;
+                      ((t.x = e.asteroid.x),
+                        (t.y = e.asteroid.y),
+                        (t.paused = e.paused),
+                        (t.df = e.df));
+                    },
+                  ),
+                ],
+                () => [ y(
+                  {
+                    fileName: `images/level/boss3/asteroid${
+                      e.asteroid.radius <= 15
+                        ? "60"
+                        : e.asteroid.radius <= 25
+                          ? "120"
+                          : "210"
+                    }.png`,
+                    width: 2.4 * e.asteroid.radius,
+                    height: 2.4 * e.asteroid.radius,
+                  },
+                  (t) => {
+                    ((t.x = e.asteroid.x),
+                      (t.y = e.asteroid.y),
+                      (t.rotation = e.asteroid.x + e.frame));
+                  },
+                ) ]
+              )
             ],
           }),
           Eg = makeSprite({
