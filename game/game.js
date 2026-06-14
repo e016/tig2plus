@@ -45427,8 +45427,8 @@ var version = "v1.14.4";
                 isBonusSong: true,
               },
               forYou: {
-                name: "For You",
-                author: "ColBreakz & EXODIE",
+                name: "For You (+ Waterfall mashup)",
+                author: "ColBreakz & EXODIE, SkybreakEDM",
                 fileName: "audio/tracks/colbreakz-for-you.mp3",
                 bpm: 145,
                 isBonusSong: true,
