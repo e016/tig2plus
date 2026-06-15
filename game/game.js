@@ -16892,7 +16892,7 @@ var version = "v1.14.5";
                       (ee.points[3].y = top),
                       ee.setAngle(B.toRad(-obj.rotation)),
                       ee)
-                    : Z(obj.x, obj.y, obj.width / 2);
+                    : Z(obj.x, obj.y, (obj.width / 2) - 0.5);
               }
               var i, n, s, o, r, l, c, d, u, h, p;
             },
