@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.14.4";
+var version = "v1.14.5";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -45607,6 +45607,12 @@ var version = "v1.14.4";
                 bpm: 120,
                 fileName: "audio/tracks/creo-carnivores.mp3",
               },
+              phobos: {
+                name: "Phobos",
+                author: "Solkraig",
+                bpm: 140,
+                fileName: "audio/tracks/solkraig-phobos.mp3"
+              }
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -49250,6 +49256,7 @@ var version = "v1.14.4";
             e[(e.RobotLanguage = 62)] = "RobotLanguage";
             e[(e.DryOut = 63)] = "DryOut";
             e[(e.Carnivores = 64)] = "Carnivores";
+            e[(e.Phobos = 65)] = "Phobos";
           })(Nd || (Nd = {})),
           (function (e) {
             ((e[(e.World1 = 0)] = "World1"),
@@ -50212,6 +50219,7 @@ var version = "v1.14.4";
             [Nd.RobotLanguage]: hl.songs.robotLanguage,
             [Nd.DryOut]: hl.songs.dryOut,
             [Nd.Carnivores]: hl.songs.carnivores,
+            [Nd.Phobos]: hl.songs.phobos
           },
           Hd = {
             [ld.Rot0]: 0,
