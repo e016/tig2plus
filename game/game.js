@@ -39400,26 +39400,6 @@ var version = "v1.14.5";
                               });
                             },
                           },
-                          {
-                            name: "Falling",
-                            selected: "falling" === t.movement,
-                            onPress: () => {
-                              i.map((j) => {
-                                e({
-                                  type: "setProperty",
-                                  array: "saws",
-                                  index: j,
-                                  set: (e) =>
-                                    Object.assign(Object.assign({}, e), {
-                                      movement: "falling",
-                                      shape: "rail",
-                                      width: 30,
-                                      height: 30,
-                                    }),
-                                });
-                              });
-                            },
-                          },
                         ],
                       },
                     ];
