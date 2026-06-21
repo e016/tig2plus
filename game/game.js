@@ -43035,7 +43035,7 @@ var version = "v1.14.5";
           sl = M,
           ol = [];
         function rl(
-          e,
+          landableObjects,
           t,
           a,
           i,
@@ -43078,8 +43078,11 @@ var version = "v1.14.5";
             de.pooledPlayerPoly3,
           );
           let y = 0;
-          for (let s = 0; s < e.length; s++) {
-            const { object: d, index: u } = e[s],
+          for (let s = 0; s < landableObjects.length; s++) {
+            if (!ha(landableObjects[s].object, a)) {
+              continue; // ugh... I wish this wasn't needed. It's really just to optimize.
+            }
+            const { object: d, index: u } = landableObjects[s],
               h = be.hitLandableObject(
                 a,
                 i,
