@@ -39778,7 +39778,7 @@ var version = "v1.14.5";
                       name: "Usage",
                       options: [
                         {
-                          name: "Single-use",
+                          name: "Single-Use",
                           selected: !t.multiUse,
                           onPress: () => {
                             a.map((j) => {
@@ -63683,7 +63683,7 @@ var version = "v1.14.5";
               ),
               Yo.Single(
                 {
-                  text: e.name,
+                  text: localize(e.name),
                   disabled: e.disable || e.isBeingUsed || 0 === e.numBooster,
                   width: 140,
                   height: 60,
@@ -64248,7 +64248,7 @@ var version = "v1.14.5";
                         c({
                           testId: "FinishLevel",
                           font: { size: 50 },
-                          text: "LEVEL COMPLETE!",
+                          text: localize("LEVEL COMPLETE!"),
                           strokeColor: Ye,
                           color: ve,
                           strokeThickness: 16,
@@ -64279,7 +64279,7 @@ var version = "v1.14.5";
                                 })
                               : Ef.Single({ attempts: e.attempts }),
                         Yo.Single({
-                          text: "CONTINUE",
+                          text: localize("CONTINUE"),
                           width: 120,
                           height: 60,
                           x: 190,
@@ -66239,12 +66239,12 @@ var version = "v1.14.5";
                               if (e)
                                 return (
                                   i.alert.ok(
-                                    `Error copying level JSON to clipboard: ${e.message}`,
+                                    `${localize("Error copying level JSON to clipboard:")} ${e.message}`,
                                   ),
                                   void i.log(n)
                                 );
                               i.alert.ok(
-                                "Level JSON copied to clipboard. (Upload your levels to userlevels.com)",
+                                localize("Level JSON copied to clipboard. (Upload your levels to userlevels.com)"),
                               );
                             }),
                             true
@@ -67981,7 +67981,7 @@ var version = "v1.14.5";
                           }),
                           n({
                             font: { size: 15, weight: 500, style: "italic" },
-                            text: `by ${author ? author : r}`,
+                            text: `${localize('by')} ${author ? author : r}`,
                             color: Ue,
                             y: t - 10,
                           }),
@@ -70883,7 +70883,7 @@ var version = "v1.14.5";
                       { family: "Montserrat", size: 10, weight: 800 },
                       120,
                     );
-                    return { skin: t, unlockText: s };
+                    return { skin: t, unlockText: [""] }; // s };
                   })
                   .filter(nt)
                   .sort(
@@ -70937,7 +70937,7 @@ var version = "v1.14.5";
                   rotation: 30,
                 }),
                 n({
-                  text: o.skin.author ? ("by " + o.skin.author) : "",
+                  text: o.skin.author ? (`${localize('by')} ` + o.skin.author) : "",
                   x: 110,
                   y: t / 2 - 120,
                   color: ve,
@@ -75164,7 +75164,7 @@ var version = "v1.14.5";
                   },
                 ),
                 Yo.Single({
-                  text: "CONTINUE",
+                  text: localize("CONTINUE"),
                   width: 140,
                   height: 60,
                   x: 210,
@@ -76562,7 +76562,7 @@ var version = "v1.14.5";
                                         c(
                                           {
                                             font: { size: 30 },
-                                            text: "LEVEL COMPLETE!",
+                                            text: localize("LEVEL COMPLETE!"),
                                             strokeColor: Ye,
                                             color: ve,
                                             strokeThickness: 8,
@@ -78182,7 +78182,7 @@ var version = "v1.14.5";
                           sprites: [
                             Fo({
                               id: "CancelOnline",
-                              text: "CONTINUE",
+                              text: localize("CONTINUE"),
                               width: 120,
                               height: 40,
                               onPress: () => {
