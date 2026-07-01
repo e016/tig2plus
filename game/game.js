@@ -42894,25 +42894,42 @@ var version = "v1.15.0";
                               e.onPress());
                           },
                           sprites: (t) => [
-                                e.theme === "infinite"
-                                  ? p(
+                                conditional(
+                                  () => e.theme === "infinite",
+                                  () => [
+                                    p(
                                       {
-                                        width: 40,
+                                        width: 50,
                                         height: 28,
                                         color: e.background,
                                       },
-                                      (t) => {
-                                        t.color = e.background;
+                                      (a) => {
+                                        a.color = getInfiniteThemeColors(e.background);
+                                        a.opacity = t ? 0.5 : 1
                                       },
-                                    )
-                                  : null,
-                                y({
-                                  fileName: `images/themes/${e.theme}/menu-button.png`,
-                                  width: 50,
-                                  height: 28,
-                                }, (a) => {
-                                  a.opacity = t ? 0.5 : 1
-                                })
+                                    ),
+                                    c({
+                                      font: {
+                                        family:
+                                          "Poppins",
+                                        size: 10,
+                                      },
+                                      text: "Menu",
+                                      color: infiniteBgTable(0, e.background),
+                                    }, (a) => {
+                                      a.color = infiniteBgTable(0, e.background)
+                                    }),
+                                  ],
+                                  () => [
+                                    y({
+                                      fileName: `images/themes/${e.theme}/menu-button.png`,
+                                      width: 50,
+                                      height: 28,
+                                    }, (a) => {
+                                      a.opacity = t ? 0.5 : 1
+                                    })
+                                  ]
+                                ),
                           ],
                         }),
                       ]
@@ -60360,10 +60377,7 @@ var version = "v1.15.0";
                                   (a) => {
                                     ((a.attempt = t.attempt),
                                       (a.theme = t.layout.properties.theme.id),
-                                      (a.background = infiniteBgTable(
-                                        0,
-                                        t.bgColor,
-                                      )),
+                                      (a.background = t.bgColor),
                                       (a.opacity = e.ref));
                                   },
                                 ),
@@ -60381,7 +60395,7 @@ var version = "v1.15.0";
                           (e) => {
                             e.attempt = t.attempt;
                             e.theme = t.layout.properties.theme.id;
-                            e.background = infiniteBgTable(0, t.bgColor);
+                            e.background = t.bgColor;
                           },
                         ),
                       ],
@@ -61764,32 +61778,44 @@ var version = "v1.15.0";
                     ]
                   : t.theme == "infinite"
                     ? [
-                        y(
+                        u(
                           {
-                            fileName: "images/themes/infinite/attempt.png",
-                            width: 110,
-                            height: 110,
                             y: e.size.fullHeight / 2 - 55,
+                            color: getInfiniteThemeColors(t.background),
+                            radius: 57,
+                            opacity: 0.5
                           },
-                          (t) => {
-                            t.y = e.size.fullHeight / 2 - 55;
+                          (a) => {
+                            a.y = e.size.fullHeight / 2 - 55;
+                            a.color = getInfiniteThemeColors(t.background);
                           },
                         ),
                         u(
                           {
                             y: e.size.fullHeight / 2 - 55,
-                            color: t.background,
+                            color: getInfiniteThemeColors(t.background),
+                            radius: 50,
+                          },
+                          (a) => {
+                            a.y = e.size.fullHeight / 2 - 55;
+                            a.color = getInfiniteThemeColors(t.background);
+                          },
+                        ),
+                        u(
+                          {
+                            y: e.size.fullHeight / 2 - 55,
+                            color: infiniteBgTable(0, t.background),
                             radius: 40,
                           },
                           (a) => {
                             a.y = e.size.fullHeight / 2 - 55;
-                            a.color = t.background;
+                            a.color = infiniteBgTable(0, t.background);
                           },
                         ),
                         c(
                           {
                             text: localize("Attempt"),
-                            color: "#006525",
+                            color: getInfiniteThemeColors(t.background),
                             font: { family: "Poppins", size: 16 },
                             y: e.size.fullHeight / 2 - 47,
                           },
@@ -61799,7 +61825,7 @@ var version = "v1.15.0";
                         ),
                         c(
                           {
-                            color: "#006525",
+                            color: getInfiniteThemeColors(t.background),
                             font: { family: "Poppins", size: 16 },
                             y: e.size.fullHeight / 2 - 71,
                           },
@@ -65479,10 +65505,7 @@ var version = "v1.15.0";
                           a.crashed || (a.frame = t.mutValues.levelState.frame),
                           (a.theme =
                             t.bigMutValues.inViewLayout.properties.theme.id),
-                          (a.background = infiniteBgTable(
-                            0,
-                            t.mutValues.levelState.bgColor,
-                          )),
+                          (a.background = t.mutValues.levelState.bgColor),
                           (a.fadeOutAttempts =
                             Ml(t.mutValues.levelState.bossState) ||
                             i(Se).settings.fadeOutAttempts));
