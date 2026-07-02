@@ -65558,7 +65558,7 @@ var version = "v1.15.0";
               (r = void 0),
               (l = void 0),
               (d = function* () {
-                if (e.world) {
+                if (e.world && t.mutValues.checkpoints.length === 0) {
                   const r = n ? 1 : 0,
                     l = yield Jp.saveLevelProgress(
                       t.worker,
