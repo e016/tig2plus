@@ -20285,7 +20285,7 @@ var version = "v1.15.0";
                   const t = "world3" === e.theme ? 1 : 1;
                   return [
                     imageArray({
-                      fileName: `images/themes/${e.theme == "world2" ? "world2" : "world1"}/red.png`,
+                      fileName: `images/themes/${e.theme == "classic" ? "classic" : e.theme == "world2" ? "world2" : "world1"}/red.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -20335,7 +20335,7 @@ var version = "v1.15.0";
                   const t = "world3" === e.theme ? 1 : 1;
                   return [
                     imageArray({
-                      fileName: `images/themes/${e.theme == "world2" ? "world2" : "world1"}/blue.png`,
+                      fileName: `images/themes/${e.theme == "classic" ? "classic" : e.theme == "world2" ? "world2" : "world1"}/blue.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -30863,6 +30863,8 @@ var version = "v1.15.0";
               "images/themes/world1/blue-spike.png",
               "images/themes/world2/red.png",
               "images/themes/world2/blue.png",
+              "images/themes/classic/red.png",
+              "images/themes/classic/blue.png",
               "images/themes/world1/red-outline.png",
               "images/themes/world1/red-spike-outline.png",
               "images/themes/world1/blue-outline.png",
