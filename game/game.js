@@ -18216,6 +18216,25 @@ var version = "v1.15.2";
             world4: aa,
             world4Boss: ia,
             world4Red: na,
+            world6: {
+              id: "world6",
+              name: "World 6",
+              colour: "#9500c2",
+              player: Wt.skins.default,
+              background: "world6",
+              objects: {
+                block: "world4",
+                spike: "world2",
+                platform: "infinite",
+                dirChange: "world1",
+                flag: "world1",
+                saw: "skater",
+                bottom: "classic",
+                switch: "infinite",
+                speedChange: "world2",
+              },
+              isBonusTheme: true,
+            },
           };
         const da = 660;
         function willApplyMovement(x, y, playerX, playerY, fallTypes) {
@@ -30563,6 +30582,8 @@ var version = "v1.15.2";
                 return ["images/themes/classic/background/fade.png"];
               case "infinite":
                 return ["images/themes/infinite/background/tile.png"];
+              case "world6":
+                return ["images/themes/world6/BG.png"];
               case "red":
                 return [
                   "images/themes/red/background/background.png",
@@ -58424,6 +58445,66 @@ var version = "v1.15.2";
                               },
                               (t) => {
                                 ((t.playerX = 0), (t.playerY = 0));
+                              },
+                            ),
+                          ];
+                          case "world6":
+                          return [
+                            Go.Single(
+                              {
+                                targetOpacity: 1,
+                                targetColor: e.bgColor || "#006eff",
+                                sprite: (s, k) => [
+                                  p(
+                                    {
+                                      color: k.ref,
+                                      width: t.size.fullWidth,
+                                      height: t.size.fullHeight,
+                                      opacity: 1,
+                                    },
+                                    (j) => (
+                                      (j.width = t.size.fullWidth),
+                                      (j.height = t.size.fullHeight),
+                                      (j.color = k.ref),
+                                      (j.opacity = 1)
+                                    ),
+                                  ),
+                                ],
+                              },
+                              (t) => {
+                                t.targetOpacity = 1;
+                                t.targetColor = e.bgColor || "#006eff";
+                              },
+                            ),
+                            rg.Array({
+                              props: (e) => ({
+                                moveX: 0,
+                                moveY: 0,
+                                element: e,
+                                halfDeviceHeight: t.size.fullHeight / 2,
+                                halfDeviceWidth: t.size.fullWidth / 2,
+                              }),
+                              update: (a, i) => {
+                                ((a.moveX = e.cameraX * i.speed),
+                                  (a.moveY = e.cameraY * i.speed),
+                                  (a.halfDeviceHeight = t.size.fullHeight / 2),
+                                  (a.halfDeviceWidth = t.size.fullWidth / 2));
+                              },
+                              array: () => a,
+                              key: (e, t) => t,
+                            }),
+                            dg.Single(
+                              {
+                                fileName:
+                                  "images/themes/world6/BG.png",
+                                playerX: -0.05 * e.cameraX,
+                                playerY: 0,
+                                height: t.size.fullHeight,
+                                y: 50,
+                              },
+                             (t) => {
+                                ((t.playerX = 0.05 * e.cameraX),
+                                (t.playerY = 0));
                               },
                             ),
                           ];
