@@ -18208,7 +18208,7 @@ var version = "v1.15.2";
               id: "world6",
               name: "World 6",
               colour: "#006eff",
-              player: Wt.skins.world1,
+              player: Wt.skins.default,
               background: "world6",
               objects: {
                 block: "world4",
@@ -30582,8 +30582,6 @@ var version = "v1.15.2";
                 return ["images/themes/classic/background/fade.png"];
               case "infinite":
                 return ["images/themes/infinite/background/tile.png"];
-              case "world6":
-                return ["images/themes/world6/BG.png"];
               case "red":
                 return [
                   "images/themes/red/background/background.png",
@@ -30623,6 +30621,8 @@ var version = "v1.15.2";
                   `images/themes/world4/${t}/front-mountain1.png`,
                   `images/themes/world4/${t}/front-mountain2.png`,
                 ];
+              case "world6":
+                return ["images/themes/world6/BG.png"];
               case "skater":
                 return [
                   "images/themes/skater/background/cloud1.png",
@@ -58476,28 +58476,11 @@ var version = "v1.15.2";
                                 t.targetColor = e.bgColor || "#006eff";
                               },
                             ),
-                          rg.Array({
-                            props: (e) => ({
-                              moveX: 0,
-                              moveY: 0,
-                              element: e,
-                              halfDeviceHeight: t.size.fullHeight / 2,
-                              halfDeviceWidth: t.size.fullWidth / 2,
-                            }),
-                            update: (a, i) => {
-                              ((a.moveX = e.cameraX * i.speed),
-                                (a.moveY = e.cameraY * i.speed),
-                                (a.halfDeviceHeight = t.size.fullHeight / 2),
-                                (a.halfDeviceWidth = t.size.fullWidth / 2));
-                            },
-                            array: () => a,
-                            key: (e, t) => t,
-                          }),
                             dg.Single(
                               {
                                 fileName:
                                   "images/themes/world6/BG.png",
-                                playerX: -0.05 * e.cameraX,
+                                playerX: 0,
                                 playerY: 0,
                                 height: t.size.fullHeight,
                                 y: 50,
