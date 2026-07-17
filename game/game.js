@@ -18219,7 +18219,7 @@ var version = "v1.15.2";
             world6: {
               id: "world6",
               name: "World 6",
-              colour: "#9500c2",
+              colour: "#006eff",
               player: Wt.skins.default,
               background: "world6",
               objects: {
