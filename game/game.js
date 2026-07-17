@@ -20986,8 +20986,8 @@ var version = "v1.15.1";
                             e.inGame && e.inGame.playerDir,
                           )),
                           (a.rotation = i.rotation),
-                          (a.width = i.width * 0.9),
-                          (a.height = i.height * 0.9));
+                          (a.width = i.width),
+                          (a.height = i.height));
                       },
                       array: () => e.spikes,
                       testId: (t, a) => {
@@ -21000,7 +21000,7 @@ var version = "v1.15.1";
                       },
                     }),
                     imageArray({
-                      fileName: `images/themes/world1/red-spike.png`,
+                      fileName: `images/themes/${e.theme === "classic" ? "classic" : "world1"}/red-spike.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -21066,8 +21066,8 @@ var version = "v1.15.1";
                             e.inGame && e.inGame.playerDir,
                           )),
                           (a.rotation = i.rotation),
-                          (a.width = i.width * 0.9),
-                          (a.height = i.height * 0.9));
+                          (a.width = i.width),
+                          (a.height = i.height));
                       },
                       array: () => e.spikes,
                       testId: (t, a) => {
@@ -21080,7 +21080,7 @@ var version = "v1.15.1";
                       },
                     }),
                     imageArray({
-                      fileName: `images/themes/world1/blue-spike.png`,
+                      fileName: `images/themes/${e.theme === "classic" ? "classic" : "world1"}/blue-spike.png`,
                       props: () => ({}),
                       update: (a, i, n) => {
                         var s, o;
@@ -30859,8 +30859,10 @@ var version = "v1.15.1";
               `images/themes/${e.objects.saw == "classic" ? "classic" : "infinite"}/saw-bar.png`,
               "images/themes/world1/red.png",
               "images/themes/world1/red-spike.png",
-              "images/themes/world1/blue.png",
               "images/themes/world1/blue-spike.png",
+              "images/themes/classic/red-spike.png",
+              "images/themes/classic/blue-spike.png",
+              "images/themes/world1/blue.png",
               "images/themes/world2/red.png",
               "images/themes/world2/blue.png",
               "images/themes/classic/red.png",
@@ -45383,18 +45385,18 @@ var version = "v1.15.1";
                 bpm: 172,
                 isBonusSong: false,
               },
+              // official order: carnival, fire aura, heaven, minds of mad, phobos
+              carnival: {
+                name: "Carnival",
+                author: "DJVI",
+                bpm: 128,
+                fileName: "audio/tracks/djvi-carnival.mp3",
+              },
               fireAura: {
                 name: "Fire Aura",
                 author: "Kid2Will",
                 fileName: "audio/tracks/kid2will-fire-aura.mp3",
                 bpm: 180,
-                isBonusSong: true,
-              },
-              chaozFantasy: {
-                name: "Chaoz Fantasy",
-                author: "ParagonX9",
-                fileName: "audio/tracks/paragonx9-chaoz-fantasy.mp3",
-                bpm: 162,
                 isBonusSong: true,
               },
               heaven: {
@@ -45404,26 +45406,17 @@ var version = "v1.15.1";
                 bpm: 150,
                 isBonusSong: true,
               },
-              phazd: {
-                name: "Phazd",
-                author: "tobycreed",
-                fileName: "audio/tracks/tobycreed-phazd.mp3",
-                bpm: 165,
-                isBonusSong: true,
-              },
-              clutterfunk: {
-                name: "Clutterfunk",
-                author: "Waterflame",
-                fileName: "audio/tracks/waterflame-clutterfunk.mp3",
-                bpm: 140,
-              },
-              soulless2: {
-                name: "Mechanical Machine (Soulless 2)",
+              mindsOfTheMad: {
+                name: "Minds Of The Mad",
                 author: "Exilelord",
-                fileName: "audio/tracks/exilelord-mechanical-machine.mp3",
-                bpm: 125,
-                length: "5 mins",
-                isBonusSong: true,
+                fileName: "audio/tracks/exilelord-minds-of-the-mad.mp3",
+                bpm: 150,
+              },
+              phobos: {
+                name: "Phobos",
+                author: "Solkraig",
+                bpm: 140,
+                fileName: "audio/tracks/solkraig-phobos.mp3"
               },
               cloud9: {
                 name: "Cloud 9",
@@ -45446,6 +45439,12 @@ var version = "v1.15.1";
                 fileName: "audio/tracks/creo-aura.mp3",
                 bpm: 128,
                 isBonusSong: true,
+              },
+              lastTile: {
+                name: "Last Tile",
+                author: "Kommisar",
+                bpm: 150,
+                fileName: "audio/tracks/kommisar-last-tile.mp3",
               },
               coolFriends: {
                 name: "Cool Friends",
@@ -45477,6 +45476,20 @@ var version = "v1.15.1";
                 isBonusSong: true,
               },
 
+              chaozFantasy: {
+                name: "Chaoz Fantasy",
+                author: "ParagonX9",
+                fileName: "audio/tracks/paragonx9-chaoz-fantasy.mp3",
+                bpm: 162,
+                isBonusSong: true,
+              },
+              phazd: {
+                name: "Phazd",
+                author: "tobycreed",
+                fileName: "audio/tracks/tobycreed-phazd.mp3",
+                bpm: 165,
+                isBonusSong: true,
+              },
               finalTheory: {
                 name: "Final Theory",
                 author: "dj-Nate",
@@ -45489,8 +45502,9 @@ var version = "v1.15.1";
                 author: "Bossfight",
                 fileName: "audio/tracks/bossfight-pirate-manners.mp3",
                 bpm: 116,
-                isBonusSong: false,
+                isBonusSong: true,
               },
+              
 
               orientalSwing: {
                 name: "Oriental Swing",
@@ -45504,6 +45518,20 @@ var version = "v1.15.1";
                 author: "Cubed",
                 fileName: "audio/tracks/cubed-red-shift.mp3",
                 bpm: 150,
+                isBonusSong: true,
+              },
+              clutterfunk: {
+                name: "Clutterfunk",
+                author: "Waterflame",
+                fileName: "audio/tracks/waterflame-clutterfunk.mp3",
+                bpm: 140,
+              },
+              soulless2: {
+                name: "Mechanical Machine (Soulless 2)",
+                author: "Exilelord",
+                fileName: "audio/tracks/exilelord-mechanical-machine.mp3",
+                bpm: 125,
+                length: "5 mins",
                 isBonusSong: true,
               },
               raceAroundTheWorld: {
@@ -45553,13 +45581,6 @@ var version = "v1.15.1";
                 bpm: 125,
                 label: "Argofox",
               },
-
-              mindsOfTheMad: {
-                name: "Minds Of The Mad",
-                author: "Exilelord",
-                fileName: "audio/tracks/exilelord-minds-of-the-mad.mp3",
-                bpm: 150,
-              },
               electrodynamix: {
                 name: "Electrodynamix",
                 author: "dj-Nate",
@@ -45578,12 +45599,7 @@ var version = "v1.15.1";
                 fileName: "audio/tracks/onefin-stardew-plummet.mp3",
                 bpm: 134,
               },
-              lastTile: {
-                name: "Last Tile",
-                author: "Kommisar",
-                bpm: 150,
-                fileName: "audio/tracks/kommisar-last-tile.mp3",
-              },
+              
               hellidox: {
                 name: "Hellidox",
                 author: "Exilelord",
@@ -45595,12 +45611,6 @@ var version = "v1.15.1";
                 author: "TheFatRat",
                 bpm: 103,
                 fileName: "audio/tracks/the-fat-rat-jackpot.mp3",
-              },
-              carnival: {
-                name: "Carnival",
-                author: "DJVI",
-                bpm: 128,
-                fileName: "audio/tracks/djvi-carnival.mp3",
               },
               robotLanguage: {
                 name: "Robot Language",
@@ -45620,12 +45630,7 @@ var version = "v1.15.1";
                 bpm: 120,
                 fileName: "audio/tracks/creo-carnivores.mp3",
               },
-              phobos: {
-                name: "Phobos",
-                author: "Solkraig",
-                bpm: 140,
-                fileName: "audio/tracks/solkraig-phobos.mp3"
-              }
+              
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
