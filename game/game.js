@@ -35100,7 +35100,7 @@ var version = "v1.15.2";
                               () => [
                                 y(
                                   {
-                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world2" ? "world2" || e.theme : e.theme == "world6" ? "world1" : "world1"}/arrow.png`,
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world2" ? "world2" : e.theme == "world6" ? "world1" : "world1"}/arrow.png`,
                                     width: e.switchButton.width,
                                     height: e.switchButton.height,
                                   },
