@@ -18199,7 +18199,7 @@ var version = "v1.15.2";
                 flag: "world1",
                 saw: "infinite",
                 bottom: "world3",
-                switch: "world3",
+                switch: "infinite",
                 speedChange: "speed",
               },
               isBonusTheme: true,
@@ -18218,7 +18218,7 @@ var version = "v1.15.2";
                 flag: "world1",
                 saw: "skater",
                 bottom: "classic",
-                switch: "infinite",
+                switch: "world3",
                 speedChange: "world2",
               },
               isBonusTheme: true,
@@ -35101,7 +35101,7 @@ var version = "v1.15.2";
                               () => [
                                 y(
                                   {
-                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world6" ? "world1" : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
                                     width: e.switchButton.width,
                                     height: e.switchButton.height,
                                   },
@@ -35134,7 +35134,7 @@ var version = "v1.15.2";
                               () => [
                                 y(
                                   {
-                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world6" ? "world1" : "world1"}/doubleJump.png`,
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : "world1"}/doubleJump.png`,
                                     width: e.switchButton.width,
                                     height: e.switchButton.height,
                                   },
