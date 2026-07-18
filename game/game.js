@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.15.2";
+var version = "v1.16.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -35729,6 +35729,7 @@ var version = "v1.15.2";
             },
             render: ({
               props: {
+                text: e,
                 width: t,
                 height: a,
                 darkText: i = false,
@@ -35747,11 +35748,10 @@ var version = "v1.15.2";
               state,
               device: m,
             }) => {
-              const e = options[state.choice];
               let textLength = cy.measureTexts(
                 [localize(e)], 
                 { family: "Montserrat", size: fontSize, weight: 900 })[0],
-              menuHeight = Math.abs((-nr * i - 20) * (options.length - 0.5)) + nr / 2,
+              menuHeight = Math.abs((-nr * i - 20) * (options.length + 1)) + nr,
               menuOffset = menuHeight / 2 + a / 2;
               return [
                 ...(state.menuOpened ? [Clickable({
@@ -35801,9 +35801,9 @@ var version = "v1.15.2";
                             sprites: (c) => [
                               n({
                                 id: `TextOption-${i}`,
-                                text: t,
+                                text: localize(t),
                                 weight: 500,
-                                y: 1 - c,
+                                y: 1 - c * 3,
                               }),
                             ],
                           }),
@@ -35842,18 +35842,16 @@ var version = "v1.15.2";
                           color: disabled ? ze : c ? Ae : h || (i ? Ue : Be),
                           strokeColor: p,
                           strokeThickness: g,
-                          x: -fontSize,
-                          y: t - 1,
+                          y: t - 1 + 5,
                         }),
                         r({
                           path: [
                             [-fontSize / 2, fontSize / 2],
                             [fontSize / 2, fontSize / 2],
-                            [0, -fontSize / 4],
+                            [0, -fontSize / 5],
                           ],
                           fillColor: disabled ? ze : c ? Ae : h || (i ? Ue : Be),
-                          x: textLength / 2 + fontSize,
-                          y: t - 3
+                          y: t - 3 - 10
                         })
                       ],
                     }),
@@ -51681,17 +51679,34 @@ var version = "v1.15.2";
             return false;
           },
           supportsFiles: function () {
-            return false;
+            return true;
           },
           openFile: function () {
-            return Xu(this, void 0, void 0, function* () {
-              var f = new FileReader();
-              return;
+            var input = document.createElement("input");
+            var file = null;
+            input.type = "file";
+            input.accepts = ".json";
+            input.click();
+            let filePromise = new Promise((resolve) => {
+              input.addEventListener("change", function () {
+                file = this.files[0];
+                var reader = new FileReader();
+  
+                reader.onload = function (evt) {
+                  resolve(evt.target.result);
+                  console.warn(evt.target.result, resolve)
+                };
+  
+                reader.readAsText(file);
+              });
             });
+            return filePromise;
           },
-          saveFile: function (e, t) {
+          saveFile: function (name, data, mime) {
             return Xu(this, void 0, void 0, function* () {
-              return false;
+              let blob = new Blob([data], { type: mime });
+              saveAs(blob, name)
+              return true;
             });
           },
           googleSignIn: function () {
@@ -66084,23 +66099,23 @@ var version = "v1.15.2";
                       },
                       x: -140,
                     }),
-                    Fo({
+                    DropdownButton({
                       id: "ExportButton",
-                      text: zu.supportsFiles()
-                        ? localize("DOWNLOAD")
-                        : localize("EXPORT"),
+                      options: ["CLIPBOARD", "FILE"],
+                      choice: 0,
+                      text: "EXPORT",
                       width: 110,
                       height: 50,
                       strokeColor: Ye,
-                      onPress: () => {
+                      onPress: (choice) => {
                         (u((e) =>
                           Object.assign(Object.assign({}, e), {
                             downloaded: false,
                           }),
                         ),
-                          i().then((e) => {
+                          i(choice).then((e) => {
                             e &&
-                              zu.supportsFiles() &&
+                              choice === 1 &&
                               u((e) =>
                                 Object.assign(Object.assign({}, e), {
                                   downloaded: true,
@@ -66115,7 +66130,7 @@ var version = "v1.15.2";
                           text: localize("DOWNLOADED!"),
                           color: ve,
                           font: { size: 15 },
-                          y: -80,
+                          y: -150,
                         })
                       : null,
                     Fo({
@@ -66507,7 +66522,7 @@ var version = "v1.15.2";
                             i.now,
                           ));
                       }),
-                    onPressExport: () =>
+                    onPressExport: (choice) =>
                       Lf(this, void 0, void 0, function* () {
                         const a = Object.assign(
                             Object.assign({}, e.savedLevel.level),
@@ -66517,7 +66532,7 @@ var version = "v1.15.2";
                             },
                           ),
                           n = wf(a, i.now);
-                        if (!zu.supportsFiles())
+                        if (choice !== 1)
                           return (
                             i.clipboard.copy(n, (e) => {
                               if (e)
@@ -66534,7 +66549,7 @@ var version = "v1.15.2";
                             true
                           );
                         try {
-                          return yield zu.saveFile(`${a.name}.json`, n);
+                          return yield zu.saveFile(`${a.name}.json`, n, "application/json");
                         } catch (e) {
                           return (
                             i.alert.ok(`Error saving file: ${e.message}`),
@@ -69668,9 +69683,8 @@ var version = "v1.15.2";
                   text: "OPEN FILE",
                   width: 140,
                   height: 45,
-                  onPress: () =>
-                    uy(this, void 0, void 0, function* () {
-                      i((e) =>
+                  onPress: async () => {
+                    i((e) =>
                         Object.assign(Object.assign({}, e), { loading: true }),
                       );
                       const t = (e) => {
@@ -69684,13 +69698,15 @@ var version = "v1.15.2";
                       };
                       let n;
                       try {
-                        if (((n = yield zu.openFile()), null === n))
+                        n = await zu.openFile();
+                        if (null == n)
                           return void i((e) =>
                             Object.assign(Object.assign({}, e), {
                               loading: false,
                             }),
                           );
                       } catch (e) {
+                        console.error(e);
                         return void t("Failed to open file");
                       }
                       const s = Cf(n);
@@ -69708,7 +69724,7 @@ var version = "v1.15.2";
                             loading: false,
                           }),
                         ));
-                    }),
+                    },
                   x: -100,
                 }),
                 Fo({
@@ -74047,19 +74063,7 @@ var version = "v1.15.2";
                     shadowOffsetY: 0,
                     beatSize: b,
                   }),
-                  /*DropdownButton({
-                    id: "DropdownTest",
-                    options: ["EXPORT", "DOWNLOAD"],
-                    choice: 0,
-                    width: 170,
-                    height: 40,
-                    darkText: true,
-                    onPress: (t) => {
-                      window.alert(t)
-                    },
-                    x: 100,
-                    y: 100,
-                  }),*/
+                  
                   Fo({
                     id: "MoreButton",
                     text: localize("MORE"),
