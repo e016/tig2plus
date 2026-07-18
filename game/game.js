@@ -17252,7 +17252,7 @@ var version = "v1.15.2";
             objectPolyInPoint2: (e, t, a) => de.pointInSomething(t, a, e),
           },
           Se = A(),
-          Ie = makeCustomSprite({
+          Clickable = makeCustomSprite({
             init: () => ({ isPressed: false }),
             loop({
               state: e,
@@ -17263,6 +17263,8 @@ var version = "v1.15.2";
                 onPressOutside: n,
                 width: s,
                 height: o,
+                x: propX,
+                y: propY,
               },
               getContext: r,
               updateState: l,
@@ -17278,9 +17280,9 @@ var version = "v1.15.2";
                   justPressed: m,
                 } = t().pointer,
                 f = () =>
-                  be.pointInBox({ x: 0, y: 0, width: s, height: o })({
-                    x: u,
-                    y: h,
+                  be.pointInBox({ x: propX || 0, y: propY || 0, width: s, height: o })({
+                    x: u + (propX || 0),
+                    y: h + (propY || 0),
                   }),
                 y = p && f();
               return (
@@ -17450,7 +17452,7 @@ var version = "v1.15.2";
                 d = c / 2,
                 u = 10 * l;
               return [
-                Ie({
+                Clickable({
                   id: "Clickable",
                   width: t,
                   height: a,
@@ -33960,7 +33962,7 @@ var version = "v1.15.2";
               },
               device: d,
             }) => [
-              Ie({
+              Clickable({
                 id: "Clickable",
                 width: i,
                 height: n,
@@ -35719,14 +35721,14 @@ var version = "v1.15.2";
             },
           }),
           DropdownButton = makeCustomSprite({
-            init: () => {
+            init: ({ props }) => {
               return {
                 menuOpened: false,
+                choice: props.choice
               };
             },
             render: ({
               props: {
-                text: e,
                 width: t,
                 height: a,
                 darkText: i = false,
@@ -35745,55 +35747,75 @@ var version = "v1.15.2";
               state,
               device: m,
             }) => {
+              const e = options[state.choice];
               let textLength = cy.measureTexts(
                 [localize(e)], 
-                { family: "Montserrat", size: fontSize, weight: 900 })[0];
+                { family: "Montserrat", size: fontSize, weight: 900 })[0],
+              menuHeight = Math.abs((-nr * i - 20) * (options.length - 0.5)) + nr / 2,
+              menuOffset = menuHeight / 2 + a / 2;
               return [
-                ...(state.menuOpened ? [Ie({
+                ...(state.menuOpened ? [Clickable({
                       id: "ClickOutside",
                       onPressOutside: () => {
                         state.menuOpened = false
                       },
                       width: ar,
-                      height: 300,
+                      height: menuHeight,
+                      y: -menuOffset,
                       sprites: () => [],
                       onPress: () => null,
                     }),
                     r({
                       path: [
-                        [-ar / 2, 150],
-                        [ar / 2, 150],
-                        [ar / 2, -120],
-                        [ar / 2 - 30, -150],
-                        [-ar / 2, -150],
+                        [-ar / 2, menuHeight / 2],
+                        [ar / 2, menuHeight / 2],
+                        [ar / 2, -menuHeight / 2 + 30],
+                        [ar / 2 - 30, -menuHeight / 2],
+                        [-ar / 2, -menuHeight / 2],
                       ],
+                      y: -menuOffset,
                       fillColor: ve,
                     }),
-                    o({ width: ar - 20, height: 280, x: -10, y: 10, color: je }),
+                    o({ width: ar - 20, height: menuHeight - 20, x: -10, y: 10 - menuOffset, color: je }),
                     ScrollContainer({
                       id: "ScrollContainer",
-                      containerHeight: 280,
+                      containerHeight: menuHeight - 20,
                       containerWidth: ar - 20,
-                      contentHeight: options.length * nr + 20,
+                      contentHeight: menuHeight - 20,
                       x: -10,
-                      y: 150,
+                      y: menuHeight / 2 - menuOffset,
                       sprites: (a) =>
                         options.map((t, i) =>
-                          n({
-                            id: `AddLevelObjectButton-${i}`,
-                            text: t,
-                            weight: 500,
+                          Clickable({
+                            id: `OptionClickable-${i}`,
                             y: -nr * i - 20,
+                            width: ar,
+                            height: nr,
+                            onPress: () => {
+                              m.audio("audio/global/button.wav").play(0); 
+                              state.menuOpened = false;
+                              state.choice = i;
+                              c(i);
+                            },
+                            disabled: false,
+                            sprites: (c) => [
+                              n({
+                                id: `TextOption-${i}`,
+                                text: t,
+                                weight: 500,
+                                y: 1 - c,
+                              }),
+                            ],
                           }),
                         ),
                     })] : []),
-                Ie({
+                Clickable({
                   id: "Clickable",
                   width: t,
                   height: a,
                   onPress: () => {
                     m.audio("audio/global/button.wav").play(0); 
-                    state.menuOpened = true;
+                    state.menuOpened = !state.menuOpened;
                     // c();
                   },
                   disabled: disabled || d,
@@ -35860,7 +35882,7 @@ var version = "v1.15.2";
               },
               device: m,
             }) => [
-              Ie({
+              Clickable({
                 id: "Clickable",
                 width: t,
                 height: a,
@@ -37353,7 +37375,7 @@ var version = "v1.15.2";
               };
             },
             render: ({ props: e, state: { objects: t } }) => [
-              Ie({
+              Clickable({
                 id: "ClickOutside",
                 onPressOutside: e.closeMenu,
                 width: ar,
@@ -37414,7 +37436,7 @@ var version = "v1.15.2";
                 r = [`${r[0]} ${r[1]}`, r[2]];
               }
               return [
-                Ie({
+                Clickable({
                   id: "Clickable",
                   width: i,
                   height: s,
@@ -37471,7 +37493,7 @@ var version = "v1.15.2";
           }),
           themeMenu = makeCustomSprite({
             render: ({ props: e }) => [
-              Ie({
+              Clickable({
                 id: "ClickOutside",
                 onPressOutside: e.closeMenu,
                 width: ar,
@@ -40641,7 +40663,7 @@ var version = "v1.15.2";
           },
           Cr = makeCustomSprite({
             render: ({ props: { onPress: e, colour: t = "black" } }) => [
-              Ie({
+              Clickable({
                 id: "ClickableArrow",
                 width: 20,
                 height: 30,
@@ -40720,7 +40742,7 @@ var version = "v1.15.2";
               },
               device: g,
             }) => [
-              Ie({
+              Clickable({
                 id: "Clickable",
                 width: d,
                 height: u,
@@ -40777,7 +40799,7 @@ var version = "v1.15.2";
               }
               const d = 40 + 9 * localize(c).length;
               return [
-                Ie({
+                Clickable({
                   id: "LevelObjectMenuClickable",
                   onPress: () => null,
                   width: 200,
@@ -62172,7 +62194,7 @@ var version = "v1.15.2";
             }) {
               const { onModalClose: o, onPurchaseComplete: r } = t;
               return [
-                Ie({
+                Clickable({
                   id: "ClickOutside",
                   onPressOutside: o,
                   width: 400,
@@ -62521,7 +62543,7 @@ var version = "v1.15.2";
               },
               device: p,
             }) => [
-              Ie({
+              Clickable({
                 id: "Clickable",
                 width: a,
                 height: i,
@@ -67000,7 +67022,7 @@ var version = "v1.15.2";
           }),
           jf = makeCustomSprite({
             render: ({ props: { closeModal: e, width: t, height: a } }) => [
-              Ie({
+              Clickable({
                 id: "ClickOutside",
                 onPressOutside: e,
                 width: t,
@@ -67233,7 +67255,7 @@ var version = "v1.15.2";
                 y = e.bpm < 120 ? 1 : e.bpm < 140 ? 2 : e.bpm < 170 ? 3 : 4,
                 E = hl.getSnippetName(e.fileName);
               return [
-                Ie({
+                Clickable({
                   id: "ClickInside",
                   width: Wf,
                   height: qf,
@@ -67673,7 +67695,7 @@ var version = "v1.15.2";
                     (a = 48),
                     (i = 121.5)),
                 [
-                  Ie({
+                  Clickable({
                     id: "Clickable",
                     width: 60,
                     height: 160,
@@ -68214,7 +68236,7 @@ var version = "v1.15.2";
               return (
                 r.length > 15 && (r = `${r.slice(0, 15)}...`),
                 [
-                  Ie({
+                  Clickable({
                     id: "Clickable",
                     width: 240,
                     height: 65,
@@ -68360,7 +68382,7 @@ var version = "v1.15.2";
               },
               device: l,
             }) => [
-              Ie({
+              Clickable({
                 id: "Clickable",
                 width: t,
                 height: a,
@@ -68672,7 +68694,7 @@ var version = "v1.15.2";
               props: { world: e, disabled: t, onPress: a },
               device: i,
             }) => [
-              Ie({
+              Clickable({
                 id: "Clickable",
                 width: 250,
                 height: 250,
@@ -71312,7 +71334,7 @@ var version = "v1.15.2";
               },
               device: s,
             }) => [
-              Ie({
+              Clickable({
                 id: "Clickable",
                 width: 60,
                 height: 60,
@@ -71601,7 +71623,7 @@ var version = "v1.15.2";
             }) {
               const { closeModal: i } = e;
               return [
-                Ie({
+                Clickable({
                   id: "ClickOutside",
                   onPressOutside: i,
                   width: 500,
@@ -72233,7 +72255,7 @@ var version = "v1.15.2";
                 u = t.width + 2 * t.widthMargin,
                 h = "loggedIn" === i.type ? i.profile : null,
                 p = [
-                  Ie({
+                  Clickable({
                     id: "SignInButton",
                     sprites: (e) => [
                       l({
@@ -72257,7 +72279,7 @@ var version = "v1.15.2";
                 ],
                 g = "requestingAuth" === i.type;
               return [
-                Ie({
+                Clickable({
                   id: "ClickOutside",
                   onPressOutside: () => {
                     (g && zu.cancelGoogleSignIn(), s());
@@ -72430,7 +72452,7 @@ var version = "v1.15.2";
                 };
               return [
                 o({ color: "black", opacity: 0.7, width: u, height: h }),
-                Ie({
+                Clickable({
                   id: "BlockBehind",
                   width: u,
                   height: h,
@@ -73111,7 +73133,7 @@ var version = "v1.15.2";
               const ox = 8 * -t * 0.75 + t,
                 oy = 8 * -a * 0.75 + a;
               return [
-                Ie({
+                Clickable({
                   id: "Clickable",
                   width: 100,
                   height: 100,
@@ -74027,16 +74049,16 @@ var version = "v1.15.2";
                   }),
                   /*DropdownButton({
                     id: "DropdownTest",
-                    options: ["TEST 1", "TEST 2"],
+                    options: ["EXPORT", "DOWNLOAD"],
                     choice: 0,
                     width: 170,
                     height: 40,
                     darkText: true,
-                    onPress: () => {
-                      r({ type: "news" });
+                    onPress: (t) => {
+                      window.alert(t)
                     },
                     x: 100,
-                    y: h + 80,
+                    y: 100,
                   }),*/
                   Fo({
                     id: "MoreButton",
@@ -77593,7 +77615,7 @@ var version = "v1.15.2";
               return t.loading
                 ? []
                 : [
-                    Ie({
+                    Clickable({
                       id: "BlockBehind",
                       width: y,
                       height: E,
