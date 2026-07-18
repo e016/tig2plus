@@ -30871,6 +30871,7 @@ var version = "v1.15.2";
               "images/themes/world2/speed-change.png",
               "images/themes/world1/arrow.png",
               "images/themes/world2/arrow.png",
+              "images/themes/infinite/colors/default/arrow.png",
               "images/themes/infinite/arrow.png",
               "images/themes/world1/doubleJump.png",
               "images/themes/infinite/doubleJump.png",
