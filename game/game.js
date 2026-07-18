@@ -35100,7 +35100,7 @@ var version = "v1.15.2";
                               () => [
                                 y(
                                   {
-                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world6" ? "world1" : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
                                     width: e.switchButton.width,
                                     height: e.switchButton.height,
                                   },
@@ -35133,7 +35133,7 @@ var version = "v1.15.2";
                               () => [
                                 y(
                                   {
-                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : "world1"}/doubleJump.png`,
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world6" ? "world1" : "world1"}/doubleJump.png`,
                                     width: e.switchButton.width,
                                     height: e.switchButton.height,
                                   },
@@ -42921,7 +42921,7 @@ var version = "v1.15.2";
                           },
                           sprites: (t) => [
                                 conditional(
-                                  () => e.theme === "infinite",
+                                  () => e.theme === "infinite" || e.theme === "world6",
                                   () => [
                                     p(
                                       {
@@ -61858,7 +61858,7 @@ var version = "v1.15.2";
                         },
                       ),
                     ]
-                  : t.theme == "infinite"
+                  : t.theme == "infinite" || t.theme == "world6"
                     ? [
                         u(
                           {
