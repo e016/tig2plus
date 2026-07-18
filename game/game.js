@@ -35718,6 +35718,128 @@ var version = "v1.15.2";
               document.removeEventListener("wheel", e.onScroll, false);
             },
           }),
+          DropdownButton = makeCustomSprite({
+            init: () => {
+              return {
+                menuOpened: false,
+              };
+            },
+            render: ({
+              props: {
+                text: e,
+                width: t,
+                height: a,
+                darkText: i = false,
+                darkBg: s = false,
+                disabled: disabled = false,
+                fontSize: fontSize = 15,
+                shadowDir: l,
+                onPress: c,
+                noPress: d,
+                strokeColor: u,
+                textColor: h,
+                textStroke: p,
+                textStrokeThickness: g,
+                options,
+              },
+              state,
+              device: m,
+            }) => {
+              let textLength = cy.measureTexts(
+                [localize(e)], 
+                { family: "Montserrat", size: fontSize, weight: 900 })[0];
+              return [
+                ...(state.menuOpened ? [Ie({
+                      id: "ClickOutside",
+                      onPressOutside: () => {
+                        state.menuOpened = false
+                      },
+                      width: ar,
+                      height: 300,
+                      sprites: () => [],
+                      onPress: () => null,
+                    }),
+                    r({
+                      path: [
+                        [-ar / 2, 150],
+                        [ar / 2, 150],
+                        [ar / 2, -120],
+                        [ar / 2 - 30, -150],
+                        [-ar / 2, -150],
+                      ],
+                      fillColor: ve,
+                    }),
+                    o({ width: ar - 20, height: 280, x: -10, y: 10, color: je }),
+                    ScrollContainer({
+                      id: "ScrollContainer",
+                      containerHeight: 280,
+                      containerWidth: ar - 20,
+                      contentHeight: options.length * nr + 20,
+                      x: -10,
+                      y: 150,
+                      sprites: (a) =>
+                        options.map((t, i) =>
+                          n({
+                            id: `AddLevelObjectButton-${i}`,
+                            text: t,
+                            weight: 500,
+                            y: -nr * i - 20,
+                          }),
+                        ),
+                    })] : []),
+                Ie({
+                  id: "Clickable",
+                  width: t,
+                  height: a,
+                  onPress: () => {
+                    m.audio("audio/global/button.wav").play(0); 
+                    state.menuOpened = true;
+                    // c();
+                  },
+                  disabled: disabled || d,
+                  sprites: (c) => [
+                    
+                    So({
+                      id: "RaiseRects",
+                      width: t,
+                      height: a,
+                      raiseHeight: 5,
+                      rad: 5,
+                      isPressed: c,
+                      topColour: disabled ? Xe : c ? ke : Re,
+                      bottomColour: s ? Be : ve,
+                      stroke: {
+                        thickness: 2,
+                        colour: disabled ? ze : u || (s ? Ye : Me),
+                      },
+                      shadowDir: l,
+                      sprites: (t) => [
+                        n({
+                          font: { size: fontSize },
+                          text: localize(e), // screw it
+                          color: disabled ? ze : c ? Ae : h || (i ? Ue : Be),
+                          strokeColor: p,
+                          strokeThickness: g,
+                          x: -fontSize,
+                          y: t - 1,
+                        }),
+                        r({
+                          path: [
+                            [-fontSize / 2, fontSize / 2],
+                            [fontSize / 2, fontSize / 2],
+                            [0, -fontSize / 4],
+                          ],
+                          fillColor: disabled ? ze : c ? Ae : h || (i ? Ue : Be),
+                          x: textLength / 2 + fontSize,
+                          y: t - 3
+                        })
+                      ],
+                    }),
+                  ],
+                }),
+              ]
+            },
+          }),
           Fo = makeCustomSprite({
             render: ({
               props: {
@@ -68629,7 +68751,7 @@ var version = "v1.15.2";
             truncate: function (e, t = 10) {
               return e.length > t ? `${e.slice(0, t)}...` : e;
             },
-            measureTexts: function (e, t) {
+            measureTexts: function (texts, font) {
               if (null === ly) {
                 const e = document.createElement("canvas");
                 ly = e.getContext("2d");
@@ -68640,13 +68762,13 @@ var version = "v1.15.2";
                   weight: n = "normal",
                   style: s = "normal",
                   family: o,
-                } = t,
+                } = font,
                 r = `${s} ${n} ${i ? `${i}px` : ""} ${o ? `${o}` : ""}`;
               return (
                 (a.font = r),
-                (a.textBaseline = t.baseline || "middle"),
-                (a.textAlign = t.align || "center"),
-                e.map((e) => a.measureText(e).width)
+                (a.textBaseline = font.baseline || "middle"),
+                (a.textAlign = font.align || "center"),
+                texts.map((e) => a.measureText(e).width)
               );
             },
             splitTextIntoLines: function (e, t, a) {
@@ -73903,6 +74025,19 @@ var version = "v1.15.2";
                     shadowOffsetY: 0,
                     beatSize: b,
                   }),
+                  /*DropdownButton({
+                    id: "DropdownTest",
+                    options: ["TEST 1", "TEST 2"],
+                    choice: 0,
+                    width: 170,
+                    height: 40,
+                    darkText: true,
+                    onPress: () => {
+                      r({ type: "news" });
+                    },
+                    x: 100,
+                    y: h + 80,
+                  }),*/
                   Fo({
                     id: "MoreButton",
                     text: localize("MORE"),
@@ -73927,6 +74062,7 @@ var version = "v1.15.2";
                     x: 100,
                     y: h,
                   }),
+                  
 
                   ...(localStorage.getItem("news") == newsID
                     ? []
