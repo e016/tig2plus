@@ -18199,7 +18199,7 @@ var version = "v1.15.2";
                 flag: "world1",
                 saw: "infinite",
                 bottom: "world3",
-                switch: "infinite",
+                switch: "world3",
                 speedChange: "speed",
               },
               isBonusTheme: true,
