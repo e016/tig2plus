@@ -58485,7 +58485,7 @@ var version = "v1.15.2";
                                   "images/themes/world6/BG.png",
                                 playerX: 0 * e.cameraX,
                                 playerY: 0,
-                                height: 1024,
+                                height: 718,
                                 y: 50,
                               },
                              (t) => {
