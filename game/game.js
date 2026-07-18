@@ -35100,7 +35100,7 @@ var version = "v1.15.2";
                               () => [
                                 y(
                                   {
-                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world2" ? "world2" : e.theme == "world6" ? "world1" : "world1"}/arrow.png`,
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world2" ? "world2" : "world1"}/arrow.png`,
                                     width: e.switchButton.width,
                                     height: e.switchButton.height,
                                   },
@@ -35133,7 +35133,7 @@ var version = "v1.15.2";
                               () => [
                                 y(
                                   {
-                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.theme == "world6" ? "world1" : "world1"}/doubleJump.png`,
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : "world1"}/doubleJump.png`,
                                     width: e.switchButton.width,
                                     height: e.switchButton.height,
                                   },
@@ -49192,6 +49192,7 @@ var version = "v1.15.2";
             e[(e.Classic = 16)] = "Classic";
             e[(e.Infinite = 17)] = "Infinite";
             e[(e.Virtual = 18)] = "Virtual";
+            e[(e.World6 = 19)] = "World6";
           })(Od || (Od = {})),
           (function (e) {
             ((e[(e.Gun = 0)] = "Gun"),
@@ -49318,6 +49319,7 @@ var version = "v1.15.2";
             e[(e.Classic = 16)] = "Classic";
             e[(e.Infinite = 17)] = "Infinite";
             e[(e.Virtual = 18)] = "Virtual";
+            e[(e.World6 = 19)] = "World6";
           })(xd || (xd = {})));
         const Bd = Gc([
             mc,
@@ -60149,7 +60151,7 @@ var version = "v1.15.2";
                         a.y = et.initialPosition.y - M / 2 - e.cameraY - 1;
                       },
                     )
-                  : e.theme == "infinite"
+                  : e.theme == "infinite" || e.theme == "world6"
                     ? p(
                         {
                           width: 660 * 2,
