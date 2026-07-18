@@ -30972,7 +30972,6 @@ var version = "v1.15.2";
                     `images/themes/${e.objects.bottom}/bottom/block-spike.png`,
                     `images/themes/${e.objects.bottom}/bottom/block.png`,
                     `images/themes/world1Boss/bottom/block.png`,
-                    `images/themes/world4/bottom/block.png`,
                     `images/themes/skater/bottom/block.png`,
 
                     `images/themes/${e.objects.bottom}/bottom/double-tall-block-spike.png`,
@@ -49012,7 +49011,8 @@ var version = "v1.15.2";
               (e[(e.World4Red = 8)] = "World4Red"),
               (e[(e.World4Boss = 9)] = "World4Boss"),
               (e[(e.World3Red = 10)] = "World3Red"),
-              (e[(e.Skater = 11)] = "Skater"));
+              (e[(e.Skater = 11)] = "Skater"),
+              (e[(e.World6 = 12)] = "World6"));
           })(rd || (rd = {})),
           (function (e) {
             ((e[(e.Rot0 = 0)] = "Rot0"),
@@ -50190,6 +50190,7 @@ var version = "v1.15.2";
             [xd.Fighter]: "fighter",
             [xd.Classic]: "classic",
             [xd.Infinite]: "infinite",
+            [xd.World6]: "world6",
             [xd.Virtual]: "virtual",
           },
           Vd = {
