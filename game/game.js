@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.16.0";
+var version = "v1.16.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -30854,6 +30854,7 @@ var version = "v1.16.0";
               "images/themes/world2/arrow.png",
               "images/themes/infinite/arrow.png",
               "images/themes/world1/doubleJump.png",
+              "images/themes/classic/doubleJump.png",
               "images/themes/infinite/doubleJump.png",
               "images/themes/world2/double-jump.png",
               `images/themes/${e.objects.spike == "classic" ? "classic" : e.objects.spike == "infinite" ? "infinite" : e.objects.spike == "world3" ? "world3" : "world1"}/saw-big.png`,
@@ -35113,7 +35114,7 @@ var version = "v1.16.0";
                               () => [
                                 y(
                                   {
-                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : "world1"}/doubleJump.png`,
+                                    fileName: `images/themes/${e.theme.includes("infinite") ? e.theme : e.orbTheme == "classic" ? "classic" : "world1"}/doubleJump.png`,
                                     width: e.switchButton.width,
                                     height: e.switchButton.height,
                                   },
@@ -42415,6 +42416,7 @@ var version = "v1.16.0";
                     isEditor: true,
                     justHit: false,
                     theme: switchTheme,
+                    orbTheme: g.properties.theme.id === "classic" ? "classic" : switchTheme,
                     spineContext: getContext(Ws),
                     paused: pauseAnimations,
                     scale: propsScale,
@@ -60920,6 +60922,7 @@ var version = "v1.16.0";
                       (t.paused = e.paused),
                       (t.df = e.df),
                       (t.theme = e.layout.properties.theme.objects.switch),
+                      (t.orbTheme = e.layout.properties.theme.id === "classic" ? "classic" : e.layout.properties.theme.objects.switch),
                       t.theme === "infinite" && (t.theme = getInfiniteThemePath(e.bgColor)),
                       (t.justHit =
                         null !== e.justHitObject &&
