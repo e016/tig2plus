@@ -42722,6 +42722,7 @@ var version = "v1.16.1";
                     isEditor: true,
                     justHit: false,
                     theme: n.switch,
+                    orbTheme: t.properties.theme.id === "classic" ? "classic" : n.switch,
                     paused: paused,
                     spineContext: spineContext,
                     scale: scale,
@@ -43992,7 +43993,7 @@ var version = "v1.16.1";
                   ((U.playerRot +=
                     ((90 * U.playerDir * df) / C) *
                     U.gravity *
-                    (U.dashing ? 2 : 1)),
+                    (U.dashing ? 3 : 1)),
                   U.playerRot < 0
                     ? (U.playerRot += 360)
                     : U.playerRot > 360 && (U.playerRot -= 360));
