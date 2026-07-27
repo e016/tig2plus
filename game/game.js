@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.16.2";
+var version = "ten-v1.16.2";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -30972,6 +30972,9 @@ var version = "v1.16.2";
               "images/themes/world2/enemy-walker.png",
               "images/themes/world2/enemy-walker-stomped.png",
               "images/themes/world2/enemy-explosion.png",
+              "images/level/ten/Numbers10.png",
+              "images/level/ten/ten_mine_body.png",
+              "images/level/ten/ten_mine_piston.png"
             ],
             mainMenuImages: [
               "images/mainMenu/appleid_button.png",
@@ -31153,6 +31156,10 @@ var version = "v1.16.2";
               "audio/levels/speedChange/down3.wav",
               "audio/levels/speedChange/down4.wav",
               "audio/levels/speedChange/down5.wav",
+              "audio/levels/ten/beep.ogg",
+              "audio/levels/ten/bounce.ogg",
+              "audio/levels/ten/reset.ogg",
+              "audio/levels/ten/mine_sound.mp3",
             ],
             levelImages: [
               "images/themes/infinite/attempt.png",
@@ -42906,6 +42913,14 @@ var version = "v1.16.2";
                   boosterDebug: {
                     autopilot: {},
                     jumpIndicators: [],
+                  },
+                  tenState: {
+                    x: 0,
+                    y: 0,
+                    lastClicked: 0,
+                    sx: 0,
+                    sy: 0,
+                    speed: 0,
                   }
                 };
           },
@@ -43001,7 +43016,8 @@ var version = "v1.16.2";
               boosterDebug: e.boosterDebug && {
                 autopilot: Object.assign({}, e.boosterDebug.autopilot),
                 jumpIndicators: e.boosterDebug.jumpIndicators.map((indicator) => Object.assign({}, indicator)),
-              }
+              },
+              tenState: Object.assign({}, e.tenState || {})
             };
           },
           menuButtonSprite = makeSprite({
@@ -45776,7 +45792,12 @@ var version = "v1.16.2";
                 bpm: 120,
                 fileName: "audio/tracks/creo-carnivores.mp3",
               },
-              
+              ten: {
+                name: "Ten",
+                author: "Jorel Simpson",
+                bpm: 150,
+                fileName: "audio/tracks/10_boss.mp3",
+              },
             },
             getSnippetName: (e) => e.replace("audio/tracks", "audio/snippets"),
           },
@@ -49420,6 +49441,7 @@ var version = "v1.16.2";
             e[(e.Phobos = 65)] = "Phobos";
             e[(e.RockinThatBass = 66)] = "RockinThatBass";
             e[(e.MilkyWays = 67)] = "MilkyWays";
+            e[(e.Ten = 68)] = "Ten"
           })(Nd || (Nd = {})),
           (function (e) {
             ((e[(e.World1 = 0)] = "World1"),
@@ -50384,7 +50406,8 @@ var version = "v1.16.2";
             [Nd.Carnivores]: hl.songs.carnivores,
             [Nd.Phobos]: hl.songs.phobos,
             [Nd.RockinThatBass]: hl.songs.rockinThatBass,
-            [Nd.MilkyWays]: hl.songs.milkyWays
+            [Nd.MilkyWays]: hl.songs.milkyWays,
+            [Nd.Ten]: hl.songs.ten
           },
           Hd = {
             [ld.Rot0]: 0,
@@ -64748,6 +64771,45 @@ var version = "v1.16.2";
                     height: 49,
                   };
           };
+        const TenMine = makeSprite({
+          init({ props }) {
+
+          },
+          loop({ props, state }) {
+
+          },
+          render({ props, state }) {
+            return [
+              y(
+                {
+                  fileName: "images/level/ten/ten_mine_pistion.png",
+                  width: 192,
+                  height: 192,
+                  x: props.state.x,
+                  y: props.state.y,
+                },
+                (e) => {
+                  ((e.x = props.state.x),
+                    (e.y = props.state.y)
+                  );
+                },
+              ),
+              y(
+                {
+                  fileName: "images/level/ten/ten_mine_body.png",
+                  width: 192,
+                  height: 192,
+                  x: props.state.x,
+                  y: props.state.y,
+                },
+                (e) => {
+                  ((e.x = props.state.x),
+                    (e.y = props.state.y));
+                },
+              ),
+            ]
+          }
+        });
         const vf = makeSprite({
             init({ device: e, props: t, getState: a, getContext: i }) {
               var n, s, o, r, l, c;
@@ -65472,6 +65534,11 @@ var version = "v1.16.2";
                       )));
                   },
                 ),
+                TenMine.Single({
+                  state: t.mutValues.levelState.tenState
+                }, (a) => {
+                  a.state = t.mutValues.levelState.tenState
+                }),
                 onChange(
                   () => {
                     var e;
