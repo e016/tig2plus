@@ -17314,13 +17314,16 @@ var version = "ten-v1.16.2";
                 } = t().pointer,
                 d = () => be.pointInBox2(0, 0, a.width, a.height, s, o),
                 u = r && d();
-              (l && e.isPressed
+              (l && e.isPressed && a.onPress
                 ? n(a.onPress)
                 : c && a.onPressOutside && !d()
                   ? n(a.onPressOutside)
                   : u && n(() => null),
                 u && (c || e.isPressed)
                   ? n(() => {
+                      if (a.onJustPressed && !e.isPressed) {
+                        a.onJustPressed();
+                      }
                       e.isPressed = true;
                     })
                   : (e.isPressed = false));
@@ -64773,40 +64776,74 @@ var version = "ten-v1.16.2";
           };
         const TenMine = makeSprite({
           init({ props }) {
-
+            return {};
           },
-          loop({ props, state }) {
-
+          loop({ props, state, device }) {
+            if (props.paused) {
+              return;
+            }
+            let tenState = props.state;
+            tenState.x += tenState.sx;
+            tenState.y += tenState.sy;
+            console.log(tenState.y, device.size.fullHeight)
+            if (Math.abs(tenState.y / 2) > device.size.fullHeight / 4 - 24) {
+              tenState.sy *= -1;
+            };
+            if (Math.abs(tenState.x / 2) > device.size.fullWidth / 4 - 24) {
+              tenState.sx *= -1;
+            };
+            if (Math.abs(12 - Math.ceil((props.state.lastClicked - props.frame) / 60)) > 9) {
+              props.crash();
+            }
           },
           render({ props, state }) {
             return [
-              y(
-                {
-                  fileName: "images/level/ten/ten_mine_pistion.png",
-                  width: 192,
-                  height: 192,
-                  x: props.state.x,
-                  y: props.state.y,
+              _e.Single({
+                width: 96,
+                height: 96,
+                x: props.state.x,
+                y: props.state.y,
+                onJustPressed: () => {
+                  console.warn();
+                  const direction = Math.random() * Math.PI;
+                  props.state.lastClicked = props.frame;
+                  props.state.speed += 1;
+                  props.state.sx = Math.sin(direction) * (180 / Math.PI) / 180 * props.state.speed;
+                  props.state.sy = Math.cos(direction) * (180 / Math.PI) / 180 * props.state.speed;
                 },
-                (e) => {
-                  ((e.x = props.state.x),
-                    (e.y = props.state.y)
-                  );
-                },
-              ),
-              y(
-                {
-                  fileName: "images/level/ten/ten_mine_body.png",
-                  width: 192,
-                  height: 192,
-                  x: props.state.x,
-                  y: props.state.y,
-                },
-                (e) => {
-                  ((e.x = props.state.x),
-                    (e.y = props.state.y));
-                },
-              ),
+                sprites: () => [
+                  y(
+                    {
+                      fileName: "images/level/ten/ten_mine_piston.png",
+                      width: 192,
+                      height: 192
+                    }
+                  ),
+                  y(
+                    {
+                      fileName: "images/level/ten/ten_mine_body.png",
+                      width: 192,
+                      height: 192,
+                    }
+                  ),
+                  loopingSpriteSheet.Single({
+                    fileName:
+                      "images/level/ten/Numbers10.png",
+                    columns: 4,
+                    rows: 3,
+                    frameRate: 1,
+                    width: 64,
+                    height: 48,
+                    frame: 10,
+                    scaleY: 1.4,
+                  }, (e) => {
+                    e.frame = Math.abs(12 - Math.ceil((props.state.lastClicked - props.frame) / 60));
+                  }),
+                ],
+              }, (t) => {
+                t.x = props.state.x;
+                t.y = props.state.y;
+              }),
             ]
           }
         });
@@ -65534,11 +65571,15 @@ var version = "ten-v1.16.2";
                       )));
                   },
                 ),
-                TenMine.Single({
-                  state: t.mutValues.levelState.tenState
+                /*TenMine.Single({
+                  state: t.mutValues.levelState.tenState,
+                  frame: t.mutValues.levelState.frame,
+                  crash: () => (t.mutValues.levelState.crashed = true)
                 }, (a) => {
-                  a.state = t.mutValues.levelState.tenState
-                }),
+                  a.state = t.mutValues.levelState.tenState;
+                  a.frame = t.mutValues.levelState.frame;
+                  a.paused = t.paused || t.mutValues.levelState.crashed
+                }),*/
                 onChange(
                   () => {
                     var e;
