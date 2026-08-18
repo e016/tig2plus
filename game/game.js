@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.17.3";
+var version = "v1.17.4";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -16542,7 +16542,7 @@ var version = "v1.17.3";
             new F.Vector(2),
             new F.Vector(3),
           ]),
-          te = (e, t, a, i) => (
+          getRectPoly = (e, t, a, i) => (
             (ee.pos.x = e - a / 2),
             (ee.pos.y = t - i / 2),
             (ee.points[0].x = 0),
@@ -16659,7 +16659,7 @@ var version = "v1.17.3";
               );
           }
         }
-        function ce(e, t) {
+        function getSpikePoly(e, t) {
           switch (e.rotation || 0) {
             case 0:
               return re(
@@ -16751,7 +16751,7 @@ var version = "v1.17.3";
             pooledPlayerPoly1: ie,
             pooledPlayerPoly2: ne,
             pooledPlayerPoly3: se,
-            getRectPoly: te,
+            getRectPoly: getRectPoly,
             getDiamondPoly: (e, t, a, i) => (
               (ae.pos.x = e),
               (ae.pos.y = t),
@@ -16770,7 +16770,7 @@ var version = "v1.17.3";
               switch (obj.type) {
                 case "spike":
                   return switchBlockSpike
-                    ? te(
+                    ? getRectPoly(
                         obj.x,
                         obj.y,
                         obj.width - 2 * inset,
@@ -16778,7 +16778,7 @@ var version = "v1.17.3";
                       )
                     : obj.isLaser
                       ? laserHitbox(obj, inset)
-                      : ce(obj, inset);
+                      : getSpikePoly(obj, inset);
                 case "powerup":
                   return re(
                     obj.x,
@@ -16793,21 +16793,21 @@ var version = "v1.17.3";
                 case "collectible": {
                   const t = 20,
                     a = 20;
-                  return te(obj.x, obj.y, t, a);
+                  return getRectPoly(obj.x, obj.y, t, a);
                 }
                 case "block":
                   return switchBlockSpike
                     ? obj.isLaser
                       ? laserHitbox(obj, inset)
-                      : ce(obj, inset)
-                    : te(
+                      : getSpikePoly(obj, inset)
+                    : getRectPoly(
                         obj.x,
                         obj.y,
                         obj.width - 2 * inset,
                         obj.height - 2 * inset,
                       );
                 case "platform":
-                  return te(
+                  return getRectPoly(
                     obj.x,
                     obj.y,
                     obj.width - 2 * inset,
@@ -16815,8 +16815,8 @@ var version = "v1.17.3";
                   );
                 case "portal":
                   return "up" === obj.direction || "down" === obj.direction
-                    ? te(obj.x, obj.y, obj.height, obj.width)
-                    : te(obj.x, obj.y, obj.width, obj.height);
+                    ? getRectPoly(obj.x, obj.y, obj.height, obj.width)
+                    : getRectPoly(obj.x, obj.y, obj.width, obj.height);
                 case "enemy":
                   return "walkerHelmet" === obj.kind
                     ? ((r = obj.width / 2),
@@ -16843,18 +16843,18 @@ var version = "v1.17.3";
                       le)
                     : "minion" === obj.kind
                       ? // width: 15, height: 20
-                        te(obj.x, obj.y, 15, 20 - 2 * inset)
+                        getRectPoly(obj.x, obj.y, 15, 20 - 2 * inset)
                       : "fireball" === obj.kind
                         ? Z(obj.x, obj.y, 5)
                         : "shooter" !== obj.kind
-                          ? te(obj.x, obj.y, obj.width, obj.height - 2 * inset)
-                          : te(obj.x, obj.y, obj.width, obj.height);
+                          ? getRectPoly(obj.x, obj.y, obj.width, obj.height - 2 * inset)
+                          : getRectPoly(obj.x, obj.y, obj.width, obj.height);
                 case "directionChange":
                 case "speedChange":
                 case "flag":
                 case "switchButton":
                 case "spring":
-                  return te(obj.x, obj.y, obj.width, obj.height);
+                  return getRectPoly(obj.x, obj.y, obj.width, obj.height);
                 case "switchPlatform": {
                   const t = obj.height / 2,
                     i = -t + inset,
@@ -17125,7 +17125,7 @@ var version = "v1.17.3";
                 ? { type: "crashed" }
                 : null;
             },
-            hitObject: function (e, t, a, i, n, s, o) {
+            hitObject: function (e, t, a, i, n, s, switchBlockSpikes) {
               const r = de.getPlayerPoly(
                 e,
                 t,
@@ -17138,7 +17138,7 @@ var version = "v1.17.3";
               return (t) => {
                 if (t.x > e + t.width + ue || t.x < e - t.width - ue * 2)
                   return false;
-                const a = de.getObjectPolygon(t, o);
+                const a = de.getObjectPolygon(t, switchBlockSpikes);
                 return de.polygonHitSomething(r, a);
               };
             },
@@ -18671,6 +18671,7 @@ var version = "v1.17.3";
               inViewLayoutState,
               fullLayoutStateIndexes, // optional?
               fallTypes,
+              freeze,
             ) {
               // const floorStates = inViewLayoutState.blocks.filter(e => e.isGround),
               const p = layoutFirstIndexes;
@@ -19936,7 +19937,22 @@ var version = "v1.17.3";
                 });
               }
             },
-            render: ({ props: e }) => [
+            render: ({ props: e, getContext }) => [
+              ifConditional(
+                () => getContext(Se).settings.freezeOnDeath,
+                () => [
+                  p(
+                    {
+                      width: 30 * e.playerScaleX,
+                      height: 30 * e.playerScaleY,
+                      rotation: e.playerRot,
+                      color: e.trail.topColour,
+                      opacity: 0.5,
+                      show: e.playerScaleX
+                    }
+                  )
+                ]
+              ),
               conditional(
                 () => "pixel" === e.trail.form,
                 () => [
@@ -31947,7 +31963,7 @@ var version = "v1.17.3";
                               update: (t, a, i) => {
                                 ((t.x = e.saws[i].x),
                                   (t.y = a),
-                                  (t.radius = e.saws[i].width / 2),
+                                  (t.radius = e.saws[i].width / 2 - 0.5),
                                   (t.opacity =
                                     e.saws[i].shape == "bar" ? 0 : 0.5));
                               },
@@ -43480,8 +43496,12 @@ var version = "v1.17.3";
                 bottomLineTheme,
                 disableReleaseBuffer,
                 useBoosterDebug,
+                freezeOnDeath
               } = e,
               { levelState: U } = L;
+
+            let freeze = (U.crashed || U.finishedLevel) && freezeOnDeath;
+
             if (!useBoosterDebug || N) {
               U.boosterDebug = null;
             };
@@ -43489,7 +43509,7 @@ var version = "v1.17.3";
               U.score.fullCombo = true;
               U.score.perfectCombo = true;
             }
-            U.frame += df;
+            U.frame += freeze ? 0 : df;
             const { a: j, b: V } = A;
             if (U.boosterDebug) {
             if (playerInput === "justDown") {
@@ -43525,8 +43545,9 @@ var version = "v1.17.3";
               fullLayoutStateIndexes =
                 (null == D ? void 0 : D.fullLayoutStateIndexes) ||
                 xa.getEmptyStateIndexes();
+            
             if (
-              (Ca.setInViewLayoutAndState(
+              ((freeze || Ca.setInViewLayoutAndState(
                 _.layout,
                 U.frame,
                 C,
@@ -43540,15 +43561,15 @@ var version = "v1.17.3";
                 inViewLayout,
                 inViewLayoutState,
                 fullLayoutStateIndexes,
-                U.fallTypes,
-              ),
+                U.fallTypes
+              )),
               x)
             )
               return void (U.frame -= df);
             if (U.crashed || U.finishedLevel) {
               if (
                 (null !== L.resetTimer && L.resetTimer--,
-                cl(
+                (freeze || cl(
                   U,
                   df,
                   w,
@@ -43566,8 +43587,8 @@ var version = "v1.17.3";
                   () => false,
                   v,
                   V,
-                ),
-                U.playerBullets &&
+                )),
+                U.playerBullets && !freeze &&
                   xa.updateHitBulletState(
                     U.frame,
                     inViewLayout,
@@ -43592,7 +43613,7 @@ var version = "v1.17.3";
                 O(e.frame, U.checkpoint.index);
                 const t = Ca.getInitFirstIndexes();
                 return (
-                  Ca.setInViewLayoutAndState(
+                  freeze || Ca.setInViewLayoutAndState(
                     _.layout,
                     e.frame,
                     C,
@@ -43607,6 +43628,7 @@ var version = "v1.17.3";
                     inViewLayoutState,
                     fullLayoutStateIndexes,
                     e.fallTypes,
+                    e.crashed || e.finishedLevel
                   ),
                   (e.attempt = U.attempt + 1),
                   (useCheckpointState || (e.checkpoint = {
@@ -43748,7 +43770,9 @@ var version = "v1.17.3";
                     array: "switchButtons",
                     index: toggleGravity,
                   };
+                  U.isGravity = false;
                   U.dashing = false;
+                  L.landTimer = et.landTimerLimit;
                   if (g < 2) {
                     (g == 0
                       ? (U.dashing = true)
@@ -44727,7 +44751,7 @@ var version = "v1.17.3";
                   U.playerScaleY,
                   U.dashing ? 0 : U.playerRot,
                   skating,
-                  K,
+                  U.switchBlockSpikes,
                 );
                 for (let e = 0; e < ue.length; e++) {
                   const { object: t } = ue[e];
@@ -50975,14 +50999,14 @@ var version = "v1.17.3";
               ),
               fc,
               Bc([
-                nd.tuple([
-                  yc,
-                  yc,
+                nd.tuple([yc,yc,
                   yc,
                   yc,
                   yc,
                   yc,
                   fc,
+                  yc,
+                  yc,
                   yc,
                   yc,
                   yc,
@@ -51020,6 +51044,7 @@ var version = "v1.17.3";
                   debug,
                   release,
                   animate,
+                  freeze
                 ],
                 d,
               ] = e;
@@ -51052,6 +51077,7 @@ var version = "v1.17.3";
                   hideUi: r,
                   muteMenuMusic: l,
                   headphonesDelay: c,
+                  freezeOnDeath: freeze,
                   overlapObjects: overlap || false,
                   tig1menu: tm || false,
                   mirrorMenuButton: mirror || false,
@@ -51105,7 +51131,7 @@ var version = "v1.17.3";
                 e.settings.showDebug || false,
                 e.settings.disableReleaseBuffer || false,
                 e.settings.animateEditor || false,
-                false,
+                e.settings.freezeOnDeath || false,
               ],
               e.friendRequests.map((e) => [e.profileId, e.playerName]),
             ],
@@ -61506,6 +61532,9 @@ var version = "v1.17.3";
                                   }, // for now, hehehe...
                             playerRot: e.playerRot,
                             playerScale: e.playerScale,
+                            playerScaleX: e.playerScaleX,
+                            playerScaleY: e.playerScaleY,
+                            playerRot: e.playerRot,
                             df: e.df,
                           },
                           (t) => {
@@ -61948,6 +61977,8 @@ var version = "v1.17.3";
                     playerRot: e.playerRot,
                     df: e.df,
                     playerScale: e.playerScale,
+                    playerScaleX: e.playerScaleX,
+                    playerScaleY: e.playerScaleY,
                   }),
                   update: (t) => {
                     ((t.paused = e.paused), (t.df = e.df));
@@ -62781,7 +62812,7 @@ var version = "v1.17.3";
                     {
                       containerHeight: a.size.fullHeight - 70 + 50,
                       containerWidth: a.size.fullWidth,
-                      contentHeight: 850,
+                      contentHeight: 900,
                       y: (a.size.fullHeight - 70) / 2 + 35,
                       sprites: (o) => [
                         c({
@@ -63179,6 +63210,25 @@ var version = "v1.17.3";
                               (e.noPress = o.ref));
                           },
                         ),
+                        Rm.Single(
+                          {
+                            text: "FREEZE ON DEATH",
+                            selected: false,
+                            onPress: () => {
+                              var a;
+                              const { settings: i, updateSettings: n } = t(Se);
+                              n({ freezeOnDeath: !i.freezeOnDeath });
+                            },
+                            width: 250,
+                            height: 40,
+                            y: -750,
+                          },
+                          (e) => {
+                            const { settings: a } = t(Se);
+                            ((e.selected = a.freezeOnDeath),
+                              (e.noPress = o.ref));
+                          },
+                        ),
                         /*Rm.Single(
                           {
                             text: '"INFINITE" TRAIL',
@@ -63208,7 +63258,7 @@ var version = "v1.17.3";
                             },
                             width: 250,
                             height: 40,
-                            y: -750,
+                            y: -800,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -63228,7 +63278,7 @@ var version = "v1.17.3";
                             },
                             width: 250,
                             height: 40,
-                            y: -800,
+                            y: -850,
                           },
                           (e) => {
                             const { settings: a } = t(Se);
@@ -64864,7 +64914,7 @@ var version = "v1.17.3";
                   f,
                   y,
                   E,
-                  d.fallTypes,
+                  d.fallTypes
                 ),
                 null === (o = t.didStart) ||
                   void 0 === o ||
@@ -65261,6 +65311,7 @@ var version = "v1.17.3";
                   onCrash: t.onCrash,
                   onReset: t.onReset,
                   disableReleaseBuffer: y.disableReleaseBuffer,
+                  freezeOnDeath: y.freezeOnDeath
                 }),
                 oldPowerupsLength -
                   t.mutValues.levelState.playerPowerups.filter(
