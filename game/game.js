@@ -38916,6 +38916,49 @@ var version = "v1.17.4";
               case "spring":
                 return (function (e, t, a) {
                   return [
+                    /*{
+                      name: "Kind",
+                      options: [
+                        {
+                          name: "Spring",
+                          selected: t.kind === "spring",
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "springs",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    kind: "spring",
+                                    width: 30,
+                                    height: 15,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                        {
+                          name: "Fan",
+                          selected: t.kind === "fan",
+                          onPress: () => {
+                            a.map((j) => {
+                              e({
+                                type: "setProperty",
+                                array: "springs",
+                                index: j,
+                                set: (e) =>
+                                  Object.assign(Object.assign({}, e), {
+                                    kind: "fan",
+                                    height: 30 * 4,
+                                    width: 90,
+                                  }),
+                              });
+                            });
+                          },
+                        },
+                      ],
+                    },*/
                     {
                       name: "Direction",
                       options: [
@@ -44421,6 +44464,10 @@ var version = "v1.17.4";
                   : U.playerGradY;
               if (-1 !== idx) {
                 const spring = inViewLayout.springs[idx];
+                if (spring.kind === "fan") {
+                  setGradY(Math.max(gradY + (V - gradY) / 5 * (spring.direction < 0 ? -0.5 : 1), -V));
+                  return;
+                };
                 (stack ||
                   (U.jumping = U.playerPowerups.some(
                     (e) => e.item === "spaceship",
