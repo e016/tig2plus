@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.17.4";
+var version = "v1.18.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -16358,17 +16358,18 @@ var version = "v1.17.4";
                 width:
                   null !== (i = null == e ? void 0 : e.width) && void 0 !== i
                     ? i
-                    : 30,
+                    : (e && e.kind) === "fan" ? 90 : 30,
                 height:
                   null !== (n = null == e ? void 0 : e.height) && void 0 !== n
                     ? n
-                    : 15,
+                    : (e && e.kind) === "fan" ? 120 : 15,
                 direction:
                   null !== (o = null == e ? void 0 : e.direction) &&
                   void 0 !== o
                     ? o
                     : 1,
-                snapSize: { offsetY: 7.5 },
+                kind: (e && e.kind) || "spring",
+                snapSize: { offsetY: (e && e.kind) === "fan" ? 0 : 7.5 },
               };
             },
             newCollectible: (e) => {
@@ -30867,6 +30868,7 @@ var version = "v1.17.4";
               `images/themes/${e.objects.spike}/spike.png`,
               `images/themes/${e.objects.switch}/switch-platform.png`,
               `images/themes/${e.objects.switch}/switch-button.png`,
+              "images/themes/classic/fan.png",
               "images/themes/world3/block-white.png",
               "images/themes/world3/block-white-light.png",
               "images/themes/world3/spike-white.png",
@@ -31062,6 +31064,7 @@ var version = "v1.17.4";
               "images/editor/editorOnly/direction-change.png",
               "images/editor/editorOnly/double-jump.png",
               "images/editor/editorOnly/spring.png",
+              "images/editor/editorOnly/fan.png",
               "images/editor/editorOnly/speed-change.png",
               "images/themes/blank/block.png",
               "images/editor/editorOnly/block-switch-button.png",
@@ -36608,6 +36611,61 @@ var version = "v1.17.4";
                     ),
                   ],
           }),
+          fanParticles = makeSprite({
+            init: ({ props, device }) => ({ particles: [], frame: 0 }),
+            loop({ state, props, device }) {
+              if (props.paused) {
+                return;
+              }
+              state.frame++;
+              state.particles.forEach(
+                (path, index) => {
+                  if (path[1][1] < 60) {
+                    if (path[1][1] > -30) {
+                      path[0][1] += 5
+                    }
+                    path[1][1] += 5
+                  } else {
+                    path[0][1] += 5;
+                  }
+                  path[0][1] = Math.min(path[0][1], path[1][1]);
+                  if (path[0][1] == path[1][1]) {
+                    state.particles[index] = null;
+                  };
+                }
+              );
+              console.warn(state.particles, state.particles.filter((e) => e !== null))
+              state.particles = state.particles.filter((e) => e !== null);
+              if (state.particles.length < 10 && state.frame % 2 === 0) {
+                let x = device.random() * 90 - 45;
+                state.particles.push([
+                  [
+                    x, -45
+                  ], 
+                  [
+                    x, -45
+                  ]
+                ]);
+              };
+            },
+            render({ state, props }) {
+              return [
+                f({
+                  props: () => ({
+                    thickness: 4,
+                    color: 'white',
+                    opacity: 0.2,
+                    lineCap: "round",
+                    path: [],
+                  }),
+                  update: (a, n, index) => {
+                    a.path = n || [];
+                  },
+                  array: () => state.particles || [],
+                })
+              ]
+            }
+          }),
           $o = makeSprite({
             init: () => ({ hitCount: 0 }),
             loop({ props: e, state: t }) {
@@ -36638,19 +36696,36 @@ var version = "v1.17.4";
               const { animationAssets: i, animationRenderer: n } =
                 e.spineContext || a(Ws);
               return [
-                onChange(
-                  () => t.hitCount,
+                conditional(
+                  () => e.spring.kind === "fan",
                   () => [
-                    Hs(
+                    (e.isEditor ? p({
+                      width: e.spring.width,
+                      height: e.spring.height,
+                      color: "white",
+                      opacity: 0.5,
+                    }, (a) => {
+                      a.x = e.spring.x;
+                      a.y = e.spring.y;
+                    }) : null),
+                    fanParticles.Single({
+                      paused: e.paused,
+                      df: e.df,
+                      scaleY: e.spring.direction
+                    }, (t) => {
+                      t.paused = e.paused;
+                      t.df = e.df;
+                      t.scaleY = e.spring.direction;
+                      t.x = e.spring.x;
+                      t.y = e.spring.y;
+                    }),
+                    loopingSpriteSheet.Single(
                       {
-                        id: "SpringSpine",
-                        animationAssets: i,
-                        animationRenderer: n,
-                        animationName: "animation",
-                        fileNames: Qs.spineFiles.spring,
-                        loop: false,
-                        df: 0 === t.hitCount ? 0 : e.df || 1,
-                        paused: e.paused || false,
+                        fileName: "images/themes/classic/fan.png",
+                        width: 75,
+                        height: 20,
+                        columns: 6,
+                        rows: 1,
                         x: e.spring.x,
                         y: getBlockFallY(
                           e.spring.x,
@@ -36658,30 +36733,73 @@ var version = "v1.17.4";
                           e.inGame && e.inGame.playerX,
                           e.inGame && e.inGame.fallTypes,
                           e.inGame && e.inGame.playerDir,
-                        ),
-                        scale: { x: 1, y: e.spring.direction || 1 },
-                        height: e.spring.height,
+                        ) + -45 * e.spring.direction,
+                        scaleY: e.spring.direction,
+                        frame: 0,
+                        frameRate: 2,
                       },
-                      (a) => {
-                        ((a.df = 0 === t.hitCount ? 0 : e.df || 1),
-                          (a.paused = e.paused || false),
-                          (a.x = e.spring.x),
-                          (a.y =
-                            getBlockFallY(
+                      (t) => {
+                        ((t.x = e.spring.x),
+                          (t.y = getBlockFallY(
+                            e.spring.x,
+                            e.spring.y,
+                            e.inGame && e.inGame.playerX,
+                            e.inGame && e.inGame.fallTypes,
+                            e.inGame && e.inGame.playerDir,
+                          ) + -45 * e.spring.direction),
+                          (t.scaleY = e.spring.direction),
+                          (t.frame = e.frame)
+                        );
+                      },
+                    ),
+                  ],
+                  () => [
+                    onChange(
+                      () => t.hitCount,
+                      () => [
+                        Hs(
+                          {
+                            id: "SpringSpine",
+                            animationAssets: i,
+                            animationRenderer: n,
+                            animationName: "animation",
+                            fileNames: Qs.spineFiles.spring,
+                            loop: false,
+                            df: 0 === t.hitCount ? 0 : e.df || 1,
+                            paused: e.paused || false,
+                            x: e.spring.x,
+                            y: getBlockFallY(
                               e.spring.x,
                               e.spring.y,
                               e.inGame && e.inGame.playerX,
                               e.inGame && e.inGame.fallTypes,
                               e.inGame && e.inGame.playerDir,
-                            ) + (e.spring.direction < 0 ? 15 : 0)));
-                        a.scale = {
-                          x: e.scale || 1,
-                          y: (e.spring.direction || 1) * (e.scale || 1),
-                        };
-                      },
-                    ),
+                            ),
+                            scale: { x: 1, y: e.spring.direction || 1 },
+                            height: e.spring.height,
+                          },
+                          (a) => {
+                            ((a.df = 0 === t.hitCount ? 0 : e.df || 1),
+                              (a.paused = e.paused || false),
+                              (a.x = e.spring.x),
+                              (a.y =
+                                getBlockFallY(
+                                  e.spring.x,
+                                  e.spring.y,
+                                  e.inGame && e.inGame.playerX,
+                                  e.inGame && e.inGame.fallTypes,
+                                  e.inGame && e.inGame.playerDir,
+                                ) + (e.spring.direction < 0 ? 15 : 0)));
+                            a.scale = {
+                              x: e.scale || 1,
+                              y: (e.spring.direction || 1) * (e.scale || 1),
+                            };
+                          },
+                        ),
+                      ],
+                    )
                   ],
-                ),
+                )
               ];
             },
           }),
@@ -38914,9 +39032,19 @@ var version = "v1.17.4";
                   ];
                 })(e, t, i);
               case "spring":
+                const springReplace = (e, t, onew) => {
+                    const n = Ca.removeObject(t, "springs", i),
+                    newObject = Object.assign(Object.assign({}, e), onew);
+                    return (
+                      Da.moveObjectUntilCanPlace(
+                        n,
+                        Object.assign(newObject, V(newObject, onew.snapSize)),
+                      ) || null
+                    );
+                  };
                 return (function (e, t, a) {
                   return [
-                    /*{
+                    {
                       name: "Kind",
                       options: [
                         {
@@ -38928,11 +39056,11 @@ var version = "v1.17.4";
                                 type: "setProperty",
                                 array: "springs",
                                 index: j,
-                                set: (e) =>
-                                  Object.assign(Object.assign({}, e), {
+                                set: (e, t) => springReplace(e, t, {
                                     kind: "spring",
                                     width: 30,
                                     height: 15,
+                                    snapSize: { offsetY: 7.5 }
                                   }),
                               });
                             });
@@ -38947,18 +39075,18 @@ var version = "v1.17.4";
                                 type: "setProperty",
                                 array: "springs",
                                 index: j,
-                                set: (e) =>
-                                  Object.assign(Object.assign({}, e), {
+                                set: (e, t) => springReplace(e, t, {
                                     kind: "fan",
-                                    height: 30 * 4,
                                     width: 90,
+                                    height: 120,
+                                    snapSize: { offsetY: 0 }
                                   }),
                               });
                             });
                           },
                         },
                       ],
-                    },*/
+                    },
                     {
                       name: "Direction",
                       options: [
@@ -42514,6 +42642,7 @@ var version = "v1.17.4";
                     spineContext: getContext(Ws),
                     paused: pauseAnimations,
                     scale: propsScale,
+                    frame: frame,
                   }),
                 ),
                 ...h.portals.map((e, t) =>
@@ -42837,6 +42966,7 @@ var version = "v1.17.4";
                     spineContext: spineContext,
                     paused: paused,
                     scale: scale,
+                    frame: frame
                   });
                 case "portal":
                   return Jo.Single({
@@ -44447,12 +44577,20 @@ var version = "v1.17.4";
                 ),
                 U.collectibles++,
                 null == v || v.hitCollectible()));
-            const touchedSpring = inViewLayout.springs.findIndex((e) => Z(e));
+            let touchedSpring = inViewLayout.springs.findIndex((e) => e.kind !== "fan" && Z(e));
+            if (touchedSpring === -1) {
+              touchedSpring = inViewLayout.springs.findIndex((e) => e.kind === "fan" && Z(e));
+            }
             const checkSprings = (idx, stack) => {
               if (stack) {
                 idx = inViewLayout.springs.findIndex((e) =>
-                  stackCollide(stack)(e),
+                  e.kind !== "fan" &&  stackCollide(stack)(e),
                 );
+                if (idx === -1) {
+                  idx = inViewLayout.springs.findIndex((e) =>
+                    e.kind === "fan" &&  stackCollide(stack)(e),
+                  );
+                }
               }
               var setY = (y) => (stack ? (stack.y = y) : (U.playerY = y));
               var setGradY = (y) =>
@@ -49708,7 +49846,7 @@ var version = "v1.17.4";
                   ]),
                 ),
                 Oc(Gc([fc, fc, nd.enum2])),
-                Oc(Bc([Gc([fc, fc, nd.enum2]), Gc([fc, fc])])),
+                Oc(Bc([Gc([fc, fc, nd.enum2, nd.enum2]), Gc([fc, fc, nd.enum2]), Gc([fc, fc])])),
                 Oc(nd.tuple([fc, fc, nd.enum4, fc, nd.enum2])),
                 Oc(Gc([fc, fc, nd.enum2])),
                 Oc(Gc([fc, fc, nd.enum2, nd.enum3])),
@@ -49860,7 +49998,7 @@ var version = "v1.17.4";
                   ]),
                 ),
                 Oc(Gc([fc, fc, nd.enum2])),
-                Oc(Bc([Gc([fc, fc, nd.enum2]), Gc([fc, fc])])),
+                Oc(Bc([Gc([fc, fc, nd.enum2, nd.enum2]), Gc([fc, fc, nd.enum2]), Gc([fc, fc])])),
                 Oc(nd.tuple([fc, fc, nd.enum4, fc, nd.enum2])),
                 Oc(Gc([fc, fc, nd.enum2])),
               ]),
@@ -50120,8 +50258,8 @@ var version = "v1.17.4";
                     collectibles: y.map(([e, t, a]) =>
                       $.newCollectible({ x: e, y: t, form: su[a] }),
                     ),
-                    springs: E.map(([e, t, a]) =>
-                      $.newSpring({ x: e, y: t, direction: a ? -1 : 1 }),
+                    springs: E.map(([e, t, a, i]) =>
+                      $.newSpring({ x: e, y: t, direction: a ? -1 : 1, kind: i === 1 ? "fan" : "spring" }),
                     ),
                     portals: b.map(([e, t, a, i, n]) =>
                       $.newPortal({
@@ -50370,7 +50508,7 @@ var version = "v1.17.4";
                     }),
                     i.collectibles.map((e) => [e.x, e.y, ru(e.form, su)]),
                     i.springs.map((e) =>
-                      e.direction < 0 ? [e.x, e.y, 1] : [e.x, e.y],
+                      e.kind === "fan" ? [e.x, e.y, e.direction, 1] : e.direction < 0 ? [e.x, e.y, 1] : [e.x, e.y],
                     ),
                     i.portals.map((e) => [
                       e.x,
@@ -61085,6 +61223,7 @@ var version = "v1.17.4";
                       playerX: e.playerX,
                       fallTypes: e.fallTypes,
                     },
+                    frame: e.frame
                   }),
                   update: (t, a, i) => {
                     ((t.spring = a),
@@ -61096,7 +61235,9 @@ var version = "v1.17.4";
                       (t.paused = e.paused),
                       (t.inGame.playerX = e.playerX),
                       (t.inGame.fallTypes = e.fallTypes),
-                      (t.inGame.playerDir = e.playerDir));
+                      (t.inGame.playerDir = e.playerDir),
+                      (t.frame = e.frame)
+                    );
                   },
                   array: () => e.layout.springs,
                   key: (t, a) => e.layoutStateIndex.springs[a],
