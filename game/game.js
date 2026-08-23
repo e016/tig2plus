@@ -45772,21 +45772,8 @@ var version = "v1.18.0";
                 bpm: 172,
                 isBonusSong: false,
               },
-              // official order: red shift, fire aura, heaven, minds of mad, phobos 
-              redShift: {
-                name: "Red Shift",
-                author: "Cubed",
-                fileName: "audio/tracks/cubed-red-shift.mp3",
-                bpm: 150,
-                isBonusSong: true,
-              },
-              fireAura: {
-                name: "Fire Aura",
-                author: "Kid2Will",
-                fileName: "audio/tracks/kid2will-fire-aura.mp3",
-                bpm: 180,
-                isBonusSong: true,
-              },
+              // official order: robot language, paradise on e, essense, minds of mad, phobos 
+              
               robotLanguage: {
                 name: "Robot Language",
                 author: "meganeko",
@@ -45799,12 +45786,11 @@ var version = "v1.18.0";
                 bpm: 148,
                 fileName: "audio/tracks/bounce-paradise-on-e.mp3"
               },
-              heaven: {
-                name: "Heaven",
-                author: "EnV",
-                fileName: "audio/tracks/env-heaven.mp3",
-                bpm: 150,
-                isBonusSong: true,
+              essence: {
+                name: "Essence",
+                author: "DJVI",
+                bpm: 170,
+                fileName: "audio/tracks/djvi-essence.mp3"
               },
               mindsOfTheMad: {
                 name: "Minds Of The Mad",
@@ -45882,7 +45868,27 @@ var version = "v1.18.0";
                 fileName: "audio/tracks/geoxor-nana.mp3",
                 bpm: 128,
               },
-
+              redShift: {
+                name: "Red Shift",
+                author: "Cubed",
+                fileName: "audio/tracks/cubed-red-shift.mp3",
+                bpm: 150,
+                isBonusSong: true,
+              },
+              fireAura: {
+                name: "Fire Aura",
+                author: "Kid2Will",
+                fileName: "audio/tracks/kid2will-fire-aura.mp3",
+                bpm: 180,
+                isBonusSong: true,
+              },
+              heaven: {
+                name: "Heaven",
+                author: "EnV",
+                fileName: "audio/tracks/env-heaven.mp3",
+                bpm: 150,
+                isBonusSong: true,
+              },
               chaozFantasy: {
                 name: "Chaoz Fantasy",
                 author: "ParagonX9",
@@ -49672,6 +49678,7 @@ var version = "v1.18.0";
             e[(e.MilkyWays = 67)] = "MilkyWays";
             e[(e.ParadiseOnE = 68)] = "ParadiseOnE";
             e[(e.Rattlesnake = 69)] = "Rattlesnake";
+            e[(e.Essence = 70)] = "Essence";
           })(Nd || (Nd = {})),
           (function (e) {
             ((e[(e.World1 = 0)] = "World1"),
@@ -50639,6 +50646,7 @@ var version = "v1.18.0";
             [Nd.MilkyWays]: hl.songs.milkyWays,
             [Nd.ParadiseOnE]: hl.songs.paradiseOnE,
             [Nd.Rattlesnake]: hl.songs.rattlesnake,
+            [Nd.Essence]: hl.songs.essence,
           },
           Hd = {
             [ld.Rot0]: 0,
