@@ -50259,7 +50259,7 @@ var version = "v1.18.0";
                       $.newCollectible({ x: e, y: t, form: su[a] }),
                     ),
                     springs: E.map(([e, t, a, i]) =>
-                      $.newSpring({ x: e, y: t, direction: a ? -1 : 1, kind: i === 1 ? "fan" : "spring" }),
+                      $.newSpring({ x: e, y: t, direction: a === 1 ? -1 : 1, kind: i === 1 ? "fan" : "spring" }),
                     ),
                     portals: b.map(([e, t, a, i, n]) =>
                       $.newPortal({
@@ -50508,7 +50508,7 @@ var version = "v1.18.0";
                     }),
                     i.collectibles.map((e) => [e.x, e.y, ru(e.form, su)]),
                     i.springs.map((e) =>
-                      e.kind === "fan" ? [e.x, e.y, e.direction, 1] : e.direction < 0 ? [e.x, e.y, 1] : [e.x, e.y],
+                      e.kind === "fan" ? [e.x, e.y, e.direction < 0 ? 1 : 0, 1] : e.direction < 0 ? [e.x, e.y, 1] : [e.x, e.y],
                     ),
                     i.portals.map((e) => [
                       e.x,
