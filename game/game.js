@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.18.0";
+var version = "v1.18.1";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -42420,16 +42420,16 @@ var version = "v1.18.0";
                       }),
                       ScrollHandler.Single({
                         id: "ScrollHandler",
-                        onScaleDelta: (t) => {
+                        onScaleDelta: (t, event) => {
                           e.setSettings({
-                            viewOffset: r.keysDown.Control
+                            viewOffset: event.ctrlKey
                               ? pr(
                                   d,
                                   B.clamp2(dr, cr, d.scale * (1 - t / 1000)),
                                   { x: r.pointer.x, y: r.pointer.y },
                                 )
-                              : r.keysDown.Shift
-                                ? { x: d.x + t * 0.9, y: d.y, scale: d.scale }
+                              : r.keysDown.Shift || event.deltaX !== 0
+                                ? { x: d.x + (event.deltaX * -1 || t) * 0.9, y: d.y, scale: d.scale }
                                 : { x: d.x, y: d.y + t * 0.9, scale: d.scale },
                           });
                         },
@@ -43030,8 +43030,8 @@ var version = "v1.18.0";
             init({ props: e }) {
               const t = (t) =>
                 e.addToOnScrollQueue(() => {
-                  1 === t.deltaMode && e.onScaleDelta(t.deltaY * (100 / 6));
-                  0 === t.deltaMode && e.onScaleDelta(t.deltaY);
+                  1 === t.deltaMode && e.onScaleDelta(t.deltaY * (100 / 6), t);
+                  0 === t.deltaMode && e.onScaleDelta(t.deltaY, t);
                 });
               return (
                 document.addEventListener("wheel", t, { passive: true }),
