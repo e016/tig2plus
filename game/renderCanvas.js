@@ -398,6 +398,7 @@ var renderCanvas;
                       state: e.state,
                       parentGlobalId: l,
                       utils: r,
+                      fps: REPLAY_FRAMES_PER_SECOND / 60,
                       spriteToGameCoords: (e, t, r) => {
                         const i = c.multiplyPooled(
                           n.getTopStack().transformationGameCoords,
@@ -483,6 +484,7 @@ var renderCanvas;
                 .transformationGameCoords,
               (null == h ? void 0 : h.inputs) || i()
             ),
+          fps: REPLAY_FRAMES_PER_SECOND / 60,
           updateState: f,
           getContext: (e) => {
             const t = c.find((t) => t.context === e);
@@ -812,6 +814,7 @@ var renderCanvas;
               state: o,
               parentGlobalId: d,
               utils: r,
+              fps: REPLAY_FRAMES_PER_SECOND / 60,
               spriteToGameCoords: (e, t, r) => {
                 const i = c.multiplyPooled(
                   n.getTopStack().transformationGameCoords,
