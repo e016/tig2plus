@@ -19749,7 +19749,7 @@ var version = "v1.18.1";
                   y: 0,
                   rotation: 360 * t.random(),
                   speedX: (6 * t.random() - 3) / fps,
-                  speedY: (8 * t.random()) / fps,
+                  speedY: (8 * t.random()),
                 }));
               return {
                 justDestroyed: e.justDestroyed,
@@ -19760,7 +19760,7 @@ var version = "v1.18.1";
             loop({ state: e, props: t, fps }) {
               if (!t.paused) {
                 for (const t of e.triangles)
-                  ((t.radius += t.speed),
+                  ((t.radius += t.speed / fps),
                     (t.opacity = 1),
                     (t.scale -= 0.1 / fps),
                     (t.speed += 0.2 / fps));
@@ -19768,7 +19768,7 @@ var version = "v1.18.1";
                 for (const t of e.squares)
                   ((t.scale += 0.02 / fps),
                     (t.x += t.speedX),
-                    (t.y += t.speedY),
+                    (t.y += t.speedY / fps),
                     (t.speedY -= 0.3 / fps));
                 lt(e.squares, Ha);
               }
