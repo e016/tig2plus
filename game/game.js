@@ -19766,7 +19766,7 @@ var version = "v1.18.1";
                     (t.speed += 0.2 / fps));
                 lt(e.triangles, Va);
                 for (const t of e.squares)
-                  ((t.scale = t.scale + 0.02 / fps),
+                  ((t.scale += 0.02 / fps),
                     (t.x += t.speedX),
                     (t.y += t.speedY),
                     (t.speedY -= 0.3 / fps));
@@ -36048,11 +36048,11 @@ var version = "v1.18.1";
             },
             loop({
               state: e,
-              props: { shouldShow: t, fadeFrames: a = 10, fadeInc: i = 1 },
+              props: { shouldShow: t, fadeFrames: a = 10, fadeInc: i = 1, fps },
             }) {
               t
-                ? e.fade < a && ((e.fade += i), (e.opacity.ref = e.fade / a))
-                : e.fade > 0 && (e.fade--, (e.opacity.ref = e.fade / a));
+                ? e.fade < a && ((e.fade += i / fps), (e.opacity.ref = e.fade / a))
+                : e.fade > 0 && ((e.fade -= 1 / fps), (e.opacity.ref = e.fade / a));
             },
             render: ({ props: e, state: t }) => [
               ifConditional(
@@ -36111,8 +36111,9 @@ var version = "v1.18.1";
             loop({
               state: e,
               props: { targetOpacity: t, targetColor: targetColor },
+              fps
             }) {
-              e.opacity.ref += (t - e.opacity.ref) / 10;
+              e.opacity.ref += (t - e.opacity.ref) / 10 / fps;
               if (!(t == 0) && targetColor) {
                 if (e.opacity.ref < 0.5 && t > 0) {
                   e.color.ref = targetColor || "#000000";
@@ -36122,9 +36123,9 @@ var version = "v1.18.1";
                   ? e.color.trueRef
                   : calculateRGB(e.color.ref, 255);
                 var newRgb = calculateRGB(targetColor, 255);
-                e.color.trueRef.r += (newRgb.r - current.r) / 5;
-                e.color.trueRef.g += (newRgb.g - current.g) / 5;
-                e.color.trueRef.b += (newRgb.b - current.b) / 5;
+                e.color.trueRef.r += (newRgb.r - current.r) / 5 / fps;
+                e.color.trueRef.g += (newRgb.g - current.g) / 5 / fps;
+                e.color.trueRef.b += (newRgb.b - current.b) / 5 / fps;
 
                 e.color.ref = `#${componentToHex(e.color.trueRef.r, true)}${componentToHex(e.color.trueRef.g, true)}${componentToHex(e.color.trueRef.b, true)}`;
               }
@@ -43709,7 +43710,7 @@ var version = "v1.18.1";
                 ? ("up" == playerInput && (U.justDownInputTimer = 0),
                   "up" !== playerInput)
                 : true) &&
-              U.justDownInputTimer--,
+              (U.justDownInputTimer -= df),
               "justDown" !== playerInput ||
                 (skating ? void 0 : (U.justDownInputTimer = 10)));
             const inViewLayout =
@@ -56025,11 +56026,11 @@ var version = "v1.18.1";
           }),
           sg = makeSprite({
             init: ({ props: e }) => ({ fade: 0, text: e.text }),
-            loop({ props: e, state: t }) {
+            loop({ props: e, state: t, fps }) {
               if (e.text !== t.text) {
-                if (t.fade > 0) return void t.fade--;
+                if (t.fade > 0) return void (t.fade -= 1 / fps);
                 ((t.fade = 0), (t.text = e.text));
-              } else t.fade < 30 && t.fade++;
+              } else t.fade < 30 && (t.fade += 1 / fps);
             },
             render: ({ state: e }) => [
               c({ font: { size: 20 }, color: "white" }, (t) => {
@@ -56039,14 +56040,14 @@ var version = "v1.18.1";
           }),
           og = makeCustomSprite({
             init: ({ props: e }) => ({ fade: 0, text: e.text, timer: 0 }),
-            loop: ({ state: e, props: t }) =>
+            loop: ({ state: e, props: t, fps }) =>
               e.timer > t.showTime
                 ? e.fade > 0
-                  ? Object.assign(Object.assign({}, e), { fade: e.fade - 1 })
+                  ? Object.assign(Object.assign({}, e), { fade: e.fade - 1 / fps })
                   : Object.assign(Object.assign({}, e), { fade: 0 })
                 : e.fade < 30 && e.timer > t.delay
-                  ? Object.assign(Object.assign({}, e), { fade: e.fade + 1 })
-                  : Object.assign(Object.assign({}, e), { timer: e.timer + 1 }),
+                  ? Object.assign(Object.assign({}, e), { fade: e.fade + 1 / fps })
+                  : Object.assign(Object.assign({}, e), { timer: e.timer + 1 / fps }),
             render: ({ state: e }) => [
               n({
                 font: { size: 20 },
@@ -64755,8 +64756,8 @@ var version = "v1.18.1";
             }
             return { frame: 0, opacity: 0 };
           },
-          loop({ state: e }) {
-            e.opacity >= 1 || (e.frame++, e.frame > 100 && (e.opacity += 0.1));
+          loop({ state: e, fps }) {
+            e.opacity >= 1 || ((e.frame += 1 / fps), e.frame > 100 && (e.opacity += 0.1 / fps));
           },
           render({ props: e, getContext: t, state: a, device: i }) {
             const { animationAssets: n, animationRenderer: s } = t(Ws);
