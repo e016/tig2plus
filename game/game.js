@@ -19691,10 +19691,10 @@ var version = "v1.18.1";
           }),
           triggerableSpriteSheet = makeSprite({
             init({ props: e, fps }) {
-              const t = ja(e.frameRate / fps, e.rows, e.columns, e.maxIndex);
+              const t = ja(e.frameRate, e.rows, e.columns, e.maxIndex) / fps;
               return {
-                frame: Math.min((e.startFrame / fps) || 0, t - 1),
-                maxFrame: ja(e.frameRate, e.rows, e.columns, e.maxIndex) / fps,
+                frame: Math.min((e.startFrame) || 0, t - 1) / fps,
+                maxFrame: ja(e.frameRate, e.rows, e.columns, e.maxIndex),
               };
             },
             loop({ state: e, props: t, fps }) {
@@ -19760,16 +19760,16 @@ var version = "v1.18.1";
             loop({ state: e, props: t, fps }) {
               if (!t.paused) {
                 for (const t of e.triangles)
-                  ((t.radius = t.radius + t.speed / fps),
+                  ((t.radius += t.speed),
                     (t.opacity = 1),
-                    (t.scale = t.scale - 0.1 / fps),
-                    (t.speed = t.speed + 0.2 / fps));
+                    (t.scale -= 0.1 / fps),
+                    (t.speed += 0.2 / fps));
                 lt(e.triangles, Va);
                 for (const t of e.squares)
                   ((t.scale = t.scale + 0.02 / fps),
-                    (t.x = t.x + t.speedX),
-                    (t.y = t.y + t.speedY),
-                    (t.speedY = t.speedY - 0.3 / fps));
+                    (t.x += t.speedX),
+                    (t.y += t.speedY),
+                    (t.speedY -= 0.3 / fps));
                 lt(e.squares, Ha);
               }
             },
@@ -45477,7 +45477,7 @@ var version = "v1.18.1";
                       (e) => e.item === "skateboard" || e.item === "spaceship",
                     )),
                     onCrash(U.checkpoint.index),
-                    N && (L.resetTimer = 60 / fps))));
+                    N && (L.resetTimer = 60 * fps))));
             U.playerOnGroundY =
               U.flyingAnchor === null ? U.playerOnGroundY : U.flyingAnchor;
             let ge = U.explosions.length;
@@ -45491,7 +45491,7 @@ var version = "v1.18.1";
                 ),
               )),
               0 === ge && (U.explosions.length = 0)),
-              L.landTimer > 0 && L.landTimer--,
+              L.landTimer > 0 && (L.landTimer = Math.max(0, L.landTimer - df)),
               U.flyingAnchor === null &&
                 (U.playerOnGroundY = null != Q ? Q : U.playerOnGroundY),
               (U.playerWasOnGroundCooldown = Math.max(
@@ -55531,11 +55531,11 @@ var version = "v1.18.1";
                 return void 0;
               }
               state.path.forEach((e) => {
-                e.opacity -= 0.1 * fps;
+                e.opacity -= 0.1 / fps;
                 e.justAdded = false;
               })
-              state.frame++;
-              if (state.frame % Math.floor(5) > 0) {
+              state.frame += 1 / fps;
+              if (!(state.frame % Math.floor(5) <= 1)) {
                 return void 0;
               }
               state.path.shift();
@@ -74394,10 +74394,10 @@ var version = "v1.18.1";
                 { loading: true, frame: 0, modal: null, menuMusicFile: o, readNews: true }
               );
             },
-            loop({ state: e }) {
+            loop({ state: e, fps }) {
               if (e.loading) return e;
-              const t = e.frame + 1;
-              let newArrowY = e.arrowY + 0.3;
+              const t = e.frame + 1 / fps;
+              let newArrowY = e.arrowY + 0.3 / fps;
               newArrowY > 10 && (newArrowY = -10);
               return Object.assign(Object.assign({}, e), {
                 frame: t >= eE() ? t - eE() : t,
@@ -74450,7 +74450,7 @@ var version = "v1.18.1";
                     color: ve,
                   }),
                 ];
-              const E = t.frame / eE() / df,
+              const E = t.frame / eE(),
                 b = E > 0.9 ? 10 * (E - 0.9) : E < 0.2 ? 5 * (0.2 - E) : 0;
               if ("competition" === o.type) {
                 return [
