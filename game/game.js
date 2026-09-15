@@ -42030,7 +42030,7 @@ var version = "v1.18.1";
                       }),
                     });
                   // left side
-                  t = t * -1 - 120,
+                  t = t * -1 - 60,
                     a = (sidesObj.x + e / 2) * d.scale + d.x;
                   a < t &&
                     u({
@@ -42040,7 +42040,7 @@ var version = "v1.18.1";
                     });
                   // top side
                   e = sidesObj.height,
-                    t = theFullHeight / 2 - 40,
+                    t = theFullHeight / 2 - 120,
                     a = (sidesObj.y + e / 2) * d.scale + d.y;
                   a > t &&
                     u({
