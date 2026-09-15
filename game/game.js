@@ -19539,6 +19539,7 @@ var version = "v1.18.1";
             case "moveObjects": {
               let i = t,
                 n = a;
+              
               return (
                 e.objects.forEach((obj) => {
                   const a = t[obj.array][obj.index];
@@ -37727,19 +37728,22 @@ var version = "v1.18.1";
               s = a.y * (i - 1);
             return { x: e.x * i - n, y: e.y * i - s, scale: t };
           },
-          gr = function (e, t, a, i) {
-            let { x: n, y: s, scale: o } = e;
+          gr = function (e, selection, fullWidth, fullHeight, isSelection) {
+            let { x: x, y: y, scale: scale } = e;
+            selection.width * scale > 0.8 * fullWidth && 
+              (scale = Math.max((0.5 * fullWidth) / selection.width, lr));
+            selection.height * scale > 0.8 * fullHeight &&
+              (scale = Math.max((0.5 * fullHeight) / selection.height, lr));
+
+            ((selection.x + selection.width / 2) * scale + x > 0.4 * fullWidth ||
+              (selection.x - selection.width / 2) * scale + x < 0.4 * -fullWidth) &&
+              (x = -selection.x * scale);
+            ((selection.y + selection.height / 2) * scale + y > 0.4 * fullHeight ||
+              (selection.y - selection.height / 2) * scale + y < 0.4 * -fullHeight) &&
+              (y = -selection.y * scale);
             return (
-              t.width * o > 0.8 * a && (o = Math.max((0.5 * a) / t.width, lr)),
-              t.height * o > 0.8 * i &&
-                (o = Math.max((0.5 * i) / t.height, lr)),
-              ((t.x + t.width / 2) * o + n > 0.4 * a ||
-                (t.x - t.width / 2) * o + n < 0.4 * -a) &&
-                (n = -t.x * o),
-              ((t.y + t.height / 2) * o + s > 0.4 * i ||
-                (t.y - t.height / 2) * o + s < 0.4 * -i) &&
-                (s = -t.y * o),
-              { x: n, y: s, scale: o }
+              
+              { x: x, y: y, scale: scale }
             );
           },
           mr = makeCustomSprite({
@@ -37802,6 +37806,7 @@ var version = "v1.18.1";
           const o = $.getBorderDimensions(s);
           if (!o) return;
           e.setViewOffset(gr(n, o, a, i));
+          console.warn(gr(n, o, a, i), s, a, i);
           let r = {};
           const l = s.map((t) => {
             var a;
@@ -41627,7 +41632,7 @@ var version = "v1.18.1";
                 } = e;
               let {
                 selectedObjects: slctedObjs,
-                pointerReleasedAfterSelectingObject: m,
+                pointerReleasedAfterSelectingObject: pointerReleasedAfterSelectingObject,
                 justPlacedObject: f,
                 dragStart: dragStart,
                 dragSelectPos: dragSelectPos,
@@ -41721,6 +41726,9 @@ var version = "v1.18.1";
                     return { selectedObject: a, toX: o, toY: l };
                   }),
                   c,
+                  a,
+                  d,
+                  u
                 );
               }
               if (
@@ -41811,7 +41819,7 @@ var version = "v1.18.1";
                                         1,
                                       ))
                                 : (slctedObjs = [want]),
-                                (m = false));
+                                (pointerReleasedAfterSelectingObject = false));
                             }
                           }
                           dragStart =
@@ -41831,7 +41839,7 @@ var version = "v1.18.1";
                             selectedObjects: slctedObjs,
                             dragStart: dragStart,
                             justPlacedObject: f,
-                            pointerReleasedAfterSelectingObject: m,
+                            pointerReleasedAfterSelectingObject: pointerReleasedAfterSelectingObject,
                           }),
                         );
                       });
@@ -41928,13 +41936,14 @@ var version = "v1.18.1";
                   }
                 } else if (
                   (a.timer.start(() => {
-                    n((e) =>
+                    n((e) => 
                       Object.assign(Object.assign({}, e), {
                         dragStart: null,
                         dragSelectPos: null,
                         isDraggingSelected: false,
                       }),
                     );
+                    
                   }, 0),
                   "dragSelect" === dragStart.type && dragSelectPos)
                 ) {
@@ -41944,8 +41953,8 @@ var version = "v1.18.1";
                       x: (dragSelectPos.x + dragStart.x) / 2,
                       y: (dragSelectPos.y + dragStart.y) / 2,
                     }),
-                    t = Ca.getAllObjects(p).filter(e);
-                  slctedObjs = t.map((e) => ({
+                    at = Ca.getAllObjects(p).filter(e);
+                  slctedObjs = at.map((e) => ({
                     array: e.array,
                     index: p[e.array].indexOf(e),
                     draggingX: e.x,
@@ -41953,6 +41962,7 @@ var version = "v1.18.1";
                     startDraggingX: e.x,
                     startDraggingY: e.y,
                   }));
+                  
                 } else if (
                   "dragObject" === dragStart.type &&
                   slctedObjs.length > 0 &&
@@ -41971,7 +41981,11 @@ var version = "v1.18.1";
                           toY: e.draggingY,
                         })),
                         c,
+                        a,
+                        d,
+                        u
                       );
+                      
                     }),
                   1 === slctedObjs.length)
                 ) {
@@ -41986,15 +42000,18 @@ var version = "v1.18.1";
                     });
                 }
               return (
-                m ||
+                pointerReleasedAfterSelectingObject ||
                   pointer.pressed ||
                   a.timer.start(
                     () =>
-                      n((e) =>
-                        Object.assign(Object.assign({}, e), {
-                          pointerReleasedAfterSelectingObject: true,
-                        }),
-                      ),
+                      {
+                        n((e) =>
+                          Object.assign(Object.assign({}, e), {
+                            pointerReleasedAfterSelectingObject: true,
+                          }),
+                        );
+                        
+                      },
                     10,
                   ),
                 Object.assign(Object.assign({}, t), {
@@ -42006,7 +42023,7 @@ var version = "v1.18.1";
                   isDraggingSelected: b,
                   lastTwoTaps: S,
                   didMoveView: I,
-                  pointerReleasedAfterSelectingObject: m,
+                  pointerReleasedAfterSelectingObject: pointerReleasedAfterSelectingObject,
                   isMultiTouching: isMultiTouching,
                   canMoveSelectedObjects: v,
                   selectedTool: T,
@@ -42983,7 +43000,7 @@ var version = "v1.18.1";
             r,
           ];
         }
-        function Jr(e, t, a) {
+        function Jr(e, t, a, dev, d, u) {
           const i = Ca.removeObjects(
               e,
               t.map((e) => ({
@@ -42999,7 +43016,7 @@ var version = "v1.18.1";
               ),
             );
           Da.canPlaceLevelObjects(i, n) &&
-            a({
+            (a({
               type: "moveObjects",
               objects: t.map((e) => ({
                 array: e.selectedObject.array,
@@ -43007,7 +43024,23 @@ var version = "v1.18.1";
                 x: e.toX,
                 y: e.toY,
               })),
-            });
+            }), (function () {
+                    if (!dev) {
+                      return;
+                    }
+                    const w = dev.size.fullWidth,
+                      h = dev.size.fullHeight,
+                      border = $.getBorderDimensions(t.map(t => e[t.selectedObject.array][t.selectedObject.index]));
+                    if (border) {
+                      let newViewOffset = gr(d, border, w, h, true) || {};
+                      console.warn(newViewOffset, t, border, w, h)
+                      u({
+                        viewOffset: Object.assign(Object.assign({}, d), newViewOffset),
+                      });
+                    } else {
+                      console.warn(border);
+                    }
+                  })());
         }
         function Kr(e, t, a, i, n) {
           for (const s in e) {
