@@ -41989,13 +41989,22 @@ var version = "v1.18.1";
                     }),
                   1 === slctedObjs.length)
                 ) {
-                  const e = p[slctedObjs[0].array][slctedObjs[0].index].width,
+                  let e = p[slctedObjs[0].array][slctedObjs[0].index].width,
                     t = O / 2 - 200 - 40,
                     a = (slctedObjs[0].draggingX + e / 2) * d.scale + d.x;
                   a > t &&
                     u({
                       viewOffset: Object.assign(Object.assign({}, d), {
                         x: d.x - (a - t) - 30,
+                      }),
+                    });
+                  // left side
+                  t = t * -1 - 90,
+                    a = (slctedObjs[0].draggingX + e / 2) * d.scale + d.x;
+                  a < t &&
+                    u({
+                      viewOffset: Object.assign(Object.assign({}, d), {
+                        x: d.x - (a - t) + 30,
                       }),
                     });
                 }
