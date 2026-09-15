@@ -37706,8 +37706,8 @@ var version = "v1.18.1";
           //zooming
           rr = 1.2,
           lr = 0.1,
-          cr = 2,
-          dr = lr,
+          MAX_ZOOM_LIMIT = 2,
+          MIN_ZOOM_LIMIT = lr,
           zoomIn = function (e) {
             return {
               x: e.x * rr,
@@ -41419,29 +41419,52 @@ var version = "v1.18.1";
           });
         var Yr = a(840),
           Ur = a.n(Yr);
-        const PinchRecogniser = makeNativeSprite("PinchRecogniser"),
+        const TouchRecogniser = makeNativeSprite("TouchRecogniser"),
           Gr = {
             create: ({ props: e, getState: t }) => {
               const a = document.getElementById("replay-canvas"),
                 i = new (Ur().Manager)(a),
-                n = new (Ur().Pinch)();
+                n = new (Ur().Pinch)(),
+                pan = new (Ur().Pan)({ direction: Ur().DIRECTION_ALL, pointers: 2 });
               return (
-                i.add([n]),
+                // setup
+                pan.recognizeWith(n),
+                n.recognizeWith(pan),
+                i.add([n, pan]),
+
+                // pinching
                 i.on("pinchstart", () => {
                   e.startPinch();
                 }),
                 i.on("pinchend", (a) => {
                   const i = t(),
-                    n = Math.max(Math.min(cr, a.scale * i.initScale), dr);
+                    n = Math.max(Math.min(MAX_ZOOM_LIMIT, a.scale * i.initScale), MIN_ZOOM_LIMIT);
                   ((i.initScale = n), e.endPinch());
                 }),
                 i.on("pinch", (e) => {
                   const { initScale: a, didPinch: i } = t();
-                  i(Math.max(Math.min(cr, e.scale * a), dr));
+                  i(Math.max(Math.min(MAX_ZOOM_LIMIT, e.scale * a), MIN_ZOOM_LIMIT));
+                }),
+
+                // panning
+                i.on("panstart", () => {
+                  //e.startPan();
+                }),
+                i.on("panend", (a) => {
+                  const i = t();
+                  //i.initPos.x = a.deltaX + i.initPos.x;
+                  //i.initPos.y = a.deltaY + i.initPos.y;
+                  //e.endPan();
+                }),
+                i.on("pan", (e) => {
+                  const { initPos, didPan } = t();
+                  //didPan(e.deltaX + initPos.x, e.deltaY + initPos.y);
                 }),
                 {
                   initScale: e.initScale,
                   didPinch: e.didPinch,
+                  initPos: e.initPos,
+                  didPan: e.didPan,
                   cleanup: () => {
                     i.destroy();
                   },
@@ -41450,6 +41473,7 @@ var version = "v1.18.1";
             },
             loop: ({ state: e, props: t }) => {
               e.didPinch = t.didPinch;
+              e.didPan = t.didPan;
             },
             cleanup: ({ state: e }) => {
               e.cleanup();
@@ -41645,6 +41669,7 @@ var version = "v1.18.1";
                 toolsMenuView: toolsMenuView,
               } = t;
               const O = a.size.width + 2 * a.size.widthMargin,
+                theFullHeight = a.size.height + 2 * a.size.heightMargin,
                 C = {
                   x: (pointer.x - d.x) / d.scale,
                   y: (pointer.y - d.y) / d.scale,
@@ -41987,11 +42012,17 @@ var version = "v1.18.1";
                       );
                       
                     }),
-                  1 === slctedObjs.length)
+                  slctedObjs.length > 0)
                 ) {
-                  let e = p[slctedObjs[0].array][slctedObjs[0].index].width,
+                  let sidesObj = $.getBorderDimensions(slctedObjs.map((e) => 
+                    Object.assign(Object.assign({}, p[e.array][e.index]), {
+                      x: e.draggingX,
+                      y: e.draggingY,
+                    })
+                  ));
+                  let e = sidesObj.width,
                     t = O / 2 - 200 - 40,
-                    a = (slctedObjs[0].draggingX + e / 2) * d.scale + d.x;
+                    a = (sidesObj.x + e / 2) * d.scale + d.x;
                   a > t &&
                     u({
                       viewOffset: Object.assign(Object.assign({}, d), {
@@ -41999,12 +42030,31 @@ var version = "v1.18.1";
                       }),
                     });
                   // left side
-                  t = t * -1 - 90,
-                    a = (slctedObjs[0].draggingX + e / 2) * d.scale + d.x;
+                  t = t * -1 - 120,
+                    a = (sidesObj.x + e / 2) * d.scale + d.x;
                   a < t &&
                     u({
                       viewOffset: Object.assign(Object.assign({}, d), {
-                        x: d.x - (a - t) + 30,
+                        x: d.x - (a - t),
+                      }),
+                    });
+                  // top side
+                  e = sidesObj.height,
+                    t = theFullHeight / 2 - 40,
+                    a = (sidesObj.y + e / 2) * d.scale + d.y;
+                  a > t &&
+                    u({
+                      viewOffset: Object.assign(Object.assign({}, d), {
+                        y: d.y - (a - t),
+                      }),
+                    });
+                  // bottom side
+                  t = t * -1,
+                    a = (sidesObj.y + e / 2) * d.scale + d.y;
+                  a < t &&
+                    u({
+                      viewOffset: Object.assign(Object.assign({}, d), {
+                        y: d.y - (a - t),
                       }),
                     });
                 }
@@ -42358,11 +42408,11 @@ var version = "v1.18.1";
                     x: l / 2 - 250,
                     y: c / 2 - 50
                   })] : []),
-                  
                 ...(i.isTouchScreen
                   ? [
-                      PinchRecogniser({
-                        id: "PinchRecogniser",
+                      TouchRecogniser({
+                        id: "TouchRecogniser",
+                        // pinching
                         initScale: d.scale,
                         startPinch: () => {
                           a((e) =>
@@ -42385,23 +42435,33 @@ var version = "v1.18.1";
                             i = (t.lastTwoTaps[0][1] + t.lastTwoTaps[1][1]) / 2;
                           u({ viewOffset: pr(d, e, { x: a, y: i }) });
                         },
-                      }),
-                      ScrollHandler.Single({
-                        id: "ScrollHandler",
-                        onScaleDelta: (t) => {
-                          e.setSettings({
-                            viewOffset: pr(
-                              d,
-                              B.clamp2(dr, cr, d.scale * (1 - t / 1000)),
-                              { x: r.pointer.x, y: r.pointer.y },
-                            ),
-                          });
+                        // panning
+                        initPos: { x: d.x, y: d.y},
+                        startPan: () => {
+                          a((e) =>
+                            Object.assign(Object.assign({}, e), {
+                              isPinching: true,
+                              didMoveView: true,
+                            }),
+                          );
                         },
-                        addToOnScrollQueue: getContext(Se).addToOnScrollQueue,
+                        endPan: () => {
+                          a((e) =>
+                            Object.assign(Object.assign({}, e), {
+                              isPinching: false,
+                            }),
+                          );
+                        },
+                        didPan: (x, y) => {
+                          u({ viewOffset: Object.assign(Object.assign({}, d), {
+                            x: x,
+                            y: y,
+                          }) });
+                        },
                       }),
                     ]
                   : [
-                      PinchRecogniser({
+                      TouchRecogniser({
                         id: "PinchRecogniser",
                         initScale: d.scale,
                         startPinch: () => {
@@ -42451,7 +42511,7 @@ var version = "v1.18.1";
                             viewOffset: event.ctrlKey
                               ? pr(
                                   d,
-                                  B.clamp2(dr, cr, d.scale * (1 - t / 1000)),
+                                  B.clamp2(MIN_ZOOM_LIMIT, MAX_ZOOM_LIMIT, d.scale * (1 - t / 1000)),
                                   { x: r.pointer.x, y: r.pointer.y },
                                 )
                               : r.keysDown.Shift || event.deltaX !== 0
@@ -43025,7 +43085,7 @@ var version = "v1.18.1";
               ),
             );
           Da.canPlaceLevelObjects(i, n) &&
-            (a({
+            a({
               type: "moveObjects",
               objects: t.map((e) => ({
                 array: e.selectedObject.array,
@@ -43033,23 +43093,7 @@ var version = "v1.18.1";
                 x: e.toX,
                 y: e.toY,
               })),
-            }), (function () {
-                    if (!dev) {
-                      return;
-                    }
-                    const w = dev.size.fullWidth,
-                      h = dev.size.fullHeight,
-                      border = $.getBorderDimensions(t.map(t => e[t.selectedObject.array][t.selectedObject.index]));
-                    if (border) {
-                      let newViewOffset = gr(d, border, w, h, true) || {};
-                      console.warn(newViewOffset, t, border, w, h)
-                      u({
-                        viewOffset: Object.assign(Object.assign({}, d), newViewOffset),
-                      });
-                    } else {
-                      console.warn(border);
-                    }
-                  })());
+            });
         }
         function Kr(e, t, a, i, n) {
           for (const s in e) {
@@ -78592,7 +78636,7 @@ var version = "v1.18.1";
             dimensions: "scale-up",
             nativeSpriteMap: {
               TextInput: k,
-              PinchRecogniser: Gr,
+              TouchRecogniser: Gr,
               Spine: {
                 create: () => {},
                 loop: ({
