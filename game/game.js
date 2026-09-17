@@ -41634,6 +41634,9 @@ var version = "v1.18.3";
               toolsMenuView: "closed",
               levelSpeeds: _r(e.level),
               canMoveSelectedObjects: false,
+              referenceHoldTimer: 0,
+              holdTimer: 0,
+              holdTimerLatch: false,
               frame: 0,
             }),
             loop({
@@ -41667,6 +41670,9 @@ var version = "v1.18.3";
                 canMoveSelectedObjects: v,
                 selectedTool: T,
                 toolsMenuView: toolsMenuView,
+                referenceHoldTimer,
+                holdTimer,
+                holdTimerLatch,
               } = t;
               const O = a.size.width + 2 * a.size.widthMargin,
                 theFullHeight = a.size.height + 2 * a.size.heightMargin,
@@ -41846,11 +41852,11 @@ var version = "v1.18.3";
                                 : (slctedObjs = [want]),
                                 (pointerReleasedAfterSelectingObject = false));
                             }
-                          }
+                          };
                           dragStart =
                             0 === slctedObjs.length
                               ? "pointer" !== t.selectedTool.type ||
-                                r.keysDown.Shift
+                                r.keysDown.Shift || holdTimer > 60
                                 ? { type: "dragSelect", x: C.x, y: C.y }
                                 : {
                                     type: "view",
@@ -41911,7 +41917,13 @@ var version = "v1.18.3";
                       });
                     break;
                   }
-                }
+                };
+              if (pointer.pressed) {
+                referenceHoldTimer++;
+              } else {
+                referenceHoldTimer = 0;
+              }
+              let resetHoldTimer = true;
               if (
                 (!pointer.justReleased ||
                   t.isPinching ||
@@ -41925,11 +41937,21 @@ var version = "v1.18.3";
                   if ("dragSelect" === dragStart.type)
                     dragSelectPos = { x: C.x, y: C.y };
                   else if ("view" === dragStart.type) {
+                    holdTimer += 1;
                     const e = pointer.x - dragStart.x,
-                      t = pointer.y - dragStart.y;
-                    (d.x === e && d.y === t) ||
+                    t = pointer.y - dragStart.y;
+                    resetHoldTimer = !(Math.abs(d.x - e) < 2 && Math.abs(d.y - t) < 2);
+                    holdTimerLatch = referenceHoldTimer < 3 || holdTimerLatch;
+                    if (resetHoldTimer) {
+                      holdTimerLatch = false
+                    };
+                    if (holdTimer > 30 && !resetHoldTimer && holdTimerLatch) {
+                      dragStart = { type: "dragSelect", x: C.x, y: C.y };
+                    } else {
+                      (d.x === e && d.y === t) ||
                       ((I = true),
                       u({ viewOffset: { x: e, y: t, scale: d.scale } }));
+                    }
                   } else if (
                     "dragObject" === dragStart.type &&
                     slctedObjs.length > 0 &&
@@ -42057,7 +42079,10 @@ var version = "v1.18.3";
                         y: d.y - (a - t),
                       }),
                     });
-                }
+                };
+              if (resetHoldTimer) {
+                holdTimer = 0;
+              };
               return (
                 pointerReleasedAfterSelectingObject ||
                   pointer.pressed ||
@@ -42087,6 +42112,9 @@ var version = "v1.18.3";
                   canMoveSelectedObjects: v,
                   selectedTool: T,
                   toolsMenuView: toolsMenuView,
+                  referenceHoldTimer: referenceHoldTimer,
+                  holdTimer: holdTimer,
+                  holdTimerLatch: holdTimerLatch,
                   frame: s(Se).settings.animateEditor ? t.frame + 1 : 0,
                 })
               );
