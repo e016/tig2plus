@@ -19670,7 +19670,7 @@ var version = "v1.18.3";
           }
         }
         const loopingSpriteSheet = makeSprite({
-            render({ props: e }) {
+            render({ props: e, fps }) {
               const t = ja(e.frameRate, e.rows, e.columns, e.maxIndex);
               return [
                 spriteSheetPrimitive(
@@ -19684,29 +19684,29 @@ var version = "v1.18.3";
                   },
                   (a) => {
                     const i = e.frame % (t + 1);
-                    a.index = Math.floor(i / e.frameRate);
+                    a.index = Math.floor(i / (e.frameRate));
                   },
                 ),
               ];
             },
           }),
           triggerableSpriteSheet = makeSprite({
-            init({ props: e }) {
-              const t = ja(e.frameRate, e.rows, e.columns, e.maxIndex);
+            init({ props: e, fps }) {
+              const t = ja(e.frameRate, e.rows, e.columns, e.maxIndex) / fps;
               return {
-                frame: Math.min(e.startFrame || 0, t - 1),
+                frame: Math.min((e.startFrame) || 0, t - 1) / fps,
                 maxFrame: ja(e.frameRate, e.rows, e.columns, e.maxIndex),
               };
             },
-            loop({ state: e, props: t }) {
+            loop({ state: e, props: t, fps }) {
               t.paused ||
-                e.frame === e.maxFrame - 1 ||
-                (e.frame === e.maxFrame - 2 && t.onEnd && t.onEnd(),
-                (e.frame += t.df));
+                e.frame >= e.maxFrame - 1 / fps ||
+                (e.frame >= e.maxFrame - 2 / fps && t.onEnd && t.onEnd(),
+                (e.frame += t.df / fps));
             },
-            render: ({ state: e, props: t }) => [
+            render: ({ state: e, props: t, fps }) => [
               ifConditional(
-                () => !(t.hideOnEnd && e.frame === e.maxFrame - 1),
+                () => !(t.hideOnEnd && e.frame >= e.maxFrame - 1 / fps),
                 () => [
                   loopingSpriteSheet.Single(
                     {
@@ -19734,10 +19734,10 @@ var version = "v1.18.3";
           Ha = (e) => e.scale <= e.maxScale,
           //death anim
           Xa = makeSprite({
-            init({ props: e, device: t }) {
+            init({ props: e, device: t, fps }) {
               const a = Array.from({ length: 12 }, () => ({
                   angle: 360 * t.random(),
-                  speed: 3 + 6 * t.random(),
+                  speed: (3 + 6 * t.random()) / fps,
                   rotation: 360 * t.random(),
                   opacity: 0.5,
                   scale: 1 - 0.2 * t.random(),
@@ -19749,8 +19749,8 @@ var version = "v1.18.3";
                   x: 0,
                   y: 0,
                   rotation: 360 * t.random(),
-                  speedX: 6 * t.random() - 3,
-                  speedY: 8 * t.random(),
+                  speedX: (6 * t.random() - 3) / fps,
+                  speedY: (8 * t.random()),
                 }));
               return {
                 justDestroyed: e.justDestroyed,
@@ -19758,19 +19758,19 @@ var version = "v1.18.3";
                 squares: i,
               };
             },
-            loop({ state: e, props: t }) {
+            loop({ state: e, props: t, fps }) {
               if (!t.paused) {
                 for (const t of e.triangles)
-                  ((t.radius = t.radius + t.speed),
+                  ((t.radius += t.speed / fps),
                     (t.opacity = 1),
-                    (t.scale = t.scale - 0.1),
-                    (t.speed = t.speed + 0.2));
+                    (t.scale -= 0.1 / fps),
+                    (t.speed += 0.2 / fps));
                 lt(e.triangles, Va);
                 for (const t of e.squares)
-                  ((t.scale = t.scale + 0.02),
-                    (t.x = t.x + t.speedX),
-                    (t.y = t.y + t.speedY),
-                    (t.speedY = t.speedY - 0.3));
+                  ((t.scale += 0.02 / fps),
+                    (t.x += t.speedX),
+                    (t.y += t.speedY / fps),
+                    (t.speedY -= 0.3 / fps));
                 lt(e.squares, Ha);
               }
             },
@@ -30521,12 +30521,13 @@ var version = "v1.18.3";
                 scale: a,
                 rotation: i,
                 height: n,
-                df: s,
+                df: df,
                 paused: o,
                 animationRenderer: r,
                 batchLength: l,
                 batchIndex: c,
               },
+              fps,
               state: d,
               spriteToGameCoords: u,
               utils: h,
@@ -30534,7 +30535,7 @@ var version = "v1.18.3";
               const {
                 runtime: { skeleton: p, animationState: g },
               } = d;
-              (o || (g.update(zs * s), g.apply(p)),
+              (o || (g.update(zs * df / fps), g.apply(p)),
                 u(e, t - n / 2, p),
                 void 0 !== i && (p.getRootBone().rotation = -i),
                 void 0 !== a && ((p.scaleX = a.x / 3), (p.scaleY = a.y / 3)),
@@ -36048,11 +36049,11 @@ var version = "v1.18.3";
             },
             loop({
               state: e,
-              props: { shouldShow: t, fadeFrames: a = 10, fadeInc: i = 1 },
+              props: { shouldShow: t, fadeFrames: a = 10, fadeInc: i = 1, fps },
             }) {
               t
-                ? e.fade < a && ((e.fade += i), (e.opacity.ref = e.fade / a))
-                : e.fade > 0 && (e.fade--, (e.opacity.ref = e.fade / a));
+                ? e.fade < a && ((e.fade += i / fps), (e.opacity.ref = e.fade / a))
+                : e.fade > 0 && ((e.fade -= 1 / fps), (e.opacity.ref = e.fade / a));
             },
             render: ({ props: e, state: t }) => [
               ifConditional(
@@ -36111,8 +36112,9 @@ var version = "v1.18.3";
             loop({
               state: e,
               props: { targetOpacity: t, targetColor: targetColor },
+              fps
             }) {
-              e.opacity.ref += (t - e.opacity.ref) / 10;
+              e.opacity.ref += (t - e.opacity.ref) / 10 / fps;
               if (!(t == 0) && targetColor) {
                 if (e.opacity.ref < 0.5 && t > 0) {
                   e.color.ref = targetColor || "#000000";
@@ -36122,9 +36124,9 @@ var version = "v1.18.3";
                   ? e.color.trueRef
                   : calculateRGB(e.color.ref, 255);
                 var newRgb = calculateRGB(targetColor, 255);
-                e.color.trueRef.r += (newRgb.r - current.r) / 5;
-                e.color.trueRef.g += (newRgb.g - current.g) / 5;
-                e.color.trueRef.b += (newRgb.b - current.b) / 5;
+                e.color.trueRef.r += (newRgb.r - current.r) / 5 / fps;
+                e.color.trueRef.g += (newRgb.g - current.g) / 5 / fps;
+                e.color.trueRef.b += (newRgb.b - current.b) / 5 / fps;
 
                 e.color.ref = `#${componentToHex(e.color.trueRef.r, true)}${componentToHex(e.color.trueRef.g, true)}${componentToHex(e.color.trueRef.b, true)}`;
               }
@@ -36614,7 +36616,7 @@ var version = "v1.18.3";
           }),
           fanParticles = makeSprite({
             init: ({ props, device }) => ({ particles: [], frame: 0 }),
-            loop({ state, props, device }) {
+            loop({ state, props, device, fps }) {
               if (props.paused) {
                 return;
               }
@@ -36623,11 +36625,11 @@ var version = "v1.18.3";
                 (path, index) => {
                   if (path[1][1] < 60) {
                     if (path[1][1] > -30) {
-                      path[0][1] += 5
+                      path[0][1] += 5 / fps
                     }
-                    path[1][1] += 5
+                    path[1][1] += 5 / fps
                   } else {
-                    path[0][1] += 5;
+                    path[0][1] += 5 / fps;
                   }
                   path[0][1] = Math.min(path[0][1], path[1][1]);
                   if (path[0][1] == path[1][1]) {
@@ -36635,9 +36637,8 @@ var version = "v1.18.3";
                   };
                 }
               );
-              console.warn(state.particles, state.particles.filter((e) => e !== null))
               state.particles = state.particles.filter((e) => e !== null);
-              if (state.particles.length < 10 && state.frame % 2 === 0) {
+              if (state.particles.length < 10 && Math.round(state.frame / fps) % 2 === 0) {
                 let x = device.random() * 90 - 45;
                 state.particles.push([
                   [
@@ -43737,7 +43738,8 @@ var version = "v1.18.3";
         const dl = function (e) {
             
             var t, a, i, n, s, o, r, l, c, d, u, h, p, g, m, f, y, E, b, S;
-            const {
+            var {
+                fps,
                 playerInput,
                 level: _,
                 sfx: v,
@@ -43758,7 +43760,9 @@ var version = "v1.18.3";
                 freezeOnDeath
               } = e,
               { levelState: U } = L;
-
+            if (fps !== 1) {
+              df /= fps;
+            }
             let freeze = (U.crashed || U.finishedLevel) && freezeOnDeath;
 
             if (!useBoosterDebug || N) {
@@ -43792,7 +43796,7 @@ var version = "v1.18.3";
                 ? ("up" == playerInput && (U.justDownInputTimer = 0),
                   "up" !== playerInput)
                 : true) &&
-              U.justDownInputTimer--,
+              (U.justDownInputTimer -= df),
               "justDown" !== playerInput ||
                 (skating ? void 0 : (U.justDownInputTimer = 10)));
             const inViewLayout =
@@ -44689,7 +44693,10 @@ var version = "v1.18.3";
               if (-1 !== idx) {
                 const spring = inViewLayout.springs[idx];
                 if (spring.kind === "fan") {
-                  setGradY(Math.max(gradY + (V - gradY) / 5 * (spring.direction < 0 ? -0.5 : 1), -V));
+                  setGradY(Math.max(
+                    gradY + (V - gradY) / 5 * (spring.direction < 0 ? -0.5 : 1) * df, 
+                    -V * df
+                  ));
                   return;
                 };
                 (stack ||
@@ -45557,7 +45564,7 @@ var version = "v1.18.3";
                       (e) => e.item === "skateboard" || e.item === "spaceship",
                     )),
                     onCrash(U.checkpoint.index),
-                    N && (L.resetTimer = 60))));
+                    N && (L.resetTimer = 60 * fps))));
             U.playerOnGroundY =
               U.flyingAnchor === null ? U.playerOnGroundY : U.flyingAnchor;
             let ge = U.explosions.length;
@@ -45571,7 +45578,7 @@ var version = "v1.18.3";
                 ),
               )),
               0 === ge && (U.explosions.length = 0)),
-              L.landTimer > 0 && L.landTimer--,
+              L.landTimer > 0 && (L.landTimer = Math.max(0, L.landTimer - df)),
               U.flyingAnchor === null &&
                 (U.playerOnGroundY = null != Q ? Q : U.playerOnGroundY),
               (U.playerWasOnGroundCooldown = Math.max(
@@ -55606,16 +55613,16 @@ var version = "v1.18.3";
               ),
               frame: 0
             }),
-            loop({state, props: e}) {
+            loop({state, props: e, fps}) {
               if (e.paused) {
                 return void 0;
               }
               state.path.forEach((e) => {
-                e.opacity -= 0.1;
+                e.opacity -= 0.1 / fps;
                 e.justAdded = false;
               })
-              state.frame++;
-              if (state.frame % 5 > 0) {
+              state.frame += 1 / fps;
+              if (!(state.frame % Math.floor(5) <= 1)) {
                 return void 0;
               }
               state.path.shift();
@@ -55654,7 +55661,7 @@ var version = "v1.18.3";
             ]
           }),
           playerTrailStrip = makeSprite({
-            init: ({ props: e, device: t }) => ({
+            init: ({ props: e, device: t, fps }) => ({
               followY: e.playerY,
               width: 1,
               widthDir: -0.01 - 0.04 * t.random(),
@@ -55663,20 +55670,20 @@ var version = "v1.18.3";
               offsetY: 3.75 * t.random() * 2 - 3.75,
               offsetYDir: -0.005 - 0.005 * t.random(),
               bottomPath: Array.from(
-                { length: e.playerScaleOff ? 0 : eg },
+                { length: e.playerScaleOff ? 0 : Math.round(eg * fps) },
                 () => [e.playerX, e.playerY],
               ),
               middlePath: Array.from(
-                { length: e.playerScaleOff ? 0 : 6 },
+                { length: e.playerScaleOff ? 0 : Math.round(6 * fps) },
                 () => [e.playerX, e.playerY],
               ),
-              topPath: Array.from({ length: e.playerScaleOff ? 0 : 2 }, () => [
+              topPath: Array.from({ length: e.playerScaleOff ? 0 : Math.round(2 * fps) }, () => [
                 e.playerX,
                 e.playerY,
               ]),
               bottomWidth: eg,
             }),
-            loop({ state: e, props: t, device: a }) {
+            loop({ state: e, props: t, device: a, fps }) {
               if (t.paused) return;
               if (t.crashed || t.playerScaleOff)
                 return (
@@ -55694,25 +55701,25 @@ var version = "v1.18.3";
               ((e.followY = B.clamp2(
                 t.playerY - 15,
                 t.playerY + 15,
-                e.followY + (t.playerY - e.followY) / 4,
+                e.followY + (t.playerY - e.followY) / 4 / fps,
               )),
                 (e.width += e.widthDir),
                 e.width < 0.9
-                  ? ((e.width = 0.9), (e.widthDir = 0.01 + 0.04 * a.random()))
+                  ? ((e.width = 0.9), (e.widthDir = 0.01 + 0.04 * a.random() / fps))
                   : e.width > 1.5 &&
-                    ((e.width = 1.5), (e.widthDir = -0.01 - 0.04 * a.random())),
+                    ((e.width = 1.5), (e.widthDir = -0.01 - 0.04 * a.random() / fps)),
                 (e.offsetX += e.offsetXDir),
                 e.offsetX < -30
-                  ? ((e.offsetX = -30), (e.offsetXDir = 0.5 + 1.5 * a.random()))
+                  ? ((e.offsetX = -30), (e.offsetXDir = 0.5 + 1.5 * a.random() / fps))
                   : e.offsetX > 0 &&
-                    ((e.offsetX = 0), (e.offsetXDir = -0.5 - 1.5 * a.random())),
+                    ((e.offsetX = 0), (e.offsetXDir = -0.5 - 1.5 * a.random() / fps)),
                 (e.offsetY += e.offsetYDir),
                 e.offsetY < -3.75
                   ? ((e.offsetY = -3.75),
-                    (e.offsetYDir = 0.005 + 0.005 * a.random()))
+                    (e.offsetYDir = 0.005 + 0.005 * a.random() / fps))
                   : e.offsetY > 3.75 &&
                     ((e.offsetY = 3.75),
-                    (e.offsetYDir = -0.005 - 0.005 * a.random())));
+                    (e.offsetYDir = -0.005 - 0.005 * a.random() / fps)));
               const i =
                   t.playerX +
                   t.playerDir * (e.offsetX - 7.5 * globalPlayerScale),
@@ -55739,15 +55746,15 @@ var version = "v1.18.3";
                   !fullTopPath ||
                   Math.abs(i - o[0]) > 60 * t.playerSpeedMultiplier ||
                   Math.abs(n - o[1]) > 60) &&
-                  ((e.bottomPath = Array.from({ length: eg }, () => [
+                  ((e.bottomPath = Array.from({ length: Math.round(eg * fps) }, () => [
                     t.playerX,
                     t.playerY,
                   ])),
-                  (e.middlePath = Array.from({ length: 6 }, () => [
+                  (e.middlePath = Array.from({ length: Math.round(6 * fps) }, () => [
                     t.playerX,
                     t.playerY,
                   ])),
-                  (e.topPath = Array.from({ length: 2 }, () => [
+                  (e.topPath = Array.from({ length: Math.round(2 * fps) }, () => [
                     t.playerX,
                     t.playerY,
                   ]))));
@@ -56105,11 +56112,11 @@ var version = "v1.18.3";
           }),
           sg = makeSprite({
             init: ({ props: e }) => ({ fade: 0, text: e.text }),
-            loop({ props: e, state: t }) {
+            loop({ props: e, state: t, fps }) {
               if (e.text !== t.text) {
-                if (t.fade > 0) return void t.fade--;
+                if (t.fade > 0) return void (t.fade -= 1 / fps);
                 ((t.fade = 0), (t.text = e.text));
-              } else t.fade < 30 && t.fade++;
+              } else t.fade < 30 && (t.fade += 1 / fps);
             },
             render: ({ state: e }) => [
               c({ font: { size: 20 }, color: "white" }, (t) => {
@@ -56119,14 +56126,14 @@ var version = "v1.18.3";
           }),
           og = makeCustomSprite({
             init: ({ props: e }) => ({ fade: 0, text: e.text, timer: 0 }),
-            loop: ({ state: e, props: t }) =>
+            loop: ({ state: e, props: t, fps }) =>
               e.timer > t.showTime
                 ? e.fade > 0
-                  ? Object.assign(Object.assign({}, e), { fade: e.fade - 1 })
+                  ? Object.assign(Object.assign({}, e), { fade: e.fade - 1 / fps })
                   : Object.assign(Object.assign({}, e), { fade: 0 })
                 : e.fade < 30 && e.timer > t.delay
-                  ? Object.assign(Object.assign({}, e), { fade: e.fade + 1 })
-                  : Object.assign(Object.assign({}, e), { timer: e.timer + 1 }),
+                  ? Object.assign(Object.assign({}, e), { fade: e.fade + 1 / fps })
+                  : Object.assign(Object.assign({}, e), { timer: e.timer + 1 / fps }),
             render: ({ state: e }) => [
               n({
                 font: { size: 20 },
@@ -62410,34 +62417,34 @@ var version = "v1.18.3";
                         ),
                       ],
           }),
-          hm = (y, cameraY, finished, anchor, useGround) => {
+          hm = (y, cameraY, finished, anchor, useGround, df) => {
             if (anchor) {
-              return cameraY + (anchor - cameraY) / 5;
+              return cameraY + (anchor - cameraY) / 5 / df;
             }
-            if (finished) return cameraY + (y - cameraY) / 10;
+            if (finished) return cameraY + (y - cameraY) / 10 / df;
             const i = et.initialPosition.y + 105,
               n = et.initialPosition.y;
             let isGrounded = false;
             if (y <= 30 && !(y - cameraY > i) && useGround) {
-              cameraY = cameraY + (30 - cameraY) / 4;
+              cameraY = cameraY + (30 - cameraY) / 4 / df;
               isGrounded = true;
             }
             cameraY =
               y - cameraY > i && !isGrounded
-                ? cameraY + (5 + y - cameraY - i) / 4
+                ? cameraY + (5 + y - cameraY - i) / 4 / df
                 : y - cameraY < n && !isGrounded
-                  ? cameraY + (-5 + y - cameraY - n) / 4
+                  ? cameraY + (-5 + y - cameraY - n) / 4 / df
                   : cameraY;
             return cameraY;
           },
-          pm = (e, t, a) => {
-            const i = a
+          pm = (cameraXOffset, playerDir, finishedLevel, df) => {
+            const i = finishedLevel
                 ? et.initialPosition.x
-                : 1 === t
+                : 1 === playerDir
                   ? 0
                   : 2 * et.initialPosition.x,
-              n = e - i;
-            return 0 === n || Math.abs(n) < 1 ? i : e - n / 4;
+              n = cameraXOffset - i;
+            return 0 === n || Math.abs(n) < 1 ? i : (cameraXOffset - n / 4 / df);
           },
           gm = (e, t) => e - et.initialPosition.x + t;
         var mm = function (e, t, a, i) {
@@ -64835,8 +64842,8 @@ var version = "v1.18.3";
             }
             return { frame: 0, opacity: 0 };
           },
-          loop({ state: e }) {
-            e.opacity >= 1 || (e.frame++, e.frame > 100 && (e.opacity += 0.1));
+          loop({ state: e, fps }) {
+            e.opacity >= 1 || ((e.frame += 1 / fps), e.frame > 100 && (e.opacity += 0.1 / fps));
           },
           render({ props: e, getContext: t, state: a, device: i }) {
             const { animationAssets: n, animationRenderer: s } = t(Ws);
@@ -65341,6 +65348,7 @@ var version = "v1.18.3";
               device: a,
               getInputs: i,
               getContext: n,
+              fps,
             }) {
               var s, o, r, l, c, d, u, h, p, g, m;
               const f = i(),
@@ -65434,7 +65442,7 @@ var version = "v1.18.3";
               ) {
                 t.mutValues.levelState.frameCountSinceHistoryPush++;
                 const newFrameCountSinceHistoryPush =
-                  37.5 / Math.max(v, Math.abs(R));
+                  37.5 / Math.max(v, Math.abs(R)) * fps;
                 if (
                   t.mutValues.levelState.frameCountSinceHistoryPush >=
                   newFrameCountSinceHistoryPush
@@ -65454,11 +65462,13 @@ var version = "v1.18.3";
                   finishedLevel,
                   flyingAnchor,
                   t.bigMutValues.inViewLayout.properties.useGround,
+                  fps
                 )),
                 (t.mutValues.levelState.cameraXOffset = pm(
                   t.mutValues.levelState.cameraXOffset,
                   O,
                   finishedLevel,
+                  fps
                 )));
               const isClassic = isSpecialTheme(
                   t.bigMutValues.inViewLayout.properties.theme.id,
@@ -65562,6 +65572,7 @@ var version = "v1.18.3";
                   !t.mutValues.levelState.crashed &&
                   (t.mutValues.levelState.crashed = true),
                 dl({
+                  fps: fps,
                   useBoosterDebug: y.showDebug,
                   mutValues: t.mutValues,
                   bigMutValues: t.bigMutValues,
@@ -74474,10 +74485,10 @@ var version = "v1.18.3";
                 { loading: true, frame: 0, modal: null, menuMusicFile: o, readNews: true }
               );
             },
-            loop({ state: e }) {
+            loop({ state: e, fps }) {
               if (e.loading) return e;
-              const t = e.frame + 1;
-              let newArrowY = e.arrowY + 0.3;
+              const t = e.frame + 1 / fps;
+              let newArrowY = e.arrowY + 0.3 / fps;
               newArrowY > 10 && (newArrowY = -10);
               return Object.assign(Object.assign({}, e), {
                 frame: t >= eE() ? t - eE() : t,
@@ -74490,6 +74501,7 @@ var version = "v1.18.3";
               device: a,
               getContext: i,
               updateState: updateState,
+              fps: df,
             }) {
               const { news: newsMessage, id: newsID, title: newsTitle } = _NEWS;
               const {
@@ -75488,20 +75500,21 @@ var version = "v1.18.3";
               cameraY: e.viewingPlayer.state.mutValues.levelState.playerY,
               cameraXOffset: 0,
             }),
-            loop({ state: e, props: t }) {
+            loop({ state: e, props: t, fps }) {
               var a;
               (null === (a = t.loop) || void 0 === a || a.call(t),
                 (e.cameraY = hm(
                   t.viewingPlayer.state.mutValues.levelState.playerY,
                   e.cameraY,
                   false,
-                  t.viewingPlayer.state.mutValues.levelState.flyingAnchor,
+                  t.viewingPlayer.state.mutValues.levelState.flyingAnchor
                 )),
                 (e.cameraScale = 2),
                 (e.cameraXOffset = pm(
                   e.cameraXOffset,
                   t.viewingPlayer.state.mutValues.levelState.playerDir,
                   false,
+                  fps
                 )));
             },
             render({ props: e, state: t }) {
@@ -78015,7 +78028,7 @@ var version = "v1.18.3";
             },
           PE = ["#6b0d54", "#be1c6a", "#c5452d", "#11b07f", "#c59413"],
           ME = makeCustomSprite({
-            init({ device: { random: e, size: t } }) {
+            init({ device: { random: e, size: t }, fps }) {
               const a = t.width + 2 * t.widthMargin,
                 i = t.height + 2 * t.heightMargin;
               return {
@@ -78023,9 +78036,9 @@ var version = "v1.18.3";
                   const s = 1 * e() + 1,
                     o = e() * Math.PI * 2;
                   return {
-                    speedX: Math.cos(o) * s,
-                    speedY: Math.sin(o) * s,
-                    rotSpeed: ot(e) * (1 * e() + 1),
+                    speedX: Math.cos(o) * s / fps,
+                    speedY: Math.sin(o) * s / fps,
+                    rotSpeed: ot(e) * (1 * e() + 1) / fps,
                     x: e() * a - a / 2,
                     y: e() * i - i / 2,
                     rot: 360 * e(),

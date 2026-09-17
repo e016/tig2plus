@@ -398,6 +398,7 @@ var renderCanvas;
                       state: e.state,
                       parentGlobalId: l,
                       utils: r,
+                      fps: REPLAY_FRAMES_PER_SECOND / 60,
                       spriteToGameCoords: (e, t, r) => {
                         const i = c.multiplyPooled(
                           n.getTopStack().transformationGameCoords,
@@ -458,7 +459,8 @@ var renderCanvas;
             d.renderTexture(n.getTopStack(), g, d.getInitTextureState(g), null);
       }
     }
-    const S = (1 / 60) * 1e3;
+    const REPLAY_FRAMES_PER_SECOND = 144;
+    var REPLAY_TIME_PER_UPDATE_MS = (1 / REPLAY_FRAMES_PER_SECOND) * 1e3;
     function E(e, t, n, i, o, s, l, c) {
       const { spriteObj: u, props: d } = e,
         p = [],
@@ -482,6 +484,7 @@ var renderCanvas;
                 .transformationGameCoords,
               (null == h ? void 0 : h.inputs) || i()
             ),
+          fps: REPLAY_FRAMES_PER_SECOND / 60,
           updateState: f,
           getContext: (e) => {
             const t = c.find((t) => t.context === e);
@@ -529,6 +532,7 @@ var renderCanvas;
                 props: e,
                 state: this.state,
                 device: t,
+                fps: REPLAY_FRAMES_PER_SECOND / 60,
                 getInputs: () => n(r.transformationGameCoords, this.inputs),
                 updateState: f,
                 getState: y,
@@ -541,6 +545,7 @@ var renderCanvas;
               props: e,
               state: this.state,
               device: t,
+              fps: REPLAY_FRAMES_PER_SECOND / 60,
               getInputs: () => n(r.transformationGameCoords, this.inputs),
               updateState: f,
               getState: y,
@@ -809,6 +814,7 @@ var renderCanvas;
               state: o,
               parentGlobalId: d,
               utils: r,
+              fps: REPLAY_FRAMES_PER_SECOND / 60,
               spriteToGameCoords: (e, t, r) => {
                 const i = c.multiplyPooled(
                   n.getTopStack().transformationGameCoords,
@@ -949,6 +955,7 @@ var renderCanvas;
                         );
                       return _.state;
                     },
+                    fps: REPLAY_FRAMES_PER_SECOND / 60,
                     getInputs: () =>
                       o(
                         n.getStack((null == _ ? void 0 : _.stackIndex) || 0)
@@ -965,6 +972,7 @@ var renderCanvas;
               props: x,
               state: A,
               device: t,
+              fps: REPLAY_FRAMES_PER_SECOND / 60,
               getInputs: () =>
                 o(
                   n.getStack((null == _ ? void 0 : _.stackIndex) || 0)
@@ -986,6 +994,7 @@ var renderCanvas;
                   props: x,
                   state: A,
                   device: t,
+                  fps: REPLAY_FRAMES_PER_SECOND / 60,
                   getInputs: () =>
                     o(
                       n.getStack((null == _ ? void 0 : _.stackIndex) || 0)
@@ -3253,7 +3262,7 @@ var renderCanvas;
                       runNextFrame(n, u) {
                         const d = n - v;
                         (v = n), (y += d);
-                        let h = Math.round(y / S);
+                        let h = Math.round(y / REPLAY_TIME_PER_UPDATE_MS);
                         for (
                           t.nativeSpriteUtils.didResize &&
                           (l.stack[0].transformation = c.getScaleMatrix(
@@ -3263,8 +3272,8 @@ var renderCanvas;
                           h > 0;
 
                         ) {
-                          (y -= S), h--;
-                          const n = y / S,
+                          (y -= REPLAY_TIME_PER_UPDATE_MS), h--;
+                          const n = y / REPLAY_TIME_PER_UPDATE_MS,
                             l = w(i.size, m),
                             c = 0 === h;
                           c && x.isEmpty
