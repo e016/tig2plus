@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.18.1";
+var version = "v1.18.3";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -67339,6 +67339,10 @@ var version = "v1.18.1";
             },
           }),
           Bf = makeSprite({
+            loop: ({ props: e, getInputs }) => {
+              let a = getInputs();
+              a.keysJustPressed.Escape && e.onPress();
+            },
             render: ({ props: e, device: t }) => [
               Se.Single({
                 context: () => e.globalContextVal,
