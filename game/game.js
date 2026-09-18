@@ -20657,7 +20657,7 @@ var version = "v1.18.3";
                                   (a.x = i.x),
                                   (a.y = getBlockFallY(
                                     i.x,
-                                    i.y,
+                                    i.midY ?? i.y,
                                     e.inGame && e.inGame.playerX,
                                     e.inGame && e.inGame.fallTypes,
                                     e.inGame && e.inGame.playerDir,
