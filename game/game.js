@@ -47826,7 +47826,7 @@ var version = "v1.19.0";
                 [-200, -80],
                 [-130, -40]
               ],
-              maxFrames: 9877,
+              maxFrames: 7198,
               difficulty: 5,
             },
             {
