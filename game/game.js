@@ -3,7 +3,7 @@ var game;
 var bgOnly = false,
   showcaseOnly = false;
 
-var version = "v1.18.3";
+var version = "v1.19.0";
 (() => {
   var e = {
       8465: (e, t, a) => {
@@ -15873,9 +15873,9 @@ var version = "v1.18.3";
                     ? s
                     : 0,
                 skipMissiles:
-                  null !== (o = null == e ? void 0 : e.skipMissiles) &&
+                  (null !== (o = null == e ? void 0 : e.skipMissiles) &&
                   void 0 !== o &&
-                  o,
+                  o) || (o == null ? false : e.isLaser),
                 isFade: e ? e.isFade || false : false,
                 isLaser: o == null ? false : e.isLaser,
               };
@@ -47804,27 +47804,75 @@ var version = "v1.18.3";
           ],
           world5levels = [
             {
-              levelName: "Fire Aura 2",
-              levelFileName: "fire-aura",
-              author: "Alfredo Gamer",
-              song: hl.songs.fireAura,
+              levelName: "Robot Language",
+              levelFileName: "robot-language",
+              song: hl.songs.robotLanguage,
               unlockedByIndex: null,
               x: -240,
-              y: 20,
+              y: -100,
               pathToLevel: [],
               maxFrames: 9877,
-              difficulty: 7,
+              difficulty: 3,
+              hide: true,
             },
             {
-              levelName: "Heaven 2",
-              levelFileName: "heaven",
-              song: hl.songs.heaven,
-              unlockedByIndex: 0,
-              x: -100,
-              y: -30,
-              pathToLevel: [],
+              levelName: "Paradise On E",
+              levelFileName: "paradise-on-e",
+              song: hl.songs.paradiseOnE,
+              unlockedByIndex: 1,
+              x: -90,
+              y: -40,
+              pathToLevel: [
+                [-200, -80],
+                [-130, -40]
+              ],
               maxFrames: 9877,
-              difficulty: 7,
+              difficulty: 5,
+            },
+            {
+              levelName: "Essence",
+              levelFileName: "essence",
+              song: hl.songs.essence,
+              unlockedByIndex: 2,
+              x: 90,
+              y: 40,
+              pathToLevel: [
+                [-50, -20],
+                [50, 20]
+              ],
+              maxFrames: 9877,
+              difficulty: 4,
+              hide: true,
+            },
+            {
+              levelName: "Minds Of The Mad",
+              levelFileName: "minds-of-the-mad",
+              song: hl.songs.mindsOfTheMad,
+              unlockedByIndex: 3,
+              x: 180,
+              y: -100,
+              pathToLevel: [
+                [120, 10],
+                [150 , -80]
+              ],
+              maxFrames: 9877,
+              difficulty: 9,
+              hide: true,
+            },
+            {
+              levelName: "Phobos",
+              levelFileName: "phobos",
+              song: hl.songs.phobos,
+              unlockedByIndex: 3,
+              x: 240,
+              y: 100,
+              pathToLevel: [
+                [130, 40],
+                [200, 100]
+              ],
+              maxFrames: 9877,
+              difficulty: 6,
+              hide: true,
             },
           ],
           Ul = [
@@ -68062,6 +68110,7 @@ var version = "v1.18.3";
                       y: r,
                       difficulty: l,
                       boss: c,
+                      hide,
                     },
                     d,
                   ) => {
@@ -68071,7 +68120,7 @@ var version = "v1.18.3";
                         null !== n &&
                         !s[n].checkpointsComplete &&
                         !s[n].noCheckpointsComplete &&
-                        true;
+                        !hide;
                     return Qf({
                       id: `LevelButton-${e}`,
                       levelName: t,
@@ -68082,7 +68131,7 @@ var version = "v1.18.3";
                       selected: (null == i ? void 0 : i.levelName) === t,
                       x: o,
                       y: r,
-                      locked: false, //p,
+                      locked: hide, //p,
                       onPress: () => a(d),
                     });
                   },
@@ -68921,7 +68970,7 @@ var version = "v1.18.3";
                 oy({
                   id: "WorldButton",
                   world: h,
-                  disabled: h == 5, //h > u.length,
+                  disabled: false,//h == 5, //h > u.length,
                   onPress: () => {
                     (e.updateView({ type: "inWorld", world: h }),
                       Jp.saveAccount(a.storage, null, a.alert, a.now, {
