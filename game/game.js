@@ -55666,7 +55666,7 @@ var version = "v1.18.3";
                 () => [
                   g({
                   props: () => ({
-                    color: "black"
+                    color: "#111111"
                   }), update: (t, a, i) => {
                     t.show = !a.justAdded;
                     t.opacity = a.opacity;
