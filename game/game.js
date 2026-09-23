@@ -43720,6 +43720,7 @@ var version = "v1.19.0";
               playSound: (null == u ? void 0 : u.playSound) || (() => null),
               crashed: e.crashed,
               rectangleHitPlayer: d,
+              landableObjects,
             }),
             !e.crashed &&
               n.boss.crashed({
@@ -47501,6 +47502,62 @@ var version = "v1.19.0";
               },
             };
           },
+          phobosJumpFrames = G.getJumpFrames(140),
+          phobosCoefficients = G.getCoefficients(phobosJumpFrames),
+          getClassicBoss = function () {
+            return {
+              mutatesState: false,
+              fileNames: {
+                images: [],
+                spine: [],
+                audio: [],
+              },
+              initState: () => ({
+                type: "classic",
+                mutatesState: false,
+                bossX: 1000,
+                bossY: -15,
+                gradY: 0,
+                rotation: 0,
+                bullets: [],
+                jumpFrames: [
+                  60
+                ],
+              }),
+              cloneState: (e) =>
+                Object.assign(Object.assign({}, e), {
+                  bullets: e.bullets.map((e) => Object.assign({}, e)),
+                  jumpFrames: [...e.jumpFrames],
+                }),
+              loop: ({
+                bossState: e,
+                playerX: playerX,
+                frame: frame,
+                df: df,
+                playSound: n,
+                crashed: crashed,
+                playerY,
+                landableObjects
+              }) => {
+                e.bossX = playerX + 120;
+                if (e.jumpFrames.includes(frame)) {
+                  e.gradY = phobosCoefficients.b;
+                  console.warn(landableObjects);
+                }
+                e.gradY = Math.max(e.gradY + (U(phobosCoefficients.a) * df) / 2, -30) || 0;
+                e.bossY += e.gradY;
+                e.rotation += 90 * df / phobosJumpFrames;
+                if (e.bossY <= -15) {
+                  e.bossY = -15;
+                  e.gradY = 0;
+                  e.rotation = 0;
+                }
+              },
+              crashed: ({ playerX: e, playerY: t, bossState: a }) => {
+                return false;
+              },
+            };
+          },
           Pl = function (e, t) {
             return (
               "demon" === (null == e ? void 0 : e.type) && t > 5226 && t < Ol
@@ -47873,6 +47930,7 @@ var version = "v1.19.0";
               maxFrames: 9877,
               difficulty: 6,
               hide: true,
+              boss: getClassicBoss()
             },
           ],
           Ul = [
@@ -51298,6 +51356,7 @@ var version = "v1.19.0";
               return null;
             case "pixel":
             case "flying":
+            case "classic":
               return e;
             case "demon":
               return Object.assign(Object.assign({}, e), {
@@ -56672,6 +56731,23 @@ var version = "v1.19.0";
                         ),
                       ],
                     ),
+                  ];
+                }
+                case "classic": {
+                  return [
+                    p({
+                      x: e.bossState.bossX,
+                      y: e.bossState.bossY,
+                      width: 120,
+                      height: 120,
+                      rotation: e.bossState.rotation || 0,
+                      color: "#888888"
+                    },
+                    (t) => {
+                      t.x = e.bossState.bossX;
+                      t.y = e.bossState.bossY;
+                      t.rotation = e.bossState.rotation || 0;
+                    })
                   ];
                 }
                 case "demon": {
@@ -66116,7 +66192,6 @@ var version = "v1.19.0";
                           (a.paused = t.paused),
                           (a.hideUi = n.hideUi),
                           (a.isPractice = t.mutValues.checkpoints.length > 0),
-                          (console.log(t.mutValues.checkpoints.length)),
                           (a.attempt = t.mutValues.levelState.attempt),
                           a.crashed || (a.frame = t.mutValues.levelState.frame),
                           (a.theme =
