@@ -43721,6 +43721,10 @@ var version = "v1.19.0";
               crashed: e.crashed,
               rectangleHitPlayer: d,
               landableObjects,
+              inViewLayout: inViewLayout,
+              inViewLayoutState: o,
+              fullLayoutState: e.layoutState,
+              fullLayoutStateIndexes: r,
             }),
             !e.crashed &&
               n.boss.crashed({
@@ -47521,7 +47525,7 @@ var version = "v1.19.0";
                 rotation: 0,
                 bullets: [],
                 jumpFrames: [
-                  60
+                  411, 460
                 ],
               }),
               cloneState: (e) =>
@@ -47537,9 +47541,13 @@ var version = "v1.19.0";
                 playSound: n,
                 crashed: crashed,
                 playerY,
-                landableObjects
+                landableObjects,
+                inViewLayout: s,
+                inViewLayoutState: o,
+                fullLayoutState: r,
+                fullLayoutStateIndexes: l,
               }) => {
-                e.bossX = playerX + 120;
+                e.bossX = playerX + 240 + Math.max(400 - frame, 0);
                 if (e.jumpFrames.includes(frame)) {
                   e.gradY = phobosCoefficients.b;
                   console.warn(landableObjects);
@@ -47551,6 +47559,60 @@ var version = "v1.19.0";
                   e.bossY = -15;
                   e.gradY = 0;
                   e.rotation = 0;
+                };
+                for (let i = 0; i < landableObjects.length; i++) {
+                  let oj = landableObjects[i].object,
+                  height = 120;
+                  let bottomBossRect = be.rectTouchesRect2(
+                    e.bossX,
+                    e.bossY - height / 4,
+                    120,
+                    height / 2,
+                    oj,
+                  );
+                  let topBossRect = be.rectTouchesRect2(
+                    e.bossX,
+                    e.bossY + height / 4,
+                    120,
+                    height / 2,
+                    oj,
+                  );
+                  if (topBossRect) {
+                    for (let i = 0; i < s.blocks.length; i++) {
+                      const t = s.blocks[i],
+                        a = o.blocks[i];
+                      console.warn(t, be.rectTouchesRect2(
+                          e.bossX,
+                          e.bossY,
+                          120,
+                          height,
+                          t,
+                        ));
+                      !a.destroyed &&
+                        be.rectTouchesRect2(
+                          e.bossX,
+                          e.bossY,
+                          120,
+                          120,
+                          t,
+                        ) &&
+                        xa.updateLayoutStateField(
+                          "blocks",
+                          frame,
+                          Object.assign(Object.assign({}, a), {
+                            destroyed: { frame: frame, x: t.x, y: t.y, by: "gun" },
+                          }),
+                          r,
+                          o,
+                          l,
+                          false,
+                        );
+                    }
+                  } else if (bottomBossRect) {
+                    e.bossY = oj.y + oj.height / 2 + 120 / 2
+                    e.gradY = 0;
+                    e.rotation = 0;
+                  };
                 }
               },
               crashed: ({ playerX: e, playerY: t, bossState: a }) => {
